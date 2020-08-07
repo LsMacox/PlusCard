@@ -1,4 +1,9 @@
-// vue.config.js
 module.exports = {
-  // настройки...
-};
+    css: {
+        loaderOptions: {
+            scss: {
+                additionalData: `@import "~@/scss/variables.scss";`
+            }
+        }
+    }
+}
