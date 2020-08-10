@@ -1,8 +1,10 @@
 module.exports = {
   devServer: {
     disableHostCheck: true,
+    compress: true,
+    historyApiFallback: true,
+    noInfo: true,
   },
-
   transpileDependencies: ['vuetify'],
 
   pluginOptions: {
