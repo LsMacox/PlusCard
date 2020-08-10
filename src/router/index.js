@@ -1,70 +1,30 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import Vue from 'vue'
+import VueRouter from 'vue-router'
 
-Vue.use(VueRouter);
+import routes from './routes'
 
-const routes = [
-  {
-    path: "/",
-    name: "Home",
-    component: Home,
-    meta: {
-      title: process.env.APP_TITLE,
-      metaTags: [
-        {
-          name: "description",
-          content: "The home page of pluscards cabinet."
-        },
-        {
-          property: "og:description",
-          content: "The home page of pluscards cabinet."
-        }
-      ]
-    }
-  }
-];
+Vue.use(VueRouter)
 
-const router = new VueRouter({
-  mode: "history",
-  base: process.env.BASE_URL,
-  routes
-});
+/*
+ * If not building with SSR mode, you can
+ * directly export the Router instantiation;
+ *
+ * The function below can be async too; either use
+ * async/await or return a Promise which resolves
+ * with the Router instance.
+ */
 
-// This callback runs before every route change, including on page load.
-router.beforeEach((to, from, next) => {
-  const nearestWithTitle = to.matched
-    .slice()
-    .reverse()
-    .find(r => r.meta && r.meta.title);
+export default function (/* { store, ssrContext } */) {
+  const Router = new VueRouter({
+    scrollBehavior: () => ({ x: 0, y: 0 }),
+    routes,
 
-  const nearestWithMeta = to.matched
-    .slice()
-    .reverse()
-    .find(r => r.meta && r.meta.metaTags);
+    // Leave these as they are and change in quasar.conf.js instead!
+    // quasar.conf.js -> build -> vueRouterMode
+    // quasar.conf.js -> build -> publicPath
+    mode: process.env.VUE_ROUTER_MODE,
+    base: process.env.VUE_ROUTER_BASE
+  })
 
-  if (nearestWithTitle) document.title = nearestWithTitle.meta.title;
-
-  Array.from(
-    document.querySelectorAll("[data-vue-router-controlled]")
-  ).map(el => el.parentNode.removeChild(el));
-
-  if (!nearestWithMeta) return next();
-
-  nearestWithMeta.meta.metaTags
-    .map(tagDef => {
-      const tag = document.createElement("meta");
-
-      Object.keys(tagDef).forEach(key => {
-        tag.setAttribute(key, tagDef[key]);
-      });
-
-      return tag;
-    })
-    // Add the meta tags to the document head.
-    .forEach(tag => document.head.appendChild(tag));
-
-  next();
-});
-
-export default router;
+  return Router
+}
