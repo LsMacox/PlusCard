@@ -16,12 +16,21 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import './plugins/base'
-import './plugins/chartist'
-import './plugins/vee-validate'
+// import './plugins/vee-validate'
 import vuetify from './plugins/vuetify'
 import i18n from './i18n'
 
+// import './permission' // permission control
+import './utils/error-log' // error log
+
+import * as filters from './filters' // global filters
+
 Vue.config.productionTip = false
+
+// register global utility filters
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 new Vue({
   router,
