@@ -13,10 +13,11 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "core-js": "^3.6.2",
+    "axios": "^0.19.2",
+    "clipboard": "^2.0.6",
     "css-loader": "^4.2.1",
     "file-loader": "^6.0.0",
-    "pluscards_ui_kit": "^0.1.1",
+    "js-cookie": "^2.2.1",
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",
     "vue": "^2.6.11",
@@ -41,13 +42,11 @@
     "eslint-config-vuetify": "^0.4.1",
     "eslint-plugin-vue": "^6.1.2",
     "sass": "^1.24.3",
-    "sass-loader": "^8.0.0",
-    "vee-validate": "^3.2.2",
+    "sass-loader": "^8.0.0", 
     "vue-chartist": "^2.2.1",
     "vue-cli-plugin-i18n": "^0.6.0",
     "vue-cli-plugin-vuetify": "^2.0.3",
-    "vue-template-compiler": "^2.6.11",
-    "vue-world-map": "^0.1.1",
+    "vue-template-compiler": "^2.6.11",    
     "vuetify-loader": "^1.4.3"
   }
 }
