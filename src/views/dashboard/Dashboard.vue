@@ -323,7 +323,6 @@
               </v-list>
             </v-menu>
           </template>
-
         </v-text-field>
       </v-col>
     </v-row>
