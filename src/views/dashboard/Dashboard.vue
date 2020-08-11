@@ -230,7 +230,6 @@
             >
               12
             </v-btn>
-
           </v-badge>
           small-secondary-button-with-notify
         </div>
@@ -240,11 +239,11 @@
       <v-col
         cols="12"
         lg="3"
-        >
+      >
         <v-text-field
           placeholder="outline-text-field"
           outlined
-        ></v-text-field>
+        />
       </v-col>
       <v-col
         cols="12"
@@ -255,14 +254,14 @@
             placeholder="prepend-icon"
             prepend-inner-icon="mdi-calendar-blank-outline"
             outlined
-          ></v-text-field>
+          />
         </div>
         <div class="mt-1">
           <v-text-field
             placeholder="append-icon"
             append-icon="mdi-calendar-blank-outline"
             outlined
-          ></v-text-field>
+          />
         </div>
         <div class="mt-1 mb-1">
           <v-text-field
@@ -271,7 +270,7 @@
             persistent-hint
             append-icon="mdi-calendar-blank-outline"
             outlined
-          ></v-text-field>
+          />
         </div>
       </v-col>
       <v-col
@@ -283,7 +282,36 @@
           append-icon="mdi-calendar-blank-outline"
           outlined
           type="password"
-        ></v-text-field>
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col
+        cols="12"
+        lg="3"
+      >
+        <v-text-field
+          :ripple="false"
+          outlined
+          class="customInput"
+        >
+          <template slot="prepend">
+            <v-btn-toggle
+              v-model="toggle_exclusive"
+            >
+              <v-btn
+                :ripple="false"
+                color="btnInput"
+                text
+              >
+                <v-icon>mdi-format-align-left</v-icon>
+              </v-btn>
+              <div />
+
+            </v-btn-toggle>
+          </template>
+
+        </v-text-field>
       </v-col>
     </v-row>
   </v-container>

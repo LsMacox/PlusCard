@@ -22,3 +22,38 @@ body, *, .v-application > *, .v-application
       margin: 0 !important
       background: #EBF1FF !important
       border-radius: 12px 0px 0px 12px !important
+
+
+.customInput
+  height: 56px
+  &.v-input--is-focused
+    .theme--light.v-btn.btnInput--text
+      border-right: 2px solid #8E54E9 !important
+    .v-input__control .v-input__slot
+      border-color: #8E54E9 !important
+      color: #8E54E9 !important
+      caret-color: #8E54E9 !important
+  input
+    color: #2A2A34
+    font-weight: 500
+    font-size: 15px
+    line-height: 21px
+    padding-left: 57px
+  .v-input__prepend-outer
+    margin: 0
+    padding: 0
+    position: relative
+    right: -51px
+    top: 2px
+    z-index: 1000
+    width: 49px
+    .theme--light.v-btn.btnInput--text
+      outline: none
+      height: 52px
+      background-color: #EBF1FF !important
+      border-bottom-left-radius: 12px
+      border-top-left-radius: 12px
+      border: none
+      border-right: 2px solid #D7D7E0
+      width: 49px
+
