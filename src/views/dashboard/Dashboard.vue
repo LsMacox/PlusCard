@@ -296,19 +296,32 @@
           class="customInput"
         >
           <template slot="prepend">
-            <v-btn-toggle
-              v-model="toggle_exclusive"
-            >
-              <v-btn
-                :ripple="false"
-                color="btnInput"
-                text
-              >
-                <v-icon>mdi-format-align-left</v-icon>
-              </v-btn>
-              <div />
+            <v-menu top :offset-y="offset">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  :ripple="false"
+                  color="btnInput"
+                  text
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-img :src="currentCountry.icon" width="24px" contain></v-img>
+                </v-btn>
+              </template>
 
-            </v-btn-toggle>
+              <v-list>
+                <v-list-item
+                  v-for="(item, index) in items"
+                  :key="index"
+                  @click="changeCountry(item)"
+                >
+                  <v-list-item-icon>
+                    <v-img :src="item.icon"></v-img>
+                  </v-list-item-icon>
+                  <v-list-item-title style="cursor:pointer;">{{ item.text }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </template>
 
         </v-text-field>
@@ -318,14 +331,24 @@
 </template>
 
 <script>
-  export default {
-    name: 'DashboardDashboard',
+export default {
+  name: 'DashboardDashboard',
 
-    data () {
-      return {}
-    },
+  data() {
+    return {
+      items: [
+        {text: 'Russia', icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAACnCAMAAAAPIrEmAAAAD1BMVEX///8AOabVKx6qveGOMEuAx7gLAAAAnElEQVR4nO3PQQGAMADEsBvgX/Nk8GjiIBsAAAAAAAAAAAAAAAAA/3uzdrLUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1Iv2Ze3JUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvuvJNp/lJwZZQAAAAAElFTkSuQmCC  '},
+        {text: 'Finland', icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAR8AAACvCAMAAADzNCq+AAAAJ1BMVEX///8ANYAAIXjEydkAHXcAJ3vW2uSYor4ALX3Z3eakrcV1g6rJztwyDCYaAAABk0lEQVR4nO3bxw0DMRAEwZO3+ccrRdAAgX0Ip6oEluz/bNus6/mw4nIbvv/r9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2f9thbn9Os52Wpz/31Hn7AsO04ay3PN9Dw/Wnb4n/+jT5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fZ7zT7rzY9t9vdfnCY/WnTp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6tL31+QBWD13o5n7XDgAAAABJRU5ErkJggg=='},
+      ],
+      offset: true,
+      currentCountry: {text: 'Russia', icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAACnCAMAAAAPIrEmAAAAD1BMVEX///8AOabVKx6qveGOMEuAx7gLAAAAnElEQVR4nO3PQQGAMADEsBvgX/Nk8GjiIBsAAAAAAAAAAAAAAAAA/3uzdrLUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1Iv2Ze3JUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvuvJNp/lJwZZQAAAAAElFTkSuQmCC  '},
+    }
+  },
 
-    methods: {
-    },
-  }
+  methods: {
+    changeCountry(item) {
+      this.currentCountry = item;
+    }
+  },
+}
 </script>
