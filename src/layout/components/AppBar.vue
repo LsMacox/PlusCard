@@ -122,7 +122,7 @@
   import { VHover, VListItem } from 'vuetify/lib'
 
   // Utilities
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters } from 'vuex'
 
   export default {
     name: 'DashboardCoreAppBar',
@@ -175,7 +175,7 @@
     },
 
     methods: {
-      changeDrawer(drawer) {
+      changeDrawer (drawer) {
         this.$store.dispatch('app/changeDrawer', drawer)
       },
     },
