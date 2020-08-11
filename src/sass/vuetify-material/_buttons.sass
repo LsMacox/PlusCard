@@ -10,32 +10,99 @@
 .v-sheet button.v-btn.v-size--default:not(.v-btn--icon):not(.v-btn--fab)
   padding: 12px 30px !important
 
+
 .theme--light.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined)
-  background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%)
   padding: 16px 24px
-  border: none
+  font-family: Gilroy
+  font-style: normal
+  font-weight: 600
+  font-size: 15px
+  line-height: 21px
+  letter-spacing: 0.1px
   border-radius: 12px
-  color: #fff
+  width: 190px
+  height: 53px
+  border: none
+  outline: none
+  box-shadow: none
+  text-transform: capitalize
   &:hover
     background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%)
-    color: #fff
+    color: #FFFFFF
+  &.primary
+    background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%)
+    color: #FFFFFF
+  &.secondary
+    background-color: #EBF1FF !important
+    color: #4776E6 !important
+    &:hover
+      background: currentColor
 
-.v-btn.white
-  .v-btn__content
-    color: #999
+.theme--light.v-btn.v-btn--disabled:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined)
+  color: #D7D7E0
+  background-color: #F2F2F7
 
-.v-sheet .v-btn.v-size--large:not(.v-btn--icon):not(.v-btn--fab)
-  padding: 18px 36px !important
+.v-badge--dot .v-badge__badge
+  width: 6px !important
+  height: 6px !important
+  border-radius: 50%
 
-.v-btn--fab.v-size--small
-  height: 41px
-  width: 41px
+.theme--dark.v-btn.v-btn--round
+  background-color: #EBF1FF !important
+  color: #4776E6 !important
+  outline: none
+  border: none
+  box-shadow: none
+  text-align: center
+  font-weight: 600
+  font-size: 13px
+  line-height: 17px
+  &.primary
+    background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%) !important
+    color: #FFFFFF !important
+  &.neutral
+    background-color: #FFFFFF !important
+    border: 1px solid #F2F2F7
+    box-shadow: 0px 10px 23px -9px rgba(88, 93, 106, 0.5)
+    & .v-icon
+      font-size: 22px
+  &.v-size--x-small
+    width: 31px
+    height: 31px
+  &.v-size--small
+    width: 32px
+    height: 32px
+  &.v-size--default
+    width: 40px
+    height: 40px
+  &.v-size--large
+    width: 45px
+    height: 45px
+
+
+
+
+
+.v-application .v-btn.secondary--text
+  background-color: transparent !important
+
+
+.v-btn.secondary--text
+  background: transparent !important
+  color: #4776E6 !important
+  text-transform: capitalize !important
+  font-weight: 600 !important
+  font-size: 13px !important
+  line-height: 17px  !important
+  &:hover, &:active, &:focus
+    background: transparent
+
 
 .v-btn:not(.v-btn--text):not(.v-btn--outlined):hover:before
   opacity: 0
 
 .v-btn:not(.v-btn--text):not(.v-btn--outlined):focus:before
-    opacity: 0
+  opacity: 0
 
 .v-btn.v-size--default:not(.v-btn--icon):not(.v-btn--fab),
 .v-btn.v-size--large:not(.v-btn--icon):not(.v-btn--fab)
@@ -52,5 +119,7 @@
     opacity: 1
 
 .v-btn-toggle > .v-btn.v-size--default
-   height: inherit
+  height: inherit
 
+.v-btn:before
+  background-color: transparent

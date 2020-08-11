@@ -1,0 +1,11 @@
+
+//mixin for generate m$x-$i and p$x-$i classes
+@mixin list-loop($className, $styleName)
+  $max: 10
+  $offset: 1
+  $unit: 'rem'
+  $i: 0
+  @while $i <= $max
+    #{'.v-application ' + $className + $i}
+      #{$styleName}: #{$i + $unit + ' !important'}
+    $i: $i + $offset

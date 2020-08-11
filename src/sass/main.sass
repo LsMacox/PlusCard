@@ -1,2 +1,24 @@
+@import typography
+@import spaces
+
 body, *, .v-application > *, .v-application
-  font-family: "Gilroy", serif
+  font-family: "Gilroy", sans-serif
+
+.v-btn:not(.v-btn--round).v-size--default
+  min-width: 10px !important
+
+.customTextField .v-input__prepend-inner
+    padding: 0 !important
+    margin: 0 !important
+    width: 49px !important
+    z-index: 20
+    top: 1px
+    left: 1px
+    height: 54px !important
+    .v-btn.v-size--default:not(.v-btn--icon):not(.v-btn--fab), .v-btn.v-size--large:not(.v-btn--icon):not(.v-btn--fab).input-btn
+      width: 49px !important
+      height: 54px !important
+      padding: 0 !important
+      margin: 0 !important
+      background: #EBF1FF !important
+      border-radius: 12px 0px 0px 12px !important
