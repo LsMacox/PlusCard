@@ -51,14 +51,14 @@ const actions = {
         const { data } = response
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject(new Error('Verification failed, please Login again.'))
         }
 
         const { roles, name, avatar, introduction } = data
 
         // roles must be a non-empty array
         if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
+          reject(new Error('getInfo: roles must be a non-null array!'))
         }
 
         commit('SET_ROLES', roles)
@@ -103,8 +103,7 @@ const actions = {
   },
 
   // dynamically modify permissions
-  changeRoles ({ commit, dispatch }, role) {
-    return new Promise(async resolve => {
+  async changeRoles ({ commit, dispatch }, role) {
       const token = role + '-token'
 
       commit('SET_TOKEN', token)
@@ -122,9 +121,6 @@ const actions = {
 
       // reset visited views and cached views
       dispatch('tagsView/delAllViews', null, { root: true })
-
-      resolve()
-    })
   },
 }
 

@@ -307,10 +307,8 @@
                 <v-icon>mdi-format-align-left</v-icon>
               </v-btn>
               <div />
-
             </v-btn-toggle>
           </template>
-
         </v-text-field>
       </v-col>
     </v-row>
