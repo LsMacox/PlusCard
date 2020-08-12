@@ -66,6 +66,10 @@ export default new Router({
       hidden: true,
     },
     {
+      path: '*',
+      redirect: '/404',
+    },
+    {
       path: '/',
       component: Layout,
       redirect: '/dashboard',

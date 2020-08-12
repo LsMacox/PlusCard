@@ -11,7 +11,7 @@
   padding: 12px 30px !important
 
 
-.theme--light.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined)
+.theme--light.v-btn:not(.v-btn--flat):not(.v-btn--text):not(.v-btn--outlined):not(.v-btn--fab)
   padding: 16px 24px
   font-family: Gilroy
   font-style: normal
@@ -53,7 +53,7 @@
   height: 6px !important
   border-radius: 50%
 
-.theme--dark.v-btn.v-btn--round
+.theme--light.v-btn.v-btn--round.v-btn--fab
   background-color: #EBF1FF !important
   color: #4776E6 !important
   outline: none
@@ -63,6 +63,7 @@
   font-weight: 600
   font-size: 13px
   line-height: 17px
+  border-radius: 50% !important
   &.primary
     background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%) !important
     color: #FFFFFF !important
@@ -73,17 +74,17 @@
     & .v-icon
       font-size: 22px
   &.v-size--x-small
-    width: 31px
-    height: 31px
+    width: 31px !important
+    height: 31px !important
   &.v-size--small
-    width: 32px
-    height: 32px
+    width: 32px !important
+    height: 32px !important
   &.v-size--default
-    width: 40px
-    height: 40px
+    width: 40px !important
+    height: 40px !important
   &.v-size--large
-    width: 45px
-    height: 45px
+    width: 45px !important
+    height: 45px !important
 
 
 
@@ -129,3 +130,6 @@
 
 .v-btn:before
   background-color: transparent
+
+.logoBtn
+  padding: 0 !important
