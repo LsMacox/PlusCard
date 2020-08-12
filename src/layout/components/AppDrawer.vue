@@ -61,13 +61,12 @@
               />
             </v-btn>
           </v-badge>
-
         </v-col>
         <v-spacer v-if="!drawer" />
         <v-col
+          v-if="!drawer"
           cols="3"
           style="padding: 34px 12px 34px 12px"
-          v-if="!drawer"
         >
           <v-badge
             dot
@@ -154,7 +153,9 @@
         <v-list-item-title style="color: #70707D;margin:0; padding:0;">
           Константин К.
         </v-list-item-title>
-        <v-list-item-action style="color: rgb(0, 209, 93);margin: 0px;padding: 0px;min-width: 45px;width: 45px;font-size: 13px;font-weight: 600;">
+        <v-list-item-action
+          style="color: rgb(0, 209, 93);margin: 0px;padding: 0px;min-width: 45px;width: 45px;font-size: 13px;font-weight: 600;"
+        >
           9 999 ₽
         </v-list-item-action>
       </v-list-item>
@@ -191,7 +192,10 @@
         @click="$router.push('/logout')"
       >
         <v-list-item-icon>
-          <v-icon color="#B5B5C4" style="transform: rotate(180deg)">
+          <v-icon
+            color="#B5B5C4"
+            style="transform: rotate(180deg)"
+          >
             mdi-exit-to-app
           </v-icon>
         </v-list-item-icon>
@@ -206,176 +210,182 @@
         @click="$router.push('/dashboard#exit')"
       >
         <v-list-item-icon>
-          <v-icon color="#B5B5C4" style="transform: rotate(180deg)">
+          <v-icon
+            color="#B5B5C4"
+            style="transform: rotate(180deg)"
+          >
             mdi-exit-to-app
           </v-icon>
         </v-list-item-icon>
       </v-list-item>
-
     </template>
   </v-navigation-drawer>
 </template>
 
 <script>
 // Utilities
-import {
-  mapState,
-} from 'vuex'
+  import {
+    mapState,
+  } from 'vuex'
 
-export default {
-  name: 'DashboardCoreDrawer',
-  props: {
-    expandOnHover: {
-      type: Boolean,
-      default: false,
-    },
-  },
-
-  data: () => ({
-    selectItems: ['ООО Ромашка', 'ООО НМТ'],
-    selectedItem: 'ООО Ромашка',
-    item: 1,
-    mobileDevice: false,
-    items: [
-      {
-        icon: 'mdi-poll',
-        title: 'Общая информация',
-        to: '#',
-      },
-      {
-        icon: 'mdi-wallet-outline',
-        title: 'Программа лояльности',
-        to: '##',
-      },
-      {
-        icon: 'mdi-gift-outline',
-        title: 'Сертификаты',
-        to: '###',
-      },
-      {
-        icon: 'mdi-filter-outline',
-        title: 'CRM',
-        to: '####',
-      },
-      {
-        icon: 'mdi-bullhorn-outline',
-        title: 'Рассылки',
-        to: '#####',
-      },
-      {
-        icon: 'mdi-message-outline',
-        title: 'Чаты',
-        to: '######',
-      },
-      {
-        icon: 'mdi-cog-outline',
-        title: 'Настройки компаний',
-        to: '#######',
-      },
-    ],
-  }),
-
-  computed: {
-    ...mapState(['barColor', 'barImage']),
-    drawer: {
-      get () {
-        return this.$store.getters.drawer
-      },
-      set (val) {
-        this.$store.dispatch('app/changeDrawer', val)
+  export default {
+    name: 'DashboardCoreDrawer',
+    props: {
+      expandOnHover: {
+        type: Boolean,
+        default: false,
       },
     },
-    computedItems () {
-      return this.items.map(this.mapItem)
-    },
-    profile () {
-      return {
-        avatar: true,
-        title: this.$t('avatar'),
+    data: () => ({
+      selectItems: ['ООО Ромашка', 'ООО НМТ'],
+      selectedItem: 'ООО Ромашка',
+      item: 1,
+      mobileDevice: false,
+      items: [
+        {
+          icon: 'mdi-poll',
+          title: 'Общая информация',
+          to: '#',
+        },
+        {
+          icon: 'mdi-wallet-outline',
+          title: 'Программа лояльности',
+          to: '##',
+        },
+        {
+          icon: 'mdi-gift-outline',
+          title: 'Сертификаты',
+          to: '###',
+        },
+        {
+          icon: 'mdi-filter-outline',
+          title: 'CRM',
+          to: '####',
+        },
+        {
+          icon: 'mdi-bullhorn-outline',
+          title: 'Рассылки',
+          to: '#####',
+        },
+        {
+          icon: 'mdi-message-outline',
+          title: 'Чаты',
+          to: '######',
+        },
+        {
+          icon: 'mdi-cog-outline',
+          title: 'Настройки компаний',
+          to: '#######',
+        },
+      ],
+    }),
+    computed: {
+      ...mapState(['barColor', 'barImage']),
+      drawer: {
+        get () {
+          return this.$store.getters.drawer
+        },
+        set (val) {
+          this.$store.dispatch('app/changeDrawer', val)
+        },
+      },
+      computedItems () {
+        return this.items.map(this.mapItem)
+      },
+      profile () {
+        return {
+          avatar: true,
+          title: this.$t('avatar'),
+        }
       }
+      ,
     },
-  },
-
-  methods: {
-    mapItem (item) {
-      return {
-        ...item,
-        children: item.children ? item.children.map(this.mapItem) : undefined,
-        title: this.$t(item.title),
+    methods: {
+      mapItem (item) {
+        return {
+          ...item,
+          children: item.children ? item.children.map(this.mapItem) : undefined,
+          title: this.$t(item.title),
+        }
       }
-    },
-  },
-}
+      ,
+    }
+    ,
+  }
 </script>
 
 <style lang="sass">
 @import '~vuetify/src/styles/tools/_rtl.sass'
 
 #core-navigation-drawer
-  box-shadow: inset 0px 0px 44px rgba(19, 31, 95, 0.13)
-  .v-list-group__header.v-list-item--active:before
-    opacity: .24
+    box-shadow: inset 0px 0px 44px rgba(19, 31, 95, 0.13)
 
-  .v-navigation-drawer__append
-    .appendIcon
-      background: #F7F7FC !important
+    .v-list-group__header.v-list-item--active:before
+        opacity: .24
 
-  .v-list-item
-    &__icon--text,
-    &__icon:first-child
-      justify-content: center
-      text-align: center
-      width: 20px
-      color: #B5B5C4 !important
-    &__title
-      font-weight: 500
-      font-size: 15px
-      line-height: 21px
-      color: #B5B5C4
-      +ltr()
-        margin-right: 24px
-        margin-left: 12px !important
+    .v-navigation-drawer__append
+        .appendIcon
+            background: #F7F7FC !important
 
-      +rtl()
-        margin-left: 24px
-        margin-right: 12px !important
-  a.appendIcon.v-list-item.v-list-item--link.theme--light
-    & .v-list-item__icon
-      margin-left: 0 !important
-      i.v-icon
-        color: #B5B5C4 !important
-
-  .v-list--dense
     .v-list-item
-      &__icon--text,
-      &__icon:first-child
-        margin-top: 10px
+        &__icon--text,
+        &__icon:first-child
+            justify-content: center
+            text-align: center
+            width: 20px
+            color: #B5B5C4 !important
 
-  .v-list-group--sub-group
-    .v-list-item
-      +ltr()
-        padding-left: 8px
+        &__title
+            font-weight: 500
+            font-size: 15px
+            line-height: 21px
+            color: #B5B5C4
+            +ltr()
+                margin-right: 24px
+                margin-left: 12px !important
 
-      +rtl()
-        padding-right: 8px
+            +rtl()
+                margin-left: 24px
+                margin-right: 12px !important
 
-    .v-list-group__header
-      +ltr()
-        padding-right: 0
+    a.appendIcon.v-list-item.v-list-item--link.theme--light
+        & .v-list-item__icon
+            margin-left: 0 !important
 
-      +rtl()
-        padding-right: 0
+            i.v-icon
+                color: #B5B5C4 !important
 
-      .v-list-item__icon--text
-        margin-top: 19px
-        order: 0
+    .v-list--dense
+        .v-list-item
+            &__icon--text,
+            &__icon:first-child
+                margin-top: 10px
 
-      .v-list-group__header__prepend-icon
-        order: 2
+    .v-list-group--sub-group
+        .v-list-item
+            +ltr()
+                padding-left: 8px
 
-        +ltr()
-          margin-right: 8px
+            +rtl()
+                padding-right: 8px
 
-        +rtl()
-          margin-left: 8px
+        .v-list-group__header
+            +ltr()
+                padding-right: 0
+
+            +rtl()
+                padding-right: 0
+
+            .v-list-item__icon--text
+                margin-top: 19px
+                order: 0
+
+            .v-list-group__header__prepend-icon
+                order: 2
+
+                +ltr()
+                    margin-right: 8px
+
+                +rtl()
+                    margin-left: 8px
 </style>

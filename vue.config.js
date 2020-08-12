@@ -6,10 +6,12 @@ function resolve (dir) {
 }
 
 const name = defaultSettings.title || 'vue Element Admin' // page title
+const port = process.env.port || process.env.npm_config_port || 9527 // dev port
 
 module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   devServer: {
+    port: port,
     disableHostCheck: true,
     compress: true,
     historyApiFallback: true,
