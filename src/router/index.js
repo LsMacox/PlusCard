@@ -72,10 +72,10 @@ export default new Router({
     {
       path: '/',
       component: Layout,
-      redirect: '/dashboard',
+      redirect: '/dashboard#',
       children: [
         {
-          path: 'dashboard',
+          path: 'dashboard#',
           component: () => import('@/views/dashboard/Dashboard'),
           name: 'Dashboard',
           meta: { title: 'Dashboard', icon: 'dashboard' },
