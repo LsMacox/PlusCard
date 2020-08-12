@@ -296,9 +296,7 @@
           class="customInput"
         >
           <template slot="prepend">
-            <v-btn-toggle
-              v-model="toggle_exclusive"
-            >
+            <v-btn-toggle>
               <v-btn
                 :ripple="false"
                 color="btnInput"

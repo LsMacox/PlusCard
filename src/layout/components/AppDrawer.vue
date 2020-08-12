@@ -71,9 +71,9 @@
     <template v-slot:append>
       <base-item
         :item="{
-          title: $t('upgrade'),
+          title: 'TODO',
           icon: 'mdi-package-up',
-          to: '/upgrade',
+          to: '/',
         }"
       />
     </template>
@@ -101,12 +101,12 @@
         {
           icon: 'mdi-view-dashboard',
           title: 'dashboard',
-          to: '/',
+          to: '/dashboard',
         },
         {
           icon: 'mdi-account',
           title: 'user',
-          to: '/pages/user',
+          to: '/page/todo',
         },
 
       ],
