@@ -76,6 +76,12 @@ export default new Router({
           name: 'Dashboard',
           meta: { auth: true, title: 'Dashboard', icon: 'dashboard' },
         },
+        {
+          path: 'master',
+          component: () => import('@/views/master/Master'),
+          name: 'Master',
+          meta: { auth: true, title: 'Master', icon: 'master' },
+        },
         componentsRouter,
       ],
     },

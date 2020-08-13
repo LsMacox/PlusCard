@@ -51,6 +51,7 @@
               :ripple="false"
               color="primary"
               style="width: 223px"
+              @click="$router.push('/master')"
             >
               <v-icon left>
                 mdi-plus-circle-outline
