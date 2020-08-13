@@ -165,6 +165,7 @@
         v-if="!drawer"
         class="appendIcon"
         @click="drawer = !drawer"
+        style="background: #F7F7FC !important"
       >
         <v-list-item-icon>
           <v-icon color="#B5B5C4">
@@ -180,6 +181,7 @@
         v-else
         class="appendIcon"
         @click="drawer = !drawer"
+        style="background: #F7F7FC !important"
       >
         <v-list-item-icon>
           <v-icon color="#B5B5C4">
@@ -192,6 +194,7 @@
         v-if="!drawer"
         class="appendIcon"
         @click="$router.push('/logout')"
+        style="background: #F7F7FC !important"
       >
         <v-list-item-icon>
           <v-icon
@@ -204,12 +207,18 @@
         <v-list-item-title>
           {{ $t('exit') }}
         </v-list-item-title>
+        <v-list-item-action
+          style="color: rgb(0, 209, 93);margin: 0px;padding: 0px;min-width: 45px;width: 45px;font-size: 13px;font-weight: 600; position: relative; z-index:10000"
+        >
+          <v-icon color="#B5B5C4">mdi-help-circle-outline</v-icon>
+        </v-list-item-action>
       </v-list-item>
 
       <v-list-item
         v-else
         class="appendIcon"
         @click="$router.push('/dashboard#exit')"
+        style="background: #F7F7FC !important"
       >
         <v-list-item-icon>
           <v-icon
@@ -247,7 +256,7 @@
         {
           icon: 'mdi-poll',
           title: 'Общая информация',
-          to: '#',
+          to: '/dashboard',
         },
         {
           icon: 'mdi-wallet-outline',
@@ -278,6 +287,11 @@
           icon: 'mdi-cog-outline',
           title: 'Настройки компаний',
           to: '#######',
+        },
+        {
+          icon: 'mdi-sitemap',
+          title: 'UI_KIT',
+          to: '/ui_kit',
         },
       ],
     }),
@@ -327,9 +341,8 @@
     .v-list-group__header.v-list-item--active:before
         opacity: .24
 
-    .v-navigation-drawer__append
-        .appendIcon
-            background: #F7F7FC !important
+    .appendIcon.v-list-item.v-list-item--link.theme--light
+        background: #F7F7FC !important
 
     .v-list-item
         &__icon--text,
@@ -353,6 +366,7 @@
                 margin-right: 12px !important
 
     a.appendIcon.v-list-item.v-list-item--link.theme--light
+        background: #F7F7FC !important
         & .v-list-item__icon
             margin-left: 0 !important
 

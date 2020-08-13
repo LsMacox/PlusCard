@@ -68,7 +68,7 @@ export default new Router({
     {
       path: '/',
       component: Layout,
-      redirect: 'dashboard',
+      redirect: '/components',
       children: [
         {
           path: 'dashboard',

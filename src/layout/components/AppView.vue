@@ -2,7 +2,6 @@
   <v-main>
     <router-view />
 
-    <app-footer />
   </v-main>
 </template>
 
@@ -11,7 +10,6 @@
     name: 'DashboardCoreView',
 
     components: {
-      AppFooter: () => import('./AppFooter'),
     },
   }
 </script>
