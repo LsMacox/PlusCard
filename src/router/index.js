@@ -46,9 +46,20 @@ export default new Router({
     //   ]
     // },
     {
-      path: '/login/email',
+      path: '/login',
       component: () => import('@/views/login/index'),
+      children: [
+        {
+          path: '',
+          redirect: 'email',
+        },
+        {
+          path: 'email',
+          component: () => import('@/views/login/index'),
+        },
+      ],
     },
+
     // {
     //   path: "/auth-redirect",
     //   component: () => import("@/views/login/auth-redirect"),
@@ -88,6 +99,4 @@ export default new Router({
   ],
 })
 
-export function resetRouter () {
-
-}
+export function resetRouter () {}

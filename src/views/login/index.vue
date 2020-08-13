@@ -114,10 +114,7 @@
         try {
           this.loading = true
 
-          await this.$store.dispatch('auth/emailLogin', {
-            user: user,
-            session: this.$session
-          } )
+          await this.$store.dispatch('auth/emailLogin', user)
           this.afterLoginSuccess()
         } finally {
           this.loading = false
