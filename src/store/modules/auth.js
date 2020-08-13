@@ -2,6 +2,7 @@ import ApiService from '@/api/api-client'
 
 // import VueSession from 'vue-session'
 import FP2 from 'fingerprintjs2'
+import VueSession from '@/utils/session'
 
 import router from '@/router'
 
@@ -19,71 +20,81 @@ const mutations = {
     state.device = payload
   },
   SET_AUTH: (state, payload) => {
+    VueSession.destroy()
     if (payload) {
       state.merchants = payload.merchants
+      VueSession.start()
+      VueSession.set('access_token', payload.access_token)
+      VueSession.set('refresh_token', payload.refresh_token)
       if (payload.merchant) {
         state.merchant = payload.merchant
         state.merchant_id = payload.merchant.id
+        VueSession.set('merchant_id', state.merchant_id)
       }
       state.isAuth = true
     } else {
       state.isAuth = false
     }
   },
-
 }
 
 const actions = {
   async InitDevice ({ commit }) {
-        let murmur
-        const options = {}
-        await FP2.getPromise(options).then(function (components) {
-            const values = components.map(function (component) {
-                return component.value
-            })
-            murmur = FP2.x64hash128(values.join(''), 31)
-        })
+    let murmur
+    const options = {}
+    await FP2.getPromise(options).then(function (components) {
+      const values = components.map(function (component) {
+        return component.value
+      })
+      murmur = FP2.x64hash128(values.join(''), 31)
+    })
 
-        commit('SET_DEVICE', {
-          id: murmur,
-          token: murmur,
-          type: 'web',
-        })
+    commit('SET_DEVICE', {
+      id: murmur,
+      token: murmur,
+      type: 'web',
+    })
   },
 
   // EMAIL LOGIN
-  async emailLogin ({ commit, state }, {user, session}) {
+  async emailLogin ({ commit, state }, user) {
     try {
-      const result = await ApiService.post('/api-cabinet/merchant/login/email/signin', user)
+      const result = await ApiService.post(
+        '/api-cabinet/merchant/login/email/signin',
+        user,
+      )
       commit('SET_AUTH', result)
-      session.start()
-      session.set('access_token', result.access_token)
-      session.set('refresh_token', result.refresh_token)
-      session.set('merchant_id', state.merchant_id)
     } catch (error) {
       commit('SET_AUTH', null)
-        throw error
+      throw error
     }
-},
-
-  // user logout
-  logout ({ commit, state, dispatch }) {
-
   },
 
-  async RefreshToken ({ commit, state, dispatch }, {session}) {
+  // user logout
+  async logout ({ commit, state, dispatch }) {
+    try {
+      await ApiService.post('/api/logout')
+    // eslint-disable-next-line no-useless-catch
+    } catch (error) {
+      throw error
+    } finally {
+      commit('SET_AUTH', null)
+    }
+  },
+
+  async RefreshToken ({ commit, state, dispatch }) {
     try {
       let refreshToken = null
       let deviceId = null
 
-      if (session.exists()) {
-        refreshToken = session.get('refresh_token')
+      if (VueSession.exists()) {
+        refreshToken = VueSession.get('refresh_token')
         deviceId = state.device.id
       }
       const result = await ApiService.post('/api/login/refres', {
         refresh_token: refreshToken,
         device_id: deviceId,
-      })
+      }, { errorHandle: false })
 
       commit('SET_AUTH', result)
     } catch (error) {
@@ -92,18 +103,9 @@ const actions = {
       router.push('/login/email')
     }
   },
-
 }
 
-const getters = {
-  access_token (state) {
-    if (this._vm.$session.exists()) {
-      return this._vm.$session.get('access_token')
-    } else {
-      return null
-    }
-  },
-}
+const getters = {}
 export default {
   namespaced: true,
   state,

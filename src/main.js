@@ -24,7 +24,7 @@ import './AuthGuard'
 
 import * as filters from './filters'
 
-import VueSession from 'vue-session'
+import VueSession from './utils/session'
 
 import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'

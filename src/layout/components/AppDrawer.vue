@@ -90,9 +90,7 @@
       </v-row>
     </v-container>
     <!--    header-end-->
-    <v-divider
-      style="border-color: #F2F2F7;"
-    />
+    <v-divider style="border-color: #F2F2F7;" />
     <div class="companySelectWrapper">
       <v-select
         v-model="selectedItem"
@@ -104,9 +102,7 @@
         </v-icon>
       </v-select>
     </div>
-    <v-divider
-      style="border-color: #F2F2F7;"
-    />
+    <v-divider style="border-color: #F2F2F7;" />
     <v-list
       expand
       nav
@@ -115,20 +111,16 @@
       <!-- Style cascading bug  -->
       <!-- https://github.com/vuetifyjs/vuetify/pull/8574 -->
       <div />
-      <v-list-item-group
-        color="primary"
-      >
+      <v-list-item-group color="primary">
         <v-list-item
           v-for="(item, index) in items"
           :key="index"
           :ripple="false"
-          :class="{'v-list-item--active': $route.path.includes(item.to)}"
+          :class="{ 'v-list-item--active': $route.path.includes(item.to) }"
           @click="$router.push(item.to)"
         >
           <v-list-item-icon>
-            <v-icon>
-              {{ item.icon }}
-            </v-icon>
+            <v-icon>{{ item.icon }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title style="cursor:pointer;">
             {{ item.title }}
@@ -164,24 +156,22 @@
       <v-list-item
         v-if="!drawer"
         class="appendIcon"
-        @click="drawer = !drawer"
         style="background: #F7F7FC !important"
+        @click="drawer = !drawer"
       >
         <v-list-item-icon>
           <v-icon color="#B5B5C4">
             mdi-arrow-left
           </v-icon>
         </v-list-item-icon>
-        <v-list-item-title>
-          {{ $t('turn_off') }}
-        </v-list-item-title>
+        <v-list-item-title>{{ $t("turn_off") }}</v-list-item-title>
       </v-list-item>
 
       <v-list-item
         v-else
         class="appendIcon"
-        @click="drawer = !drawer"
         style="background: #F7F7FC !important"
+        @click="drawer = !drawer"
       >
         <v-list-item-icon>
           <v-icon color="#B5B5C4">
@@ -193,8 +183,9 @@
       <v-list-item
         v-if="!drawer"
         class="appendIcon"
-        @click="$router.push('/logout')"
         style="background: #F7F7FC !important"
+        :disabled="exitRequest"
+        @click="exitClick"
       >
         <v-list-item-icon>
           <v-icon
@@ -204,21 +195,22 @@
             mdi-exit-to-app
           </v-icon>
         </v-list-item-icon>
-        <v-list-item-title>
-          {{ $t('exit') }}
-        </v-list-item-title>
+        <v-list-item-title>{{ $t("exit") }}</v-list-item-title>
         <v-list-item-action
           style="color: rgb(0, 209, 93);margin: 0px;padding: 0px;min-width: 45px;width: 45px;font-size: 13px;font-weight: 600; position: relative; z-index:10000"
         >
-          <v-icon color="#B5B5C4">mdi-help-circle-outline</v-icon>
+          <v-icon color="#B5B5C4">
+            mdi-help-circle-outline
+          </v-icon>
         </v-list-item-action>
       </v-list-item>
 
       <v-list-item
         v-else
         class="appendIcon"
-        @click="$router.push('/dashboard#exit')"
         style="background: #F7F7FC !important"
+        :disabled="exitRequest"
+        @click="exitClick()"
       >
         <v-list-item-icon>
           <v-icon
@@ -235,9 +227,7 @@
 
 <script>
 // Utilities
-  import {
-    mapState,
-  } from 'vuex'
+  import { mapState } from 'vuex'
 
   export default {
     name: 'DashboardCoreDrawer',
@@ -252,6 +242,7 @@
       selectedItem: 'ООО Ромашка',
       item: 1,
       mobileDevice: false,
+      exitRequest: false,
       items: [
         {
           icon: 'mdi-poll',
@@ -313,8 +304,7 @@
           avatar: true,
           title: this.$t('avatar'),
         }
-      }
-      ,
+      },
     },
     methods: {
       mapItem (item) {
@@ -323,10 +313,15 @@
           children: item.children ? item.children.map(this.mapItem) : undefined,
           title: this.$t(item.title),
         }
-      }
-      ,
-    }
-    ,
+      },
+      exitClick () {
+        this.exitRequest = true
+        this.$store.dispatch('auth/logout').finally(() => {
+          this.exitRequest = false
+          this.$router.push('/login')
+        })
+      },
+    },
   }
 </script>
 
@@ -339,71 +334,71 @@
     overflow: hidden
 
     .v-list-group__header.v-list-item--active:before
-        opacity: .24
+      opacity: .24
 
     .appendIcon.v-list-item.v-list-item--link.theme--light
-        background: #F7F7FC !important
+      background: #F7F7FC !important
 
     .v-list-item
-        &__icon--text,
-        &__icon:first-child
-            justify-content: center
-            text-align: center
-            width: 20px
-            color: #B5B5C4 !important
+      &__icon--text,
+      &__icon:first-child
+        justify-content: center
+        text-align: center
+        width: 20px
+        color: #B5B5C4 !important
 
         &__title
-            font-weight: 500
-            font-size: 15px
-            line-height: 21px
-            color: #B5B5C4
-            +ltr()
-                margin-right: 24px
-                margin-left: 12px !important
+          font-weight: 500
+          font-size: 15px
+          line-height: 21px
+          color: #B5B5C4
+          +ltr()
+          margin-right: 24px
+          margin-left: 12px !important
 
-            +rtl()
-                margin-left: 24px
-                margin-right: 12px !important
+          +rtl()
+          margin-left: 24px
+          margin-right: 12px !important
 
     a.appendIcon.v-list-item.v-list-item--link.theme--light
-        background: #F7F7FC !important
-        & .v-list-item__icon
-            margin-left: 0 !important
+      background: #F7F7FC !important
+      & .v-list-item__icon
+        margin-left: 0 !important
 
-            i.v-icon
-                color: #B5B5C4 !important
+        i.v-icon
+          color: #B5B5C4 !important
 
     .v-list--dense
-        .v-list-item
-            &__icon--text,
-            &__icon:first-child
-                margin-top: 10px
+      .v-list-item
+        &__icon--text,
+        &__icon:first-child
+          margin-top: 10px
 
     .v-list-group--sub-group
-        .v-list-item
-            +ltr()
-                padding-left: 8px
+      .v-list-item
+        +ltr()
+        padding-left: 8px
 
-            +rtl()
-                padding-right: 8px
+        +rtl()
+        padding-right: 8px
 
         .v-list-group__header
-            +ltr()
-                padding-right: 0
+          +ltr()
+          padding-right: 0
 
-            +rtl()
-                padding-right: 0
+          +rtl()
+          padding-right: 0
 
-            .v-list-item__icon--text
-                margin-top: 19px
-                order: 0
+          .v-list-item__icon--text
+            margin-top: 19px
+            order: 0
 
             .v-list-group__header__prepend-icon
-                order: 2
+              order: 2
 
-                +ltr()
-                    margin-right: 8px
+              +ltr()
+              margin-right: 8px
 
-                +rtl()
-                    margin-left: 8px
+              +rtl()
+              margin-left: 8px
 </style>
