@@ -1,5 +1,9 @@
 <template>
-  <router-view />
+  <div>
+    <vue-progress-bar />
+    <notifications group="api" />
+    <router-view />
+  </div>
 </template>
 
 <script>
