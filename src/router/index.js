@@ -45,11 +45,10 @@ export default new Router({
     //     }
     //   ]
     // },
-    // {
-    //   path: "/login",
-    //   component: () => import("@/views/login/index"),
-    //   hidden: true
-    // },
+    {
+      path: '/login/email',
+      component: () => import('@/views/login/index'),
+    },
     // {
     //   path: "/auth-redirect",
     //   component: () => import("@/views/login/auth-redirect"),
@@ -69,12 +68,13 @@ export default new Router({
       path: '/',
       component: Layout,
       redirect: '/dashboard',
+      meta: { auth: true },
       children: [
         {
           path: 'dashboard',
           component: () => import('@/views/dashboard/Dashboard'),
           name: 'Dashboard',
-          meta: { title: 'Dashboard', icon: 'dashboard' },
+          meta: { auth: true , title: 'Dashboard', icon: 'dashboard' },
         },
         componentsRouter,
       ],

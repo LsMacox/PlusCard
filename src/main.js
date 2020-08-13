@@ -20,12 +20,35 @@ import './plugins/base'
 import vuetify from './plugins/vuetify'
 import i18n from './i18n'
 
-// import './permission' // permission control
-import './utils/error-log' // error log
+import './AuthGuard'
 
-import * as filters from './filters' // global filters
+import * as filters from './filters'
+
+import VueSession from 'vue-session'
+
+import VueProgressBar from 'vue-progressbar'
+import Notifications from 'vue-notification'
+
+Vue.use(Notifications)
+
+const options = {
+  // color: '#bffaf3',
+  // failedColor: '#874b4b',
+  // thickness: '5px',
+  // transition: {
+  //   speed: '0.2s',
+  //   opacity: '0.6s',
+  //   termination: 300
+  // },
+  // autoRevert: true,
+  location: 'top',
+  inverse: false,
+}
+
+Vue.use(VueProgressBar, options)
 
 Vue.config.productionTip = false
+Vue.use(VueSession)
 
 // register global utility filters
 Object.keys(filters).forEach(key => {
