@@ -7,6 +7,7 @@
     <v-row>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div style="padding:10px;">
@@ -68,6 +69,7 @@
       </v-col>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div class="mt-1">
@@ -110,6 +112,7 @@
 
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div class="mt-1">
@@ -146,6 +149,7 @@
 
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div class="mt-1">
@@ -226,6 +230,7 @@
     <v-row>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <v-text-field
@@ -235,6 +240,7 @@
       </v-col>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div>
@@ -263,6 +269,7 @@
       </v-col>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <v-text-field
@@ -276,6 +283,7 @@
     <v-row>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <v-text-field
@@ -327,6 +335,7 @@
       </v-col>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <v-select

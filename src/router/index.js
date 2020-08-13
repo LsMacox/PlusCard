@@ -66,16 +66,12 @@ export default new Router({
       hidden: true,
     },
     {
-      path: '*',
-      redirect: '/404',
-    },
-    {
       path: '/',
       component: Layout,
-      redirect: '/dashboard#',
+      redirect: 'dashboard',
       children: [
         {
-          path: 'dashboard#',
+          path: 'dashboard',
           component: () => import('@/views/dashboard/Dashboard'),
           name: 'Dashboard',
           meta: { title: 'Dashboard', icon: 'dashboard' },

@@ -22,6 +22,7 @@
             small
             text
             class="logoBtn"
+            @click="drawer = !drawer"
           >
             <v-img
               src="@/assets/logo_77x32.svg"
@@ -53,6 +54,7 @@
                   min-width: 32px;
                   height: 32px;
               "
+              @click="drawer = !drawer"
             >
               <v-img
                 src="@/assets/logo_32x32.svg"
@@ -318,7 +320,9 @@
 @import '~vuetify/src/styles/tools/_rtl.sass'
 
 #core-navigation-drawer
-    box-shadow: inset 0px 0px 44px rgba(19, 31, 95, 0.13)
+  box-shadow: inset 0px 0px 44px rgba(19, 31, 95, 0.13)
+  .v-navigation-drawer__content
+    overflow: hidden
 
     .v-list-group__header.v-list-item--active:before
         opacity: .24
