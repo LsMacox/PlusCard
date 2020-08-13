@@ -37,9 +37,11 @@
   "tim": "Creative Tim",
   "timeline": "Timeline",
   "typography": "Typography",
-  "upgrade": "Upgrade To PRO",
+  "upgrade": "Перейти на PRO тариф",
   "user": "User Profile",
   "vforms": "Validation Forms",
   "widgets": "Widgets",
-  "wizard": "Wizard"
+  "wizard": "Wizard",
+  "exit": "Выход",
+  "turn_off": "Свернуть"
 }

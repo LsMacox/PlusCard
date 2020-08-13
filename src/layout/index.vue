@@ -1,7 +1,5 @@
 <template>
   <v-app>
-    <app-bar />
-
     <app-drawer />
 
     <app-view />
@@ -13,7 +11,6 @@
     name: 'DashboardIndex',
 
     components: {
-      AppBar: () => import('./components/AppBar'),
       AppDrawer: () => import('./components/AppDrawer'),
       AppView: () => import('./components/AppView'),
     },

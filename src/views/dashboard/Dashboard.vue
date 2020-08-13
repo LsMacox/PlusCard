@@ -7,6 +7,7 @@
     <v-row>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div style="padding:10px;">
@@ -68,6 +69,7 @@
       </v-col>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div class="mt-1">
@@ -110,6 +112,7 @@
 
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div class="mt-1">
@@ -146,14 +149,13 @@
 
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div class="mt-1">
           <v-btn
             :ripple="false"
-            class="mx-2"
             fab
-            dark
             small
             color="primary"
           >
@@ -164,9 +166,7 @@
         <div class="mt-1">
           <v-btn
             :ripple="false"
-            class="mx-2"
             fab
-            dark
             x-small
             color="secondary"
           >
@@ -177,9 +177,7 @@
         <div class="mt-1">
           <v-btn
             :ripple="false"
-            class="mx-2"
             fab
-            dark
             small
             color="secondary"
           >
@@ -190,9 +188,7 @@
         <div class="mt-1">
           <v-btn
             :ripple="false"
-            class="mx-2"
             fab
-            dark
             color="secondary"
           >
             <v-icon>mdi-plus</v-icon>
@@ -202,9 +198,7 @@
         <div class="mt-1">
           <v-btn
             :ripple="false"
-            class="mx-2"
             fab
-            dark
             large
             color="neutral"
           >
@@ -218,14 +212,12 @@
             color="error"
             overlap
             avatar
-            offset-x="18"
+            offset-x="25"
           >
             <v-btn
               :ripple="false"
-              class="mx-2"
               fab
-              dark
-              x-small
+              small
               color="secondary"
             >
               12
@@ -238,6 +230,7 @@
     <v-row>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <v-text-field
@@ -247,6 +240,7 @@
       </v-col>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <div>
@@ -275,6 +269,7 @@
       </v-col>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <v-text-field
@@ -288,6 +283,7 @@
     <v-row>
       <v-col
         cols="12"
+        md="6"
         lg="3"
       >
         <v-text-field
@@ -296,7 +292,10 @@
           class="customInput"
         >
           <template slot="prepend">
-            <v-menu top :offset-y="offset">
+            <v-menu
+              top
+              :offset-y="offset"
+            >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   :ripple="false"
@@ -305,7 +304,11 @@
                   v-bind="attrs"
                   v-on="on"
                 >
-                  <v-img :src="currentCountry.icon" width="24px" contain></v-img>
+                  <v-img
+                    :src="currentCountry.icon"
+                    width="24px"
+                    contain
+                  />
                 </v-btn>
               </template>
 
@@ -316,38 +319,97 @@
                   @click="changeCountry(item)"
                 >
                   <v-list-item-icon>
-                    <v-img :src="item.icon"></v-img>
+                    <v-img
+                      :src="item.icon"
+                      width="24px"
+                    />
                   </v-list-item-icon>
-                  <v-list-item-title style="cursor:pointer;">{{ item.text }}</v-list-item-title>
+                  <v-list-item-title style="cursor:pointer;">
+                    {{ item.text }}
+                  </v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
           </template>
         </v-text-field>
       </v-col>
+      <v-col
+        cols="12"
+        md="6"
+        lg="3"
+      >
+        <v-select
+          v-model="selectedFruits"
+          :items="fruits"
+          placeholder="multiple select"
+          outlined
+          multiple
+          :ripple="false"
+        >
+
+        </v-select>
+      </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
-export default {
-  name: 'DashboardDashboard',
+  export default {
+    name: 'DashboardDashboard',
 
-  data() {
-    return {
-      items: [
-        {text: 'Russia', icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAACnCAMAAAAPIrEmAAAAD1BMVEX///8AOabVKx6qveGOMEuAx7gLAAAAnElEQVR4nO3PQQGAMADEsBvgX/Nk8GjiIBsAAAAAAAAAAAAAAAAA/3uzdrLUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1Iv2Ze3JUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvuvJNp/lJwZZQAAAAAElFTkSuQmCC  '},
-        {text: 'Finland', icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAR8AAACvCAMAAADzNCq+AAAAJ1BMVEX///8ANYAAIXjEydkAHXcAJ3vW2uSYor4ALX3Z3eakrcV1g6rJztwyDCYaAAABk0lEQVR4nO3bxw0DMRAEwZO3+ccrRdAAgX0Ip6oEluz/bNus6/mw4nIbvv/r9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2f9thbn9Os52Wpz/31Hn7AsO04ay3PN9Dw/Wnb4n/+jT5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fZ7zT7rzY9t9vdfnCY/WnTp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6tL31+QBWD13o5n7XDgAAAABJRU5ErkJggg=='},
-      ],
-      offset: true,
-      currentCountry: {text: 'Russia', icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAACnCAMAAAAPIrEmAAAAD1BMVEX///8AOabVKx6qveGOMEuAx7gLAAAAnElEQVR4nO3PQQGAMADEsBvgX/Nk8GjiIBsAAAAAAAAAAAAAAAAA/3uzdrLUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1Iv2Ze3JUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvuvJNp/lJwZZQAAAAAElFTkSuQmCC  '},
-    }
-  },
-
-  methods: {
-    changeCountry(item) {
-      this.currentCountry = item;
-    }
-  },
-}
+    data () {
+      return {
+        items: [
+          {
+            text: 'Russia',
+            icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAACnCAMAAAAPIrEmAAAAD1BMVEX///8AOabVKx6qveGOMEuAx7gLAAAAnElEQVR4nO3PQQGAMADEsBvgX/Nk8GjiIBsAAAAAAAAAAAAAAAAA/3uzdrLUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1Iv2Ze3JUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvuvJNp/lJwZZQAAAAAElFTkSuQmCC  ',
+          },
+          {
+            text: 'Finland',
+            icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAR8AAACvCAMAAADzNCq+AAAAJ1BMVEX///8ANYAAIXjEydkAHXcAJ3vW2uSYor4ALX3Z3eakrcV1g6rJztwyDCYaAAABk0lEQVR4nO3bxw0DMRAEwZO3+ccrRdAAgX0Ip6oEluz/bNus6/mw4nIbvv/r9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2f9thbn9Os52Wpz/31Hn7AsO04ay3PN9Dw/Wnb4n/+jT5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fp0/Rp+jR9mj5Nn6ZP06fZ7zT7rzY9t9vdfnCY/WnTp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6NH2aPk2fpk/Tp+nT9Gn6tL31+QBWD13o5n7XDgAAAABJRU5ErkJggg==',
+          },
+        ],
+        offset: true,
+        currentCountry: {
+          text: 'Russia',
+          icon: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPoAAACnCAMAAAAPIrEmAAAAD1BMVEX///8AOabVKx6qveGOMEuAx7gLAAAAnElEQVR4nO3PQQGAMADEsBvgX/Nk8GjiIBsAAAAAAAAAAAAAAAAA/3uzdrLUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1Iv2Ze3JUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvUi9SL1IvuvJNp/lJwZZQAAAAAElFTkSuQmCC  ',
+        },
+        fruits: [
+          { text: this.$t('dashboard'), checked: 'false' },
+          { text: 'Apricots', checked: 'false' },
+          { text: 'Avocado', checked: 'false' },
+          { text: 'Bananas', checked: 'false' },
+          { text: 'Blueberries', checked: 'false' },
+        ],
+        selectedFruits: [],
+      }
+    },
+    computed: {
+      likesAllFruit () {
+        return this.selectedFruits.length === this.fruits.length
+      },
+      likesSomeFruit () {
+        return this.selectedFruits.length > 0 && !this.likesAllFruit
+      },
+      icon () {
+        if (this.likesAllFruit) return 'mdi-close-box'
+        if (this.likesSomeFruit) return 'mdi-minus-box'
+        return 'mdi-checkbox-blank-outline'
+      },
+    },
+    methods: {
+      toggle () {
+        this.$nextTick(() => {
+          if (this.likesAllFruit) {
+            this.selectedFruits = []
+          } else {
+            this.selectedFruits = this.fruits.slice()
+          }
+        })
+      },
+      changeCountry (item) {
+        this.currentCountry = item
+      },
+    },
+  }
 </script>
