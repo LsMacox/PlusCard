@@ -2,18 +2,28 @@
   width: 288px
   height: 53px
   &:hover
-    .v-input__control > .v-input__slot
-      color: #D7D7E0
-      caret-color: #D7D7E0
-      border: none
+    fieldset
+      border-color: #D7D7E0 !important
+
   .v-input__control
     width: 288px
     z-index: 100
+    fieldset
+      border-color: #D7D7E0 !important
+      border-radius: 12px
     .v-text-field__details
       .v-messages__message
         font-size: 13px
         line-height: 17px
         color: #B5B5C4
+      .v-counter
+        color: #B5B5C4
+        position: absolute
+        top: 24px
+        right: 6px
+        font-weight: 600
+        font-size: 11px
+        line-height: 14px
     .v-input__slot
       width: 288px
       height: 53px
@@ -39,5 +49,27 @@
       caret-color: #4776E6
       background-color: #F7F7FC !important
       border: none
+    fieldset
+      border-color: #4776E6 !important
+
       .v-input__icon--prepend-inner .v-icon
         color: #8E54E9 !important
+
+
+.v-input.v-input--is-label-active.v-input--is-dirty.theme--light.v-text-field.v-text-field--is-booted.v-text-field--enclosed.v-text-field--outlined.v-text-field--placeholder.success-text
+  .v-input__control
+    .v-text-field__details
+      .v-counter
+        color: #00D15D
+
+.v-input.v-input--has-state.v-input--is-label-active.v-input--is-dirty.theme--light.v-text-field.v-text-field--is-booted.v-text-field--enclosed.v-text-field--outlined.v-text-field--placeholder.error--text
+  .v-input__control
+    .v-text-field__details
+      .v-messages.theme--light.error--text
+        .v-messages__message
+          color: #EA4C2A !important
+      .v-counter
+        color: #EA4C2A !important
+
+  fieldset
+    border-color: #EA4C2A !important

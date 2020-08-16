@@ -43,5 +43,6 @@
   "widgets": "Widgets",
   "wizard": "Wizard",
   "exit": "Exit",
-  "turn_off": "Turn off"
+  "turn_off": "Turn off",
+  "required": "Required field"
 }

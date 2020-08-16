@@ -1,13 +1,10 @@
 <template>
   <v-navigation-drawer
     id="core-navigation-drawer"
-    :right="$vuetify.rtl"
-    mobile-breakpoint="960"
     :mini-variant="drawer"
     permanent
-    app
     width="280"
-    v-bind="$attrs"
+    app
   >
     <!--    header-->
     <v-container style="padding:0">
@@ -226,9 +223,6 @@
 </template>
 
 <script>
-// Utilities
-  import { mapState } from 'vuex'
-
   export default {
     name: 'DashboardCoreDrawer',
     props: {
@@ -287,7 +281,6 @@
       ],
     }),
     computed: {
-      ...mapState(['barColor', 'barImage']),
       drawer: {
         get () {
           return this.$store.getters.drawer
@@ -329,7 +322,6 @@
 @import '~vuetify/src/styles/tools/_rtl.sass'
 
 #core-navigation-drawer
-  box-shadow: inset 0px 0px 44px rgba(19, 31, 95, 0.13)
   .v-navigation-drawer__content
     overflow: hidden
 

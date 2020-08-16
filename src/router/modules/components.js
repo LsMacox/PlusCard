@@ -12,12 +12,7 @@ const componentsRouter = {
     icon: 'component',
   },
   children: [
-    {
-      path: '/ui_kit',
-      component: () => import('@/views/ui_kit/Components.vue'),
-      name: 'Dashboard',
-      meta: { title: 'ui_kit', icon: 'ui_kit' },
-    },
+
   ],
 }
 
