@@ -316,7 +316,7 @@
       },
       exitClick () {
         this.exitRequest = true
-        this.$store.dispatch('auth/logout').finally(() => {
+        this.$store.dispatch('auth/Logout').finally(() => {
           this.exitRequest = false
           this.$router.push('/login')
         })

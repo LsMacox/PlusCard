@@ -114,7 +114,7 @@
         try {
           this.loading = true
 
-          await this.$store.dispatch('auth/emailLogin', user)
+          await this.$store.dispatch('auth/EmailLogin', user)
           this.afterLoginSuccess()
         } finally {
           this.loading = false

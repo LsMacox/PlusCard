@@ -8,11 +8,11 @@ import router from '@/router'
 
 const state = {
   isAuth: false,
-  user: null,
-  merchants: [],
-  merchant_id: null,
-  merchant: null,
-  device: null,
+  user: null, // профиль пользователя
+  merchants: [], // доступные мерчанты
+  merchant_id: null, // выбранный мерчант
+  merchant: null, // выбранный мерчант
+  device: null, // данные тек устройства
 }
 
 const mutations = {
@@ -57,7 +57,7 @@ const actions = {
   },
 
   // EMAIL LOGIN
-  async emailLogin ({ commit, state }, user) {
+  async EmailLogin ({ commit, state }, user) {
     try {
       const result = await ApiService.post(
         '/api-cabinet/merchant/login/email/signin',
@@ -71,9 +71,9 @@ const actions = {
   },
 
   // user logout
-  async logout ({ commit, state, dispatch }) {
+  async Logout ({ commit, state, dispatch }) {
     try {
-      await ApiService.post('/api/logout')
+      await ApiService.post('/api/Logout')
     // eslint-disable-next-line no-useless-catch
     } catch (error) {
       throw error
