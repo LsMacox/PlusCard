@@ -1,68 +1,81 @@
 <template>
-  <div class="login-container">
-    <v-form
-      ref="loginForm"
-      v-model="valid"
-    >
-      <v-text-field
-        v-model="loginForm.email"
-        placeholder="Введите еmail"
-        outlined
-        required
+  <div class="auth-content">
+    <div class="auth-content-box">
+      <div class="header-box">
+        <div
+          class="header"
+          @click="toRoute ('/login')"
+        >
+          Вход
+        </div>
+        <div
+          class="header inactive"
+          style="margin-left: 34px;"
+          @click="toRoute ('/registration')"
+        >
+          Регистрация
+        </div>
+      </div>
+      <v-form
+        ref="form"
+        v-model="valid"
+        class="auth-form"
       >
-        <template slot="prepend-inner">
-          <v-img
-            src="@/assets/svg/mail-outline.svg"
-          />
-        </template>
-      </v-text-field>
+        <v-text-field
+          v-model="form.phone"
+          placeholder="Введите телефон"
+          class="auth-text-field"
+          outlined
+          required
+        >
+          <template slot="prepend-inner">
+            <v-img
+              src="@/assets/svg/flag_russia.svg"
+            />
+          </template>
+        </v-text-field>
 
-      <v-text-field
-        v-model="loginForm.phone"
-        placeholder="Введите телефон"
-        outlined
-        required
-      >
-        <template slot="prepend-inner">
-          <v-img
-            src="@/assets/svg/flag_russia.svg"
-          />
-        </template>
-      </v-text-field>
-
-      <v-text-field
-        v-model="loginForm.password"
-        placeholder="Придумайте пароль"
-        outlined
-        required
-      >
-        <template slot="prepend-inner">
-          <v-img
-            src="@/assets/svg/lock-open-outline.svg"
-          />
-        </template>
-      </v-text-field>
-
-      <v-text-field
-        v-model="loginForm.passwordConfirm"
-        placeholder="Повторите пароль"
-        outlined
-        required
-      >
-        <template slot="prepend-inner">
-          <v-img
-            src="@/assets/svg/lock-open-outline.svg"
-          />
-        </template>
-      </v-text-field>
-
-      <v-btn
-        :loading="loading"
-        @click.native.prevent="handleLogin"
-      >
-        Login
-      </v-btn>
-    </v-form>
+        <div
+          class="auth-form-action"
+          style="margin-top: 34px;"
+        >
+          <div
+            style="display: inline-grid; margin-right: 5px;"
+          >
+            <v-btn
+              :ripple="false"
+              color="primary"
+              style="width: 100%;"
+            >
+              <v-img
+                src="@/assets/svg/users.svg"
+                max-width="21px"
+                max-height="21px"
+                style="margin-right: 8px;"
+              />
+              Войти в аккаунт
+            </v-btn>
+          </div>
+          <div
+            style="display: inline-grid; margin-left: 5px;"
+          >
+            <v-btn
+              :ripple="false"
+              color="primary"
+              style="width: 100%;"
+            >
+              <v-img
+                src="@/assets/svg/users.svg"
+                max-width="21px"
+                max-height="21px"
+                style="margin-right: 8px;"
+              />
+              Войти по номеру
+            </v-btn>
+          </div>
+        </div>
+      </v-form>
+    </div>
   </div>
 </template>
 
@@ -71,8 +84,6 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    name: 'Login',
-    components: {},
     data () {
       const validateUsername = (rule, value, callback) => {
         if (!validUsername(value)) {
@@ -89,11 +100,11 @@
         }
       }
       return {
+        visible1: false,
         valid: true,
         merchantDialog: false,
-        loginForm: {
-          email: 'Granovskiy@pluscards.ru',
-          password: '9511818783',
+        form: {
+          phone: null,
         },
         loginRules: {
           username: [
@@ -118,22 +129,13 @@
     computed: {
       ...mapGetters(['auth']),
     },
-    watch: {
-      $route: {
-        handler: function (route) {
-          const query = route.query
-          if (query) {
-            this.redirect = query.redirect
-            this.otherQuery = this.getOtherQuery(query)
-          }
-        },
-        immediate: true,
-      },
-    },
     mounted () {
       this.$store.dispatch('auth/InitDevice')
     },
     methods: {
+      toRoute (path) {
+        if (this.$route.path !== path) this.$router.push(path)
+      },
       checkCapslock (e) {
         const { key } = e
         this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z'
@@ -153,8 +155,8 @@
         // обнуляем merchants
         // this.$store.commit("auth/merchant/clearState", null);
         const user = {
-          email: this.loginForm.email,
-          password: this.loginForm.password,
+          email: this.form.email,
+          password: this.form.password,
           device_id: this.auth.device.id,
           device_token: this.auth.device.token,
           device_type: this.auth.device.type,
@@ -196,5 +198,6 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="sass" scoped>
+@import "~@/sass/auth"
 </style>

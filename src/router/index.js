@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 /* Layout */
-import Layout from '@/layout'
+import AuthLayout from '@/layouts/auth'
+import CabinetLayout from '@/layouts/cabinet'
 
 /* Router Modules */
 
@@ -46,7 +47,7 @@ export default new Router({
     // },
     {
       path: '/login',
-      component: () => import('@/views/login/index'),
+      component: AuthLayout,
       children: [
         {
           path: '',
@@ -54,7 +55,21 @@ export default new Router({
         },
         {
           path: 'email',
-          component: () => import('@/views/login/index'),
+          component: () => import('@/views/auth/login/email/index'),
+        },
+        {
+          path: 'phone',
+          component: () => import('@/views/auth/login/phone/index'),
+        },
+      ],
+    },
+    {
+      path: '/registration',
+      component: AuthLayout,
+      children: [
+        {
+          path: '',
+          component: () => import('@/views/auth/registration/index'),
         },
       ],
     },
@@ -76,7 +91,7 @@ export default new Router({
     },
     {
       path: '/',
-      component: Layout,
+      component: CabinetLayout,
       redirect: '/components',
       meta: { auth: true },
       children: [
