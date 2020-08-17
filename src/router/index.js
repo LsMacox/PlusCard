@@ -5,7 +5,6 @@ import Router from 'vue-router'
 import Layout from '@/layout'
 
 /* Router Modules */
-import componentsRouter from './modules/components'
 
 Vue.use(Router)
 
@@ -82,18 +81,23 @@ export default new Router({
       meta: { auth: true },
       children: [
         {
-          path: 'dashboard',
+          path: '/dashboard',
           component: () => import('@/views/dashboard/Dashboard'),
           name: 'Dashboard',
           meta: { auth: true, title: 'Dashboard', icon: 'dashboard' },
         },
         {
-          path: 'master',
+          path: '/master',
           component: () => import('@/views/master/Master'),
           name: 'Master',
           meta: { auth: true, title: 'Master', icon: 'master' },
         },
-        componentsRouter,
+        {
+          path: '/ui_kit',
+          component: () => import('@/views/ui_kit/Components.vue'),
+          name: 'components',
+          meta: { title: 'ui_kit', icon: 'ui_kit' },
+        },
       ],
     },
   ],

@@ -43,5 +43,6 @@
   "widgets": "Widgets",
   "wizard": "Wizard",
   "exit": "Выход",
-  "turn_off": "Свернуть"
+  "turn_off": "Свернуть",
+  "required": "Обязательное поле"
 }
