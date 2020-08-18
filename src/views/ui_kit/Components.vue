@@ -74,7 +74,6 @@
       >
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             color="primary"
           >
             <v-icon left>
@@ -86,7 +85,6 @@
 
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             color="primary"
           >
             Trailing icon
@@ -345,9 +343,7 @@
           outlined
           multiple
           :ripple="false"
-        >
-
-        </v-select>
+        />
       </v-col>
     </v-row>
   </v-container>

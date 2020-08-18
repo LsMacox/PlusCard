@@ -7,8 +7,15 @@
       <v-text-field
         v-model="loginForm.email"
         label="E-mail"
+        outlined
         required
-      />
+      >
+        <template slot="prepend-inner">
+          <div class="mr-3">
+            <v-img src="@/assets/color-fill-outline.svg" />
+          </div>
+        </template>
+      </v-text-field>
 
       <v-text-field
         v-model="loginForm.password"
