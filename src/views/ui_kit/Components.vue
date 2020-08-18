@@ -330,7 +330,7 @@
           placeholder="multiple select"
           outlined
           multiple
-        />
+          />
       </v-col>
     </v-row>
   </v-container>

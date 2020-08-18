@@ -1,6 +1,11 @@
 .theme--light.v-text-field.v-text-field--enclosed
   width: 100%
   height: 53px
+  &:not(.error--text)
+    .v-input__control
+    .v-text-field__details
+      .v-messages__message
+        color: #B5B5C4
   &:hover
     fieldset
       border-color: #D7D7E0 !important
@@ -15,7 +20,6 @@
       .v-messages__message
         font-size: 13px
         line-height: 17px
-        color: #B5B5C4
       .v-counter
         color: #B5B5C4
         position: absolute
