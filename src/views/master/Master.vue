@@ -233,13 +233,12 @@
                 :scroll-zoom="true"
                 :init-without-markers="true"
                 @click="setMarker($event)"
-                :balloon-template="balloonTemplate"
               >
                 <ymap-marker
                   marker-id="1"
                   :coords="coords"
                 />
-                
+
               </yandex-map>
             </div>
             <div class="shop-block__right">
@@ -257,27 +256,14 @@
                   Если у вас несколько точек продаж - внесите их контактные <br>данные и режимы работы, чтобы клиенты
                   могли связаться с <br>конкретным магазином и уточненить свои вопросы.
                 </div>
-                <div class="content-block__shop shop-card">
+                <div class="content-block__shop shop-card" v-if="newShopActive">
                   <div class="shop-card__name">
                     <v-text-field
                       class="shop-card__name_input"
                       placeholder="Введите название точки"
                       v-model="newShop.name"
                     >
-                      <template slot="append">
-                        <v-btn
-                          fab
-                          x-small
-                          color="secondary"
-                          style="padding: 0 !important; margin: 0 !important"
-                        >
-                          <v-img
-                            src="@/assets/svg/check.svg"
-                            max-width="15px"
-                            max-height="15px"
-                          />
-                        </v-btn>
-                      </template>
+
                     </v-text-field>
                   </div>
                   <div class="shop-card__city">
@@ -455,12 +441,37 @@
                       </div>
                     </div>
                   </div>
+                  <div class="shop-card__actions">
+                    <div class="action__cancel">
+                      <v-btn
+                        :ripple="false"
+                        :text="true"
+                        color="info"
+                        style="width:85px; height: 41px; text-transform: none; font-weight: 600;
+font-size: 13px;
+line-height: 17px;"
+                        @click="cancelShop()"
+                      >
+                        <v-img src="@/assets/svg/close-circle_grey.svg" style="margin-right: 6px"/>
+                        Отменить
+                      </v-btn>
+                    </div>
+                    <div class="action__save">
+                      <v-btn
+                        color="secondary"
+                        style="width: 265px; height: 41px; margin-right: 0"
+                      >
+                        Сохранить
+                      </v-btn>
+                    </div>
+                  </div>
                 </div>
                 <div class="content-block__add">
                   <v-btn
-                    color="secondary"
+                    color="info"
                     :text="true"
                     style="padding: 0 !important;"
+                    @click="addShop()"
                   >
                     <v-img
                       src="@/assets/svg/plus-circle.svg"
@@ -527,6 +538,16 @@
     directives: {mask},
     data () {
       return {
+        // markerIcon: {
+        //   layout: 'default#imageWithContent',
+        //   imageHref: '',
+        //   imageSize: [43, 43],
+        //   imageOffset: [0, 0],
+        //   content: '123 v12',
+        //   contentOffset: [0, 15],
+        //   contentLayout: '<div class="markerC lass" style="background: red; width: 50px; color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>'
+        // },
+        newShopActive: false,
         shop: {lat: '', lng: ''},
         shops: [],
         newShop: {
@@ -572,7 +593,7 @@
           mime: null,
         },
         selectedImg: null,
-        currentStep: 2,
+        currentStep: 0,
         colorPickerMenu: false,
         program: {
           companyName: '',
@@ -607,6 +628,32 @@
       },
     },
     methods: {
+      cancelShop(){
+        this.newShopActive = false;
+        this.newShop = {
+          name: '',
+            city: '',
+            address: '',
+            phone: '',
+            workTimes: [
+            {
+              startTime: '',
+              endTime: '',
+              days: []
+            }
+          ],
+            breakTimes: [
+            {
+              startTime: '',
+              endTime: '',
+              days: []
+            }
+          ]
+        }
+      },
+      addShop(){
+        this.newShopActive = true
+      },
       setMarker(e) {
         this.coords = Object.assign([], e.get("coords"));
         //////console.log(this.coords)
@@ -660,8 +707,6 @@
           this.program.bgcolor[1] = color.lighten(0.5).hex()
           this.program.color = '#FFFFFF'
         }
-      },
-      setMarket (e) {
       },
       changeStep (step) {
         this.currentStep = step
@@ -767,10 +812,11 @@
       .content-blocks-wrapper
         display: flex
         flex-direction: column
-        height: calc(100vh - 100px)
+        height: 100vh
         justify-content: center
         align-items: center
         @media(max-width: 992px)
+          height: calc(100vh - 100px)
           flex-direction: column
           justify-content: flex-start
           overflow-y: scroll
@@ -890,14 +936,25 @@
 
       .shop-card
         margin-top: 34px
-        padding: 34px 24px
+        padding: 18px 24px 34px 24px
         width: 428px
         background: #FFFFFF
         border: 1px solid #F2F2F7
         box-sizing: border-box
         box-shadow: 0 24px 20px -16px rgba(88, 93, 106, 0.1)
         border-radius: 12px
-
+        transition: 2s ease-in-out all
+        &__actions
+          margin-top: 35px
+          display: flex
+          flex-direction: row
+          align-items: center
+          justify-content: space-between
+          .action__cancel
+            button
+              .v-btn
+                .v-btn__content
+                  color: #B5B5C4 !important
         &__name
           .v-input.theme--light.v-text-field.v-text-field--is-booted
             .v-input__control
@@ -913,6 +970,7 @@
                   .v-input__icon.v-input__icon--append
                     .v-icon
                       color: red !important
+
 
         &__input
           margin-top: 16px
@@ -939,5 +997,6 @@
               flex-direction: row
               align-items: center
               margin-top: 12px
+
 
 </style>
