@@ -61,166 +61,162 @@
         v-if="currentStep === 0 || currentStep === 1"
         class="content-firstStep"
       >
-        <div class="content-blocks-wrapper">
-          <div class="content-block content-block__first">
-            <div class="left-block">
-              <div
-                class="left-block__title title-m-bold"
-                style="color: #2A2A34; margin-bottom: 10px"
-              >
-                Название
-              </div>
-              <div
-                class="left-block__content body-m-regular"
-                style="color: #70707D;"
-              >
-                Юридическое название компании без кавычек<br> и формы собственности. Есть фирменное <br> название?
-                Отлично! Вводите его.
-              </div>
-            </div>
-            <div class="right-block">
-              <v-text-field
-                v-model="program.companyName"
-                placeholder="Название комании"
-                outlined
-                counter="20"
-                :class="{'success-text': program.companyName.length > 0 && program.companyName.length < 21}"
-                :rules="[rules.required, rules.counter]"
-                maxlength="20"
-                @input="program.companyName.length ? currentStep = 1 : currentStep = 0"
-              >
-                <template v-slot:message="{message}">
-                  <span style="color: #EA4C2A">{{ message }}</span>
-                </template>
-              </v-text-field>
-            </div>
-          </div>
-          <div class="content-block content-block__second">
-            <div class="left-block">
-              <div
-                class="left-block__title title-m-bold"
-                style="color: #2A2A34; margin-bottom: 10px"
-              >
-                Карта клиента
-              </div>
-              <div
-                class="left-block__content body-m-regular"
-                style="color: #70707D;"
-              >
-                Вот так будет выглядеть ваша карта в <br> приложении. Измените цвет карты кликнув на <br> ней и
-                загрузите логотип, кликнув по иконке.
-              </div>
-            </div>
-            <div class="right-block">
-              <div
-                class="card-wrapper"
-                :style="'background: linear-gradient(140deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%)'"
-              >
-                <div class="card-bg">
-                  <v-img src="@/assets/Shine.svg" />
+        <div>
+          <div class="content-blocks-wrapper">
+            <div class="content-block content-block__first">
+              <div class="left-block">
+                <div
+                  class="left-block__title title-m-bold"
+                  style="color: #2A2A34; margin-bottom: 10px"
+                >
+                  Название
                 </div>
-                <div class="card-shadow" />
-                <div class="card-main">
-                  <div class="card-topline">
-                    <div class="card-topline__companyname title-s-bold" :style="'color: ' +program.color">
-                      {{ program.companyName ? program.companyName : 'Ваша компания' }}
-                    </div>
-                    <div class="card-topline__colorchange">
-                      <v-menu
-                        v-model="colorPickerMenu"
-                        :close-on-content-click="false"
-                      >
-                        <template v-slot:activator="{ on }">
-                          <v-img
-                            src="@/assets/color-fill-outline.svg"
-                            width="21px"
-                            height="21px"
-                            style="cursor:pointer;"
-                            v-on="on"
-                          />
-                        </template>
-                        <div class="colorPickerWrapper">
-                          <div class="pa-2">
-                            <span class="title-s-bold">Первый цвет</span>
-                            <v-color-picker
-                              v-model="program.bgcolor[0]"
-                              hide-inputs
-                              hide-mode-switch
-                              flat
-                              v-on:input="changeColor"
-                            />
-                          </div>
-                          <div class="pa-2">
-                            <span class="title-s-bold">Второй цвет</span>
-                            <v-color-picker
-                              v-model="program.bgcolor[1]"
-                              hide-inputs
-                              hide-mode-switch
-                              flat
-                            />
-                          </div>
-                        </div>
-                      </v-menu>
-                    </div>
+                <div
+                  class="left-block__content body-m-regular"
+                  style="color: #70707D;"
+                >
+                  Юридическое название компании без кавычек<br> и формы собственности. Есть фирменное <br> название?
+                  Отлично! Вводите его.
+                </div>
+              </div>
+              <div class="right-block">
+                <v-text-field
+                  v-model="program.companyName"
+                  placeholder="Название комании"
+                  outlined
+                  counter="20"
+                  :class="{'companyName_input': true,'success-text': program.companyName.length > 0 && program.companyName.length < 21}"
+                  :rules="[rules.required, rules.counter]"
+                  maxlength="20"
+                  @input="program.companyName.length ? currentStep = 1 : currentStep = 0"
+                >
+                  <template v-slot:message="{message}">
+                    <span style="color: #EA4C2A">{{ message }}</span>
+                  </template>
+                </v-text-field>
+              </div>
+            </div>
+            <div class="content-block content-block__second">
+              <div class="left-block">
+                <div
+                  class="left-block__title title-m-bold"
+                  style="color: #2A2A34; margin-bottom: 10px"
+                >
+                  Карта клиента
+                </div>
+                <div
+                  class="left-block__content body-m-regular"
+                  style="color: #70707D;"
+                >
+                  Вот так будет выглядеть ваша карта в <br> приложении. Измените цвет карты кликнув на <br> ней и
+                  загрузите логотип, кликнув по иконке.
+                </div>
+              </div>
+              <div class="right-block">
+                <div
+                  class="card-wrapper"
+                  :style="'background: linear-gradient(140deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%)'"
+                >
+                  <div class="card-bg">
+                    <v-img
+                      src="@/assets/svg/Shine.svg"
+                      max-width="300px"
+                    />
                   </div>
-                  <div class="card-bottomline">
-                    <div class="bottomline-left">
+                  <div class="card-shadow" />
+                  <div class="card-main">
+                    <div class="card-topline">
                       <div
-                        class="bottomline-left__number body-s-semibold"
-                        style="color: #ffffff"
+                        class="card-topline__companyname title-s-bold"
+                        :style="'color: ' +program.color"
                       >
-                        1234567891236
+                        {{ program.companyName ? program.companyName : 'Ваша компания' }}
                       </div>
-                      <div class="bottomline-left__balance">
-                        <span
-                          class="balance__number title-s-bold"
-                          style="color: #ffffff"
-                        >123 </span>
-                        <span
-                          class="body-xs-semibold"
-                          style="color: rgba(255, 255, 255, 0.5);"
-                        >бонуса</span>
+                      <div class="card-topline__colorchange">
+                        <v-menu
+                          v-model="colorPickerMenu"
+                          :close-on-content-click="false"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-img
+                              src="@/assets/svg/color-fill-outline.svg"
+                              width="21px"
+                              height="21px"
+                              style="cursor:pointer;"
+                              v-on="on"
+                            />
+                          </template>
+                          <div class="colorPickerWrapper">
+                            <div class="pa-2">
+                              <v-color-picker
+                                v-model="program.bgcolor[0]"
+                                hide-inputs
+                                hide-mode-switch
+                                flat
+                                @input="changeColor"
+                              />
+                            </div>
+                          </div>
+                        </v-menu>
                       </div>
                     </div>
-                    <div class="bottomline-right">
-                      <v-img
-                        v-if="!program.logo"
-                        src="@/assets/logo_change.svg"
-                        width="58px"
-                        height="58px"
-                        style="cursor:pointer;border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%"
-                        @click="$refs.smallImg.click()"
-                      />
-                      <v-img
-                        v-else
-                        :src="program.logo"
-                        width="58px"
-                        height="58px"
-                        style="cursor:pointer;border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%"
-                        @click="$refs.smallImg.click()"
-                      />
+                    <div class="card-bottomline">
+                      <div class="bottomline-left">
+                        <div
+                          class="bottomline-left__number body-s-semibold"
+                          style="color: #ffffff"
+                        >
+                          1234567891236
+                        </div>
+                        <div class="bottomline-left__balance">
+                          <span
+                            class="balance__number title-s-bold"
+                            style="color: #ffffff"
+                          >123 </span>
+                          <span
+                            class="body-xs-semibold"
+                            style="color: rgba(255, 255, 255, 0.5);"
+                          >бонуса</span>
+                        </div>
+                      </div>
+                      <div class="bottomline-right">
+                        <v-img
+                          v-if="!program.logo"
+                          src="@/assets/svg/logo_change.svg"
+                          width="58px"
+                          height="58px"
+                          style="cursor:pointer;border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%"
+                          @click="$refs.smallImg.click()"
+                        />
+                        <v-img
+                          v-else
+                          :src="program.logo"
+                          width="58px"
+                          height="58px"
+                          style="cursor:pointer;border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%"
+                          @click="$refs.smallImg.click()"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="content-block content-block__third">
-            <v-btn
-              v-if="program.companyName && program.bgcolor && program.logo"
-              color="primary"
-              :ripple="false"
-              style="width: 123px"
-              @click="updateCompany()"
-            >
-              Далее
-              <v-img
-                src="@/assets/arrow-forward-outline.svg"
-                width="21px"
-                height="21px"
-                max-width="21px"
-              />
-            </v-btn>
+            <div class="content-block content-block__third">
+              <v-btn
+                color="primary"
+                style="width: 123px"
+                @click="updateCompany()"
+              >
+                Далее
+                <v-img
+                  src="@/assets/svg/arrow-forward-outline.svg"
+                  width="21px"
+                  height="21px"
+                  max-width="21px"
+                />
+              </v-btn>
+            </div>
           </div>
         </div>
       </div>
@@ -270,14 +266,13 @@
                     >
                       <template slot="append">
                         <v-btn
-                          :ripple="false"
                           fab
                           x-small
                           color="secondary"
                           style="padding: 0 !important; margin: 0 !important"
                         >
                           <v-img
-                            src="@/assets/check.svg"
+                            src="@/assets/svg/check.svg"
                             max-width="15px"
                             max-height="15px"
                           />
@@ -295,7 +290,7 @@
                     >
                       <template slot="prepend-inner">
                         <div>
-                          <v-img src="@/assets/building.svg" />
+                          <v-img src="@/assets/svg/building.svg" />
                         </div>
                       </template>
                       <template slot="append">
@@ -316,7 +311,7 @@
                     >
                       <template slot="prepend-inner">
                         <div>
-                          <v-img src="@/assets/location-outline.svg" />
+                          <v-img src="@/assets/svg/location-outline.svg" />
                         </div>
                       </template>
                     </v-text-field>
@@ -329,7 +324,7 @@
                     >
                       <template slot="prepend-inner">
                         <div>
-                          <v-img src="@/assets/phone.svg" />
+                          <v-img src="@/assets/svg/phone.svg" />
                         </div>
                       </template>
                     </v-text-field>
@@ -351,13 +346,12 @@
                 </div>
                 <div class="content-block__add">
                   <v-btn
-                    :ripple="false"
                     color="secondary"
                     :text="true"
                     style="padding: 0 !important;"
                   >
                     <v-img
-                      src="@/assets/plus-circle.svg"
+                      src="@/assets/svg/plus-circle.svg"
                       style="margin-right: 5px"
                     />
                     Добавить точку продажи
@@ -366,12 +360,11 @@
                 <div class="content-block__action">
                   <v-btn
                     color="primary"
-                    :ripple="false"
                     style="width: 123px"
                   >
                     Далее
                     <v-img
-                      src="@/assets/arrow-forward-outline.svg"
+                      src="@/assets/svg/arrow-forward-outline.svg"
                       width="21px"
                       height="21px"
                       max-width="21px"
@@ -391,7 +384,7 @@
       name="file"
       accept="image/*"
       hidden
-      v-on:change="setSmallImage($event)"
+      @change="setSmallImage($event)"
     >
     <image-cropper
       v-if="cropperSmallDialog"
@@ -408,7 +401,7 @@
 <script>
   import ImageCropper from '@/components/dialogs/ImageCropper'
   import { yandexMap, ymapMarker } from 'vue-yandex-maps'
-  import Color  from 'color'
+  import Color from 'color'
 
   export default {
     name: 'Master',
@@ -416,7 +409,6 @@
       ImageCropper,
       yandexMap,
       ymapMarker,
-      Color
     },
     data () {
       return {
@@ -455,7 +447,6 @@
     },
     watch: {
       smallImg (v) {
-        ('currentFile', v);
         if (v.data.indexOf('base64') !== -1) {
           this.fileLogo = {
             data: v.data.split(',')[1],
@@ -463,24 +454,17 @@
           }
           this.program.logo = v.data
         }
-
-      ('program', this.program)
       },
     },
     methods: {
       changeColor (str) {
-        let color = Color(str)
-        let alpha, mask
+        const color = Color(str)
         if (1 - (0.299 * color.color[0] + 0.587 * color.color[1] + 0.114 * color.color[2]) / 255 < 0.5) {
-          this.program.bgcolor[1] = color.darken(0.5);
-          this.program.color = '#000000';
-          alpha = 0.04
-          mask = 0
-        } else{
+          this.program.bgcolor[1] = color.darken(0.5)
+          this.program.color = '#000000'
+        } else {
           this.program.bgcolor[1] = color.lighten(0.5).hex()
-          this.program.color = '#FFFFFF';
-          alpha = 0.1;
-          mask = 255;
+          this.program.color = '#FFFFFF'
         }
       },
       setMarket (e) {
@@ -491,7 +475,6 @@
       async updateCompany () {
         const program = Object.assign({}, this.program)
         program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
-        (program)
         // await this.$store.dispatch("brand/company/updateDesign", program)
         this.changeStep(2)
       },
@@ -502,7 +485,6 @@
         e.target.type = 'file'
       },
       getCurrentWidth () {
-        ('current', this.currentStep)
         if (this.currentStep === 0) {
           return 7
         } else if (this.currentStep === 1) {
@@ -590,10 +572,14 @@
 
       .content-blocks-wrapper
         display: flex
-        height: 100%
-        flex-direction: column
+        flex-direction: row
+        height: calc(100vh - 100px)
         justify-content: center
         align-items: center
+        @media(max-width: 992px)
+          flex-direction: column
+          justify-content: flex-start
+          overflow-y: scroll
 
         .content-block
           display: flex
@@ -605,10 +591,11 @@
           .right-block
             display: flex
             align-self: flex-end
+            width: 300px
 
             .card-wrapper
               height: 152px
-              width: 288px
+              width: 300px
               display: flex
               flex-direction: column
               justify-content: space-between
@@ -618,6 +605,7 @@
               z-index: 1
 
               .card-bg
+                width: 100%
                 position: absolute
                 z-index: 3
 
@@ -651,6 +639,7 @@
 
           .left-block
             margin-right: 48px
+            width: 333px
             display: flex
             flex-direction: column
             align-self: center
@@ -725,11 +714,11 @@
         &__city
           &_select
             .v-input__control
-            .v-select__slot
-              .v-input__append-inner
-                .v-input__icon.v-input__icon--append
-                  .v-icon
-                    color: red !important
+              .v-select__slot
+                .v-input__append-inner
+                  .v-input__icon.v-input__icon--append
+                    .v-icon
+                      color: red !important
 
         &__input
           margin-top: 16px

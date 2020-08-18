@@ -72,7 +72,6 @@
             style="display: inline-grid; margin-right: 5px;"
           >
             <v-btn
-              :ripple="false"
               color="primary"
               style="width: 100%;"
             >
@@ -89,7 +88,6 @@
             style="display: inline-grid; margin-left: 5px;"
           >
             <v-btn
-              :ripple="false"
               color="secondary"
               style="width: 100%;"
             >

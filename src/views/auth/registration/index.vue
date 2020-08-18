@@ -118,7 +118,6 @@
 
         <div class="auth-form-action">
           <v-btn
-            :ripple="false"
             color="primary"
             style="width: 100%;"
             :disabled="!accept"

@@ -96,7 +96,6 @@
 
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             color="primary"
             :disabled="true"
           >
@@ -115,7 +114,6 @@
       >
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             color="secondary"
           >
             <v-icon left>
@@ -126,7 +124,6 @@
         </div>
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             color="secondary"
             :small="true"
           >
@@ -135,7 +132,6 @@
         </div>
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             color="secondary"
             :text="true"
           >
@@ -152,7 +148,6 @@
       >
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             fab
             small
             color="primary"
@@ -163,7 +158,6 @@
         </div>
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             fab
             x-small
             color="secondary"
@@ -174,7 +168,6 @@
         </div>
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             fab
             small
             color="secondary"
@@ -185,7 +178,6 @@
         </div>
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             fab
             color="secondary"
           >
@@ -195,7 +187,6 @@
         </div>
         <div class="mt-1">
           <v-btn
-            :ripple="false"
             fab
             large
             color="neutral"
@@ -213,7 +204,6 @@
             offset-x="25"
           >
             <v-btn
-              :ripple="false"
               fab
               small
               color="secondary"
@@ -285,7 +275,6 @@
         lg="3"
       >
         <v-text-field
-          :ripple="false"
           outlined
           class="customInput"
         >
@@ -296,7 +285,6 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
-                  :ripple="false"
                   color="btnInput"
                   text
                   v-bind="attrs"
@@ -342,7 +330,6 @@
           placeholder="multiple select"
           outlined
           multiple
-          :ripple="false"
         />
       </v-col>
     </v-row>

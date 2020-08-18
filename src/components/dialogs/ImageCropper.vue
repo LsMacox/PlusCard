@@ -38,7 +38,6 @@
         <v-col cols="12">
           <v-btn-toggle>
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -50,7 +49,6 @@
               </v-icon>
             </v-btn>
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -64,7 +62,6 @@
           </v-btn-toggle>
           <v-btn-toggle class="ml-1">
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -76,7 +73,6 @@
               </v-icon>
             </v-btn>
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -90,7 +86,6 @@
           </v-btn-toggle>
           <v-btn-toggle class="ml-1">
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -102,7 +97,6 @@
               </v-icon>
             </v-btn>
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -114,7 +108,6 @@
               </v-icon>
             </v-btn>
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -126,7 +119,6 @@
               </v-icon>
             </v-btn>
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -140,7 +132,6 @@
           </v-btn-toggle>
           <v-btn-toggle class="ml-1">
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -152,7 +143,6 @@
               </v-icon>
             </v-btn>
             <v-btn
-              :ripple="false"
               rounded
               small
               color="primary"
@@ -202,7 +192,6 @@
           <v-col cols="12">
             <v-btn-toggle>
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
@@ -214,7 +203,6 @@
                 </v-icon>
               </v-btn>
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
@@ -228,7 +216,6 @@
             </v-btn-toggle>
             <v-btn-toggle class="ml-1">
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
@@ -240,7 +227,6 @@
                 </v-icon>
               </v-btn>
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
@@ -254,7 +240,6 @@
             </v-btn-toggle>
             <v-btn-toggle class="ml-1">
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
@@ -266,7 +251,6 @@
                 </v-icon>
               </v-btn>
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
@@ -278,7 +262,6 @@
                 </v-icon>
               </v-btn>
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
@@ -290,7 +273,6 @@
                 </v-icon>
               </v-btn>
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
@@ -304,7 +286,6 @@
             </v-btn-toggle>
             <v-btn-toggle class="ml-1">
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
@@ -316,7 +297,6 @@
                 </v-icon>
               </v-btn>
               <v-btn
-                :ripple="false"
                 rounded
                 small
                 color="primary"
