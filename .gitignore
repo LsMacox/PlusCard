@@ -27,5 +27,4 @@ yarn-error.log*
 .browserslistrc
 .editorconfig
 .env.staging
-.eslintrc.js
 LICENSE.md

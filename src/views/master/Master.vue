@@ -90,9 +90,6 @@
                   maxlength="20"
                   @input="program.companyName.length ? currentStep = 1 : currentStep = 0"
                 >
-                  <template v-slot:message="{message}">
-                    <span style="color: #EA4C2A">{{ message }}</span>
-                  </template>
                 </v-text-field>
               </div>
             </div>
@@ -119,7 +116,7 @@
                 >
                   <div class="card-bg">
                     <v-img
-                      src="@/assets/svg/Shine.svg"
+                      :src="cardBg"
                       max-width="300px"
                     />
                   </div>
@@ -150,7 +147,6 @@
                             <div class="pa-2">
                               <v-color-picker
                                 v-model="program.bgcolor[0]"
-                                hide-inputs
                                 hide-mode-switch
                                 flat
                                 @input="changeColor"
@@ -236,11 +232,14 @@
                 :coords="coords"
                 :scroll-zoom="true"
                 :init-without-markers="true"
+                @click="setMarker($event)"
+                :balloon-template="balloonTemplate"
               >
                 <ymap-marker
                   marker-id="1"
                   :coords="coords"
                 />
+                
               </yandex-map>
             </div>
             <div class="shop-block__right">
@@ -263,6 +262,7 @@
                     <v-text-field
                       class="shop-card__name_input"
                       placeholder="Введите название точки"
+                      v-model="newShop.name"
                     >
                       <template slot="append">
                         <v-btn
@@ -286,7 +286,9 @@
                       placeholder="Выберите город"
                       outlined
                       class="shop-card__city_select"
-                      style="width: 380px"
+                      style="width: 380px;"
+                      multiple
+                      v-model="newShop.city"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -308,6 +310,7 @@
                       placeholder="Введите адрес "
                       outlined
                       style="width: 380px"
+                      v-model="newShop.address"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -321,6 +324,7 @@
                       placeholder="Введите телефон"
                       outlined
                       style="width: 380px"
+                      v-model="newShop.phone"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -334,13 +338,121 @@
                       <div class="work-time__title body-m-semibold">
                         Рабочее время
                       </div>
-                      <div class="work-time__inputs" />
+                      <div class="work-time__inputs" v-for="(worktime, index) in newShop.workTimes" :key="index">
+                        <div class="inputs__first">
+                          <v-text-field
+                            placeholder="С"
+                            v-mask="'##:##'"
+                            outlined
+                            style="width: 74px; margin-right: 4px"
+                            v-model="worktime.startTime"
+                          />
+                        </div>
+                        -
+                        <div class="inputs__second">
+                          <v-text-field
+                            placeholder="По"
+                            v-mask="'##:##'"
+                            outlined
+                            style="width: 74px;  margin: 0 16px 0 4px"
+                            v-model="worktime.endTime"
+                          />
+                        </div>
+                        <div class="inputs__third">
+                          <v-select
+                            v-model="worktime.days"
+                            :items="getWorkDays(index)"
+                            :item-disabled="worktime.days"
+                            placeholder="Дни"
+                            outlined
+                            multiple
+                            style="width: 155px;margin-right: 18px"
+                          >
+                            <template v-slot:selection="{ item, index }">
+                              <v-chip v-if="index === 0">
+                                <span>{{ item }}</span>
+                              </v-chip>
+                              <span
+                                v-if="index === 1"
+                                class="grey--text caption"
+                              >(+{{ worktime.days.length - 1 }} ещё)</span>
+                            </template>
+                          </v-select>
+                        </div>
+                        <div class="inputs__action" v-if="newShop.workTimes.length - 1 === index">
+                          <v-btn
+                            color="secondary"
+                            :text="true"
+                            style="padding: 0 !important;"
+                            @click="addWorkTime()"
+                          >
+                            <v-img
+                              src="@/assets/svg/plus-circle.svg"
+                              style="margin-right: 5px"
+                            />
+                          </v-btn>
+                        </div>
+                      </div>
                     </div>
                     <div class="break-time">
                       <div class="break-time__title body-m-semibold">
                         Перерыв
                       </div>
-                      <div class="break-time__inputs" />
+                      <div class="break-time__inputs" v-for="(breaktime, i) in newShop.breakTimes" :key="i">
+                          <div class="inputs__first">
+                            <v-text-field
+                              placeholder="С"
+                              v-mask="'##:##'"
+                              outlined
+                              style="width: 74px; margin-right: 4px"
+                              v-model="breaktime.startTime"
+                              :ref="'from'+i"
+                            />
+                          </div>
+                          -
+                          <div class="inputs__second">
+                            <v-text-field
+                              placeholder="По"
+                              v-mask="'##:##'"
+                              outlined
+                              style="width: 74px;  margin: 0 16px 0 4px"
+                              v-model="breaktime.endTime"
+                            />
+                          </div>
+                          <div class="inputs__third">
+                            <v-select
+                              v-model="breaktime.days"
+                              :items="items"
+                              placeholder="Дни"
+                              outlined
+                              multiple
+                              style="width: 155px;margin-right: 18px"
+                            >
+                              <template v-slot:selection="{ item, index }">
+                                <v-chip v-if="index === 0">
+                                  <span>{{ item }}</span>
+                                </v-chip>
+                                <span
+                                  v-if="index === 1"
+                                  class="grey--text caption"
+                                >(+{{ breaktime.days.length - 1 }} ещё)</span>
+                              </template>
+                            </v-select>
+                          </div>
+                          <div class="inputs__action" v-if="newShop.breakTimes.length - 1 === i">
+                            <v-btn
+                              color="secondary"
+                              :text="true"
+                              style="padding: 0 !important;"
+                              @click="addBreakTime()"
+                            >
+                              <v-img
+                                src="@/assets/svg/plus-circle.svg"
+                                style="margin-right: 5px"
+                              />
+                            </v-btn>
+                          </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -402,17 +514,46 @@
   import ImageCropper from '@/components/dialogs/ImageCropper'
   import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import Color from 'color'
+  import {mask} from 'vue-the-mask'
 
   export default {
+
     name: 'Master',
     components: {
       ImageCropper,
       yandexMap,
       ymapMarker,
     },
+    directives: {mask},
     data () {
       return {
-        items: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+        shop: {lat: '', lng: ''},
+        shops: [],
+        newShop: {
+          name: '',
+          city: '',
+          address: '',
+          phone: '',
+          workTimes: [
+            {
+              startTime: '',
+              endTime: '',
+              days: []
+            }
+          ],
+          breakTimes: [
+            {
+              startTime: '',
+              endTime: '',
+              days: []
+            }
+          ]
+        },
+        newWorkTime: [],
+        newBreakTime: [],
+        cardBg: require('@/assets/svg/Shine.svg'),
+        items: ['ПН','ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'],
+        days: ['ПН','ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'],
         settings: {
           apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
           lang: 'ru_RU',
@@ -431,7 +572,7 @@
           mime: null,
         },
         selectedImg: null,
-        currentStep: 0,
+        currentStep: 2,
         colorPickerMenu: false,
         program: {
           companyName: '',
@@ -443,6 +584,15 @@
           required: value => !!value || this.$t('required'),
           counter: value => value.length <= 20 || 'Max 20 characters',
         },
+      }
+    },
+    computed: {
+      balloonTemplate() {
+        return `
+        <h1 class="red">Hi, everyone!</h1>
+        <p>I am here: ${this.coords}</p>
+        <img src="http://via.placeholder.com/350x150">
+      `
       }
     },
     watch: {
@@ -457,10 +607,54 @@
       },
     },
     methods: {
+      setMarker(e) {
+        this.coords = Object.assign([], e.get("coords"));
+        //////console.log(this.coords)
+        this.shop.lat = this.coords[0];
+        this.shop.lng = this.coords[1];
+        this.shop = Object.assign({}, this.shop);
+      },
+      getWorkDays(index){
+        if(index !== 0) {
+          return this.days.filter(day => {
+            return (this.newShop.workTimes[index - 1 ].days).indexOf(day) === -1
+          })
+        } else return this.days
+      },
+      addWorkTime(){
+        console.log('current work_times', this.newShop.workTimes);
+        let last = this.newShop.workTimes[this.newShop.workTimes.length -1];
+        if(last.days.length === 0 || !last.startTime || !last.endTime){
+          return false;
+        } else {
+          this.newShop.workTimes.push(
+            {
+              startTime: '',
+              endTime: '',
+              days: []
+            }
+          )
+        }
+      },
+      addBreakTime(){
+        console.log('current break_times', this.newShop.breakTimes);
+        let last = this.newShop.breakTimes[this.newShop.breakTimes.length -1];
+        if(last.days.length === 0 || !last.startTime || !last.endTime){
+          return false;
+        } else {
+          this.newShop.breakTimes.push(
+            {
+              startTime: '',
+              endTime: '',
+              days: []
+            }
+          )
+        }
+      },
       changeColor (str) {
         const color = Color(str)
-        if (1 - (0.299 * color.color[0] + 0.587 * color.color[1] + 0.114 * color.color[2]) / 255 < 0.5) {
-          this.program.bgcolor[1] = color.darken(0.5)
+          if(color.isLight()){
+          this.program.bgcolor[1] = color.darken(0.5).hex()
           this.program.color = '#000000'
         } else {
           this.program.bgcolor[1] = color.lighten(0.5).hex()
@@ -572,7 +766,7 @@
 
       .content-blocks-wrapper
         display: flex
-        flex-direction: row
+        flex-direction: column
         height: calc(100vh - 100px)
         justify-content: center
         align-items: center
@@ -729,11 +923,21 @@
           .work-time
             &__title
               color: #2A2A34
+            &__inputs
+              display: flex
+              flex-direction: row
+              align-items: center
+              margin-top: 12px
 
           .break-time
             margin-top: 24px
 
             &__title
               color: #2A2A34
+            &__inputs
+              display: flex
+              flex-direction: row
+              align-items: center
+              margin-top: 12px
 
 </style>
