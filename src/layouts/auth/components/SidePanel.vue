@@ -15,24 +15,27 @@
       <div
         v-for="(item, i) in offers"
         :key="i"
-        class="side-panel-carousel-text"
       >
-        {{ item.text }}
+        <v-img
+          v-if="activeOffer === i"
+          :src="item.img"
+          width="213px"
+          height="172px"
+          style="margin: 25px auto;"
+        />
       </div>
+      <div
+        class="side-panel-carousel-text"
+        v-html="offerText"
+      />
       <div
         class="side-panel-carousel-control"
       >
         <div
-          :class="getControlClass(0)"
-          @click="activeOffer = 0"
-        />
-        <div
-          :class="getControlClass(1)"
-          @click="activeOffer = 1"
-        />
-        <div
-          :class="getControlClass(2)"
-          @click="activeOffer = 2"
+          v-for="(item, i) in offers"
+          :key="i"
+          :class="getControlClass(i)"
+          @click="getOffer(i)"
         />
       </div>
     </div>
@@ -44,14 +47,37 @@
     data: () => ({
       activeOffer: 0,
       offers: [
-        { img: null, text: 'Создавайте программы лояльности' },
-        { img: null, text: 'Выпускайте подарочные сертификаты' },
-        { img: null, text: 'Управляйте несколькими своими компаниями' },
+        { img: require('@/assets/png/auth-side-panel-img1.png'), text: 'Создавайте программы<br>лояльности' },
+        { img: require('@/assets/png/auth-side-panel-img2.png'), text: 'Выпускайте подарочные<br>сертификаты' },
+        { img: require('@/assets/png/auth-side-panel-img3.png'), text: 'Управляйте несколькими<br>своими компаниями' },
       ],
+      timerId: null,
     }),
+    computed: {
+      // eslint-disable-next-line vue/return-in-computed-property
+      offerText () {
+        //
+        const offer = this.offers.filter((item, i) => i === this.activeOffer)
+        if (offer.length) return offer[0].text
+        return null
+      },
+    },
+    mounted () {
+      this.timerId = setInterval(() => this.offerRotate(), 5000)
+    },
     methods: {
-      getControlClass () {
-        // side-panel-carousel-control-item active
+      getControlClass (index) {
+        if (index === this.activeOffer) return 'side-panel-carousel-control-item active'
+        return 'side-panel-carousel-control-item'
+      },
+      offerRotate () {
+        const count = this.offers.length
+        if ((this.activeOffer + 1) === count) this.activeOffer = 0
+        else this.activeOffer++
+      },
+      getOffer (index) {
+        clearInterval(this.timerId)
+        this.activeOffer = index
       },
     },
   }
