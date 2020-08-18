@@ -2,18 +2,20 @@
   <div class="auth-content">
     <div class="auth-content-box">
       <div class="header-box">
-        <div
-          class="header"
-          @click="toRoute ('/login')"
-        >
-          Вход
-        </div>
-        <div
-          class="header inactive"
-          style="margin-left: 34px;"
-          @click="toRoute ('/registration')"
-        >
-          Регистрация
+        <div style="display: flex;">
+          <div
+            class="header"
+            @click="toRoute ('/login')"
+          >
+            Вход
+          </div>
+          <div
+            class="header inactive"
+            style="margin-left: 34px;"
+            @click="toRoute ('/registration')"
+          >
+            Регистрация
+          </div>
         </div>
       </div>
       <v-form
@@ -27,6 +29,7 @@
           class="auth-text-field"
           outlined
           required
+          :rules="emailRules"
         >
           <template slot="prepend-inner">
             <v-img
@@ -42,6 +45,7 @@
           class="auth-text-field"
           outlined
           required
+          :rules="passwordRules"
         >
           <template slot="prepend-inner">
             <v-img
@@ -74,6 +78,8 @@
             <v-btn
               color="primary"
               style="width: 100%;"
+              :loading="loading"
+              :disabled="!valid"
               @click="login()"
             >
               <v-img
@@ -115,55 +121,34 @@
 </template>
 
 <script>
-  import { validUsername } from '@/utils/validate'
   import { mapGetters } from 'vuex'
 
   export default {
     data () {
-      const validateUsername = (rule, value, callback) => {
-        if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
-        } else {
-          callback()
-        }
-      }
-      const validatePassword = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
-        } else {
-          callback()
-        }
-      }
       return {
-        visible1: false,
-        valid: true,
-        merchantDialog: false,
         form: {
           email: null,
           password: null,
         },
-        loginRules: {
-          username: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validateUsername,
-            },
-          ],
-          password: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validatePassword,
-            },
-          ],
-        },
-        passwordType: 'password',
+        valid: false,
+        visible1: false,
+        emailRules: [
+          v => !!v || 'E-mail обязателен',
+          v => /.+@.+/.test(v) || 'E-mail неверного формата',
+        ],
+        passwordRules: [
+          v => !!v || 'Пароль обязателен',
+          // v => /[^а-яА-Я]/gm.test(v) || 'Указан недопустимый символ',
+        ],
         loading: false,
       }
     },
     computed: {
-      ...mapGetters(['auth']),
+      ...mapGetters('auth', [
+        'merchants',
+        'merchant',
+        'device',
+      ]),
     },
     mounted () {
       this.$store.dispatch('auth/InitDevice')
@@ -172,31 +157,19 @@
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
-      showPwd () {
-        if (this.passwordType === 'password') {
-          this.passwordType = ''
-        } else {
-          this.passwordType = 'password'
-        }
-        this.$nextTick(() => {
-          this.$refs.password.focus()
-        })
-      },
       async login () {
-        // обнуляем merchants
-        // this.$store.commit("auth/merchant/clearState", null);
         const user = {
           email: this.form.email,
           password: this.form.password,
-          device_id: this.auth.device.id,
-          device_token: this.auth.device.token,
-          device_type: this.auth.device.type,
+          device_id: this.device.id,
+          device_token: this.device.token,
+          device_type: this.device.type,
         }
         try {
           this.loading = true
 
           await this.$store.dispatch('auth/EmailLogin', user)
-          this.afterLoginSuccess()
+          if (this.merchants.length > 1) this.toRoute('/login/company')
         } finally {
           this.loading = false
         }

@@ -2,18 +2,20 @@
   <div class="auth-content">
     <div class="auth-content-box">
       <div class="header-box">
-        <div
-          class="header"
-          @click="toRoute ('/registration')"
-        >
-          Регистрация
-        </div>
-        <div
-          class="header inactive"
-          style="margin-left: 34px;"
-          @click="toRoute ('/login')"
-        >
-          Вход
+        <div style="display: flex;">
+          <div
+            class="header"
+            @click="toRoute ('/registration')"
+          >
+            Регистрация
+          </div>
+          <div
+            class="header inactive"
+            style="margin-left: 34px;"
+            @click="toRoute ('/login')"
+          >
+            Вход
+          </div>
         </div>
       </div>
       <v-form

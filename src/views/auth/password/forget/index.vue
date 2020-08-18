@@ -1,19 +1,22 @@
 <template>
   <div class="auth-content">
+    <div class="back-button">
+      <back-button
+        @click.native="$router.push('/login')"
+      />
+    </div>
+
     <div class="auth-content-box">
       <div class="header-box">
         <div
           class="header"
-          @click="toRoute ('/login')"
         >
-          Вход
+          Восстановление пароля
         </div>
         <div
-          class="header inactive"
-          style="margin-left: 34px;"
-          @click="toRoute ('/registration')"
+          class="header-text"
         >
-          Регистрация
+          Для сброса пароля, введите электронный адрес<br>указанный при регистрации.
         </div>
       </div>
       <v-form
@@ -35,77 +38,22 @@
           </template>
         </v-text-field>
 
-        <v-text-field
-          v-model="form.password"
-          :type="visible1 ? 'text' : 'password'"
-          placeholder="Введите пароль"
-          class="auth-text-field"
-          outlined
-          required
-        >
-          <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/lock-open-outline.svg"
-            />
-          </template>
-          <template slot="append">
-            <v-img
-              v-if="visible1"
-              src="@/assets/svg/eye-on.svg"
-              style="cursor: pointer;"
-              @click="visible1 = !visible1"
-            />
-            <v-img
-              v-else
-              src="@/assets/svg/eye-off.svg"
-              style="cursor: pointer;"
-              @click="visible1 = !visible1"
-            />
-          </template>
-        </v-text-field>
-
         <div
           class="auth-form-action"
           style="margin-top: 34px;"
         >
-          <div
-            style="display: inline-grid; margin-right: 5px;"
+          <v-btn
+            color="primary"
+            style="width: 100%;"
           >
-            <v-btn
-              color="primary"
-              style="width: 100%;"
-            >
-              <v-img
-                src="@/assets/svg/log-in-outline.svg"
-                max-width="21px"
-                max-height="21px"
-                style="margin-right: 8px;"
-              />
-              Войти в аккаунт
-            </v-btn>
-          </div>
-          <div
-            style="display: inline-grid; margin-left: 5px;"
-          >
-            <v-btn
-              color="secondary"
-              style="width: 100%;"
-            >
-              <v-img
-                src="@/assets/svg/phone-outline.svg"
-                max-width="21px"
-                max-height="21px"
-                style="margin-right: 8px;"
-              />
-              Войти по номеру
-            </v-btn>
-          </div>
-        </div>
-        <div
-          class="auth-form-forgot-password"
-          @click="toRoute('/password/forget')"
-        >
-          Забыли пароль?
+            <v-img
+              src="@/assets/svg/lock-open-outline-white.svg"
+              max-width="21px"
+              max-height="21px"
+              style="margin-right: 8px;"
+            />
+            Восстановить пароль
+          </v-btn>
         </div>
       </v-form>
     </div>
@@ -115,8 +63,12 @@
 <script>
   import { validUsername } from '@/utils/validate'
   import { mapGetters } from 'vuex'
+  import BackButton from '@/views/auth/components/BackButton'
 
   export default {
+    components: {
+      BackButton,
+    },
     data () {
       const validateUsername = (rule, value, callback) => {
         if (!validUsername(value)) {

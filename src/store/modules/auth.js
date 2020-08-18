@@ -63,6 +63,7 @@ const actions = {
         '/api-cabinet/merchant/login/email/signin',
         user,
       )
+      console.log(result)
       commit('SET_AUTH', result)
     } catch (error) {
       commit('SET_AUTH', null)
@@ -105,7 +106,12 @@ const actions = {
   },
 }
 
-const getters = {}
+const getters = {
+  merchants: state => state.merchants,
+  merchant: state => state.merchant,
+  device: state => state.device,
+}
+
 export default {
   namespaced: true,
   state,
