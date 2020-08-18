@@ -75,7 +75,6 @@
               :ripple="false"
               color="primary"
               style="width: 100%;"
-              @click="login()"
             >
               <v-img
                 src="@/assets/svg/log-in-outline.svg"
@@ -93,7 +92,6 @@
               :ripple="false"
               color="secondary"
               style="width: 100%;"
-              @click="toRoute('/login/phone')"
             >
               <v-img
                 src="@/assets/svg/phone-outline.svg"
@@ -174,6 +172,10 @@
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
+      checkCapslock (e) {
+        const { key } = e
+        this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z'
+      },
       showPwd () {
         if (this.passwordType === 'password') {
           this.passwordType = ''
@@ -184,7 +186,8 @@
           this.$refs.password.focus()
         })
       },
-      async login () {
+
+      async handleLogin () {
         // обнуляем merchants
         // this.$store.commit("auth/merchant/clearState", null);
         const user = {
@@ -202,6 +205,30 @@
         } finally {
           this.loading = false
         }
+      },
+
+      afterLoginSuccess () {
+        // выбор merchant'а, если их несколько или вход, т.к. токен уже содержит merchant_id
+        // console.log("afterLoginSuccess", this.merchants);
+        this.showFields = false
+        if (this.auth.merchant) {
+          // if (this.merchant.show_modal) {
+          //   this.$router.push('/wizard')
+          // } else if (this.$route !== '/office') {
+          //   this.$router.push('/office')
+          // }
+          this.$router.push('/dashboard')
+        } else if (this.merchants && this.merchants.length > 1) {
+          this.merchantDialog = true
+        }
+      },
+      getOtherQuery (query) {
+        return Object.keys(query).reduce((acc, cur) => {
+          if (cur !== 'redirect') {
+            acc[cur] = query[cur]
+          }
+          return acc
+        }, {})
       },
     },
   }

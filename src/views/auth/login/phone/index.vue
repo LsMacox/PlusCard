@@ -46,9 +46,10 @@
               :ripple="false"
               color="primary"
               style="width: 100%;"
+              @click="login()"
             >
               <v-img
-                src="@/assets/svg/users.svg"
+                src="@/assets/svg/log-in-outline.svg"
                 max-width="21px"
                 max-height="21px"
                 style="margin-right: 8px;"
@@ -61,16 +62,17 @@
           >
             <v-btn
               :ripple="false"
-              color="primary"
+              color="secondary"
               style="width: 100%;"
+              @click="toRoute('/login/email')"
             >
               <v-img
-                src="@/assets/svg/users.svg"
+                src="@/assets/svg/mail-outline.svg"
                 max-width="21px"
                 max-height="21px"
                 style="margin-right: 8px;"
               />
-              Войти по номеру
+              Войти по email
             </v-btn>
           </div>
         </div>

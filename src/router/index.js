@@ -73,7 +73,24 @@ export default new Router({
         },
       ],
     },
-
+    {
+      path: '/password',
+      component: AuthLayout,
+      children: [
+        {
+          path: '',
+          redirect: 'forgot',
+        },
+        {
+          path: 'forgot',
+          component: () => import('@/views/auth/password/forgot/index'),
+        },
+        {
+          path: 'change',
+          component: () => import('@/views/auth/password/change/index'),
+        },
+      ],
+    },
     // {
     //   path: "/auth-redirect",
     //   component: () => import("@/views/login/auth-redirect"),
