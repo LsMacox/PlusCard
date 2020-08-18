@@ -105,7 +105,7 @@
         </div>
         <div
           class="auth-form-forgot-password"
-          @click="toRoute('/password/forgot')"
+          @click="toRoute('/password/forget')"
         >
           Забыли пароль?
         </div>

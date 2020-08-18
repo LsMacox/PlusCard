@@ -83,11 +83,11 @@ export default new Router({
       children: [
         {
           path: '',
-          redirect: 'forgot',
+          redirect: 'forget',
         },
         {
-          path: 'forgot',
-          component: () => import('@/views/auth/password/forgot/index'),
+          path: 'forget',
+          component: () => import('@/views/auth/password/forget/index'),
         },
         {
           path: 'change',
