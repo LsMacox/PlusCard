@@ -14,7 +14,7 @@ const mutations = {
   },
   SET_PROGRAMS (state, payload) {
     state.programs = payload
-  }
+  },
 }
 
 const actions = {

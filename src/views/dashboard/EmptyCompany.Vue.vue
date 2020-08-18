@@ -12,7 +12,7 @@
           justify="center"
         >
           <v-img
-            src="@/assets/empty_company.svg"
+            src="@/assets/svg/empty_company.svg"
             max-width="215px"
             max-height="175px"
           />
@@ -48,7 +48,6 @@
             class="body-m-regular"
           >
             <v-btn
-              :ripple="false"
               color="primary"
               style="width: 223px"
               @click="$router.push('/master')"

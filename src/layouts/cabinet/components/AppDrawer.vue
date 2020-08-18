@@ -15,14 +15,13 @@
           style="padding: 34px 12px 34px 32px"
         >
           <v-btn
-            :ripple="false"
             small
             text
             class="logoBtn"
             @click="drawer = !drawer"
           >
             <v-img
-              src="@/assets/logo_77x32.svg"
+              src="@/assets/svg/logo_77x32.svg"
               width="77px"
               height="32px"
             />
@@ -42,7 +41,6 @@
             offset-y="5"
           >
             <v-btn
-              :ripple="false"
               small
               text
               class="logoBtn"
@@ -54,7 +52,7 @@
               @click="drawer = !drawer"
             >
               <v-img
-                src="@/assets/logo_32x32.svg"
+                src="@/assets/svg/logo_32x32.svg"
                 width="32px"
                 height="32px"
               />
@@ -75,7 +73,6 @@
             offset-x="25"
           >
             <v-btn
-              :ripple="false"
               fab
               x-small
               color="secondary"
@@ -112,7 +109,6 @@
         <v-list-item
           v-for="(item, index) in items"
           :key="index"
-          :ripple="false"
           :class="{ 'v-list-item--active': $route.path.includes(item.to) }"
           @click="$router.push(item.to)"
         >
