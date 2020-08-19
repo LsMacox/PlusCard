@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
 import i18n from '@/i18n'
 import '@fortawesome/fontawesome-free/css/all.css' // Ensure you are using css-loader
-import '@/sass/overrides.sass'
+import '@/sass/plus_ui/overrides.sass'
 import '@/sass/main.sass'
 
 Vue.use(Vuetify)

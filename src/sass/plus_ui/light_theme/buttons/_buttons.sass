@@ -1,0 +1,53 @@
+@import '../variables'
+
+@import disabled
+@import primary
+@import secondary
+@import neutral
+
+
+.v-btn.v-btn--contained.theme--light
+  border: none !important
+  box-shadow: none !important
+  .v-btn__content
+    font-family: Gilroy, sans-serif
+    font-style: normal
+    color: $neutral-100
+  &.v-size--default
+    height: 53px
+    padding: 16px 24px !important
+    .v-btn__content
+      font-weight: 600
+      font-size: 15px
+      line-height: 21px
+      letter-spacing: 0.1px
+
+  &.v-size--small
+    height: 41px
+    padding: 12px 16px !important
+    .v-btn__content
+      font-style: normal
+      font-weight: 600
+      font-size: 13px
+      line-height: 17px
+
+  &.v-btn--fab
+    border-radius: 50% !important
+
+
+
+.v-btn.v-btn--text.theme--light
+  border: none !important
+  &:before
+    background-color: transparent !important
+  &.v-size--default
+    height: 21px
+    padding: 0 !important
+    font-style: normal
+    font-weight: 600
+    font-size: 13px
+    line-height: 17px
+
+.v-btn.v-btn--fab.theme--light
+  &:before
+    background-color: transparent !important

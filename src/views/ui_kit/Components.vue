@@ -86,6 +86,7 @@
         <div class="mt-1">
           <v-btn
             color="primary"
+            small
           >
             Trailing icon
             <v-icon right>
@@ -134,6 +135,7 @@
           <v-btn
             color="secondary"
             :text="true"
+            :ripple="false"
           >
             <v-icon>mdi-arrow-left</v-icon>
             text btn
@@ -190,6 +192,7 @@
             fab
             large
             color="neutral"
+            :ripple="false"
           >
             <v-icon>mdi-plus</v-icon>
           </v-btn>

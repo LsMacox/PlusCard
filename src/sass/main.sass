@@ -1,245 +1,247 @@
 @import typography
 @import spaces
-
-body, *, .v-application > *, .v-application
-  font-family: "Gilroy", sans-serif
-
-.v-btn:not(.v-btn--round).v-size--default
-  min-width: 10px !important
-
-.customTextField .v-input__prepend-inner
-    padding: 0 !important
-    margin: 0 !important
-    width: 49px !important
-    z-index: 20
-    top: 1px
-    left: 1px
-    height: 54px !important
-    .v-btn.v-size--default:not(.v-btn--icon):not(.v-btn--fab), .v-btn.v-size--large:not(.v-btn--icon):not(.v-btn--fab).input-btn
-      width: 49px !important
-      height: 54px !important
-      padding: 0 !important
-      margin: 0 !important
-      background: #EBF1FF !important
-      border-radius: 12px 0px 0px 12px !important
-
-
-.customInput
-  height: 56px
-  &.v-input--is-focused
-    .theme--light.v-btn.btnInput--text
-      border-right: 2px solid #8E54E9 !important
-    .v-input__control .v-input__slot
-      border-color: #8E54E9 !important
-      color: #8E54E9 !important
-      caret-color: #8E54E9 !important
-  input
-    color: #2A2A34
-    font-weight: 500
-    font-size: 15px
-    line-height: 21px
-    padding-left: 57px
-  .v-input__prepend-outer
-    margin: 0
-    padding: 0
-    position: absolute
-    left: 2px
-    top: 2px
-    z-index: 1000
-    width: 49px
-    .theme--light.v-btn.btnInput--text
-      outline: none
-      height: 52px
-      background-color: #EBF1FF !important
-      border-radius: 0
-      border-bottom-left-radius: 12px
-      border-top-left-radius: 12px
-      border: none
-      border-right: 2px solid #D7D7E0
-      width: 49px
-
-.v-menu__content
-  position: absolute
-  z-index: 100 !important
-  .v-list
-    padding: 0
-    margin: 0
-    .v-list-item
-      height: 21px
-      padding-top: 15px
-      min-height: 10px
-      padding-bottom: 15px
-      .v-list-item__content
-        height: 21px
-        margin: 0
-        padding: 0
-      .v-list-item__icon
-        padding: 0
-        margin-right: 0px
-        margin-top: 15px
-      .v-list-item__title
-        font-family: Gilroy, sans-serif
-        font-style: normal
-        font-weight: 500
-        font-size: 15px
-        line-height: 21px
-        color: #B5B5C4
-        align-self: center
-        margin: 0px
-      .v-simple-checkbox
-        i.v-icon.notranslate.far.fa-square.theme--light
-          border-radius: 4px
-          outline: none
-          border: none
-          color: #D7D7E0
-
-.v-input.theme--light.v-text-field.v-text-field--is-booted.v-text-field--enclosed.v-text-field--outlined.v-select.v-select--is-multi
-  .v-input__control
-    .v-input__append-inner
-      .v-input__icon.v-input__icon--append
-        .v-icon
-          color: #4776E6 !important
-
-/* Customize the label (the container) */
-.plus-checkbox-container
-  display: block
-  position: relative
-  padding-left: 35px
-  margin-bottom: 12px
-  cursor: pointer
-  font-size: 22px
-  -webkit-user-select: none
-  -moz-user-select: none
-  -ms-user-select: none
-  user-select: none
-
-
-/* Hide the browser's default checkbox */
-.plus-checkbox-container input
-  position: absolute
-  opacity: 0
-  cursor: pointer
-  height: 0
-  width: 0
-
-
-/* Create a custom checkbox */
-.checkmark
-  position: absolute
-  top: 0
-  left: 0
-  height: 14.7px
-  width: 14.7px
-  border: 1px solid #D7D7E0
-  border-radius: 4px
-
-
-/* When the checkbox is checked, add a blue background */
-.plus-checkbox-container input:checked ~ .checkmark
-  background-color: #4776E6
-  border-color: #4776E6
-
-
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after
-  content: ""
-  position: absolute
-  display: none
-
-
-/* Show the checkmark when checked */
-.plus-checkbox-container input:checked ~ .checkmark:after
-  display: block
-
-
-/* Style the checkmark/indicator */
-.plus-checkbox-container .checkmark:after
-    left: 4px
-    top: 0.8px
-    width: 6px
-    height: 10px
-    border: solid white
-    border-width: 0px 1.5px 1.5px 0
-    transform: rotate(45deg)
-
-
-.v-input.companySelect.v-input--is-label-active.v-input--is-dirty.theme--light.v-text-field.v-text-field--is-booted.v-select
-  padding: 0 !important
-  margin: 0 !important
-  .v-input__slot
-    padding: 0 !important
-    margin: 0 !important
-    .v-input__append-inner
-      i.v-icon
-        color: #4776E6
-  .v-text-field__details
-    display: none
-  .v-select__selection--comma
-    font-family: Gilroy, sans-serif
-    font-style: normal
-    font-weight: 600
-    font-size: 17px
-    line-height: 22px
-    letter-spacing: 0.4px
-    color: #2A2A34
-
-#core-navigation-drawer.v-navigation-drawer--mini-variant
-  width: 60px
-  .v-list-item.v-list-item--link.theme--light
-    padding: 0 0 0 8px !important
-
-  .companySelectWrapper
-    width: 5px
-    padding: 0 0 0 10px
-
-  .companySelect
-    .v-select__selections
-      display: none
-
-.companySelectWrapper
-  padding: 20px 31px 15px 20px
-.sidebarMenu.v-list
-  padding: 0 !important
-  margin: 0 !important
-  .v-item-group
-    margin-top: 10px
-    .v-list-item.v-list-item--link.theme--light
-      margin: 24px 0 0 0 !important
-      padding: 0 0 0 15px !important
-      min-height: 10px
-      height: 21px
-      &:hover, &:active, &:focus, &:visited, &.v-list-item--active > &::before, &
-        background-color: transparent !important
-        color: transparent !important
-      .v-list-item__title
-        font-weight: 500
-        font-size: 15px
-        line-height: 21px
-        color: #B5B5C4
-      &.v-list-item--active
-        color: transparent
-        border-right: 2px solid #4776E6
-        border-radius: 0
-
-        .v-list-item__title
-          color: #4776E6 !important
-        .v-list-item__icon i
-          color: #4776E6 !important
-        .v-list-item
-          &__icon:first-child
-            .mdi-poll
-              color: #8E54E9 !important
-
-      .v-list-item__icon
-        width: 21px
-        height: 21px
-        padding: 0
-        margin: 0
-        margin-left: 20px !important
-        i
-          color: #B5B5C4
-
-
-html
-  overflow-y: hidden !important
+@import 'plus_ui/overrides'
+//
+//body, *, .v-application > *, .v-application
+//  font-family: "Gilroy", sans-serif
+//
+//.v-btn:not(.v-btn--round).v-size--default
+//  min-width: 10px !important
+//
+//.customTextField .v-input__prepend-inner
+//    padding: 0 !important
+//    margin: 0 !important
+//    width: 49px !important
+//    z-index: 20
+//    top: 1px
+//    left: 1px
+//    height: 54px !important
+//    .v-btn.v-size--default:not(.v-btn--icon):not(.v-btn--fab), .v-btn.v-size--large:not(.v-btn--icon):not(.v-btn--fab).input-btn
+//      width: 49px !important
+//      height: 54px !important
+//      padding: 0 !important
+//      margin: 0 !important
+//      background: #EBF1FF !important
+//      border-radius: 12px 0px 0px 12px !important
+//
+//
+//.customInput
+//  height: 56px
+//  &.v-input--is-focused
+//    .theme--light.v-btn.btnInput--text
+//      border-right: 2px solid #8E54E9 !important
+//    .v-input__control .v-input__slot
+//      border-color: #8E54E9 !important
+//      color: #8E54E9 !important
+//      caret-color: #8E54E9 !important
+//  input
+//    color: #2A2A34
+//    font-weight: 500
+//    font-size: 15px
+//    line-height: 21px
+//    padding-left: 57px
+//  .v-input__prepend-outer
+//    margin: 0
+//    padding: 0
+//    position: absolute
+//    left: 2px
+//    top: 2px
+//    z-index: 1000
+//    width: 49px
+//    .theme--light.v-btn.btnInput--text
+//      outline: none
+//      height: 52px
+//      background-color: #EBF1FF !important
+//      border-radius: 0
+//      border-bottom-left-radius: 12px
+//      border-top-left-radius: 12px
+//      border: none
+//      border-right: 2px solid #D7D7E0
+//      width: 49px
+//
+//.v-menu__content
+//  position: absolute
+//  z-index: 100 !important
+//  .v-list
+//    padding: 0
+//    margin: 0
+//    .v-list-item
+//      height: 21px
+//      padding-top: 15px
+//      min-height: 10px
+//      padding-bottom: 15px
+//      .v-list-item__content
+//        height: 21px
+//        margin: 0
+//        padding: 0
+//      .v-list-item__icon
+//        padding: 0
+//        margin-right: 0px
+//        margin-top: 15px
+//      .v-list-item__title
+//        font-family: Gilroy, sans-serif
+//        font-style: normal
+//        font-weight: 500
+//        font-size: 15px
+//        line-height: 21px
+//        color: #B5B5C4
+//        align-self: center
+//        margin: 0px
+//      .v-simple-checkbox
+//        i.v-icon.notranslate.far.fa-square.theme--light
+//          border-radius: 4px
+//          outline: none
+//          border: none
+//          color: #D7D7E0
+//
+//.v-input.theme--light.v-text-field.v-text-field--is-booted.v-text-field--enclosed.v-text-field--outlined.v-select.v-select--is-multi
+//  .v-input__control
+//    .v-input__append-inner
+//      .v-input__icon.v-input__icon--append
+//        .v-icon
+//          color: #4776E6 !important
+//
+///* Customize the label (the container) */
+//.plus-checkbox-container
+//  display: block
+//  position: relative
+//  padding-left: 35px
+//  margin-bottom: 12px
+//  cursor: pointer
+//  font-size: 22px
+//  -webkit-user-select: none
+//  -moz-user-select: none
+//  -ms-user-select: none
+//  user-select: none
+//
+//
+///* Hide the browser's default checkbox */
+//.plus-checkbox-container input
+//  position: absolute
+//  opacity: 0
+//  cursor: pointer
+//  height: 0
+//  width: 0
+//
+//
+///* Create a custom checkbox */
+//.checkmark
+//  position: absolute
+//  top: 0
+//  left: 0
+//  height: 14.7px
+//  width: 14.7px
+//  border: 1px solid #D7D7E0
+//  border-radius: 4px
+//
+//
+///* When the checkbox is checked, add a blue background */
+//.plus-checkbox-container input:checked ~ .checkmark
+//  background-color: #4776E6
+//  border-color: #4776E6
+//
+//
+///* Create the checkmark/indicator (hidden when not checked) */
+//.checkmark:after
+//  content: ""
+//  position: absolute
+//  display: none
+//
+//
+///* Show the checkmark when checked */
+//.plus-checkbox-container input:checked ~ .checkmark:after
+//  display: block
+//
+//
+///* Style the checkmark/indicator */
+//.plus-checkbox-container .checkmark:after
+//    left: 4px
+//    top: 0.8px
+//    width: 6px
+//    height: 10px
+//    border: solid white
+//    border-width: 0px 1.5px 1.5px 0
+//    transform: rotate(45deg)
+//
+//
+//.v-input.companySelect.v-input--is-label-active.v-input--is-dirty.theme--light.v-text-field.v-text-field--is-booted.v-select
+//  padding: 0 !important
+//  margin: 0 !important
+//  .v-input__slot
+//    padding: 0 !important
+//    margin: 0 !important
+//    .v-input__append-inner
+//      i.v-icon
+//        color: #4776E6
+//  .v-text-field__details
+//    display: none
+//  .v-select__selection--comma
+//    font-family: Gilroy, sans-serif
+//    font-style: normal
+//    font-weight: 600
+//    font-size: 17px
+//    line-height: 22px
+//    letter-spacing: 0.4px
+//    color: #2A2A34
+//
+//#core-navigation-drawer.v-navigation-drawer--mini-variant
+//  width: 60px
+//  .v-list-item.v-list-item--link.theme--light
+//    padding: 0 0 0 8px !important
+//
+//  .companySelectWrapper
+//    width: 5px
+//    padding: 0 0 0 10px
+//
+//  .companySelect
+//    .v-select__selections
+//      display: none
+//
+//.companySelectWrapper
+//  padding: 20px 31px 15px 20px
+//.sidebarMenu.v-list
+//  padding: 0 !important
+//  margin: 0 !important
+//  .v-item-group
+//    margin-top: 10px
+//    .v-list-item.v-list-item--link.theme--light
+//      margin: 24px 0 0 0 !important
+//      padding: 0 0 0 15px !important
+//      min-height: 10px
+//      height: 21px
+//      &:hover, &:active, &:focus, &:visited, &.v-list-item--active > &::before, &
+//        background-color: transparent !important
+//        color: transparent !important
+//      .v-list-item__title
+//        font-weight: 500
+//        font-size: 15px
+//        line-height: 21px
+//        color: #B5B5C4
+//      &.v-list-item--active
+//        color: transparent
+//        border-right: 2px solid #4776E6
+//        border-radius: 0
+//
+//        .v-list-item__title
+//          color: #4776E6 !important
+//        .v-list-item__icon i
+//          color: #4776E6 !important
+//        .v-list-item
+//          &__icon:first-child
+//            .mdi-poll
+//              color: #8E54E9 !important
+//
+//      .v-list-item__icon
+//        width: 21px
+//        height: 21px
+//        padding: 0
+//        margin: 0
+//        margin-left: 20px !important
+//        i
+//          color: #B5B5C4
+//
+//
+//html
+//  overflow-y: hidden !important
+//
 
