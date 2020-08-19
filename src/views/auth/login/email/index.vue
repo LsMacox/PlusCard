@@ -30,10 +30,13 @@
           outlined
           required
           :rules="emailRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/mail-outline.svg"
+            <span
+              class="iconify"
+              data-icon="ion:mail-outline"
+              data-inline="false"
             />
           </template>
         </v-text-field>
@@ -46,10 +49,13 @@
           outlined
           required
           :rules="passwordRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/lock-open-outline.svg"
+            <span
+              class="iconify"
+              data-icon="bx:bx-lock-open-alt"
+              data-inline="false"
             />
           </template>
           <template slot="append">
@@ -70,7 +76,7 @@
 
         <div
           class="auth-form-action"
-          style="margin-top: 34px;"
+          style="margin-top: 10px;"
         >
           <div
             style="display: inline-grid; margin-right: 5px;"
@@ -82,11 +88,11 @@
               :disabled="!valid"
               @click="login()"
             >
-              <v-img
-                src="@/assets/svg/log-in-outline.svg"
-                max-width="21px"
-                max-height="21px"
+              <span
+                class="iconify"
                 style="margin-right: 8px;"
+                data-icon="ion:log-out-outline"
+                data-inline="false"
               />
               Войти в аккаунт
             </v-btn>
@@ -99,11 +105,11 @@
               style="width: 100%;"
               @click="toRoute('/login/phone')"
             >
-              <v-img
-                src="@/assets/svg/phone-outline.svg"
-                max-width="21px"
-                max-height="21px"
+              <span
+                class="iconify"
                 style="margin-right: 8px;"
+                data-icon="bi:phone"
+                data-inline="false"
               />
               Войти по номеру
             </v-btn>
@@ -134,11 +140,11 @@
         visible1: false,
         emailRules: [
           v => !!v || 'E-mail обязателен',
-          v => /.+@.+/.test(v) || 'E-mail неверного формата',
+          v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
         ],
         passwordRules: [
           v => !!v || 'Пароль обязателен',
-          // v => /[^а-яА-Я]/gm.test(v) || 'Указан недопустимый символ',
+          v => /^[^а-яА-Я]+$/gm.test(v) || 'Указан недопустимый символ',
         ],
         loading: false,
       }

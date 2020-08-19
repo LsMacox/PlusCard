@@ -30,27 +30,30 @@
           class="auth-text-field"
           outlined
           required
+          :rules="emailRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/mail-outline.svg"
+            <span
+              class="iconify"
+              data-icon="ion:mail-outline"
+              data-inline="false"
             />
           </template>
         </v-text-field>
 
         <div
           class="auth-form-action"
-          style="margin-top: 34px;"
         >
           <v-btn
             color="primary"
             style="width: 100%;"
           >
-            <v-img
-              src="@/assets/svg/lock-open-outline-white.svg"
-              max-width="21px"
-              max-height="21px"
+            <span
+              class="iconify"
               style="margin-right: 8px;"
+              data-icon="bx:bx-lock-open-alt"
+              data-inline="false"
             />
             Восстановить пароль
           </v-btn>
@@ -61,7 +64,6 @@
 </template>
 
 <script>
-  import { validUsername } from '@/utils/validate'
   import { mapGetters } from 'vuex'
   import BackButton from '@/views/auth/components/BackButton'
 
@@ -70,45 +72,17 @@
       BackButton,
     },
     data () {
-      const validateUsername = (rule, value, callback) => {
-        if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
-        } else {
-          callback()
-        }
-      }
-      const validatePassword = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
-        } else {
-          callback()
-        }
-      }
       return {
-        visible1: false,
-        valid: true,
-        merchantDialog: false,
         form: {
           email: null,
           password: null,
         },
-        loginRules: {
-          username: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validateUsername,
-            },
-          ],
-          password: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validatePassword,
-            },
-          ],
-        },
-        passwordType: 'password',
+        valid: true,
+        visible1: false,
+        emailRules: [
+          v => !!v || 'E-mail обязателен',
+          v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+        ],
         loading: false,
       }
     },

@@ -4,15 +4,15 @@
       <div class="header-box">
         <div style="display: flex;">
           <div
-              class="header"
-              @click="toRoute ('/login')"
+            class="header"
+            @click="toRoute ('/login')"
           >
             Вход
           </div>
           <div
-              class="header inactive"
-              style="margin-left: 34px;"
-              @click="toRoute ('/registration')"
+            class="header inactive"
+            style="margin-left: 34px;"
+            @click="toRoute ('/registration')"
           >
             Регистрация
           </div>
@@ -29,6 +29,8 @@
           class="auth-text-field"
           outlined
           required
+          :rules="phoneRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
             <v-img
@@ -82,49 +84,19 @@
 </template>
 
 <script>
-  import { validUsername } from '@/utils/validate'
   import { mapGetters } from 'vuex'
 
   export default {
     data () {
-      const validateUsername = (rule, value, callback) => {
-        if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
-        } else {
-          callback()
-        }
-      }
-      const validatePassword = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
-        } else {
-          callback()
-        }
-      }
       return {
-        visible1: false,
-        valid: true,
-        merchantDialog: false,
         form: {
           phone: null,
         },
-        loginRules: {
-          username: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validateUsername,
-            },
-          ],
-          password: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validatePassword,
-            },
-          ],
-        },
-        passwordType: 'password',
+        valid: true,
+        visible1: false,
+        phoneRules: [
+          v => !!v || 'Телефон обязателен',
+        ],
         loading: false,
       }
     },

@@ -29,10 +29,14 @@
           class="auth-text-field"
           outlined
           required
+          :rules="emailRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/mail-outline.svg"
+            <span
+              class="iconify"
+              data-icon="ion:mail-outline"
+              data-inline="false"
             />
           </template>
         </v-text-field>
@@ -43,6 +47,8 @@
           class="auth-text-field"
           outlined
           required
+          :rules="phoneRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
             <v-img
@@ -54,14 +60,18 @@
         <v-text-field
           v-model="form.password"
           :type="visible1 ? 'text' : 'password'"
-          placeholder="Придумайте пароль"
+          placeholder="Введите новый пароль"
           class="auth-text-field"
           outlined
           required
+          :rules="passwordRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/lock-open-outline.svg"
+            <span
+              class="iconify"
+              data-icon="bx:bx-lock-open-alt"
+              data-inline="false"
             />
           </template>
           <template slot="append">
@@ -83,14 +93,18 @@
         <v-text-field
           v-model="form.passwordConfirm"
           :type="visible2 ? 'text' : 'password'"
-          placeholder="Повторите пароль"
+          placeholder="Повторите новый пароль"
           class="auth-text-field"
           outlined
           required
+          :rules="passwordConfirmRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/lock-open-outline.svg"
+            <span
+              class="iconify"
+              data-icon="bx:bx-lock-open-alt"
+              data-inline="false"
             />
           </template>
           <template slot="append">
@@ -124,11 +138,11 @@
             style="width: 100%;"
             :disabled="!accept"
           >
-            <v-img
-              src="@/assets/svg/users.svg"
-              max-width="21px"
-              max-height="21px"
+            <span
+              class="iconify"
               style="margin-right: 8px;"
+              data-icon="feather:users"
+              data-inline="false"
             />
             Создать аккаунт
           </v-btn>
@@ -139,53 +153,35 @@
 </template>
 
 <script>
-  import { validUsername } from '@/utils/validate'
   import { mapGetters } from 'vuex'
 
   export default {
     data () {
-      const validateUsername = (rule, value, callback) => {
-        if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
-        } else {
-          callback()
-        }
-      }
-      const validatePassword = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
-        } else {
-          callback()
-        }
-      }
       return {
-        visible1: false,
-        visible2: false,
-        accept: false,
-        valid: true,
-        merchantDialog: false,
         form: {
           email: null,
           phone: null,
           password: null,
         },
-        loginRules: {
-          username: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validateUsername,
-            },
-          ],
-          password: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validatePassword,
-            },
-          ],
-        },
-        passwordType: 'password',
+        valid: true,
+        visible1: false,
+        visible2: false,
+        accept: false,
+        emailRules: [
+          v => !!v || 'E-mail обязателен',
+          v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+        ],
+        phoneRules: [
+          v => !!v || 'Телефон обязателен',
+        ],
+        passwordRules: [
+          v => !!v || 'Пароль обязателен',
+          v => /^[^а-яА-Я]+$/gm.test(v) || 'Указан недопустимый символ',
+          v => (v && v.length >= 8) || 'Пароль должен быть не менее 8 символов',
+        ],
+        passwordConfirmRules: [
+          v => v === this.form.password || 'Пароли не совпадают',
+        ],
         loading: false,
       }
     },
