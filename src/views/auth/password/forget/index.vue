@@ -1,12 +1,18 @@
 <template>
   <div class="auth-content">
-    <div class="back-button">
+    <div
+      v-if="!emailSend"
+      class="back-button"
+    >
       <back-button
         @click.native="$router.push('/login')"
       />
     </div>
 
-    <div class="auth-content-box">
+    <div
+      v-if="!emailSend"
+      class="auth-content-box"
+    >
       <div class="header-box">
         <div
           class="header"
@@ -60,6 +66,33 @@
         </div>
       </v-form>
     </div>
+
+    <div
+      v-else
+      class="auth-content-box"
+    >
+      <v-img
+        src="@/assets/svg/auth-forget-mail-send.svg"
+        width="215px"
+        height="215px"
+        style="margin: 0 auto;"
+      />
+      <div
+        class="header-box"
+        style="text-align: center;"
+      >
+        <div
+          class="header"
+        >
+          Письмо отправлено
+        </div>
+        <div
+          class="header-text"
+        >
+          На указанный электронный адрес выслано письмо.<br>Перейдите по ссылке для смены пароля.
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -84,6 +117,7 @@
           v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
         ],
         loading: false,
+        emailSend: false,
       }
     },
     computed: {
@@ -125,7 +159,7 @@
           this.loading = true
 
           await this.$store.dispatch('auth/EmailLogin', user)
-          this.afterLoginSuccess()
+          this.emailSend = true
         } finally {
           this.loading = false
         }

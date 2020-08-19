@@ -1,6 +1,9 @@
 <template>
   <div class="auth-content">
-    <div class="auth-content-box">
+    <div
+      v-if="!passwordChanged"
+      class="auth-content-box"
+    >
       <div class="header-box">
         <div
           class="header"
@@ -96,6 +99,47 @@
         </div>
       </v-form>
     </div>
+
+    <div
+      v-else
+      class="auth-content-box"
+    >
+      <v-img
+        src="@/assets/svg/auth-side-password-changed.svg"
+        width="92px"
+        height="79px"
+        style="margin: 0 auto 34px auto;"
+      />
+      <div
+        class="header-box"
+        style="text-align: center;"
+      >
+        <div
+          class="header"
+        >
+          Пароль изменен!
+        </div>
+        <div
+          class="header-text"
+        >
+          Используйте новый пароль для следующего входа<br>в свой личный кабинет
+        </div>
+      </div>
+      <div style="text-align: center;">
+        <v-btn
+          color="primary"
+          @click="toRoute('/login/email')"
+        >
+          <span
+            class="iconify"
+            style="margin-right: 8px;"
+            data-icon="ion:log-out-outline"
+            data-inline="false"
+          />
+          Войти в аккаунт
+        </v-btn>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -120,6 +164,7 @@
           v => v === this.form.password || 'Пароли не совпадают',
         ],
         loading: false,
+        passwordChanged: false,
       }
     },
     computed: {
@@ -161,25 +206,9 @@
           this.loading = true
 
           await this.$store.dispatch('auth/EmailLogin', user)
-          this.afterLoginSuccess()
+          this.passwordChanged = true
         } finally {
           this.loading = false
-        }
-      },
-
-      afterLoginSuccess () {
-        // выбор merchant'а, если их несколько или вход, т.к. токен уже содержит merchant_id
-        // console.log("afterLoginSuccess", this.merchants);
-        this.showFields = false
-        if (this.auth.merchant) {
-          // if (this.merchant.show_modal) {
-          //   this.$router.push('/wizard')
-          // } else if (this.$route !== '/office') {
-          //   this.$router.push('/office')
-          // }
-          this.$router.push('/dashboard')
-        } else if (this.merchants && this.merchants.length > 1) {
-          this.merchantDialog = true
         }
       },
       getOtherQuery (query) {
