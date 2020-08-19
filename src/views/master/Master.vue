@@ -82,6 +82,7 @@
               <div class="right-block">
                 <v-text-field
                   v-model="program.companyName"
+                  :validate-on-blur="true"
                   placeholder="Название комании"
                   outlined
                   counter="20"

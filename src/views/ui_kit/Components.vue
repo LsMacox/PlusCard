@@ -76,9 +76,7 @@
           <v-btn
             color="primary"
           >
-            <v-icon left>
-              mdi-plus-circle-outline
-            </v-icon>
+            <span class="iconify" data-icon="ant-design:plus-circle-outlined" data-inline="false"></span>
             Leading icon
           </v-btn>
         </div>
@@ -117,9 +115,7 @@
           <v-btn
             color="secondary"
           >
-            <v-icon left>
-              mdi-plus-circle-outline
-            </v-icon>
+            <span class="iconify" data-icon="ant-design:plus-circle-outlined" data-inline="false"></span>
             Secondary btn
           </v-btn>
         </div>
@@ -237,16 +233,22 @@
         <div>
           <v-text-field
             placeholder="prepend-icon"
-            prepend-inner-icon="mdi-calendar-blank-outline"
             outlined
-          />
+          >
+           <template slot="prepend-inner">
+             <span class="iconify" data-icon="ion:mail-outline" data-inline="false"/>
+           </template>
+          </v-text-field>
         </div>
         <div class="mt-1">
           <v-text-field
             placeholder="append-icon"
-            append-icon="mdi-calendar-blank-outline"
             outlined
-          />
+          >
+            <template slot="append">
+              <span class="iconify" data-icon="carbon:calendar" data-inline="false"></span>
+            </template>
+          </v-text-field>
         </div>
         <div class="mt-1 mb-1">
           <v-text-field
@@ -345,6 +347,7 @@
 
     data () {
       return {
+        svgIcon: require('@/assets/svg/building.svg'),
         items: [
           {
             text: 'Russia',

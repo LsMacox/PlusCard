@@ -1,0 +1,56 @@
+@import '../variables'
+
+.v-input.theme--light.v-text-field.v-text-field--outlined
+  border-radius: 12px
+  margin-top: 0 !important
+  .v-text-field__slot
+    input
+      font-style: normal
+      font-weight: 500
+      font-size: 15px
+      line-height: 21px
+      color: $neutral-900
+      &::placeholder
+        color: $neutral-600 !important
+  .v-input__control
+    .v-input__slot
+      fieldset
+        border: 1px solid $neutral-400
+      .v-input__prepend-inner
+        .iconify
+          width: 21px
+          height: 21px
+          color: $neutral-500
+      .v-input__append-inner
+        .iconify
+          width: 21px
+          height: 21px
+          color: $neutral-500
+    .v-text-field__details
+      .v-messages
+        color: $neutral-500 !important
+  &:hover
+    .v-input__control
+      .v-input__slot
+        fieldset
+          border: 1px solid $neutral-400
+  &.v-input--is-focused
+    .v-input__control
+      .v-input__slot
+        fieldset
+          border: 1px solid $primary-base
+        .v-input__prepend-inner
+          .iconify
+            color: $secondary-base
+        .v-input__append-inner
+          .iconify
+            color: $neutral-500
+  &.error--text
+    .v-input__control
+      .v-input__slot
+        fieldset
+          border: 1px solid $error-500
+      .v-text-field__details
+        .v-messages
+          color: $error-500 !important
+

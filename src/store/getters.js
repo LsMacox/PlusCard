@@ -2,7 +2,6 @@ const getters = {
   auth: state => state.auth,
   drawer: state => state.app.drawer,
   loadingRequest: state => state.app.loadingRequest,
-
   // barColor: state => state.app.barColor,
   // barImage: state => state.app.barImage,
   // sidebar: state => state.app.sidebar,
