@@ -1,6 +1,18 @@
 <template>
   <div class="auth-content">
-    <div class="auth-content-box">
+    <div
+      v-if="selectMerchant"
+      class="back-button"
+    >
+      <back-button
+        @click.native="selectMerchant = false"
+      />
+    </div>
+
+    <div
+      v-if="!selectMerchant"
+      class="auth-content-box"
+    >
       <div class="header-box">
         <div style="display: flex;">
           <div
@@ -123,13 +135,40 @@
         </div>
       </v-form>
     </div>
+    <div
+      v-else
+      class="auth-content-box"
+    >
+      <div class="merchant-select-header">
+        Продолжить работу:
+      </div>
+      <div
+        v-for="(item, i) in merchants"
+        :key="i"
+        class="merchant-select-block"
+        @click="login(item.id)"
+      >
+        <v-img
+          src="@/assets/svg/plus_logo_sm.svg"
+          max-width="46px"
+          height="46px"
+        />
+        <div class="merchant-select-block-text">
+          {{ item.name }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
+  import BackButton from '@/views/auth/components/BackButton'
 
   export default {
+    components: {
+      BackButton,
+    },
     data () {
       return {
         form: {
@@ -147,35 +186,40 @@
           v => /^[^а-яА-Я]+$/gm.test(v) || 'Указан недопустимый символ',
         ],
         loading: false,
+        selectMerchant: false,
       }
     },
     computed: {
-      ...mapGetters('auth', [
+      ...mapGetters('auth/auth', [
         'merchants',
         'merchant',
         'device',
       ]),
     },
     mounted () {
-      this.$store.dispatch('auth/InitDevice')
+      this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
-      async login () {
+      async login (merchId = null) {
         const user = {
           email: this.form.email,
           password: this.form.password,
           device_id: this.device.id,
           device_token: this.device.token,
           device_type: this.device.type,
+          merch_id: merchId,
         }
+        console.log(user)
         try {
           this.loading = true
 
-          await this.$store.dispatch('auth/EmailLogin', user)
-          if (this.merchants.length > 1) this.toRoute('/login/company')
+          await this.$store.dispatch('auth/email/login', user)
+          // выбор мерчанта для логина или сразу логин
+          if (this.merchants.length > 1) this.selectMerchant = true
+          else this.toRoute('/dashboard')
         } finally {
           this.loading = false
         }
