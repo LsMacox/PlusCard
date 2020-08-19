@@ -1,12 +1,18 @@
 <template>
   <div class="auth-content">
-    <div class="back-button">
+    <div
+      v-if="!emailSend"
+      class="back-button"
+    >
       <back-button
         @click.native="$router.push('/login')"
       />
     </div>
 
-    <div class="auth-content-box">
+    <div
+      v-if="!emailSend"
+      class="auth-content-box"
+    >
       <div class="header-box">
         <div
           class="header"
@@ -30,38 +36,67 @@
           class="auth-text-field"
           outlined
           required
+          :rules="emailRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/mail-outline.svg"
+            <span
+              class="iconify"
+              data-icon="ion:mail-outline"
+              data-inline="false"
             />
           </template>
         </v-text-field>
 
         <div
           class="auth-form-action"
-          style="margin-top: 34px;"
         >
           <v-btn
             color="primary"
             style="width: 100%;"
           >
-            <v-img
-              src="@/assets/svg/lock-open-outline-white.svg"
-              max-width="21px"
-              max-height="21px"
+            <span
+              class="iconify"
               style="margin-right: 8px;"
+              data-icon="bx:bx-lock-open-alt"
+              data-inline="false"
             />
             Восстановить пароль
           </v-btn>
         </div>
       </v-form>
     </div>
+
+    <div
+      v-else
+      class="auth-content-box"
+    >
+      <v-img
+        src="@/assets/svg/auth-forget-mail-send.svg"
+        width="215px"
+        height="215px"
+        style="margin: 0 auto;"
+      />
+      <div
+        class="header-box"
+        style="text-align: center;"
+      >
+        <div
+          class="header"
+        >
+          Письмо отправлено
+        </div>
+        <div
+          class="header-text"
+        >
+          На указанный электронный адрес выслано письмо.<br>Перейдите по ссылке для смены пароля.
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-  import { validUsername } from '@/utils/validate'
   import { mapGetters } from 'vuex'
   import BackButton from '@/views/auth/components/BackButton'
 
@@ -70,46 +105,19 @@
       BackButton,
     },
     data () {
-      const validateUsername = (rule, value, callback) => {
-        if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
-        } else {
-          callback()
-        }
-      }
-      const validatePassword = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
-        } else {
-          callback()
-        }
-      }
       return {
-        visible1: false,
-        valid: true,
-        merchantDialog: false,
         form: {
           email: null,
           password: null,
         },
-        loginRules: {
-          username: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validateUsername,
-            },
-          ],
-          password: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validatePassword,
-            },
-          ],
-        },
-        passwordType: 'password',
+        valid: true,
+        visible1: false,
+        emailRules: [
+          v => !!v || 'E-mail обязателен',
+          v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+        ],
         loading: false,
+        emailSend: false,
       }
     },
     computed: {
@@ -151,7 +159,7 @@
           this.loading = true
 
           await this.$store.dispatch('auth/EmailLogin', user)
-          this.afterLoginSuccess()
+          this.emailSend = true
         } finally {
           this.loading = false
         }

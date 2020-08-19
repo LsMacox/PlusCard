@@ -61,10 +61,6 @@ export default new Router({
           path: 'phone',
           component: () => import('@/views/auth/login/phone/index'),
         },
-        {
-          path: 'company',
-          component: () => import('@/views/auth/login/company/index'),
-        },
       ],
     },
     {
