@@ -4,6 +4,26 @@
     fluid
     tag="section"
   >
+    <v-select
+      v-model="selectedFruits"
+      :items="fruits"
+      placeholder="multiple select"
+      outlined
+      multiple
+      :ripple="false"
+    >
+      <template v-slot:item="data">
+        <div style="display: flex; align-items: center;">
+          <div class="active" v-if="data.attrs.inputValue" :key="data.item.text + 'active'">
+            <span class="iconify" data-icon="eva:checkmark-square-2-fill" data-inline="false"></span>
+          </div>
+          <div v-else :key="data.item.text + 'inactive'"  class="inactive" >
+            <span class="iconify" data-icon="eva:square-outline" data-inline="false"></span>
+          </div>
+          <span>{{ data.item.text +  ' ' + data.attrs.inputValue}}</span>
+        </div>
+      </template>
+    </v-select>
     <v-row>
       <v-col
         cols="12"
@@ -335,7 +355,19 @@
           placeholder="multiple select"
           outlined
           multiple
-          />
+        >
+          <template v-slot:item="data">
+            <div style="display: flex; align-items: center;">
+              <div class="active" v-if="data.attrs.inputValue" :key="data.item.text + 'active'">
+                <span class="iconify" data-icon="eva:checkmark-square-2-fill" data-inline="false"></span>
+              </div>
+              <div v-else :key="data.item.text + 'inactive'"  class="inactive" >
+                <span class="iconify" data-icon="eva:square-outline" data-inline="false"></span>
+              </div>
+              <span>{{ data.item.text +  ' ' + data.attrs.inputValue}}</span>
+            </div>
+          </template>
+        </v-select>
       </v-col>
     </v-row>
   </v-container>
@@ -387,6 +419,10 @@
       },
     },
     methods: {
+      getIcon(bool){
+        if (bool) return '<span class="iconify" data-icon="eva:checkmark-square-2-fill" data-inline="false"></span>'
+        else return  '<span class="iconify" data-icon="eva:square-outline" data-inline="false"></span>'
+      },
       toggle () {
         this.$nextTick(() => {
           if (this.likesAllFruit) {

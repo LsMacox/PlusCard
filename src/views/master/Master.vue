@@ -274,7 +274,6 @@
                       outlined
                       class="shop-card__city_select"
                       style="width: 380px;"
-                      multiple
                       v-model="newShop.city"
                     >
                       <template slot="prepend-inner">
@@ -282,13 +281,17 @@
                           <v-img src="@/assets/svg/building.svg" />
                         </div>
                       </template>
-                      <template slot="append">
-                        <v-icon
-                          color="#4776E6"
-                          style="color: #4776E6 !important"
-                        >
-                          fa-caret-down
-                        </v-icon>
+
+                      <template v-slot:item="data">
+                        <div style="display: flex; align-items: center;">
+                          <div class="active" v-if="data.attrs.inputValue" :key="data.item + 'active'">
+                            <span class="iconify" data-icon="eva:checkmark-square-2-fill" data-inline="false"></span>
+                          </div>
+                          <div v-else :key="data.item + 'inactive'"  class="inactive" >
+                            <span class="iconify" data-icon="eva:square-outline" data-inline="false"></span>
+                          </div>
+                          <span>{{ data.item }}</span>
+                        </div>
                       </template>
                     </v-select>
                   </div>
@@ -328,14 +331,14 @@
                       <div class="work-time__inputs" v-for="(worktime, index) in newShop.workTimes" :key="index">
                         <div class="inputs__first">
                           <v-text-field
-                            placeholder="С"
+                            placeholder="00:00"
                             v-mask="'##:##'"
                             outlined
                             style="width: 74px; margin-right: 4px"
                             v-model="worktime.startTime"
                           />
                         </div>
-                        -
+                        <div class="inputs__separator" style="height: 50px">-</div>
                         <div class="inputs__second">
                           <v-text-field
                             placeholder="По"
@@ -348,21 +351,26 @@
                         <div class="inputs__third">
                           <v-select
                             v-model="worktime.days"
-                            :items="getWorkDays(index)"
-                            :item-disabled="worktime.days"
+                            :items="days"
+                            item-value="id"
                             placeholder="Дни"
                             outlined
                             multiple
                             style="width: 155px;margin-right: 18px"
                           >
                             <template v-slot:selection="{ item, index }">
-                              <v-chip v-if="index === 0">
-                                <span>{{ item }}</span>
-                              </v-chip>
-                              <span
-                                v-if="index === 1"
-                                class="grey--text caption"
-                              >(+{{ worktime.days.length - 1 }} ещё)</span>
+                                <span>{{ item.shortName }}</span>
+                            </template>
+                            <template v-slot:item="data">
+                              <div style="display: flex; align-items: center;">
+                                <div class="active" v-if="data.attrs.inputValue">
+                                  <span class="iconify" data-icon="eva:checkmark-square-2-fill" data-inline="false"></span>
+                                </div>
+                                <div v-else :key="data.item.id"  class="inactive" >
+                                  <span class="iconify" data-icon="eva:square-outline" data-inline="false"></span>
+                                </div>
+                                <span>{{ data.item.fullName + JSON.stringify(data.attrs)}}</span>
+                              </div>
                             </template>
                           </v-select>
                         </div>
@@ -372,11 +380,9 @@
                             :text="true"
                             style="padding: 0 !important;"
                             @click="addWorkTime()"
+                            :ripple="false"
                           >
-                            <v-img
-                              src="@/assets/svg/plus-circle.svg"
-                              style="margin-right: 5px"
-                            />
+                            <span class="iconify" data-icon="uil:plus-circle" data-inline="false" width="21px" heigth="21px"></span>
                           </v-btn>
                         </div>
                       </div>
@@ -396,7 +402,7 @@
                               :ref="'from'+i"
                             />
                           </div>
-                          -
+                          <div class="inputs__separator" style="height: 50px">-</div>
                           <div class="inputs__second">
                             <v-text-field
                               placeholder="По"
@@ -409,22 +415,29 @@
                           <div class="inputs__third">
                             <v-select
                               v-model="breaktime.days"
-                              :items="items"
+                              :items="days"
                               placeholder="Дни"
+                              item-value="id"
                               outlined
                               multiple
                               style="width: 155px;margin-right: 18px"
                             >
                               <template v-slot:selection="{ item, index }">
-                                <v-chip v-if="index === 0">
-                                  <span>{{ item }}</span>
-                                </v-chip>
-                                <span
-                                  v-if="index === 1"
-                                  class="grey--text caption"
-                                >(+{{ breaktime.days.length - 1 }} ещё)</span>
+                                <span>{{ item.shortName }}</span>
+                              </template>
+                              <template v-slot:item="data">
+                                <div style="display: flex; align-items: center;">
+                                  <div class="active" v-if="data.attrs.inputValue" :key="data.item.id + 100">
+                                    <span class="iconify" data-icon="eva:checkmark-square-2-fill" data-inline="false"></span>
+                                  </div>
+                                  <div v-else :key="data.item.id"  class="inactive" >
+                                    <span class="iconify" data-icon="eva:square-outline" data-inline="false"></span>
+                                  </div>
+                                  <span>{{ data.item.fullName}}</span>
+                                </div>
                               </template>
                             </v-select>
+
                           </div>
                           <div class="inputs__action" v-if="newShop.breakTimes.length - 1 === i">
                             <v-btn
@@ -432,11 +445,9 @@
                               :text="true"
                               style="padding: 0 !important;"
                               @click="addBreakTime()"
+                              :ripple="false"
                             >
-                              <v-img
-                                src="@/assets/svg/plus-circle.svg"
-                                style="margin-right: 5px"
-                              />
+                              <span class="iconify" data-icon="uil:plus-circle" data-inline="false" width="21px" heigth="21px"></span>
                             </v-btn>
                           </div>
                       </div>
@@ -460,7 +471,8 @@ line-height: 17px;"
                     <div class="action__save">
                       <v-btn
                         color="secondary"
-                        style="width: 265px; height: 41px; margin-right: 0"
+                        small
+                        style="width: 265px; margin-right: 0"
                       >
                         Сохранить
                       </v-btn>
@@ -469,7 +481,7 @@ line-height: 17px;"
                 </div>
                 <div class="content-block__add">
                   <v-btn
-                    color="info"
+                    color="primary"
                     :text="true"
                     style="padding: 0 !important;"
                     @click="addShop()"
@@ -575,7 +587,15 @@ line-height: 17px;"
         newBreakTime: [],
         cardBg: require('@/assets/svg/Shine.svg'),
         items: ['ПН','ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'],
-        days: ['ПН','ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'],
+        days: [
+          { id: 0, shortName: 'ПН', fullName: 'Понедельник' },
+          { id: 1, shortName: 'ВТ', fullName: 'Вторник' },
+          { id: 2, shortName: 'СР', fullName: 'Среда' },
+          { id: 3, shortName: 'ЧТ', fullName: 'Четверг' },
+          { id: 4, shortName: 'ПТ', fullName: 'Пятница' },
+          { id: 5, shortName: 'СБ', fullName: 'Суббота' },
+          { id: 6, shortName: 'ВС', fullName: 'Воскресенье' }
+          ],
         settings: {
           apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
           lang: 'ru_RU',
@@ -892,7 +912,7 @@ line-height: 17px;"
   display: flex
   flex-direction: row
   position: relative
-  z-index: 100
+  z-index: 1000
   background: #fff
   @media(max-width: 992px)
     flex-direction: column
@@ -987,6 +1007,16 @@ line-height: 17px;"
               flex-direction: row
               align-items: center
               margin-top: 12px
+              .inputs__action
+                height: 50px
+                display: flex
+                margin: 0
+                align-items: flex-start
+                position: relative
+                left: -25px
+                .iconify
+                  width: 21px
+                  height: 21px
 
           .break-time
             margin-top: 24px
@@ -998,6 +1028,17 @@ line-height: 17px;"
               flex-direction: row
               align-items: center
               margin-top: 12px
+              .inputs__action
+                height: 50px
+                display: flex
+                margin: 0
+                align-items: flex-start
+                position: relative
+                left: -25px
+                .iconify
+                  width: 21px
+                  height: 21px
+
 
 
 </style>
