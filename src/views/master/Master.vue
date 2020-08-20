@@ -238,6 +238,7 @@
                   #FFFFFF;
                   marker-id="1"
                   :coords="coords"
+                  :icon="markerIcon"
                 />
               </yandex-map>
             </div>
@@ -744,22 +745,22 @@ line-height: 17px;"
     directives: { mask },
     data () {
       return {
-        markerIcon: {
-          layout: 'default#imageWithContent',
-          content: '123 v12',
-          contentOffset: [0, 15],
-          contentLayout: '<div class="ymapMarker">$[properties.iconContent]</div>',
-        },
-        actionsShow: false,
         // markerIcon: {
         //   layout: 'default#imageWithContent',
-        //   imageHref: '',
-        //   imageSize: [43, 43],
-        //   imageOffset: [0, 0],
         //   content: '123 v12',
         //   contentOffset: [0, 15],
-        //   contentLayout: '<div class="markerC lass" style="background: red; width: 50px; color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>'
+        //   contentLayout: '<div class="ymapMarker">$[properties.iconContent]</div>',
         // },
+        actionsShow: false,
+        markerIcon: {
+          layout: 'default#imageWithContent',
+          imageHref: require('@/assets/svg/Bottom-tail.svg'),
+          imageSize: [150, 55],
+          imageOffset: [-75, -50],
+          content: '123 v12',
+          contentOffset: [0, 0],
+          contentLayout: '<div class="markerC lass" style="display: flex; align-self: center; justify-content:center; width: 150px; height: 50px; color: #FFFFFF; font-weight: bold; text-align: center">$[properties.iconContent]</div>',
+        },
         newShopActive: false,
         shop: { lat: '', lng: '' },
         shops: [],
