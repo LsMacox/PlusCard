@@ -43,6 +43,7 @@
 
         <v-text-field
           v-model="form.phone"
+          v-mask="'+7 (###) ###-##-##'"
           placeholder="Введите телефон"
           class="auth-text-field"
           outlined
@@ -136,7 +137,9 @@
           <v-btn
             color="primary"
             style="width: 100%;"
-            :disabled="!accept"
+            :loading="loading"
+            :disabled="!valid && !accept"
+            @click="submit()"
           >
             <span
               class="iconify"
@@ -149,13 +152,27 @@
         </div>
       </v-form>
     </div>
+
+    <vue-recaptcha
+      ref="recaptcha"
+      size="invisible"
+      :sitekey="$store.state.RECAPTCHA_SITE_KEY"
+      @verify="registration"
+      @expired="onCaptchaExpired"
+    />
   </div>
 </template>
 
 <script>
+  import { mask } from 'vue-the-mask'
+  import VueRecaptcha from 'vue-recaptcha'
   import { mapGetters } from 'vuex'
 
   export default {
+    components: {
+      VueRecaptcha,
+    },
+    directives: { mask },
     data () {
       return {
         form: {
@@ -199,17 +216,33 @@
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
-      async registration () {
+      onCaptchaExpired () {
+        this.$refs.recaptcha.reset()
+      },
+      clearPhoneMask (p) {
+        if (p) {
+          p = String(p).match(/\d/g)
+          if (p) p = p.join('')
+        }
+        return p
+      },
+      submit () {
+        this.$refs.recaptcha.execute()
+      },
+      async registration (recaptchaToken) {
         const user = {
           email: this.form.email,
+          phone: this.clearPhoneMask(this.form.phone),
           password: this.form.password,
-          device_id: this.auth.device.id,
-          device_token: this.auth.device.token,
-          device_type: this.auth.device.type,
+          device_id: this.device.id,
+          device_token: this.device.token,
+          device_type: this.device.type,
+          recaptcha_token: recaptchaToken,
         }
+        console.log(user)
         try {
           this.loading = true
-          await this.$store.dispatch('auth/EmailLogin', user)
+          await this.$store.dispatch('auth/email/registration', user)
         } finally {
           this.loading = false
         }
