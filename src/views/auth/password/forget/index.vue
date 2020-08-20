@@ -121,10 +121,14 @@
       }
     },
     computed: {
-      ...mapGetters(['auth']),
+      ...mapGetters('auth/auth', [
+        'merchants',
+        'merchant',
+        'device',
+      ]),
     },
     mounted () {
-      this.$store.dispatch('auth/InitDevice')
+      this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
       toRoute (path) {

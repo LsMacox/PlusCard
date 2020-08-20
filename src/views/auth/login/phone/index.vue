@@ -37,6 +37,7 @@
       >
         <v-text-field
           v-model="form.phone"
+          v-mask="'+7 (###) ###-##-##'"
           placeholder="Введите телефон"
           class="auth-text-field"
           outlined
@@ -61,6 +62,8 @@
             <v-btn
               color="primary"
               style="width: 100%;"
+              :loading="loading"
+              :disabled="!valid"
               @click="login()"
             >
               <v-img
@@ -119,9 +122,11 @@
 </template>
 
 <script>
+  import { mask } from 'vue-the-mask'
   import { mapGetters } from 'vuex'
 
   export default {
+    directives: { mask },
     data () {
       return {
         form: {
@@ -133,6 +138,7 @@
           v => !!v || 'Телефон обязателен',
         ],
         loading: false,
+        confirmCode: false,
         selectMerchant: false,
       }
     },
@@ -150,10 +156,16 @@
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
+      clearPhoneMask (p) {
+        if (p) {
+          p = String(p).match(/\d/g)
+          if (p) p = p.join('')
+        }
+        return p
+      },
       async login () {
         const user = {
-          email: this.form.email,
-          password: this.form.password,
+          phone: this.clearPhoneMask(this.form.phone),
           device_id: this.device.id,
           device_token: this.device.token,
           device_type: this.device.type,
@@ -161,7 +173,6 @@
         console.log(user)
         try {
           this.loading = true
-
           await this.$store.dispatch('auth/phone/login', user)
           // выбор мерчанта для логина или сразу логин
           if (this.merchants.length > 1) this.selectMerchant = true

@@ -10,7 +10,6 @@ const mutations = {
 
 const actions = {
 
-    // EMAIL LOGIN
     async login ({ commit, state }, user) {
         // eslint-disable-next-line no-useless-catch
         try {
