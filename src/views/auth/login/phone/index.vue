@@ -1,18 +1,6 @@
 <template>
   <div class="auth-content">
-    <div
-      v-if="selectMerchant"
-      class="back-button"
-    >
-      <back-button
-        @click.native="selectMerchant = false"
-      />
-    </div>
-
-    <div
-      v-if="!selectMerchant"
-      class="auth-content-box"
-    >
+    <div class="auth-content-box">
       <div class="header-box">
         <div style="display: flex;">
           <div
@@ -95,29 +83,6 @@
         </div>
       </v-form>
     </div>
-    <div
-      v-else
-      class="auth-content-box"
-    >
-      <div class="merchant-select-header">
-        Продолжить работу:
-      </div>
-      <div
-        v-for="(item, i) in merchants"
-        :key="i"
-        class="merchant-select-block"
-        @click="login(item.id)"
-      >
-        <v-img
-          src="@/assets/svg/plus_logo_sm.svg"
-          max-width="46px"
-          height="46px"
-        />
-        <div class="merchant-select-block-text">
-          {{ item.name }}
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -138,7 +103,6 @@
           v => !!v || 'Телефон обязателен',
         ],
         loading: false,
-        confirmCode: false,
         selectMerchant: false,
       }
     },
@@ -174,9 +138,7 @@
         try {
           this.loading = true
           await this.$store.dispatch('auth/phone/login', user)
-          // выбор мерчанта для логина или сразу логин
-          if (this.merchants.length > 1) this.selectMerchant = true
-          else this.toRoute('/dashboard')
+          this.toRoute('/login/phone/confirm')
         } finally {
           this.loading = false
         }
