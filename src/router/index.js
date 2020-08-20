@@ -109,7 +109,7 @@ export default new Router({
     {
       path: '/',
       component: CabinetLayout,
-      redirect: '/components',
+      redirect: '/dashboard',
       meta: { auth: true },
       children: [
         {

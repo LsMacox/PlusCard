@@ -90,8 +90,7 @@
                   :rules="[rules.required, rules.counter]"
                   maxlength="20"
                   @input="program.companyName.length ? currentStep = 1 : currentStep = 0"
-                >
-                </v-text-field>
+                />
               </div>
             </div>
             <div class="content-block content-block__second">
@@ -239,7 +238,6 @@
                   marker-id="1"
                   :coords="coords"
                 />
-
               </yandex-map>
             </div>
             <div class="shop-block__right">
@@ -257,24 +255,26 @@
                   Если у вас несколько точек продаж - внесите их контактные <br>данные и режимы работы, чтобы клиенты
                   могли связаться с <br>конкретным магазином и уточненить свои вопросы.
                 </div>
-                <div class="content-block__shop shop-card" v-if="newShopActive">
+                <div class="content-block__shop complete-shop" />
+                <div
+                  v-if="newShopActive"
+                  class="content-block__shop shop-card"
+                >
                   <div class="shop-card__name">
                     <v-text-field
+                      v-model="newShop.name"
                       class="shop-card__name_input"
                       placeholder="Введите название точки"
-                      v-model="newShop.name"
-                    >
-
-                    </v-text-field>
+                    />
                   </div>
                   <div class="shop-card__city">
                     <v-select
+                      v-model="newShop.city"
                       :items="items"
                       placeholder="Выберите город"
                       outlined
                       class="shop-card__city_select"
                       style="width: 380px;"
-                      v-model="newShop.city"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -284,11 +284,27 @@
 
                       <template v-slot:item="data">
                         <div style="display: flex; align-items: center;">
-                          <div class="active" v-if="data.attrs.inputValue" :key="data.item + 'active'">
-                            <span class="iconify" data-icon="eva:checkmark-square-2-fill" data-inline="false"></span>
+                          <div
+                            v-if="data.attrs.inputValue"
+                            :key="data.item + 'active'"
+                            class="active"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="eva:checkmark-square-2-fill"
+                              data-inline="false"
+                            />
                           </div>
-                          <div v-else :key="data.item + 'inactive'"  class="inactive" >
-                            <span class="iconify" data-icon="eva:square-outline" data-inline="false"></span>
+                          <div
+                            v-else
+                            :key="data.item + 'inactive'"
+                            class="inactive"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="eva:square-outline"
+                              data-inline="false"
+                            />
                           </div>
                           <span>{{ data.item }}</span>
                         </div>
@@ -297,10 +313,10 @@
                   </div>
                   <div class="shop-card__input shop-card__address">
                     <v-text-field
+                      v-model="newShop.address"
                       placeholder="Введите адрес "
                       outlined
                       style="width: 380px"
-                      v-model="newShop.address"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -311,10 +327,10 @@
                   </div>
                   <div class="shop-card__input shop-card__phone">
                     <v-text-field
+                      v-model="newShop.phone"
                       placeholder="Введите телефон"
                       outlined
                       style="width: 380px"
-                      v-model="newShop.phone"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -328,24 +344,33 @@
                       <div class="work-time__title body-m-semibold">
                         Рабочее время
                       </div>
-                      <div class="work-time__inputs" v-for="(worktime, index) in newShop.workTimes" :key="index">
+                      <div
+                        v-for="(worktime, globalIndex) in newShop.workTimes"
+                        :key="globalIndex"
+                        class="work-time__inputs"
+                      >
                         <div class="inputs__first">
                           <v-text-field
-                            placeholder="00:00"
+                            v-model="worktime.startTime"
                             v-mask="'##:##'"
+                            placeholder="00:00"
                             outlined
                             style="width: 74px; margin-right: 4px"
-                            v-model="worktime.startTime"
                           />
                         </div>
-                        <div class="inputs__separator" style="height: 50px">-</div>
+                        <div
+                          class="inputs__separator"
+                          style="height: 50px"
+                        >
+                          -
+                        </div>
                         <div class="inputs__second">
                           <v-text-field
-                            placeholder="По"
+                            v-model="worktime.endTime"
                             v-mask="'##:##'"
+                            placeholder="По"
                             outlined
                             style="width: 74px;  margin: 0 16px 0 4px"
-                            v-model="worktime.endTime"
                           />
                         </div>
                         <div class="inputs__third">
@@ -358,31 +383,60 @@
                             multiple
                             style="width: 155px;margin-right: 18px"
                           >
-                            <template v-slot:selection="{ item, index }">
-                                <span>{{ item.shortName }}</span>
+                            <template v-slot:selection="{item, index}">
+                              <div
+                                v-if="index === 0"
+                                style="font-size: 12px"
+                              >
+                                {{ getSelectedWorkDays(globalIndex) }}
+                              </div>
                             </template>
                             <template v-slot:item="data">
                               <div style="display: flex; align-items: center;">
-                                <div class="active" v-if="data.attrs.inputValue">
-                                  <span class="iconify" data-icon="eva:checkmark-square-2-fill" data-inline="false"></span>
+                                <div
+                                  v-if="data.attrs.inputValue"
+                                  class="active"
+                                >
+                                  <span
+                                    class="iconify"
+                                    data-icon="eva:checkmark-square-2-fill"
+                                    data-inline="false"
+                                  />
                                 </div>
-                                <div v-else :key="data.item.id"  class="inactive" >
-                                  <span class="iconify" data-icon="eva:square-outline" data-inline="false"></span>
+                                <div
+                                  v-else
+                                  :key="data.item.id"
+                                  class="inactive"
+                                >
+                                  <span
+                                    class="iconify"
+                                    data-icon="eva:square-outline"
+                                    data-inline="false"
+                                  />
                                 </div>
-                                <span>{{ data.item.fullName + JSON.stringify(data.attrs)}}</span>
+                                <span>{{ data.item.fullName }}</span>
                               </div>
                             </template>
                           </v-select>
                         </div>
-                        <div class="inputs__action" v-if="newShop.workTimes.length - 1 === index">
+                        <div
+                          v-if="newShop.workTimes.length - 1 === globalIndex"
+                          class="inputs__action"
+                        >
                           <v-btn
                             color="secondary"
                             :text="true"
                             style="padding: 0 !important;"
-                            @click="addWorkTime()"
                             :ripple="false"
+                            @click="addWorkTime()"
                           >
-                            <span class="iconify" data-icon="uil:plus-circle" data-inline="false" width="21px" heigth="21px"></span>
+                            <span
+                              class="iconify"
+                              data-icon="uil:plus-circle"
+                              data-inline="false"
+                              width="21px"
+                              heigth="21px"
+                            />
                           </v-btn>
                         </div>
                       </div>
@@ -391,65 +445,103 @@
                       <div class="break-time__title body-m-semibold">
                         Перерыв
                       </div>
-                      <div class="break-time__inputs" v-for="(breaktime, i) in newShop.breakTimes" :key="i">
-                          <div class="inputs__first">
-                            <v-text-field
-                              placeholder="С"
-                              v-mask="'##:##'"
-                              outlined
-                              style="width: 74px; margin-right: 4px"
-                              v-model="breaktime.startTime"
-                              :ref="'from'+i"
-                            />
-                          </div>
-                          <div class="inputs__separator" style="height: 50px">-</div>
-                          <div class="inputs__second">
-                            <v-text-field
-                              placeholder="По"
-                              v-mask="'##:##'"
-                              outlined
-                              style="width: 74px;  margin: 0 16px 0 4px"
-                              v-model="breaktime.endTime"
-                            />
-                          </div>
-                          <div class="inputs__third">
-                            <v-select
-                              v-model="breaktime.days"
-                              :items="days"
-                              placeholder="Дни"
-                              item-value="id"
-                              outlined
-                              multiple
-                              style="width: 155px;margin-right: 18px"
-                            >
-                              <template v-slot:selection="{ item, index }">
-                                <span>{{ item.shortName }}</span>
-                              </template>
-                              <template v-slot:item="data">
-                                <div style="display: flex; align-items: center;">
-                                  <div class="active" v-if="data.attrs.inputValue" :key="data.item.id + 100">
-                                    <span class="iconify" data-icon="eva:checkmark-square-2-fill" data-inline="false"></span>
-                                  </div>
-                                  <div v-else :key="data.item.id"  class="inactive" >
-                                    <span class="iconify" data-icon="eva:square-outline" data-inline="false"></span>
-                                  </div>
-                                  <span>{{ data.item.fullName}}</span>
+                      <div
+                        v-for="(breaktime, i) in newShop.breakTimes"
+                        :key="i"
+                        class="break-time__inputs"
+                      >
+                        <div class="inputs__first">
+                          <v-text-field
+                            :ref="'from'+i"
+                            v-model="breaktime.startTime"
+                            v-mask="'##:##'"
+                            placeholder="С"
+                            outlined
+                            style="width: 74px; margin-right: 4px"
+                          />
+                        </div>
+                        <div
+                          class="inputs__separator"
+                          style="height: 50px"
+                        >
+                          -
+                        </div>
+                        <div class="inputs__second">
+                          <v-text-field
+                            v-model="breaktime.endTime"
+                            v-mask="'##:##'"
+                            placeholder="По"
+                            outlined
+                            style="width: 74px;  margin: 0 16px 0 4px"
+                          />
+                        </div>
+                        <div class="inputs__third">
+                          <v-select
+                            v-model="breaktime.days"
+                            :items="days"
+                            placeholder="Дни"
+                            item-value="id"
+                            outlined
+                            multiple
+                            style="width: 155px;margin-right: 18px"
+                          >
+                            <template v-slot:selection="{item, index}">
+                              <div
+                                v-if="index === 0"
+                                style="font-size: 12px"
+                              >
+                                {{ getSelectedBreakDays(i) }}
+                              </div>
+                            </template>
+                            <template v-slot:item="data">
+                              <div style="display: flex; align-items: center;">
+                                <div
+                                  v-if="data.attrs.inputValue"
+                                  :key="data.item.id + 100"
+                                  class="active"
+                                >
+                                  <span
+                                    class="iconify"
+                                    data-icon="eva:checkmark-square-2-fill"
+                                    data-inline="false"
+                                  />
                                 </div>
-                              </template>
-                            </v-select>
-
-                          </div>
-                          <div class="inputs__action" v-if="newShop.breakTimes.length - 1 === i">
-                            <v-btn
-                              color="secondary"
-                              :text="true"
-                              style="padding: 0 !important;"
-                              @click="addBreakTime()"
-                              :ripple="false"
-                            >
-                              <span class="iconify" data-icon="uil:plus-circle" data-inline="false" width="21px" heigth="21px"></span>
-                            </v-btn>
-                          </div>
+                                <div
+                                  v-else
+                                  :key="data.item.id"
+                                  class="inactive"
+                                >
+                                  <span
+                                    class="iconify"
+                                    data-icon="eva:square-outline"
+                                    data-inline="false"
+                                  />
+                                </div>
+                                <span>{{ data.item.fullName }}</span>
+                              </div>
+                            </template>
+                          </v-select>
+                        </div>
+                        <div
+                          v-if="newShop.breakTimes.length - 1 === i"
+                          class="inputs__action"
+                        >
+                          <v-btn
+                            color="secondary"
+                            :text="true"
+                            style="padding: 0 !important;"
+                            :ripple="false"
+                            @click="addBreakTime()"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="uil:plus-circle"
+                              data-inline="false"
+                              width="21px"
+                              heigth="21px"
+                            />
+                          </v-btn>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -464,7 +556,10 @@ font-size: 13px;
 line-height: 17px;"
                         @click="cancelShop()"
                       >
-                        <v-img src="@/assets/svg/close-circle_grey.svg" style="margin-right: 6px"/>
+                        <v-img
+                          src="@/assets/svg/close-circle_grey.svg"
+                          style="margin-right: 6px"
+                        />
                         Отменить
                       </v-btn>
                     </div>
@@ -538,7 +633,7 @@ line-height: 17px;"
   import ImageCropper from '@/components/dialogs/ImageCropper'
   import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import Color from 'color'
-  import {mask} from 'vue-the-mask'
+  import { mask } from 'vue-the-mask'
 
   export default {
 
@@ -548,7 +643,7 @@ line-height: 17px;"
       yandexMap,
       ymapMarker,
     },
-    directives: {mask},
+    directives: { mask },
     data () {
       return {
         // markerIcon: {
@@ -561,7 +656,7 @@ line-height: 17px;"
         //   contentLayout: '<div class="markerC lass" style="background: red; width: 50px; color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>'
         // },
         newShopActive: false,
-        shop: {lat: '', lng: ''},
+        shop: { lat: '', lng: '' },
         shops: [],
         newShop: {
           name: '',
@@ -572,21 +667,21 @@ line-height: 17px;"
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
+              days: [],
+            },
           ],
           breakTimes: [
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
-          ]
+              days: [],
+            },
+          ],
         },
         newWorkTime: [],
         newBreakTime: [],
         cardBg: require('@/assets/svg/Shine.svg'),
-        items: ['ПН','ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'],
+        items: ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'],
         days: [
           { id: 0, shortName: 'ПН', fullName: 'Понедельник' },
           { id: 1, shortName: 'ВТ', fullName: 'Вторник' },
@@ -594,8 +689,8 @@ line-height: 17px;"
           { id: 3, shortName: 'ЧТ', fullName: 'Четверг' },
           { id: 4, shortName: 'ПТ', fullName: 'Пятница' },
           { id: 5, shortName: 'СБ', fullName: 'Суббота' },
-          { id: 6, shortName: 'ВС', fullName: 'Воскресенье' }
-          ],
+          { id: 6, shortName: 'ВС', fullName: 'Воскресенье' },
+        ],
         settings: {
           apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
           lang: 'ru_RU',
@@ -629,13 +724,33 @@ line-height: 17px;"
       }
     },
     computed: {
-      balloonTemplate() {
+      getWorkDays () {
+        console.log('current worktimes', this.newShop.workTimes)
+        let array = []
+        if (this.newShop.workTimes[0].days.length) {
+          this.newShop.workTimes.forEach(item => {
+            item.days.forEach(elem => {
+              array = this.days.filter(day => {
+                day.id !== elem
+              })
+            })
+          })
+          return array
+        } else { return this.days }
+      },
+      sorted_work_array () {
+        return this.sortById(this.newShop.workTimes)
+      },
+      sorted_break_array () {
+        return this.sortById(this.newShop.breakTimes)
+      },
+      balloonTemplate () {
         return `
         <h1 class="red">Hi, everyone!</h1>
         <p>I am here: ${this.coords}</p>
         <img src="http://via.placeholder.com/350x150">
       `
-      }
+      },
     },
     watch: {
       smallImg (v) {
@@ -649,79 +764,177 @@ line-height: 17px;"
       },
     },
     methods: {
-      cancelShop(){
-        this.newShopActive = false;
+      arrayUnique (array) {
+        var a = array.concat()
+        for (var i = 0; i < a.length; ++i) {
+          for (var j = i + 1; j < a.length; ++j) {
+            if (a[i] === a[j]) { a.splice(j--, 1) }
+          }
+        }
+
+        return a
+      },
+      getSelectedBreakDays (index) {
+        console.log('index', index)
+        const array = this.sorted_break_array[index].days
+        let str = ''
+        let length = 0
+        const strArr = []
+        for (let i = 0; i < array.length; i++) {
+          if (array[i] + 1 === array[i + 1]) {
+            if (!str.length) str += this.days[array[i]].shortName
+            length += 1
+          } else {
+            if (length !== 0) {
+              str += '-' + this.days[array[i]].shortName
+              length = 0
+              strArr.push(str)
+              str = ''
+            } else {
+              str += this.days[array[i]].shortName
+              strArr.push(str)
+              str = ''
+            }
+          }
+        }
+        str = ''
+        strArr.forEach(item => {
+          str += item + ', '
+        })
+        str = str.slice(0, -2)
+        return str
+      },
+      getSelectedWorkDays (index) {
+        console.log('index', index)
+        const array = this.sorted_work_array[index].days
+        let str = ''
+        let length = 0
+        const strArr = []
+        for (let i = 0; i < array.length; i++) {
+          if (array[i] + 1 === array[i + 1]) {
+            if (!str.length) str += this.days[array[i]].shortName
+            length += 1
+          } else {
+            if (length !== 0) {
+              str += '-' + this.days[array[i]].shortName
+              length = 0
+              strArr.push(str)
+              str = ''
+            } else {
+              str += this.days[array[i]].shortName
+              strArr.push(str)
+              str = ''
+            }
+          }
+        }
+        str = ''
+        strArr.forEach(item => {
+          str += item + ', '
+        })
+        str = str.slice(0, -2)
+        return str
+      },
+      sortById (arr) {
+        console.log('input array', arr)
+        // arr.sort((a, b) => a.id > b.id ? 1 : -1);
+        const array = []
+        arr.forEach(item => {
+          item.days.sort(function (a, b) {
+            return a - b
+          })
+          array.push(item)
+        })
+        console.log('output array', array)
+        return array
+      },
+      cancelShop () {
+        this.newShopActive = false
         this.newShop = {
           name: '',
-            city: '',
-            address: '',
-            phone: '',
-            workTimes: [
+          city: '',
+          address: '',
+          phone: '',
+          workTimes: [
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
+              days: [],
+            },
           ],
-            breakTimes: [
+          breakTimes: [
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
-          ]
+              days: [],
+            },
+          ],
         }
       },
-      addShop(){
+      addShop () {
         this.newShopActive = true
       },
-      setMarker(e) {
-        this.coords = Object.assign([], e.get("coords"));
-        //////console.log(this.coords)
-        this.shop.lat = this.coords[0];
-        this.shop.lng = this.coords[1];
-        this.shop = Object.assign({}, this.shop);
+      setMarker (e) {
+        this.coords = Object.assign([], e.get('coords'))
+        /// ///console.log(this.coords)
+        this.shop.lat = this.coords[0]
+        this.shop.lng = this.coords[1]
+        this.shop = Object.assign({}, this.shop)
       },
-      getWorkDays(index){
-        if(index !== 0) {
-          return this.days.filter(day => {
-            return (this.newShop.workTimes[index - 1 ].days).indexOf(day) === -1
-          })
-        } else return this.days
+      arr_diff (a1, a2) {
+        var a = []; var diff = []
+
+        for (var i = 0; i < a1.length; i++) {
+          a[a1[i]] = true
+        }
+
+        for (var i = 0; i < a2.length; i++) {
+          if (a[a2[i]]) {
+            delete a[a2[i]]
+          } else {
+            a[a2[i]] = true
+          }
+        }
+
+        for (var k in a) {
+          diff.push(k)
+        }
+
+        return diff
       },
-      addWorkTime(){
-        console.log('current work_times', this.newShop.workTimes);
-        let last = this.newShop.workTimes[this.newShop.workTimes.length -1];
-        if(last.days.length === 0 || !last.startTime || !last.endTime){
-          return false;
+
+      addWorkTime () {
+        console.log('current work_times', this.newShop.workTimes)
+        const last = this.newShop.workTimes[this.newShop.workTimes.length - 1]
+        if (last.days.length === 0 || !last.startTime || !last.endTime) {
+          return false
         } else {
           this.newShop.workTimes.push(
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
+              days: [],
+            },
           )
         }
       },
-      addBreakTime(){
-        console.log('current break_times', this.newShop.breakTimes);
-        let last = this.newShop.breakTimes[this.newShop.breakTimes.length -1];
-        if(last.days.length === 0 || !last.startTime || !last.endTime){
-          return false;
+      addBreakTime () {
+        console.log('current break_times', this.newShop.breakTimes)
+        const last = this.newShop.breakTimes[this.newShop.breakTimes.length - 1]
+        if (last.days.length === 0 || !last.startTime || !last.endTime) {
+          return false
         } else {
           this.newShop.breakTimes.push(
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
+              days: [],
+            },
           )
         }
       },
       changeColor (str) {
         const color = Color(str)
-          if(color.isLight()){
+        if (color.isLight()) {
           this.program.bgcolor[1] = color.darken(0.5).hex()
           this.program.color = '#000000'
         } else {
@@ -992,7 +1205,6 @@ line-height: 17px;"
                     .v-icon
                       color: red !important
 
-
         &__input
           margin-top: 16px
 
@@ -1038,7 +1250,5 @@ line-height: 17px;"
                 .iconify
                   width: 21px
                   height: 21px
-
-
 
 </style>
