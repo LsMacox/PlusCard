@@ -235,6 +235,7 @@
                 @click="setMarker($event)"
               >
                 <ymap-marker
+                  #FFFFFF;
                   marker-id="1"
                   :coords="coords"
                 />
@@ -255,7 +256,104 @@
                   Если у вас несколько точек продаж - внесите их контактные <br>данные и режимы работы, чтобы клиенты
                   могли связаться с <br>конкретным магазином и уточненить свои вопросы.
                 </div>
-                <div class="content-block__shop complete-shop" />
+                <div class="content-block__search">
+                  <v-text-field
+                    placeholder="Поиск по названию, городу, улице"
+                    outlined
+                  >
+                    <template slot="prepend-inner">
+                      <span
+                        class="iconify"
+                        data-icon="gg:search"
+                        data-inline="false"
+                      />
+                    </template>
+                  </v-text-field>
+                </div>
+                <div class="content-block__shop complete-shop">
+                  <div class="complete-shop__header">
+                    <div class="header__title body-l-semibold">
+                      Магазин №12 на Ленина
+                    </div>
+                    <div class="actions">
+                      <div
+                        v-show="!actionsShow"
+                        class="more_icons"
+                        @mouseover="actionsShow = true"
+                      >
+                        <span
+                          class="iconify"
+                          data-icon="feather:more-vertical"
+                          data-inline="false"
+                        />
+                      </div>
+                      <div
+                        v-show="actionsShow"
+                        class="actions_icons"
+                        @mouseleave="actionsShow = false"
+                      >
+                        <span
+                          class="iconify trash_icon"
+                          data-icon="feather:trash"
+                          data-inline="false"
+                        />
+                        <span
+                          class="iconify edit_icon"
+                          data-icon="feather:edit"
+                          data-inline="false"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="complete-shop__content shop-content">
+                    <div class="shop-content__first">
+                      <div class="workdays body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="feather:calendar"
+                          data-inline="false"
+                        />
+                        Пн-пт, вс
+                      </div>
+                      <div class="worktime body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="feather:clock"
+                          data-inline="false"
+                        />
+                        10:00-22:00
+                      </div>
+                      <div class="breaktime body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="feather:coffee"
+                          data-inline="false"
+                        />
+                        13:00-14:00
+                      </div>
+                    </div>
+                    <div class="shop-content__second">
+                      <div class="address body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="ion:location-outline"
+                          data-inline="false"
+                        />
+                        Москва, пр-т Ломоносова, 48-а.
+                      </div>
+                    </div>
+                    <div class="shop-content__third">
+                      <div class="phone body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="feather:phone"
+                          data-inline="false"
+                        />
+                        +7 (950) 748-23-42
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div
                   v-if="newShopActive"
                   class="content-block__shop shop-card"
@@ -646,6 +744,13 @@ line-height: 17px;"
     directives: { mask },
     data () {
       return {
+        markerIcon: {
+          layout: 'default#imageWithContent',
+          content: '123 v12',
+          contentOffset: [0, 15],
+          contentLayout: '<div class="ymapMarker">$[properties.iconContent]</div>',
+        },
+        actionsShow: false,
         // markerIcon: {
         //   layout: 'default#imageWithContent',
         //   imageHref: '',
@@ -724,20 +829,6 @@ line-height: 17px;"
       }
     },
     computed: {
-      getWorkDays () {
-        console.log('current worktimes', this.newShop.workTimes)
-        let array = []
-        if (this.newShop.workTimes[0].days.length) {
-          this.newShop.workTimes.forEach(item => {
-            item.days.forEach(elem => {
-              array = this.days.filter(day => {
-                day.id !== elem
-              })
-            })
-          })
-          return array
-        } else { return this.days }
-      },
       sorted_work_array () {
         return this.sortById(this.newShop.workTimes)
       },
@@ -880,27 +971,6 @@ line-height: 17px;"
         this.shop.lng = this.coords[1]
         this.shop = Object.assign({}, this.shop)
       },
-      arr_diff (a1, a2) {
-        var a = []; var diff = []
-
-        for (var i = 0; i < a1.length; i++) {
-          a[a1[i]] = true
-        }
-
-        for (var i = 0; i < a2.length; i++) {
-          if (a[a2[i]]) {
-            delete a[a2[i]]
-          } else {
-            a[a2[i]] = true
-          }
-        }
-
-        for (var k in a) {
-          diff.push(k)
-        }
-
-        return diff
-      },
 
       addWorkTime () {
         console.log('current work_times', this.newShop.workTimes)
@@ -996,8 +1066,18 @@ line-height: 17px;"
     },
   }
 </script>
+<style lang="sass">
+  .ymapMarker
+    width: 150px
+    height: 50px
+    background: #4776E6
+    border-radius: 8px
+    opacity: .3
+
+</style>
 
 <style lang="sass" scoped>
+@import '~@/sass/plus_ui/light_theme/_variables.sass'
 #master
   height: 100%
 
@@ -1130,6 +1210,71 @@ line-height: 17px;"
   @media(max-width: 992px)
     flex-direction: column
 
+.complete-shop
+  background: $neutral-100
+  border: 1px solid #F2F2F7
+  box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1)
+  border-radius: 12px
+  padding: 26px 24px
+  margin-top: 20px
+  &__header
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    color: $neutral-900
+    .iconify
+      width: 21px
+      height: 21px
+      cursor: pointer
+      color: $neutral-500
+    .actions_icons
+      .trash_icon
+        color: $error-500
+        margin-right: 15px
+      .edit_icon
+        color: $primary-base
+  .shop-content
+    &__first
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      align-items: center
+      color: $neutral-700
+      margin: 12px 0 16px 0
+      .iconify
+        color: $primary-base
+        width: 21px
+        height: 21px
+        margin-right: 10px
+      .workdays,.worktime, .breaktime
+        display: flex
+    &__second
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      align-items: center
+      color: $neutral-700
+      margin: 12px 0 16px 0
+      .iconify
+        color: $neutral-500
+        width: 21px
+        height: 21px
+        margin-right: 10px
+      .address
+        display: flex
+    &__third
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      align-items: center
+      color: $neutral-700
+      .iconify
+        color: $neutral-500
+        width: 21px
+        height: 21px
+        margin-right: 10px
+      .phone
+        display: flex
 .shop-block
   display: flex
   flex-direction: row
@@ -1161,6 +1306,9 @@ line-height: 17px;"
     .content-block
       &__title
         margin-bottom: 12px
+
+      &__search
+        margin-top: 34px
 
       &__add
         margin-top: 30px
