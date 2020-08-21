@@ -75,6 +75,10 @@ export default new Router({
           path: '',
           component: () => import('@/views/auth/registration/index'),
         },
+        {
+          path: 'confirm',
+          component: () => import('@/views/auth/registration/confirm'),
+        },
       ],
     },
     {
@@ -146,7 +150,7 @@ export default new Router({
           name: 'ProgramCertificateMaster',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
-        
+
       ],
     },
   ],

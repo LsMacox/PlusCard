@@ -54,6 +54,8 @@
           <v-btn
             color="primary"
             style="width: 100%;"
+            :loading="loading"
+            @click="forget()"
           >
             <span
               class="iconify"
@@ -134,63 +136,17 @@
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
-      checkCapslock (e) {
-        const { key } = e
-        this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z'
-      },
-      showPwd () {
-        if (this.passwordType === 'password') {
-          this.passwordType = ''
-        } else {
-          this.passwordType = 'password'
-        }
-        this.$nextTick(() => {
-          this.$refs.password.focus()
-        })
-      },
-
-      async handleLogin () {
-        // обнуляем merchants
-        // this.$store.commit("auth/merchant/clearState", null);
-        const user = {
+      async forget () {
+        const item = {
           email: this.form.email,
-          password: this.form.password,
-          device_id: this.auth.device.id,
-          device_token: this.auth.device.token,
-          device_type: this.auth.device.type,
         }
         try {
           this.loading = true
-
-          await this.$store.dispatch('auth/EmailLogin', user)
+          await this.$store.dispatch('auth/password/forget', item)
           this.emailSend = true
         } finally {
           this.loading = false
         }
-      },
-
-      afterLoginSuccess () {
-        // выбор merchant'а, если их несколько или вход, т.к. токен уже содержит merchant_id
-        // console.log("afterLoginSuccess", this.merchants);
-        this.showFields = false
-        if (this.auth.merchant) {
-          // if (this.merchant.show_modal) {
-          //   this.$router.push('/wizard')
-          // } else if (this.$route !== '/office') {
-          //   this.$router.push('/office')
-          // }
-          this.$router.push('/dashboard')
-        } else if (this.merchants && this.merchants.length > 1) {
-          this.merchantDialog = true
-        }
-      },
-      getOtherQuery (query) {
-        return Object.keys(query).reduce((acc, cur) => {
-          if (cur !== 'redirect') {
-            acc[cur] = query[cur]
-          }
-          return acc
-        }, {})
       },
     },
   }
