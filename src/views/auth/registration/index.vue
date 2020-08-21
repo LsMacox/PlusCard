@@ -157,6 +157,7 @@
       ref="recaptcha"
       size="invisible"
       :sitekey="$store.state.RECAPTCHA_SITE_KEY"
+      :load-recaptcha-script="true"
       @verify="registration"
       @expired="onCaptchaExpired"
     />
