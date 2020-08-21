@@ -91,6 +91,8 @@
     height: 100vh
     overflow-y: auto
     background: #EBF1FF
+    @media(max-width: 776px)
+      display: none
 
     .side-panel-logo
       flex: 0 0 auto

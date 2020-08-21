@@ -120,13 +120,13 @@ export default new Router({
           path: '/dashboard',
           component: () => import('@/views/dashboard/Dashboard'),
           name: 'Dashboard',
-          meta: { auth: true, title: 'Dashboard', icon: 'dashboard' },
+          meta: { auth: false, title: 'Dashboard', icon: 'dashboard' },
         },
         {
           path: '/master',
           component: () => import('@/views/master/Master'),
           name: 'Master',
-          meta: { auth: true, title: 'Master', icon: 'master' },
+          meta: { auth: false, title: 'Master', icon: 'master' },
         },
         {
           path: '/ui_kit',

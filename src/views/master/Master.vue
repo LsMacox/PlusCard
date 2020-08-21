@@ -1,6 +1,9 @@
 <template>
   <div id="master">
-    <div class="app-bar">
+    <div
+      v-if="currentStep !== 4"
+      class="app-bar"
+    >
       <v-row
         align="center"
         style="min-height: 100px"
@@ -79,14 +82,17 @@
                   Отлично! Вводите его.
                 </div>
               </div>
-              <div class="right-block">
+              <div
+                class="right-block"
+                style="height: 55px"
+              >
                 <v-text-field
                   v-model="program.companyName"
                   :validate-on-blur="true"
                   placeholder="Название комании"
                   outlined
                   counter="20"
-                  :class="{'companyName_input': true,'success-text': program.companyName.length > 0 && program.companyName.length < 21}"
+                  :class="{'v-input--counter': true,'success-text': program.companyName.length > 0 && program.companyName.length < 21}"
                   :rules="[rules.required, rules.counter]"
                   maxlength="20"
                   @input="program.companyName.length ? currentStep = 1 : currentStep = 0"
@@ -712,124 +718,234 @@ line-height: 17px;"
         v-if="currentStep === 3"
         class="content-thirdStep"
       >
-        <div>
-          <div class="contacts-block">
-            <div class="content-block content-block__first">
-              <div class="left-block">
-                <div
-                  class="left-block__title title-m-bold"
-                  style="color: #2A2A34; margin-bottom: 10px"
-                >
-                  Контактная информация
+        <v-container fluid>
+          <v-row
+            align="center"
+            justify="center"
+          >
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <div class="contacts-block">
+                <div class="content-block content-block__first">
+                  <div class="left-block">
+                    <div
+                      class="left-block__title title-m-bold"
+                      style="color: #2A2A34; margin-bottom: 10px"
+                    >
+                      Контактная информация
+                    </div>
+                    <div
+                      class="left-block__content body-m-regular"
+                      style="color: #70707D;"
+                    >
+                      Введите единый номер телефона и адрес <br> вашего сайта, чтобы ваши клиенты могли <br> связаться с вами удобным способом.
+                    </div>
+                  </div>
+                  <div class="right-block">
+                    <v-text-field
+                      placeholder="Номер горячей линии"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <span
+                          class="iconify"
+                          data-icon="feather:phone"
+                          data-inline="false"
+                        />
+                      </template>
+                    </v-text-field>
+                    <v-text-field
+                      v-model="social.site"
+                      placeholder="Адрес сайта"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <span
+                          class="iconify"
+                          data-icon="feather:mouse-pointer"
+                          data-inline="false"
+                        />
+                      </template>
+                    </v-text-field>
+                  </div>
                 </div>
-                <div
-                  class="left-block__content body-m-regular"
-                  style="color: #70707D;"
-                >
-                  Введите единый номер телефона и адрес <br> вашего сайта, чтобы ваши клиенты могли <br> связаться с вами удобным способом.
+                <div class="content-block content-block__second">
+                  <div class="left-block">
+                    <div
+                      class="left-block__title title-m-bold"
+                      style="color: #2A2A34; margin-bottom: 10px"
+                    >
+                      Социальные сети
+                    </div>
+                    <div
+                      class="left-block__content body-m-regular"
+                      style="color: #70707D;"
+                    >
+                      Введите адреса ваших профилей и групп в <br> социальных сетях. Вводите только название <br> профиля, которое стоит в самом конце <br> адресной строки после символа “/”.
+                    </div>
+                  </div>
+                  <div class="right-block">
+                    <v-text-field
+                      v-model="social.vk"
+                      placeholder="/Группа Вконтакте"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;">
+                          <v-img src="@/assets/svg/vk_logo.svg" />
+                        </div>
+                      </template>
+                    </v-text-field>
+                    <v-text-field
+                      v-model="social.youtube"
+                      placeholder="/Канал на Youtube"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;">
+                          <v-img src="@/assets/svg/youtube_logo.svg" />
+                        </div>
+                      </template>
+                    </v-text-field>
+                    <v-text-field
+                      v-model="social.fb"
+                      placeholder="/Группа в Facebook"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;display: flex;justify-content: center;">
+                          <v-img
+                            src="@/assets/svg/facebook_logo.svg"
+                            max-width="9px"
+                            max-height="18px"
+                          />
+                        </div>
+                      </template>
+                    </v-text-field>
+                    <v-text-field
+                      v-model="social.instagram"
+                      placeholder="/Профиль в Instagram"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;">
+                          <v-img src="@/assets/svg/vk_logo.svg" />
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </div>
+                </div>
+                <div class="content-block content-block__third">
+                  <v-btn
+                    color="primary"
+                    style="width: 123px"
+                    @click="currentStep = 4"
+                  >
+                    Далее
+                    <v-img
+                      src="@/assets/svg/arrow-forward-outline.svg"
+                      width="21px"
+                      height="21px"
+                      max-width="21px"
+                    />
+                  </v-btn>
                 </div>
               </div>
-              <div class="right-block">
-                <v-text-field
-                  placeholder="Номер горячей линии"
-                  outlined
-                  style="width: 300px;"
-                >
-                  <template slot="prepend-inner">
-                    <span
-                      class="iconify"
-                      data-icon="feather:phone"
-                      data-inline="false"
-                    />
-                  </template>
-                </v-text-field>
-                <v-text-field
-                  placeholder="Адрес сайта"
-                  outlined
-                  style="width: 300px;"
-                >
-                  <template slot="prepend-inner">
-                    <span
-                      class="iconify"
-                      data-icon="feather:mouse-pointer"
-                      data-inline="false"
-                    />
-                  </template>
-                </v-text-field>
-              </div>
-            </div>
-            <div class="content-block content-block__second">
-              <div class="left-block">
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+      <div
+        v-if="currentStep === 4"
+        class="finishStep"
+        style="height: 100%"
+      >
+        <v-container style="height: 100%">
+          <v-row
+            align="center"
+            justify="center"
+            style="height: 100%"
+          >
+            <v-col
+              cols="6"
+            >
+              <v-row
+                align="center"
+                justify="center"
+              >
+                <v-img
+                  src="@/assets/svg/company_created.svg"
+                  max-width="110px"
+                  max-height="95px"
+                />
+              </v-row>
+              <v-row
+                align="center"
+                justify="center"
+              >
                 <div
-                  class="left-block__title title-m-bold"
-                  style="color: #2A2A34; margin-bottom: 10px"
+                  style="margin-top:2.4rem"
+                  class="title-s-bold"
                 >
-                  Социальные сети
+                  Компания создана!
                 </div>
+              </v-row>
+              <v-row
+                align="center"
+                justify="center"
+              >
                 <div
-                  class="left-block__content body-m-regular"
-                  style="color: #70707D;"
+                  style="margin-top:.9rem; text-align:center; color: #70707D"
+                  class="body-m-regular"
                 >
-                  Введите адреса ваших профилей и групп в <br> социальных сетях. Вводите только название <br> профиля, которое стоит в самом конце <br> адресной строки после символа “/”.
+                  Теперь вы можете создавать и настраивать программы<br>лояльности, выпускать сертификаты и многое другое.<br> Вам доступен весь функционал Plus.
                 </div>
-              </div>
-              <div class="right-block">
-                <v-text-field
-                  placeholder="Номер горячей линии"
-                  outlined
-                  style="width: 300px;"
+              </v-row>
+              <v-row
+                align="center"
+                justify="center"
+              >
+                <div
+                  style="margin-top:2.4rem; text-align:center; color: #70707D"
+                  class="body-m-regular"
                 >
-                  <template slot="prepend-inner">
+                  <v-btn
+                    color="secondary"
+                    style="width: 335px; margin-bottom: 16px"
+                    @click="$router.push('/master')"
+                  >
                     <span
                       class="iconify"
-                      data-icon="feather:phone"
+                      data-icon="ant-design:gift-outlined"
                       data-inline="false"
                     />
-                  </template>
-                </v-text-field>
-                <v-text-field
-                  placeholder="Адрес сайта"
-                  outlined
-                  style="width: 300px;"
-                >
-                  <template slot="prepend-inner">
+                    Выпустить подарочный сертификат
+                  </v-btn>
+                  <v-btn
+                    color="primary"
+                    style="width: 335px"
+                    @click="$router.push('/master')"
+                  >
                     <span
                       class="iconify"
-                      data-icon="feather:mouse-pointer"
+                      data-icon="ion:wallet-outline"
                       data-inline="false"
                     />
-                  </template>
-                </v-text-field>
-                <v-text-field
-                  placeholder="Адрес сайта"
-                  outlined
-                  style="width: 300px;"
-                >
-                  <template slot="prepend-inner">
-                    <span
-                      class="iconify"
-                      data-icon="feather:mouse-pointer"
-                      data-inline="false"
-                    />
-                  </template>
-                </v-text-field>
-                <v-text-field
-                  placeholder="Адрес сайта"
-                  outlined
-                  style="width: 300px;"
-                >
-                  <template slot="prepend-inner">
-                    <span
-                      class="iconify"
-                      data-icon="feather:mouse-pointer"
-                      data-inline="false"
-                    />
-                  </template>
-                </v-text-field>
-              </div>
-            </div>
-          </div>
-        </div>
+                    Создать программу лояльности
+                  </v-btn>
+                </div>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
       </div>
     </div>
     <input
@@ -870,6 +986,13 @@ line-height: 17px;"
     directives: { mask },
     data () {
       return {
+        social: {
+          site: '',
+          vk: '',
+          youtube: '',
+          fb: '',
+          instagram: '',
+        },
         // markerIcon: {
         //   layout: 'default#imageWithContent',
         //   content: '123 v12',
@@ -882,9 +1005,9 @@ line-height: 17px;"
           imageHref: require('@/assets/svg/Bottom-tail.svg'),
           imageSize: [150, 55],
           imageOffset: [-75, -50],
-          content: '123 v12',
+          content: 'Магазин на Чекистов 312317',
           contentOffset: [0, 0],
-          contentLayout: '<div class="markerC lass" style="display: flex; align-self: center; justify-content:center; width: 150px; height: 50px; color: #FFFFFF; font-weight: bold; text-align: center">$[properties.iconContent]</div>',
+          contentLayout: '<div class="classMarker" style="display: flex; align-self: center; align-content: center; justify-content:center; width: 150px; height: 50px; color: #FFFFFF; font-weight: bold; text-align: center; line-height: 50px">$[properties.iconContent]</div>',
         },
         newShopActive: false,
         shop: { lat: '', lng: '' },
@@ -970,6 +1093,30 @@ line-height: 17px;"
       },
     },
     watch: {
+      'social.site' (v) {
+        const regex = /^(http:\/\/|https:\/\/|)((www.|)[\w]+.[\w]+)\//gm
+        const str = regex.exec(v)
+        if (str && str[2] != null) {
+          this.social.site = str[2]
+        }
+      },
+      'social.vk' (v) {
+        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        this.social.vk = v.replace(regex, '')
+      },
+      'social.fb' (v) {
+        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        this.social.fb = v.replace(regex, '')
+      },
+      'social.youtube' (v) {
+        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        this.social.youtube = v.replace(regex, '')
+      },
+      'social.instagram' (v) {
+        console.log('instagram', v)
+        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        this.social.instagram = v.replace(regex, '')
+      },
       smallImg (v) {
         if (v.data.indexOf('base64') !== -1) {
           this.fileLogo = {
@@ -1267,6 +1414,12 @@ line-height: 17px;"
           margin-bottom: 68px
           @media(max-width: 992px)
             flex-direction: column
+          &__third
+            min-width: 681px
+            justify-content: flex-start
+            @media(max-width: 992px)
+              min-width: 0
+              justify-content: center
 
           .right-block
             display: flex
@@ -1419,6 +1572,8 @@ line-height: 17px;"
       width: 523px
       margin: 0
       padding: 0
+      @media (max-width: 776px)
+        height: calc(30vh)
 
   .shop-block__right
     display: flex
@@ -1528,7 +1683,7 @@ line-height: 17px;"
 .contacts-block
   display: flex
   flex-direction: column
-  height: calc(100vh - 100px)
+  margin-top: 48px
   @media(max-width: 992px)
     flex-direction: column
     overflow-y: scroll
@@ -1544,6 +1699,7 @@ line-height: 17px;"
       width: 300px
       align-items: flex-end
       justify-content: flex-end
+      margin-top: 40px
     .left-block
       margin-right: 48px
       width: 333px
