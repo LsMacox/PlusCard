@@ -691,6 +691,7 @@ line-height: 17px;"
                   <v-btn
                     color="primary"
                     style="width: 123px"
+                    @click="currentStep = 3"
                   >
                     Далее
                     <v-img
@@ -701,6 +702,130 @@ line-height: 17px;"
                     />
                   </v-btn>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        v-if="currentStep === 3"
+        class="content-thirdStep"
+      >
+        <div>
+          <div class="contacts-block">
+            <div class="content-block content-block__first">
+              <div class="left-block">
+                <div
+                  class="left-block__title title-m-bold"
+                  style="color: #2A2A34; margin-bottom: 10px"
+                >
+                  Контактная информация
+                </div>
+                <div
+                  class="left-block__content body-m-regular"
+                  style="color: #70707D;"
+                >
+                  Введите единый номер телефона и адрес <br> вашего сайта, чтобы ваши клиенты могли <br> связаться с вами удобным способом.
+                </div>
+              </div>
+              <div class="right-block">
+                <v-text-field
+                  placeholder="Номер горячей линии"
+                  outlined
+                  style="width: 300px;"
+                >
+                  <template slot="prepend-inner">
+                    <span
+                      class="iconify"
+                      data-icon="feather:phone"
+                      data-inline="false"
+                    />
+                  </template>
+                </v-text-field>
+                <v-text-field
+                  placeholder="Адрес сайта"
+                  outlined
+                  style="width: 300px;"
+                >
+                  <template slot="prepend-inner">
+                    <span
+                      class="iconify"
+                      data-icon="feather:mouse-pointer"
+                      data-inline="false"
+                    />
+                  </template>
+                </v-text-field>
+              </div>
+            </div>
+            <div class="content-block content-block__second">
+              <div class="left-block">
+                <div
+                  class="left-block__title title-m-bold"
+                  style="color: #2A2A34; margin-bottom: 10px"
+                >
+                  Социальные сети
+                </div>
+                <div
+                  class="left-block__content body-m-regular"
+                  style="color: #70707D;"
+                >
+                  Введите адреса ваших профилей и групп в <br> социальных сетях. Вводите только название <br> профиля, которое стоит в самом конце <br> адресной строки после символа “/”.
+                </div>
+              </div>
+              <div class="right-block">
+                <v-text-field
+                  placeholder="Номер горячей линии"
+                  outlined
+                  style="width: 300px;"
+                >
+                  <template slot="prepend-inner">
+                    <span
+                      class="iconify"
+                      data-icon="feather:phone"
+                      data-inline="false"
+                    />
+                  </template>
+                </v-text-field>
+                <v-text-field
+                  placeholder="Адрес сайта"
+                  outlined
+                  style="width: 300px;"
+                >
+                  <template slot="prepend-inner">
+                    <span
+                      class="iconify"
+                      data-icon="feather:mouse-pointer"
+                      data-inline="false"
+                    />
+                  </template>
+                </v-text-field>
+                <v-text-field
+                  placeholder="Адрес сайта"
+                  outlined
+                  style="width: 300px;"
+                >
+                  <template slot="prepend-inner">
+                    <span
+                      class="iconify"
+                      data-icon="feather:mouse-pointer"
+                      data-inline="false"
+                    />
+                  </template>
+                </v-text-field>
+                <v-text-field
+                  placeholder="Адрес сайта"
+                  outlined
+                  style="width: 300px;"
+                >
+                  <template slot="prepend-inner">
+                    <span
+                      class="iconify"
+                      data-icon="feather:mouse-pointer"
+                      data-inline="false"
+                    />
+                  </template>
+                </v-text-field>
               </div>
             </div>
           </div>
@@ -1118,7 +1243,7 @@ line-height: 17px;"
   .content-wrapper
     height: calc(100% - 100px)
 
-    .content-firstStep, .content-secondStep
+    .content-firstStep, .content-secondStep, .content-thirdStep
       height: 100%
 
       .row
@@ -1399,5 +1524,34 @@ line-height: 17px;"
                 .iconify
                   width: 21px
                   height: 21px
+
+.contacts-block
+  display: flex
+  flex-direction: column
+  height: calc(100vh - 100px)
+  @media(max-width: 992px)
+    flex-direction: column
+    overflow-y: scroll
+  .content-block
+    display: flex
+    flex-direction: row
+    margin-bottom: 68px
+    @media(max-width: 992px)
+      flex-direction: column
+    .right-block
+      display: flex
+      flex-direction: column
+      width: 300px
+      align-items: flex-end
+      justify-content: flex-end
+    .left-block
+      margin-right: 48px
+      width: 333px
+      display: flex
+      flex-direction: column
+      align-self: flex-start
+      @media(max-width: 992px)
+        margin-bottom: 10px
+        margin-right: 0
 
 </style>
