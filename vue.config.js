@@ -32,6 +32,14 @@ module.exports = {
       },
     },
   },
+  chainWebpack: config => {
+    config.plugin('VuetifyLoaderPlugin').tap(args => [{
+      progressiveImages: {
+        size: 12, // Use higher-resolution previews
+        sharp: true, // Use sharp instead of ImageMagick
+      },
+    }])
+  },
   transpileDependencies: ['vuetify'],
 
   pluginOptions: {
