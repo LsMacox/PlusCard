@@ -134,6 +134,19 @@ export default new Router({
           name: 'components',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
+        {
+          path: '/certificate',
+          component: () => import('@/views/certificate/ProgramCertificateView.vue'),
+          name: 'components',
+          meta: { title: 'ui_kit', icon: 'ui_kit' },
+        },
+        {
+          path: '/certificate/master',
+          component: () => import('@/views/certificate/master/index.vue'),
+          name: 'ProgramCertificateMaster',
+          meta: { title: 'ui_kit', icon: 'ui_kit' },
+        },
+        
       ],
     },
   ],
