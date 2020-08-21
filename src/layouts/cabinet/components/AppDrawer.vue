@@ -37,7 +37,7 @@
             color="error"
             overlap
             avatar
-            offset-x="5"
+            offset-x="15"
             offset-y="5"
           >
             <v-btn
@@ -70,7 +70,7 @@
             color="error"
             overlap
             avatar
-            offset-x="25"
+            offset-x="10"
           >
             <v-btn
               fab
@@ -113,7 +113,7 @@
           @click="$router.push(item.to)"
         >
           <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
+            <span v-html="item.icon" />
           </v-list-item-icon>
           <v-list-item-title style="cursor:pointer;">
             {{ item.title }}
@@ -235,42 +235,42 @@
       exitRequest: false,
       items: [
         {
-          icon: 'mdi-poll',
+          icon: '<span class="iconify stats" data-icon="ion:stats-chart" data-inline="false"></span>',
           title: 'Общая информация',
           to: '/dashboard',
         },
         {
-          icon: 'mdi-wallet-outline',
+          icon: '<span class="iconify" data-icon="ion:wallet-outline" data-inline="false"></span>',
           title: 'Программа лояльности',
           to: '##',
         },
         {
-          icon: 'mdi-gift-outline',
+          icon: '<span class="iconify" data-icon="ant-design:gift-outlined" data-inline="false"></span>',
           title: 'Сертификаты',
           to: '###',
         },
         {
-          icon: 'mdi-filter-outline',
+          icon: '<span class="iconify" data-icon="ion:funnel-outline" data-inline="false"></span>',
           title: 'CRM',
           to: '####',
         },
         {
-          icon: 'mdi-bullhorn-outline',
+          icon: '<span class="iconify" data-icon="ion:megaphone-outline" data-inline="false"></span>',
           title: 'Рассылки',
           to: '#####',
         },
         {
-          icon: 'mdi-message-outline',
+          icon: '<span class="iconify" data-icon="ion:chatbox-outline" data-inline="false"></span>',
           title: 'Чаты',
           to: '######',
         },
         {
-          icon: 'mdi-cog-outline',
+          icon: '<span class="iconify" data-icon="feather:settings" data-inline="false"></span>',
           title: 'Настройки компаний',
           to: '#######',
         },
         {
-          icon: 'mdi-sitemap',
+          icon: '<span class="iconify" data-icon="bi:ui-checks" data-inline="false"></span>',
           title: 'UI_KIT',
           to: '/ui_kit',
         },
@@ -319,7 +319,7 @@
 
 #core-navigation-drawer
   .v-navigation-drawer__content
-    overflow: hidden
+    overflow-y: hidden
 
     .v-list-group__header.v-list-item--active:before
       opacity: .24
