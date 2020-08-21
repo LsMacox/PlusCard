@@ -201,14 +201,6 @@
           this.loading = false
         }
       },
-      getOtherQuery (query) {
-        return Object.keys(query).reduce((acc, cur) => {
-          if (cur !== 'redirect') {
-            acc[cur] = query[cur]
-          }
-          return acc
-        }, {})
-      },
     },
   }
 </script>
