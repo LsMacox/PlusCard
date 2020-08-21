@@ -76,6 +76,10 @@ export default new Router({
           component: () => import('@/views/auth/registration/index'),
         },
         {
+          path: 'send',
+          component: () => import('@/views/auth/registration/send'),
+        },
+        {
           path: 'confirm',
           component: () => import('@/views/auth/registration/confirm'),
         },
