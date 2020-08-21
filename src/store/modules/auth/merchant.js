@@ -10,11 +10,11 @@ const mutations = {
 
 const actions = {
 
-    async select ({ commit, state }, user) {
+    async login ({ commit, state }, user) {
         // eslint-disable-next-line no-useless-catch
         try {
             const result = await ApiService.post(
-                '/api-cabinet/merchant/select',
+                '/api-cabinet/login/merchant',
                 user,
             )
             console.log(result)

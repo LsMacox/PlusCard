@@ -207,7 +207,7 @@
         console.log(login)
         try {
           this.loading = true
-          await this.$store.dispatch('auth/merchant/select', login)
+          await this.$store.dispatch('auth/merchant/login', login)
           // выбор мерчанта для логина или сразу логин
           this.toRoute('/dashboard')
         } finally {
