@@ -10,12 +10,12 @@ const mutations = {
 
 const actions = {
 
-    async registration ({ commit, state }, user) {
+    async forget ({ commit, state }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
             const result = await ApiService.post(
-                '/api-cabinet/registration',
-                user,
+                '/api-cabinet/login/email/password/recovery',
+                item,
             )
             console.log(result)
         } catch (error) {
@@ -23,16 +23,15 @@ const actions = {
         }
     },
 
-    async login ({ commit, state }, user) {
+    async change ({ commit, state }, item) {
+        // eslint-disable-next-line no-useless-catch
         try {
             const result = await ApiService.post(
-                '/api-cabinet/login/email',
-                user,
+                '/api-cabinet/login/email/password/change',
+                item,
             )
             console.log(result)
-            commit('auth/auth/SET_AUTH', result, { root: true })
         } catch (error) {
-            commit('auth/auth/SET_AUTH', null, { root: true })
             throw error
         }
     },

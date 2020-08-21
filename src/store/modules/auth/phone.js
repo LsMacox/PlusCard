@@ -15,7 +15,7 @@ const actions = {
         // eslint-disable-next-line no-useless-catch
         try {
             const result = await ApiService.post(
-                '/api-cabinet/merchant/login/phone/signin',
+                '/api-cabinet/login/phone',
                 user,
             )
             console.log(result)
@@ -30,7 +30,7 @@ const actions = {
         // eslint-disable-next-line no-useless-catch
         try {
             const result = await ApiService.post(
-                '/api-cabinet/merchant/login/phone/confirm',
+                '/api-cabinet/login/phone/confirm',
                 user,
             )
             console.log(result)

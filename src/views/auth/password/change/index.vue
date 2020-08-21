@@ -88,6 +88,8 @@
           <v-btn
             color="primary"
             style="width: 100%;"
+            :loading="loading"
+            @click="changePassword()"
           >
             <span
               class="iconify"
@@ -165,6 +167,8 @@
         ],
         loading: false,
         passwordChanged: false,
+        loginId: null,
+        token: null,
       }
     },
     computed: {
@@ -176,40 +180,22 @@
     },
     mounted () {
       this.$store.dispatch('auth/auth/InitDevice')
+      this.loginId = this.$route.query.id
+      this.token = this.$route.query.token
     },
     methods: {
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
-      checkCapslock (e) {
-        const { key } = e
-        this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z'
-      },
-      showPwd () {
-        if (this.passwordType === 'password') {
-          this.passwordType = ''
-        } else {
-          this.passwordType = 'password'
-        }
-        this.$nextTick(() => {
-          this.$refs.password.focus()
-        })
-      },
-
-      async handleLogin () {
-        // обнуляем merchants
-        // this.$store.commit("auth/merchant/clearState", null);
-        const user = {
-          email: this.form.email,
+      async changePassword () {
+        const item = {
+          id: this.loginId,
+          token: this.token,
           password: this.form.password,
-          device_id: this.auth.device.id,
-          device_token: this.auth.device.token,
-          device_type: this.auth.device.type,
         }
         try {
           this.loading = true
-
-          await this.$store.dispatch('auth/EmailLogin', user)
+          await this.$store.dispatch('auth/password/change', item)
           this.passwordChanged = true
         } finally {
           this.loading = false
