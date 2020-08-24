@@ -137,24 +137,26 @@
     </div>
     <div
       v-else
-      class="auth-content-box merchant-select-box"
+      class="auth-content-box"
     >
       <div class="merchant-select-header">
         Продолжить работу:
       </div>
-      <div
-        v-for="(item, i) in merchants"
-        :key="i"
-        class="merchant-select-block"
-        @click="login(item.id)"
-      >
-        <v-img
-          src="@/assets/svg/plus_logo_sm.svg"
-          max-width="46px"
-          height="46px"
-        />
-        <div class="merchant-select-block-text">
-          {{ item.name }}
+      <div class="merchant-select-box app__scroll-y">
+        <div
+          v-for="(item, i) in merchants"
+          :key="i"
+          class="merchant-select-block"
+          @click="login(item.id)"
+        >
+          <v-img
+            src="@/assets/svg/plus_logo_sm.svg"
+            max-width="46px"
+            height="46px"
+          />
+          <div class="merchant-select-block-text">
+            {{ item.name }}
+          </div>
         </div>
       </div>
     </div>
@@ -187,43 +189,11 @@
         ],
         loading: false,
         selectMerchant: false,
-        merchants: [
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-          { name: 1 },
-        ],
       }
     },
     computed: {
       ...mapGetters('auth/auth', [
+        'merchants',
         'merchant',
         'device',
       ]),
