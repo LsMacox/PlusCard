@@ -42,6 +42,7 @@
           outlined
           required
           :rules="emailRules"
+          @blur="form.email = form.email ? form.email.trim() : null"
           validate-on-blur
         >
           <template slot="prepend-inner">
@@ -165,6 +166,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import BackButton from '@/views/auth/components/BackButton'
+  import {validEmail} from '@/utils/validate.js'
 
   export default {
     components: {
@@ -180,7 +182,8 @@
         visible1: false,
         emailRules: [
           v => !!v || 'E-mail обязателен',
-          v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+          // v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+          v => validEmail(v) || 'E-mail неверного формата',
         ],
         passwordRules: [
           v => !!v || 'Пароль обязателен',
