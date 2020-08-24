@@ -56,25 +56,10 @@ const actions = {
     })
   },
 
-  // EMAIL LOGIN
-  async EmailLogin ({ commit, state }, user) {
+  // logout
+  async logout ({ commit, state, dispatch }) {
     try {
-      const result = await ApiService.post(
-        '/api-cabinet/merchant/login/email/signin',
-        user,
-      )
-      console.log(result)
-      commit('SET_AUTH', result)
-    } catch (error) {
-      commit('SET_AUTH', null)
-      throw error
-    }
-  },
-
-  // user logout
-  async Logout ({ commit, state, dispatch }) {
-    try {
-      await ApiService.post('/api/Logout')
+      await ApiService.post('/api-cabinet/logout')
     // eslint-disable-next-line no-useless-catch
     } catch (error) {
       throw error
@@ -92,7 +77,7 @@ const actions = {
         refreshToken = VueSession.get('refresh_token')
         deviceId = state.device.id
       }
-      const result = await ApiService.post('/api/login/refres', {
+      const result = await ApiService.post('/api-cabinet/login/refresh', {
         refresh_token: refreshToken,
         device_id: deviceId,
       }, { errorHandle: false })

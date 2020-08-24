@@ -157,6 +157,7 @@
       ref="recaptcha"
       size="invisible"
       :sitekey="$store.state.RECAPTCHA_SITE_KEY"
+      :load-recaptcha-script="true"
       @verify="registration"
       @expired="onCaptchaExpired"
     />
@@ -243,6 +244,7 @@
         try {
           this.loading = true
           await this.$store.dispatch('auth/email/registration', user)
+          this.toRoute('/registration/send')
         } finally {
           this.loading = false
         }
