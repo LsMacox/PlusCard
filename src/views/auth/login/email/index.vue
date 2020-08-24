@@ -61,7 +61,6 @@
           outlined
           required
           :rules="passwordRules"
-          validate-on-blur
         >
           <template slot="prepend-inner">
             <span
