@@ -3,15 +3,15 @@
     v-loading="loading"
     class="report-wrapper"
   >
-<!--    <div class="widgets">-->
-<!--      <statistics />-->
-<!--    </div>-->
-<!--    <div class="toolbar">-->
-<!--      <toolbar-->
-<!--        :p-search-text.sync="searchText"-->
-<!--        @load-data="loadData()"-->
-<!--      />-->
-<!--    </div>-->
+    <!--    <div class="widgets">-->
+    <!--      <statistics />-->
+    <!--    </div>-->
+    <!--    <div class="toolbar">-->
+    <!--      <toolbar-->
+    <!--        :p-search-text.sync="searchText"-->
+    <!--        @load-data="loadData()"-->
+    <!--      />-->
+    <!--    </div>-->
     <div class="table">
       <table-report :p-search="searchText" />
     </div>
@@ -25,7 +25,7 @@
   export default {
     name: 'LoyaltyReport',
     // components: { TableReport, Toolbar, Statistics },
-    components: { TableReport, Toolbar },
+    components: { TableReport },
     data () {
       return {
         searchText: '',

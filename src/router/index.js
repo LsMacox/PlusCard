@@ -137,6 +137,11 @@ export default new Router({
           meta: { auth: false, title: 'Master', icon: 'master' },
         },
         {
+          path: '/loyalty',
+          component: () => import('@/views/loyalty/index.vue'),
+          name: 'loyalty',
+        },
+        {
           path: '/ui_kit',
           component: () => import('@/views/ui_kit/Components.vue'),
           name: 'components',

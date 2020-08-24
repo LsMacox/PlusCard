@@ -1,70 +1,79 @@
 <template>
-<!--  <v-sheet-->
-<!--      height="400"-->
-<!--      class="overflow-hidden"-->
-<!--      style="position: relative;"-->
-<!--  >-->
-    <v-form>
-      <v-container>
-        <v-row
-          no-gutters
+  <!--  <v-sheet-->
+  <!--      height="400"-->
+  <!--      class="overflow-hidden"-->
+  <!--      style="position: relative;"-->
+  <!--  >-->
+  <v-form>
+    <v-container>
+      <v-row
+        no-gutters
+      >
+        <v-col
+          cols="3"
+          style="padding-right: 20px"
         >
-          <v-col
-            cols="3"
-            style="padding-right: 20px"
+          <v-text-field
+            outlined
+            placeholder="Поиск сертификатов, клиентов"
           >
-            <v-text-field
-              outlined
-              placeholder="Поиск сертификатов, клиентов"
-            >
-              <template v-slot:prepend-inner>
-                <span
-                  class="iconify"
-                  data-icon="ant-design:search-outlined"
-                  data-inline="false"
-                />
-              </template>
-            </v-text-field>
-          </v-col>
-
-          <v-col cols="2" style="padding-right: 20px">
-            <v-select
-              outlined
-              placeholder="Статус оплаты"
-            />
-          </v-col>
-
-          <v-col cols="2" style="padding-right: 20px">
-            <v-select
-              outlined
-              placeholder="Статус выплаты"
-            />
-          </v-col>
-
-          <v-col cols="3" style="padding-right: 20px">
-            <v-select
-              outlined
-              placeholder="Статус сертификата"
-            />
-          </v-col>
-
-          <v-col cols="2">
-            <v-chip
-              class="advanced-filter"
-            >
+            <template v-slot:prepend-inner>
               <span
                 class="iconify"
-                data-icon="fa:sliders"
+                data-icon="ant-design:search-outlined"
                 data-inline="false"
               />
-              <span>
-                Все фильтры
-              </span>
-            </v-chip>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-form>
+            </template>
+          </v-text-field>
+        </v-col>
+
+        <v-col
+          cols="2"
+          style="padding-right: 20px"
+        >
+          <v-select
+            outlined
+            placeholder="Статус оплаты"
+          />
+        </v-col>
+
+        <v-col
+          cols="2"
+          style="padding-right: 20px"
+        >
+          <v-select
+            outlined
+            placeholder="Статус выплаты"
+          />
+        </v-col>
+
+        <v-col
+          cols="3"
+          style="padding-right: 20px"
+        >
+          <v-select
+            outlined
+            placeholder="Статус сертификата"
+          />
+        </v-col>
+
+        <v-col cols="2">
+          <v-chip
+            class="advanced-filter"
+          >
+            <span
+              class="iconify"
+              data-icon="fa:sliders"
+              data-inline="false"
+            />
+            <span>
+              Все фильтры
+            </span>
+          </v-chip>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-form>
 
 <!--    <v-navigation-drawer-->
 <!--        v-model="drawer"-->
