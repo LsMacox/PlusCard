@@ -8,31 +8,36 @@
     </v-row>
     <v-row>
       <v-carousel
-        v-model="currentStep"     
-        :light="true"  
+        v-model="currentStep"
+        :light="true"
         hide-delimiters
         :show-arrows="false"
+        height="100%"
       >
-        <v-carousel-item>
-          <step-main @continue="currentStep=1" />
+        <v-carousel-item >
+          <step-main
+            v-model="cert"
+            @continue="currentStep=1"
+          />
         </v-carousel-item>
         <v-carousel-item>
-          <step-rules @continue="currentStep=2" />
+          <step-rules  v-model="cert" @continue="currentStep=2" />
         </v-carousel-item>
         <v-carousel-item>
-          <step-nominals @continue="currentStep=0" />
+          <step-nominals  v-model="cert" @continue="currentStep=0" />
         </v-carousel-item>
       </v-carousel>
 
       {{ currentStep }}
+      {{ cert }}
     </v-row>
   </v-container>
 </template>
 
 <script>
-  import StepMain from './StepMain'
-  import StepNominals from './StepNominals'
-  import StepRules from './StepRules'
+  import StepMain from './Step1Main'
+  import StepRules from './Step2Rules'
+  import StepNominals from './Step3Nominals'
 
   const stepList = [
     { title: 'Общая информация' },
@@ -45,6 +50,9 @@
     data () {
       return {
         currentStep: 0,
+        cert: {
+          name: '',
+        },
 
       }
     },

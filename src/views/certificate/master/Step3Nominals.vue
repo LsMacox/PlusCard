@@ -1,11 +1,10 @@
 <template lang="">
   <v-container>
-    
+    StepNominals
             <v-row
               align="center"
               justify="center"
             >
-            StepRules
               <div class="display-3">
                 Step1
               </div>
@@ -32,8 +31,8 @@
 
     },
     methods: {
-     onNextClick(){
-        this.$emit('continue', true)
+      onNextClick(){
+         this.$emit('continue', true)
       },
     },
     created () {
