@@ -75,6 +75,14 @@ export default new Router({
           path: '',
           component: () => import('@/views/auth/registration/index'),
         },
+        {
+          path: 'send',
+          component: () => import('@/views/auth/registration/send'),
+        },
+        {
+          path: 'confirm',
+          component: () => import('@/views/auth/registration/confirm'),
+        },
       ],
     },
     {
@@ -159,6 +167,7 @@ export default new Router({
           name: 'certificates',
           meta: { title: 'Certificates', icon: 'certificates' },
         },
+
       ],
     },
   ],

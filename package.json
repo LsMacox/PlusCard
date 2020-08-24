@@ -24,6 +24,7 @@
     "file-loader": "^6.0.0",
     "fingerprintjs2": "^2.1.2",
     "js-cookie": "^2.2.1",
+    "sharp": "^0.25.4",
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",
     "vue": "^2.6.11",
