@@ -137,7 +137,7 @@
     </div>
     <div
       v-else
-      class="auth-content-box"
+      class="auth-content-box merchant-select-box"
     >
       <div class="merchant-select-header">
         Продолжить работу:
@@ -187,11 +187,43 @@
         ],
         loading: false,
         selectMerchant: false,
+        merchants: [
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+          { name: 1 },
+        ],
       }
     },
     computed: {
       ...mapGetters('auth/auth', [
-        'merchants',
         'merchant',
         'device',
       ]),
