@@ -1,7 +1,7 @@
 
 const state = {
   loadingRequest: false, // отправка запроса
-  drawer: true, // переключатель меню
+  drawer: localStorage.getItem('drawer') ? JSON.parse(localStorage.getItem('drawer')) : false, // переключатель меню
   program: null, // тек. выбранная компания
 }
 
@@ -11,6 +11,7 @@ const mutations = {
   },
   SET_DRAWER (state, payload) {
     state.drawer = payload
+    localStorage.setItem('drawer', JSON.stringify(payload))
   },
   SET_PROGRAM (state, payload) {
     state.program = payload
