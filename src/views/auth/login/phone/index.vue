@@ -4,15 +4,15 @@
       <div class="header-box">
         <div style="display: flex;">
           <div
-              class="header"
-              @click="toRoute ('/login')"
+            class="header"
+            @click="toRoute ('/login')"
           >
             Вход
           </div>
           <div
-              class="header inactive"
-              style="margin-left: 34px;"
-              @click="toRoute ('/registration')"
+            class="header inactive"
+            style="margin-left: 34px;"
+            @click="toRoute ('/registration')"
           >
             Регистрация
           </div>
@@ -25,10 +25,13 @@
       >
         <v-text-field
           v-model="form.phone"
+          v-mask="'+7 (###) ###-##-##'"
           placeholder="Введите телефон"
           class="auth-text-field"
           outlined
           required
+          :rules="phoneRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
             <v-img
@@ -47,6 +50,8 @@
             <v-btn
               color="primary"
               style="width: 100%;"
+              :loading="loading"
+              :disabled="!valid"
               @click="login()"
             >
               <v-img
@@ -66,10 +71,10 @@
               style="width: 100%;"
               @click="toRoute('/login/email')"
             >
-              <v-img
-                src="@/assets/svg/mail-outline.svg"
-                max-width="21px"
-                max-height="21px"
+              <span
+                class="iconify"
+                data-icon="ion:mail-outline"
+                data-inline="false"
                 style="margin-right: 8px;"
               />
               Войти по email
@@ -82,119 +87,61 @@
 </template>
 
 <script>
-  import { validUsername } from '@/utils/validate'
+  import { mask } from 'vue-the-mask'
   import { mapGetters } from 'vuex'
 
   export default {
+    directives: { mask },
     data () {
-      const validateUsername = (rule, value, callback) => {
-        if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
-        } else {
-          callback()
-        }
-      }
-      const validatePassword = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
-        } else {
-          callback()
-        }
-      }
       return {
-        visible1: false,
-        valid: true,
-        merchantDialog: false,
         form: {
           phone: null,
         },
-        loginRules: {
-          username: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validateUsername,
-            },
-          ],
-          password: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validatePassword,
-            },
-          ],
-        },
-        passwordType: 'password',
+        valid: true,
+        visible1: false,
+        phoneRules: [
+          v => !!v || 'Телефон обязателен',
+        ],
         loading: false,
+        selectMerchant: false,
       }
     },
     computed: {
-      ...mapGetters(['auth']),
+      ...mapGetters('auth/auth', [
+        'merchants',
+        'merchant',
+        'device',
+      ]),
     },
     mounted () {
-      this.$store.dispatch('auth/InitDevice')
+      this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
-      checkCapslock (e) {
-        const { key } = e
-        this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z'
-      },
-      showPwd () {
-        if (this.passwordType === 'password') {
-          this.passwordType = ''
-        } else {
-          this.passwordType = 'password'
+      clearPhoneMask (p) {
+        if (p) {
+          p = String(p).match(/\d/g)
+          if (p) p = p.join('')
         }
-        this.$nextTick(() => {
-          this.$refs.password.focus()
-        })
+        return p
       },
-
-      async handleLogin () {
-        // обнуляем merchants
-        // this.$store.commit("auth/merchant/clearState", null);
+      async login () {
         const user = {
-          email: this.form.email,
-          password: this.form.password,
-          device_id: this.auth.device.id,
-          device_token: this.auth.device.token,
-          device_type: this.auth.device.type,
+          phone: this.clearPhoneMask(this.form.phone),
+          device_id: this.device.id,
+          device_token: this.device.token,
+          device_type: this.device.type,
         }
+        console.log(user)
         try {
           this.loading = true
-
-          await this.$store.dispatch('auth/EmailLogin', user)
-          this.afterLoginSuccess()
+          await this.$store.dispatch('auth/phone/login', user)
+          this.toRoute('/login/phone/confirm')
         } finally {
           this.loading = false
         }
-      },
-
-      afterLoginSuccess () {
-        // выбор merchant'а, если их несколько или вход, т.к. токен уже содержит merchant_id
-        // console.log("afterLoginSuccess", this.merchants);
-        this.showFields = false
-        if (this.auth.merchant) {
-          // if (this.merchant.show_modal) {
-          //   this.$router.push('/wizard')
-          // } else if (this.$route !== '/office') {
-          //   this.$router.push('/office')
-          // }
-          this.$router.push('/dashboard')
-        } else if (this.merchants && this.merchants.length > 1) {
-          this.merchantDialog = true
-        }
-      },
-      getOtherQuery (query) {
-        return Object.keys(query).reduce((acc, cur) => {
-          if (cur !== 'redirect') {
-            acc[cur] = query[cur]
-          }
-          return acc
-        }, {})
       },
     },
   }

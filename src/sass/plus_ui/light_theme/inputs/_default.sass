@@ -1,0 +1,17 @@
+@import '../variables'
+
+.v-input.theme--light.v-text-field:not(.v-text-field--outlined)
+  color: transparent !important
+  caret-color: $neutral-900 !important
+  .v-input__control
+    .v-input__slot
+      &:before
+        border: none !important
+  &.v-input--is-focused, &:hover, &:active, &:focus
+
+    .v-input__control
+      .v-input__slot
+        &:before
+          border: none !important
+
+

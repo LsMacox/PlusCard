@@ -29,20 +29,27 @@
           class="auth-text-field"
           outlined
           required
+          :rules="emailRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/mail-outline.svg"
+            <span
+              class="iconify"
+              data-icon="ion:mail-outline"
+              data-inline="false"
             />
           </template>
         </v-text-field>
 
         <v-text-field
           v-model="form.phone"
+          v-mask="'+7 (###) ###-##-##'"
           placeholder="Введите телефон"
           class="auth-text-field"
           outlined
           required
+          :rules="phoneRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
             <v-img
@@ -54,14 +61,18 @@
         <v-text-field
           v-model="form.password"
           :type="visible1 ? 'text' : 'password'"
-          placeholder="Придумайте пароль"
+          placeholder="Введите новый пароль"
           class="auth-text-field"
           outlined
           required
+          :rules="passwordRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/lock-open-outline.svg"
+            <span
+              class="iconify"
+              data-icon="bx:bx-lock-open-alt"
+              data-inline="false"
             />
           </template>
           <template slot="append">
@@ -83,14 +94,18 @@
         <v-text-field
           v-model="form.passwordConfirm"
           :type="visible2 ? 'text' : 'password'"
-          placeholder="Повторите пароль"
+          placeholder="Повторите новый пароль"
           class="auth-text-field"
           outlined
           required
+          :rules="passwordConfirmRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/lock-open-outline.svg"
+            <span
+              class="iconify"
+              data-icon="bx:bx-lock-open-alt"
+              data-inline="false"
             />
           </template>
           <template slot="append">
@@ -122,140 +137,116 @@
           <v-btn
             color="primary"
             style="width: 100%;"
-            :disabled="!accept"
+            :loading="loading"
+            :disabled="!valid && !accept"
+            @click="submit()"
           >
-            <v-img
-              src="@/assets/svg/users.svg"
-              max-width="21px"
-              max-height="21px"
+            <span
+              class="iconify"
               style="margin-right: 8px;"
+              data-icon="feather:users"
+              data-inline="false"
             />
             Создать аккаунт
           </v-btn>
         </div>
       </v-form>
     </div>
+
+    <vue-recaptcha
+      ref="recaptcha"
+      size="invisible"
+      :sitekey="$store.state.RECAPTCHA_SITE_KEY"
+      :load-recaptcha-script="true"
+      @verify="registration"
+      @expired="onCaptchaExpired"
+    />
   </div>
 </template>
 
 <script>
-  import { validUsername } from '@/utils/validate'
+  import { mask } from 'vue-the-mask'
+  import VueRecaptcha from 'vue-recaptcha'
   import { mapGetters } from 'vuex'
 
   export default {
+    components: {
+      VueRecaptcha,
+    },
+    directives: { mask },
     data () {
-      const validateUsername = (rule, value, callback) => {
-        if (!validUsername(value)) {
-          callback(new Error('Please enter the correct user name'))
-        } else {
-          callback()
-        }
-      }
-      const validatePassword = (rule, value, callback) => {
-        if (value.length < 6) {
-          callback(new Error('The password can not be less than 6 digits'))
-        } else {
-          callback()
-        }
-      }
       return {
-        visible1: false,
-        visible2: false,
-        accept: false,
-        valid: true,
-        merchantDialog: false,
         form: {
           email: null,
           phone: null,
           password: null,
         },
-        loginRules: {
-          username: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validateUsername,
-            },
-          ],
-          password: [
-            {
-              required: true,
-              trigger: 'blur',
-              validator: validatePassword,
-            },
-          ],
-        },
-        passwordType: 'password',
+        valid: true,
+        visible1: false,
+        visible2: false,
+        accept: false,
+        emailRules: [
+          v => !!v || 'E-mail обязателен',
+          v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+        ],
+        phoneRules: [
+          v => !!v || 'Телефон обязателен',
+        ],
+        passwordRules: [
+          v => !!v || 'Пароль обязателен',
+          v => /^[^а-яА-Я]+$/gm.test(v) || 'Указан недопустимый символ',
+          v => (v && v.length >= 8) || 'Пароль должен быть не менее 8 символов',
+        ],
+        passwordConfirmRules: [
+          v => v === this.form.password || 'Пароли не совпадают',
+        ],
         loading: false,
       }
     },
     computed: {
-      ...mapGetters(['auth']),
+      ...mapGetters('auth/auth', [
+        'merchants',
+        'merchant',
+        'device',
+      ]),
     },
     mounted () {
-      this.$store.dispatch('auth/InitDevice')
+      this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
-      checkCapslock (e) {
-        const { key } = e
-        this.capsTooltip = key && key.length === 1 && key >= 'A' && key <= 'Z'
+      onCaptchaExpired () {
+        this.$refs.recaptcha.reset()
       },
-      showPwd () {
-        if (this.passwordType === 'password') {
-          this.passwordType = ''
-        } else {
-          this.passwordType = 'password'
+      clearPhoneMask (p) {
+        if (p) {
+          p = String(p).match(/\d/g)
+          if (p) p = p.join('')
         }
-        this.$nextTick(() => {
-          this.$refs.password.focus()
-        })
+        return p
       },
-
-      async handleLogin () {
-        // обнуляем merchants
-        // this.$store.commit("auth/merchant/clearState", null);
+      submit () {
+        this.$refs.recaptcha.execute()
+      },
+      async registration (recaptchaToken) {
         const user = {
           email: this.form.email,
+          phone: this.clearPhoneMask(this.form.phone),
           password: this.form.password,
-          device_id: this.auth.device.id,
-          device_token: this.auth.device.token,
-          device_type: this.auth.device.type,
+          device_id: this.device.id,
+          device_token: this.device.token,
+          device_type: this.device.type,
+          recaptcha_token: recaptchaToken,
         }
+        console.log(user)
         try {
           this.loading = true
-
-          await this.$store.dispatch('auth/EmailLogin', user)
-          this.afterLoginSuccess()
+          await this.$store.dispatch('auth/email/registration', user)
         } finally {
           this.loading = false
         }
-      },
-
-      afterLoginSuccess () {
-        // выбор merchant'а, если их несколько или вход, т.к. токен уже содержит merchant_id
-        // console.log("afterLoginSuccess", this.merchants);
-        this.showFields = false
-        if (this.auth.merchant) {
-          // if (this.merchant.show_modal) {
-          //   this.$router.push('/wizard')
-          // } else if (this.$route !== '/office') {
-          //   this.$router.push('/office')
-          // }
-          this.$router.push('/dashboard')
-        } else if (this.merchants && this.merchants.length > 1) {
-          this.merchantDialog = true
-        }
-      },
-      getOtherQuery (query) {
-        return Object.keys(query).reduce((acc, cur) => {
-          if (cur !== 'redirect') {
-            acc[cur] = query[cur]
-          }
-          return acc
-        }, {})
       },
     },
   }

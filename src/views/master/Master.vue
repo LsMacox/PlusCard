@@ -1,6 +1,9 @@
 <template>
   <div id="master">
-    <div class="app-bar">
+    <div
+      v-if="currentStep !== 4"
+      class="app-bar"
+    >
       <v-row
         align="center"
         style="min-height: 100px"
@@ -79,19 +82,21 @@
                   Отлично! Вводите его.
                 </div>
               </div>
-              <div class="right-block">
+              <div
+                class="right-block"
+                style="height: 55px"
+              >
                 <v-text-field
                   v-model="program.companyName"
                   :validate-on-blur="true"
                   placeholder="Название комании"
                   outlined
                   counter="20"
-                  :class="{'companyName_input': true,'success-text': program.companyName.length > 0 && program.companyName.length < 21}"
+                  :class="{'v-input--counter': true,'success-text': program.companyName.length > 0 && program.companyName.length < 21}"
                   :rules="[rules.required, rules.counter]"
                   maxlength="20"
                   @input="program.companyName.length ? currentStep = 1 : currentStep = 0"
-                >
-                </v-text-field>
+                />
               </div>
             </div>
             <div class="content-block content-block__second">
@@ -236,10 +241,11 @@
                 @click="setMarker($event)"
               >
                 <ymap-marker
+                  #FFFFFF;
                   marker-id="1"
                   :coords="coords"
+                  :icon="markerIcon"
                 />
-
               </yandex-map>
             </div>
             <div class="shop-block__right">
@@ -257,47 +263,165 @@
                   Если у вас несколько точек продаж - внесите их контактные <br>данные и режимы работы, чтобы клиенты
                   могли связаться с <br>конкретным магазином и уточненить свои вопросы.
                 </div>
-                <div class="content-block__shop shop-card" v-if="newShopActive">
+                <div class="content-block__search">
+                  <v-text-field
+                    placeholder="Поиск по названию, городу, улице"
+                    outlined
+                  >
+                    <template slot="prepend-inner">
+                      <span
+                        class="iconify"
+                        data-icon="gg:search"
+                        data-inline="false"
+                      />
+                    </template>
+                  </v-text-field>
+                </div>
+                <div class="content-block__shop complete-shop">
+                  <div class="complete-shop__header">
+                    <div class="header__title body-l-semibold">
+                      Магазин №12 на Ленина
+                    </div>
+                    <div class="actions">
+                      <div
+                        v-show="!actionsShow"
+                        class="more_icons"
+                        @mouseover="actionsShow = true"
+                      >
+                        <span
+                          class="iconify"
+                          data-icon="feather:more-vertical"
+                          data-inline="false"
+                        />
+                      </div>
+                      <div
+                        v-show="actionsShow"
+                        class="actions_icons"
+                        @mouseleave="actionsShow = false"
+                      >
+                        <span
+                          class="iconify trash_icon"
+                          data-icon="feather:trash"
+                          data-inline="false"
+                        />
+                        <span
+                          class="iconify edit_icon"
+                          data-icon="feather:edit"
+                          data-inline="false"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="complete-shop__content shop-content">
+                    <div class="shop-content__first">
+                      <div class="workdays body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="feather:calendar"
+                          data-inline="false"
+                        />
+                        Пн-пт, вс
+                      </div>
+                      <div class="worktime body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="feather:clock"
+                          data-inline="false"
+                        />
+                        10:00-22:00
+                      </div>
+                      <div class="breaktime body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="feather:coffee"
+                          data-inline="false"
+                        />
+                        13:00-14:00
+                      </div>
+                    </div>
+                    <div class="shop-content__second">
+                      <div class="address body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="ion:location-outline"
+                          data-inline="false"
+                        />
+                        Москва, пр-т Ломоносова, 48-а.
+                      </div>
+                    </div>
+                    <div class="shop-content__third">
+                      <div class="phone body-m-regular">
+                        <span
+                          class="iconify"
+                          data-icon="feather:phone"
+                          data-inline="false"
+                        />
+                        +7 (950) 748-23-42
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  v-if="newShopActive"
+                  class="content-block__shop shop-card"
+                >
                   <div class="shop-card__name">
                     <v-text-field
+                      v-model="newShop.name"
                       class="shop-card__name_input"
                       placeholder="Введите название точки"
-                      v-model="newShop.name"
-                    >
-
-                    </v-text-field>
+                    />
                   </div>
                   <div class="shop-card__city">
                     <v-select
+                      v-model="newShop.city"
                       :items="items"
                       placeholder="Выберите город"
                       outlined
                       class="shop-card__city_select"
                       style="width: 380px;"
-                      multiple
-                      v-model="newShop.city"
                     >
                       <template slot="prepend-inner">
                         <div>
                           <v-img src="@/assets/svg/building.svg" />
                         </div>
                       </template>
-                      <template slot="append">
-                        <v-icon
-                          color="#4776E6"
-                          style="color: #4776E6 !important"
-                        >
-                          fa-caret-down
-                        </v-icon>
+
+                      <template v-slot:item="data">
+                        <div style="display: flex; align-items: center;">
+                          <div
+                            v-if="data.attrs.inputValue"
+                            :key="data.item + 'active'"
+                            class="active"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="eva:checkmark-square-2-fill"
+                              data-inline="false"
+                            />
+                          </div>
+                          <div
+                            v-else
+                            :key="data.item + 'inactive'"
+                            class="inactive"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="eva:square-outline"
+                              data-inline="false"
+                            />
+                          </div>
+                          <span>{{ data.item }}</span>
+                        </div>
                       </template>
                     </v-select>
                   </div>
                   <div class="shop-card__input shop-card__address">
                     <v-text-field
+                      v-model="newShop.address"
                       placeholder="Введите адрес "
                       outlined
                       style="width: 380px"
-                      v-model="newShop.address"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -308,10 +432,10 @@
                   </div>
                   <div class="shop-card__input shop-card__phone">
                     <v-text-field
+                      v-model="newShop.phone"
                       placeholder="Введите телефон"
                       outlined
                       style="width: 380px"
-                      v-model="newShop.phone"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -325,57 +449,98 @@
                       <div class="work-time__title body-m-semibold">
                         Рабочее время
                       </div>
-                      <div class="work-time__inputs" v-for="(worktime, index) in newShop.workTimes" :key="index">
+                      <div
+                        v-for="(worktime, globalIndex) in newShop.workTimes"
+                        :key="globalIndex"
+                        class="work-time__inputs"
+                      >
                         <div class="inputs__first">
                           <v-text-field
-                            placeholder="С"
+                            v-model="worktime.startTime"
                             v-mask="'##:##'"
+                            placeholder="00:00"
                             outlined
                             style="width: 74px; margin-right: 4px"
-                            v-model="worktime.startTime"
                           />
                         </div>
-                        -
+                        <div
+                          class="inputs__separator"
+                          style="height: 50px"
+                        >
+                          -
+                        </div>
                         <div class="inputs__second">
                           <v-text-field
-                            placeholder="По"
+                            v-model="worktime.endTime"
                             v-mask="'##:##'"
+                            placeholder="По"
                             outlined
                             style="width: 74px;  margin: 0 16px 0 4px"
-                            v-model="worktime.endTime"
                           />
                         </div>
                         <div class="inputs__third">
                           <v-select
                             v-model="worktime.days"
-                            :items="getWorkDays(index)"
-                            :item-disabled="worktime.days"
+                            :items="days"
+                            item-value="id"
                             placeholder="Дни"
                             outlined
                             multiple
                             style="width: 155px;margin-right: 18px"
                           >
-                            <template v-slot:selection="{ item, index }">
-                              <v-chip v-if="index === 0">
-                                <span>{{ item }}</span>
-                              </v-chip>
-                              <span
-                                v-if="index === 1"
-                                class="grey--text caption"
-                              >(+{{ worktime.days.length - 1 }} ещё)</span>
+                            <template v-slot:selection="{item, index}">
+                              <div
+                                v-if="index === 0"
+                                style="font-size: 12px"
+                              >
+                                {{ getSelectedWorkDays(globalIndex) }}
+                              </div>
+                            </template>
+                            <template v-slot:item="data">
+                              <div style="display: flex; align-items: center;">
+                                <div
+                                  v-if="data.attrs.inputValue"
+                                  class="active"
+                                >
+                                  <span
+                                    class="iconify"
+                                    data-icon="eva:checkmark-square-2-fill"
+                                    data-inline="false"
+                                  />
+                                </div>
+                                <div
+                                  v-else
+                                  :key="data.item.id"
+                                  class="inactive"
+                                >
+                                  <span
+                                    class="iconify"
+                                    data-icon="eva:square-outline"
+                                    data-inline="false"
+                                  />
+                                </div>
+                                <span>{{ data.item.fullName }}</span>
+                              </div>
                             </template>
                           </v-select>
                         </div>
-                        <div class="inputs__action" v-if="newShop.workTimes.length - 1 === index">
+                        <div
+                          v-if="newShop.workTimes.length - 1 === globalIndex"
+                          class="inputs__action"
+                        >
                           <v-btn
                             color="secondary"
                             :text="true"
                             style="padding: 0 !important;"
+                            :ripple="false"
                             @click="addWorkTime()"
                           >
-                            <v-img
-                              src="@/assets/svg/plus-circle.svg"
-                              style="margin-right: 5px"
+                            <span
+                              class="iconify"
+                              data-icon="uil:plus-circle"
+                              data-inline="false"
+                              width="21px"
+                              heigth="21px"
                             />
                           </v-btn>
                         </div>
@@ -385,60 +550,103 @@
                       <div class="break-time__title body-m-semibold">
                         Перерыв
                       </div>
-                      <div class="break-time__inputs" v-for="(breaktime, i) in newShop.breakTimes" :key="i">
-                          <div class="inputs__first">
-                            <v-text-field
-                              placeholder="С"
-                              v-mask="'##:##'"
-                              outlined
-                              style="width: 74px; margin-right: 4px"
-                              v-model="breaktime.startTime"
-                              :ref="'from'+i"
-                            />
-                          </div>
+                      <div
+                        v-for="(breaktime, i) in newShop.breakTimes"
+                        :key="i"
+                        class="break-time__inputs"
+                      >
+                        <div class="inputs__first">
+                          <v-text-field
+                            :ref="'from'+i"
+                            v-model="breaktime.startTime"
+                            v-mask="'##:##'"
+                            placeholder="С"
+                            outlined
+                            style="width: 74px; margin-right: 4px"
+                          />
+                        </div>
+                        <div
+                          class="inputs__separator"
+                          style="height: 50px"
+                        >
                           -
-                          <div class="inputs__second">
-                            <v-text-field
-                              placeholder="По"
-                              v-mask="'##:##'"
-                              outlined
-                              style="width: 74px;  margin: 0 16px 0 4px"
-                              v-model="breaktime.endTime"
+                        </div>
+                        <div class="inputs__second">
+                          <v-text-field
+                            v-model="breaktime.endTime"
+                            v-mask="'##:##'"
+                            placeholder="По"
+                            outlined
+                            style="width: 74px;  margin: 0 16px 0 4px"
+                          />
+                        </div>
+                        <div class="inputs__third">
+                          <v-select
+                            v-model="breaktime.days"
+                            :items="days"
+                            placeholder="Дни"
+                            item-value="id"
+                            outlined
+                            multiple
+                            style="width: 155px;margin-right: 18px"
+                          >
+                            <template v-slot:selection="{item, index}">
+                              <div
+                                v-if="index === 0"
+                                style="font-size: 12px"
+                              >
+                                {{ getSelectedBreakDays(i) }}
+                              </div>
+                            </template>
+                            <template v-slot:item="data">
+                              <div style="display: flex; align-items: center;">
+                                <div
+                                  v-if="data.attrs.inputValue"
+                                  :key="data.item.id + 100"
+                                  class="active"
+                                >
+                                  <span
+                                    class="iconify"
+                                    data-icon="eva:checkmark-square-2-fill"
+                                    data-inline="false"
+                                  />
+                                </div>
+                                <div
+                                  v-else
+                                  :key="data.item.id"
+                                  class="inactive"
+                                >
+                                  <span
+                                    class="iconify"
+                                    data-icon="eva:square-outline"
+                                    data-inline="false"
+                                  />
+                                </div>
+                                <span>{{ data.item.fullName }}</span>
+                              </div>
+                            </template>
+                          </v-select>
+                        </div>
+                        <div
+                          v-if="newShop.breakTimes.length - 1 === i"
+                          class="inputs__action"
+                        >
+                          <v-btn
+                            color="secondary"
+                            :text="true"
+                            style="padding: 0 !important;"
+                            :ripple="false"
+                            @click="addBreakTime()"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="uil:plus-circle"
+                              data-inline="false"
+                              width="21px"
+                              heigth="21px"
                             />
-                          </div>
-                          <div class="inputs__third">
-                            <v-select
-                              v-model="breaktime.days"
-                              :items="items"
-                              placeholder="Дни"
-                              outlined
-                              multiple
-                              style="width: 155px;margin-right: 18px"
-                            >
-                              <template v-slot:selection="{ item, index }">
-                                <v-chip v-if="index === 0">
-                                  <span>{{ item }}</span>
-                                </v-chip>
-                                <span
-                                  v-if="index === 1"
-                                  class="grey--text caption"
-                                >(+{{ breaktime.days.length - 1 }} ещё)</span>
-                              </template>
-                            </v-select>
-                          </div>
-                          <div class="inputs__action" v-if="newShop.breakTimes.length - 1 === i">
-                            <v-btn
-                              color="secondary"
-                              :text="true"
-                              style="padding: 0 !important;"
-                              @click="addBreakTime()"
-                            >
-                              <v-img
-                                src="@/assets/svg/plus-circle.svg"
-                                style="margin-right: 5px"
-                              />
-                            </v-btn>
-                          </div>
+                          </v-btn>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -453,14 +661,18 @@ font-size: 13px;
 line-height: 17px;"
                         @click="cancelShop()"
                       >
-                        <v-img src="@/assets/svg/close-circle_grey.svg" style="margin-right: 6px"/>
+                        <v-img
+                          src="@/assets/svg/close-circle_grey.svg"
+                          style="margin-right: 6px"
+                        />
                         Отменить
                       </v-btn>
                     </div>
                     <div class="action__save">
                       <v-btn
                         color="secondary"
-                        style="width: 265px; height: 41px; margin-right: 0"
+                        small
+                        style="width: 265px; margin-right: 0"
                       >
                         Сохранить
                       </v-btn>
@@ -469,7 +681,7 @@ line-height: 17px;"
                 </div>
                 <div class="content-block__add">
                   <v-btn
-                    color="info"
+                    color="primary"
                     :text="true"
                     style="padding: 0 !important;"
                     @click="addShop()"
@@ -485,6 +697,7 @@ line-height: 17px;"
                   <v-btn
                     color="primary"
                     style="width: 123px"
+                    @click="currentStep = 3"
                   >
                     Далее
                     <v-img
@@ -499,6 +712,240 @@ line-height: 17px;"
             </div>
           </div>
         </div>
+      </div>
+
+      <div
+        v-if="currentStep === 3"
+        class="content-thirdStep"
+      >
+        <v-container fluid>
+          <v-row
+            align="center"
+            justify="center"
+          >
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <div class="contacts-block">
+                <div class="content-block content-block__first">
+                  <div class="left-block">
+                    <div
+                      class="left-block__title title-m-bold"
+                      style="color: #2A2A34; margin-bottom: 10px"
+                    >
+                      Контактная информация
+                    </div>
+                    <div
+                      class="left-block__content body-m-regular"
+                      style="color: #70707D;"
+                    >
+                      Введите единый номер телефона и адрес <br> вашего сайта, чтобы ваши клиенты могли <br> связаться с вами удобным способом.
+                    </div>
+                  </div>
+                  <div class="right-block">
+                    <v-text-field
+                      placeholder="Номер горячей линии"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <span
+                          class="iconify"
+                          data-icon="feather:phone"
+                          data-inline="false"
+                        />
+                      </template>
+                    </v-text-field>
+                    <v-text-field
+                      v-model="social.site"
+                      placeholder="Адрес сайта"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <span
+                          class="iconify"
+                          data-icon="feather:mouse-pointer"
+                          data-inline="false"
+                        />
+                      </template>
+                    </v-text-field>
+                  </div>
+                </div>
+                <div class="content-block content-block__second">
+                  <div class="left-block">
+                    <div
+                      class="left-block__title title-m-bold"
+                      style="color: #2A2A34; margin-bottom: 10px"
+                    >
+                      Социальные сети
+                    </div>
+                    <div
+                      class="left-block__content body-m-regular"
+                      style="color: #70707D;"
+                    >
+                      Введите адреса ваших профилей и групп в <br> социальных сетях. Вводите только название <br> профиля, которое стоит в самом конце <br> адресной строки после символа “/”.
+                    </div>
+                  </div>
+                  <div class="right-block">
+                    <v-text-field
+                      v-model="social.vk"
+                      placeholder="/Группа Вконтакте"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;">
+                          <v-img src="@/assets/svg/vk_logo.svg" />
+                        </div>
+                      </template>
+                    </v-text-field>
+                    <v-text-field
+                      v-model="social.youtube"
+                      placeholder="/Канал на Youtube"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;">
+                          <v-img src="@/assets/svg/youtube_logo.svg" />
+                        </div>
+                      </template>
+                    </v-text-field>
+                    <v-text-field
+                      v-model="social.fb"
+                      placeholder="/Группа в Facebook"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;display: flex;justify-content: center;">
+                          <v-img
+                            src="@/assets/svg/facebook_logo.svg"
+                            max-width="9px"
+                            max-height="18px"
+                          />
+                        </div>
+                      </template>
+                    </v-text-field>
+                    <v-text-field
+                      v-model="social.instagram"
+                      placeholder="/Профиль в Instagram"
+                      outlined
+                      style="width: 300px;"
+                    >
+                      <template slot="prepend-inner">
+                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;">
+                          <v-img src="@/assets/svg/vk_logo.svg" />
+                        </div>
+                      </template>
+                    </v-text-field>
+                  </div>
+                </div>
+                <div class="content-block content-block__third">
+                  <v-btn
+                    color="primary"
+                    style="width: 123px"
+                    @click="currentStep = 4"
+                  >
+                    Далее
+                    <v-img
+                      src="@/assets/svg/arrow-forward-outline.svg"
+                      width="21px"
+                      height="21px"
+                      max-width="21px"
+                    />
+                  </v-btn>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+      <div
+        v-if="currentStep === 4"
+        class="finishStep"
+        style="height: 100%"
+      >
+        <v-container style="height: 100%">
+          <v-row
+            align="center"
+            justify="center"
+            style="height: 100%"
+          >
+            <v-col
+              cols="6"
+            >
+              <v-row
+                align="center"
+                justify="center"
+              >
+                <v-img
+                  src="@/assets/svg/company_created.svg"
+                  max-width="110px"
+                  max-height="95px"
+                />
+              </v-row>
+              <v-row
+                align="center"
+                justify="center"
+              >
+                <div
+                  style="margin-top:2.4rem"
+                  class="title-s-bold"
+                >
+                  Компания создана!
+                </div>
+              </v-row>
+              <v-row
+                align="center"
+                justify="center"
+              >
+                <div
+                  style="margin-top:.9rem; text-align:center; color: #70707D"
+                  class="body-m-regular"
+                >
+                  Теперь вы можете создавать и настраивать программы<br>лояльности, выпускать сертификаты и многое другое.<br> Вам доступен весь функционал Plus.
+                </div>
+              </v-row>
+              <v-row
+                align="center"
+                justify="center"
+              >
+                <div
+                  style="margin-top:2.4rem; text-align:center; color: #70707D"
+                  class="body-m-regular"
+                >
+                  <v-btn
+                    color="secondary"
+                    style="width: 335px; margin-bottom: 16px"
+                    @click="$router.push('/master')"
+                  >
+                    <span
+                      class="iconify"
+                      data-icon="ant-design:gift-outlined"
+                      data-inline="false"
+                    />
+                    Выпустить подарочный сертификат
+                  </v-btn>
+                  <v-btn
+                    color="primary"
+                    style="width: 335px"
+                    @click="$router.push('/master')"
+                  >
+                    <span
+                      class="iconify"
+                      data-icon="ion:wallet-outline"
+                      data-inline="false"
+                    />
+                    Создать программу лояльности
+                  </v-btn>
+                </div>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
       </div>
     </div>
     <input
@@ -526,7 +973,7 @@ line-height: 17px;"
   import ImageCropper from '@/components/dialogs/ImageCropper'
   import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import Color from 'color'
-  import {mask} from 'vue-the-mask'
+  import { mask } from 'vue-the-mask'
 
   export default {
 
@@ -536,20 +983,34 @@ line-height: 17px;"
       yandexMap,
       ymapMarker,
     },
-    directives: {mask},
+    directives: { mask },
     data () {
       return {
+        social: {
+          site: '',
+          vk: '',
+          youtube: '',
+          fb: '',
+          instagram: '',
+        },
         // markerIcon: {
         //   layout: 'default#imageWithContent',
-        //   imageHref: '',
-        //   imageSize: [43, 43],
-        //   imageOffset: [0, 0],
         //   content: '123 v12',
         //   contentOffset: [0, 15],
-        //   contentLayout: '<div class="markerC lass" style="background: red; width: 50px; color: #FFFFFF; font-weight: bold;">$[properties.iconContent]</div>'
+        //   contentLayout: '<div class="ymapMarker">$[properties.iconContent]</div>',
         // },
+        actionsShow: false,
+        markerIcon: {
+          layout: 'default#imageWithContent',
+          imageHref: require('@/assets/svg/Bottom-tail.svg'),
+          imageSize: [150, 55],
+          imageOffset: [-75, -50],
+          content: 'Магазин на Чекистов 312317',
+          contentOffset: [0, 0],
+          contentLayout: '<div class="classMarker" style="display: flex; align-self: center; align-content: center; justify-content:center; width: 150px; height: 50px; color: #FFFFFF; font-weight: bold; text-align: center; line-height: 50px">$[properties.iconContent]</div>',
+        },
         newShopActive: false,
-        shop: {lat: '', lng: ''},
+        shop: { lat: '', lng: '' },
         shops: [],
         newShop: {
           name: '',
@@ -560,22 +1021,30 @@ line-height: 17px;"
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
+              days: [],
+            },
           ],
           breakTimes: [
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
-          ]
+              days: [],
+            },
+          ],
         },
         newWorkTime: [],
         newBreakTime: [],
         cardBg: require('@/assets/svg/Shine.svg'),
-        items: ['ПН','ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'],
-        days: ['ПН','ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'],
+        items: ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'],
+        days: [
+          { id: 0, shortName: 'ПН', fullName: 'Понедельник' },
+          { id: 1, shortName: 'ВТ', fullName: 'Вторник' },
+          { id: 2, shortName: 'СР', fullName: 'Среда' },
+          { id: 3, shortName: 'ЧТ', fullName: 'Четверг' },
+          { id: 4, shortName: 'ПТ', fullName: 'Пятница' },
+          { id: 5, shortName: 'СБ', fullName: 'Суббота' },
+          { id: 6, shortName: 'ВС', fullName: 'Воскресенье' },
+        ],
         settings: {
           apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
           lang: 'ru_RU',
@@ -609,15 +1078,45 @@ line-height: 17px;"
       }
     },
     computed: {
-      balloonTemplate() {
+      sorted_work_array () {
+        return this.sortById(this.newShop.workTimes)
+      },
+      sorted_break_array () {
+        return this.sortById(this.newShop.breakTimes)
+      },
+      balloonTemplate () {
         return `
         <h1 class="red">Hi, everyone!</h1>
         <p>I am here: ${this.coords}</p>
         <img src="http://via.placeholder.com/350x150">
       `
-      }
+      },
     },
     watch: {
+      'social.site' (v) {
+        const regex = /^(http:\/\/|https:\/\/|)((www.|)[\w]+.[\w]+)\//gm
+        const str = regex.exec(v)
+        if (str && str[2] != null) {
+          this.social.site = str[2]
+        }
+      },
+      'social.vk' (v) {
+        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        this.social.vk = v.replace(regex, '')
+      },
+      'social.fb' (v) {
+        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        this.social.fb = v.replace(regex, '')
+      },
+      'social.youtube' (v) {
+        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        this.social.youtube = v.replace(regex, '')
+      },
+      'social.instagram' (v) {
+        console.log('instagram', v)
+        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        this.social.instagram = v.replace(regex, '')
+      },
       smallImg (v) {
         if (v.data.indexOf('base64') !== -1) {
           this.fileLogo = {
@@ -629,79 +1128,156 @@ line-height: 17px;"
       },
     },
     methods: {
-      cancelShop(){
-        this.newShopActive = false;
+      arrayUnique (array) {
+        var a = array.concat()
+        for (var i = 0; i < a.length; ++i) {
+          for (var j = i + 1; j < a.length; ++j) {
+            if (a[i] === a[j]) { a.splice(j--, 1) }
+          }
+        }
+
+        return a
+      },
+      getSelectedBreakDays (index) {
+        console.log('index', index)
+        const array = this.sorted_break_array[index].days
+        let str = ''
+        let length = 0
+        const strArr = []
+        for (let i = 0; i < array.length; i++) {
+          if (array[i] + 1 === array[i + 1]) {
+            if (!str.length) str += this.days[array[i]].shortName
+            length += 1
+          } else {
+            if (length !== 0) {
+              str += '-' + this.days[array[i]].shortName
+              length = 0
+              strArr.push(str)
+              str = ''
+            } else {
+              str += this.days[array[i]].shortName
+              strArr.push(str)
+              str = ''
+            }
+          }
+        }
+        str = ''
+        strArr.forEach(item => {
+          str += item + ', '
+        })
+        str = str.slice(0, -2)
+        return str
+      },
+      getSelectedWorkDays (index) {
+        console.log('index', index)
+        const array = this.sorted_work_array[index].days
+        let str = ''
+        let length = 0
+        const strArr = []
+        for (let i = 0; i < array.length; i++) {
+          if (array[i] + 1 === array[i + 1]) {
+            if (!str.length) str += this.days[array[i]].shortName
+            length += 1
+          } else {
+            if (length !== 0) {
+              str += '-' + this.days[array[i]].shortName
+              length = 0
+              strArr.push(str)
+              str = ''
+            } else {
+              str += this.days[array[i]].shortName
+              strArr.push(str)
+              str = ''
+            }
+          }
+        }
+        str = ''
+        strArr.forEach(item => {
+          str += item + ', '
+        })
+        str = str.slice(0, -2)
+        return str
+      },
+      sortById (arr) {
+        console.log('input array', arr)
+        // arr.sort((a, b) => a.id > b.id ? 1 : -1);
+        const array = []
+        arr.forEach(item => {
+          item.days.sort(function (a, b) {
+            return a - b
+          })
+          array.push(item)
+        })
+        console.log('output array', array)
+        return array
+      },
+      cancelShop () {
+        this.newShopActive = false
         this.newShop = {
           name: '',
-            city: '',
-            address: '',
-            phone: '',
-            workTimes: [
+          city: '',
+          address: '',
+          phone: '',
+          workTimes: [
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
+              days: [],
+            },
           ],
-            breakTimes: [
+          breakTimes: [
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
-          ]
+              days: [],
+            },
+          ],
         }
       },
-      addShop(){
+      addShop () {
         this.newShopActive = true
       },
-      setMarker(e) {
-        this.coords = Object.assign([], e.get("coords"));
-        //////console.log(this.coords)
-        this.shop.lat = this.coords[0];
-        this.shop.lng = this.coords[1];
-        this.shop = Object.assign({}, this.shop);
+      setMarker (e) {
+        this.coords = Object.assign([], e.get('coords'))
+        /// ///console.log(this.coords)
+        this.shop.lat = this.coords[0]
+        this.shop.lng = this.coords[1]
+        this.shop = Object.assign({}, this.shop)
       },
-      getWorkDays(index){
-        if(index !== 0) {
-          return this.days.filter(day => {
-            return (this.newShop.workTimes[index - 1 ].days).indexOf(day) === -1
-          })
-        } else return this.days
-      },
-      addWorkTime(){
-        console.log('current work_times', this.newShop.workTimes);
-        let last = this.newShop.workTimes[this.newShop.workTimes.length -1];
-        if(last.days.length === 0 || !last.startTime || !last.endTime){
-          return false;
+
+      addWorkTime () {
+        console.log('current work_times', this.newShop.workTimes)
+        const last = this.newShop.workTimes[this.newShop.workTimes.length - 1]
+        if (last.days.length === 0 || !last.startTime || !last.endTime) {
+          return false
         } else {
           this.newShop.workTimes.push(
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
+              days: [],
+            },
           )
         }
       },
-      addBreakTime(){
-        console.log('current break_times', this.newShop.breakTimes);
-        let last = this.newShop.breakTimes[this.newShop.breakTimes.length -1];
-        if(last.days.length === 0 || !last.startTime || !last.endTime){
-          return false;
+      addBreakTime () {
+        console.log('current break_times', this.newShop.breakTimes)
+        const last = this.newShop.breakTimes[this.newShop.breakTimes.length - 1]
+        if (last.days.length === 0 || !last.startTime || !last.endTime) {
+          return false
         } else {
           this.newShop.breakTimes.push(
             {
               startTime: '',
               endTime: '',
-              days: []
-            }
+              days: [],
+            },
           )
         }
       },
       changeColor (str) {
         const color = Color(str)
-          if(color.isLight()){
+        if (color.isLight()) {
           this.program.bgcolor[1] = color.darken(0.5).hex()
           this.program.color = '#000000'
         } else {
@@ -763,8 +1339,18 @@ line-height: 17px;"
     },
   }
 </script>
+<style lang="sass">
+  .ymapMarker
+    width: 150px
+    height: 50px
+    background: #4776E6
+    border-radius: 8px
+    opacity: .3
+
+</style>
 
 <style lang="sass" scoped>
+@import '~@/sass/plus_ui/light_theme/_variables.sass'
 #master
   height: 100%
 
@@ -804,7 +1390,7 @@ line-height: 17px;"
   .content-wrapper
     height: calc(100% - 100px)
 
-    .content-firstStep, .content-secondStep
+    .content-firstStep, .content-secondStep, .content-thirdStep
       height: 100%
 
       .row
@@ -828,6 +1414,12 @@ line-height: 17px;"
           margin-bottom: 68px
           @media(max-width: 992px)
             flex-direction: column
+          &__third
+            min-width: 681px
+            justify-content: flex-start
+            @media(max-width: 992px)
+              min-width: 0
+              justify-content: center
 
           .right-block
             display: flex
@@ -892,11 +1484,76 @@ line-height: 17px;"
   display: flex
   flex-direction: row
   position: relative
-  z-index: 100
+  z-index: 1000
   background: #fff
   @media(max-width: 992px)
     flex-direction: column
 
+.complete-shop
+  background: $neutral-100
+  border: 1px solid #F2F2F7
+  box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1)
+  border-radius: 12px
+  padding: 26px 24px
+  margin-top: 20px
+  &__header
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    color: $neutral-900
+    .iconify
+      width: 21px
+      height: 21px
+      cursor: pointer
+      color: $neutral-500
+    .actions_icons
+      .trash_icon
+        color: $error-500
+        margin-right: 15px
+      .edit_icon
+        color: $primary-base
+  .shop-content
+    &__first
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      align-items: center
+      color: $neutral-700
+      margin: 12px 0 16px 0
+      .iconify
+        color: $primary-base
+        width: 21px
+        height: 21px
+        margin-right: 10px
+      .workdays,.worktime, .breaktime
+        display: flex
+    &__second
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      align-items: center
+      color: $neutral-700
+      margin: 12px 0 16px 0
+      .iconify
+        color: $neutral-500
+        width: 21px
+        height: 21px
+        margin-right: 10px
+      .address
+        display: flex
+    &__third
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      align-items: center
+      color: $neutral-700
+      .iconify
+        color: $neutral-500
+        width: 21px
+        height: 21px
+        margin-right: 10px
+      .phone
+        display: flex
 .shop-block
   display: flex
   flex-direction: row
@@ -915,6 +1572,8 @@ line-height: 17px;"
       width: 523px
       margin: 0
       padding: 0
+      @media (max-width: 776px)
+        height: calc(30vh)
 
   .shop-block__right
     display: flex
@@ -928,6 +1587,9 @@ line-height: 17px;"
     .content-block
       &__title
         margin-bottom: 12px
+
+      &__search
+        margin-top: 34px
 
       &__add
         margin-top: 30px
@@ -972,7 +1634,6 @@ line-height: 17px;"
                     .v-icon
                       color: red !important
 
-
         &__input
           margin-top: 16px
 
@@ -987,6 +1648,16 @@ line-height: 17px;"
               flex-direction: row
               align-items: center
               margin-top: 12px
+              .inputs__action
+                height: 50px
+                display: flex
+                margin: 0
+                align-items: flex-start
+                position: relative
+                left: -25px
+                .iconify
+                  width: 21px
+                  height: 21px
 
           .break-time
             margin-top: 24px
@@ -998,6 +1669,45 @@ line-height: 17px;"
               flex-direction: row
               align-items: center
               margin-top: 12px
+              .inputs__action
+                height: 50px
+                display: flex
+                margin: 0
+                align-items: flex-start
+                position: relative
+                left: -25px
+                .iconify
+                  width: 21px
+                  height: 21px
 
+.contacts-block
+  display: flex
+  flex-direction: column
+  margin-top: 48px
+  @media(max-width: 992px)
+    flex-direction: column
+    overflow-y: scroll
+  .content-block
+    display: flex
+    flex-direction: row
+    margin-bottom: 68px
+    @media(max-width: 992px)
+      flex-direction: column
+    .right-block
+      display: flex
+      flex-direction: column
+      width: 300px
+      align-items: flex-end
+      justify-content: flex-end
+      margin-top: 40px
+    .left-block
+      margin-right: 48px
+      width: 333px
+      display: flex
+      flex-direction: column
+      align-self: flex-start
+      @media(max-width: 992px)
+        margin-bottom: 10px
+        margin-right: 0
 
 </style>

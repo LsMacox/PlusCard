@@ -1,0 +1,51 @@
+@import '../variables'
+
+.v-input.v-select
+  .v-input__control
+    .v-input__slot
+      .v-input__append-inner
+        .v-input__icon
+          width: 21px
+          height: 21px
+          i.v-icon
+            color: $primary-base
+            width: 11px
+            height: 7px
+            font-size: 22px
+      fieldset
+        border: 1px solid $neutral-400 !important
+        border-radius: 12px !important
+  &.v-select--is-menu-active
+    .v-input__control
+      .v-input__slot
+        fieldset
+          border-bottom-left-radius: 0 !important
+          border-bottom-right-radius: 0 !important
+          border-color: $neutral-400 !important
+          border-bottom: 0 !important
+
+
+.v-menu__content.theme--light.menuable__content__active
+  box-shadow: none !important
+  border-radius: 0px 0px 12px 12px !important
+  border: 1px solid $neutral-400
+  z-index: 100 !important
+  .v-list.v-select-list
+    box-shadow: none !important
+    padding: 0 !important
+    .v-list-item
+      color: $neutral-600 !important
+      &::before
+        background: transparent !important
+      &:hover, &:active, &:focus
+        &::before
+          background: transparent !important
+      .iconify
+        width: 18px
+        height: 18px
+        margin: 4px 6px 0 0
+      &.v-list-item--active
+        color: $neutral-900 !important
+        .iconify
+          color: $primary-base
+

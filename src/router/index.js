@@ -62,8 +62,8 @@ export default new Router({
           component: () => import('@/views/auth/login/phone/index'),
         },
         {
-          path: 'company',
-          component: () => import('@/views/auth/login/company/index'),
+          path: 'phone/confirm',
+          component: () => import('@/views/auth/login/phone/confirm'),
         },
       ],
     },
@@ -113,20 +113,20 @@ export default new Router({
     {
       path: '/',
       component: CabinetLayout,
-      redirect: '/components',
+      redirect: '/dashboard',
       meta: { auth: true },
       children: [
         {
           path: '/dashboard',
           component: () => import('@/views/dashboard/Dashboard'),
           name: 'Dashboard',
-          meta: { auth: true, title: 'Dashboard', icon: 'dashboard' },
+          meta: { auth: false, title: 'Dashboard', icon: 'dashboard' },
         },
         {
           path: '/master',
           component: () => import('@/views/master/Master'),
           name: 'Master',
-          meta: { auth: true, title: 'Master', icon: 'master' },
+          meta: { auth: false, title: 'Master', icon: 'master' },
         },
         {
           path: '/ui_kit',
@@ -134,6 +134,19 @@ export default new Router({
           name: 'components',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
+        {
+          path: '/certificate',
+          component: () => import('@/views/certificate/ProgramCertificateView.vue'),
+          name: 'components',
+          meta: { title: 'ui_kit', icon: 'ui_kit' },
+        },
+        {
+          path: '/certificate/master',
+          component: () => import('@/views/certificate/master/index.vue'),
+          name: 'ProgramCertificateMaster',
+          meta: { title: 'ui_kit', icon: 'ui_kit' },
+        },
+
         {
           path: '/account/certificates',
           component: () => import('@/views/account/Certificate'),

@@ -1,6 +1,18 @@
 <template>
   <div class="auth-content">
-    <div class="auth-content-box">
+    <div
+      v-if="selectMerchant"
+      class="back-button"
+    >
+      <back-button
+        @click.native="selectMerchant = false"
+      />
+    </div>
+
+    <div
+      v-if="!selectMerchant"
+      class="auth-content-box"
+    >
       <div class="header-box">
         <div style="display: flex;">
           <div
@@ -30,10 +42,13 @@
           outlined
           required
           :rules="emailRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/mail-outline.svg"
+            <span
+              class="iconify"
+              data-icon="ion:mail-outline"
+              data-inline="false"
             />
           </template>
         </v-text-field>
@@ -46,10 +61,13 @@
           outlined
           required
           :rules="passwordRules"
+          validate-on-blur
         >
           <template slot="prepend-inner">
-            <v-img
-              src="@/assets/svg/lock-open-outline.svg"
+            <span
+              class="iconify"
+              data-icon="bx:bx-lock-open-alt"
+              data-inline="false"
             />
           </template>
           <template slot="append">
@@ -70,7 +88,7 @@
 
         <div
           class="auth-form-action"
-          style="margin-top: 34px;"
+          style="margin-top: 10px;"
         >
           <div
             style="display: inline-grid; margin-right: 5px;"
@@ -82,11 +100,11 @@
               :disabled="!valid"
               @click="login()"
             >
-              <v-img
-                src="@/assets/svg/log-in-outline.svg"
-                max-width="21px"
-                max-height="21px"
+              <span
+                class="iconify"
                 style="margin-right: 8px;"
+                data-icon="ion:log-out-outline"
+                data-inline="false"
               />
               Войти в аккаунт
             </v-btn>
@@ -99,11 +117,11 @@
               style="width: 100%;"
               @click="toRoute('/login/phone')"
             >
-              <v-img
-                src="@/assets/svg/phone-outline.svg"
-                max-width="21px"
-                max-height="21px"
+              <span
+                class="iconify"
                 style="margin-right: 8px;"
+                data-icon="bi:phone"
+                data-inline="false"
               />
               Войти по номеру
             </v-btn>
@@ -117,13 +135,40 @@
         </div>
       </v-form>
     </div>
+    <div
+      v-else
+      class="auth-content-box"
+    >
+      <div class="merchant-select-header">
+        Продолжить работу:
+      </div>
+      <div
+        v-for="(item, i) in merchants"
+        :key="i"
+        class="merchant-select-block"
+        @click="login(item.id)"
+      >
+        <v-img
+          src="@/assets/svg/plus_logo_sm.svg"
+          max-width="46px"
+          height="46px"
+        />
+        <div class="merchant-select-block-text">
+          {{ item.name }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   import { mapGetters } from 'vuex'
+  import BackButton from '@/views/auth/components/BackButton'
 
   export default {
+    components: {
+      BackButton,
+    },
     data () {
       return {
         form: {
@@ -134,42 +179,47 @@
         visible1: false,
         emailRules: [
           v => !!v || 'E-mail обязателен',
-          v => /.+@.+/.test(v) || 'E-mail неверного формата',
+          v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
         ],
         passwordRules: [
           v => !!v || 'Пароль обязателен',
-          // v => /[^а-яА-Я]/gm.test(v) || 'Указан недопустимый символ',
+          v => /^[^а-яА-Я]+$/gm.test(v) || 'Указан недопустимый символ',
         ],
         loading: false,
+        selectMerchant: false,
       }
     },
     computed: {
-      ...mapGetters('auth', [
+      ...mapGetters('auth/auth', [
         'merchants',
         'merchant',
         'device',
       ]),
     },
     mounted () {
-      this.$store.dispatch('auth/InitDevice')
+      this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
-      async login () {
+      async login (merchId = null) {
         const user = {
           email: this.form.email,
           password: this.form.password,
           device_id: this.device.id,
           device_token: this.device.token,
           device_type: this.device.type,
+          merch_id: merchId,
         }
+        console.log(user)
         try {
           this.loading = true
 
-          await this.$store.dispatch('auth/EmailLogin', user)
-          if (this.merchants.length > 1) this.toRoute('/login/company')
+          await this.$store.dispatch('auth/email/login', user)
+          // выбор мерчанта для логина или сразу логин
+          if (this.merchants.length > 1) this.selectMerchant = true
+          else this.toRoute('/dashboard')
         } finally {
           this.loading = false
         }
