@@ -20,7 +20,7 @@ export default {
     CATEGORY_ID_LIST (state, payload) {
       state.category_id_list = payload
     },
-    TAGS_ID_LIST (state, payload) {
+    SET_TAGS_LIST (state, payload) {
       state.tags_id_list = payload
     },
     ADD_TAG (state, tag) {
@@ -141,7 +141,7 @@ export default {
       const result = await ApiService.get(
         '/api-cabinet/program/certificates/tags',
       )
-      commit('tags_id_list', result)
+      commit('SET_TAGS_LIST', result)
     },
 
     async get_actual_moder_fields ({ commit, dispatch }, certId) {

@@ -10,6 +10,7 @@ const service = axios.create({
   // timeout: 5000, // request timeout
 })
 
+
 // request interceptor
 service.interceptors.request.use(
   config => {
@@ -70,7 +71,7 @@ service.interceptors.response.use(
         // console.log('HTTP_UNAUTHORIZED')
         // axios.interceptors.response.eject(interceptor)
         return store
-          .dispatch('auth/RefreshToken')
+          .dispatch('auth/auth/RefreshToken')
           .then(result => {
             return axios(error.response.config)
           })

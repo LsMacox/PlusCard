@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-row>
       <v-col>
         <master-field-title :title="title" />
@@ -7,9 +7,11 @@
     </v-row>
     <v-row v-if="horisontal">
       <v-col>
-        <master-field-describe>
-          <slot name="describe">{{ describe }}</slot>
-        </master-field-describe>
+        <master-field-description>
+          <slot name="description">
+            {{ description }}
+          </slot>
+        </master-field-description>
       </v-col>
       <v-col>
         <slot name="input" />
@@ -19,42 +21,43 @@
       <v-col>
         <v-row>
           <v-col>
-            <master-field-describe>
-            <slot name="describe">{{ describe }}</slot>
-          </master-field-describe>
+            <master-field-description>
+              <slot name="description">
+                {{ description }}
+              </slot>
+            </master-field-description>
           </v-col>
         </v-row>
         <v-row>
           <v-col> <slot name="input" /></v-col>
-         
         </v-row>
       </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>
-import MasterFieldTitle from "./MasterFieldTitle";
-import MasterFieldDescribe from "./MasterFieldDescribe";
+  import MasterFieldTitle from './MasterFieldTitle'
+  import MasterFieldDescription from './MasterFieldDescription'
 
-export default {
-  name: "MasterFieldBlock",
-  components: { MasterFieldTitle, MasterFieldDescribe },
-  props: {
-    horisontal: {
-      type: Boolean,
-      default: false,
+  export default {
+    name: 'MasterFieldBlock',
+    components: { MasterFieldTitle, MasterFieldDescription },
+    props: {
+      horisontal: {
+        type: Boolean,
+        default: false,
+      },
+      title: {
+        type: String,
+        default: '',
+      },
+      description: {
+        type: String,
+        default: '',
+      },
     },
-    title: {
-      type: String,
-      default: "",
-    },
-    describe: {
-      type: String,
-      default: "",
-    },
-  },
 
-  computed: {},
-};
+    computed: {},
+  }
 </script>

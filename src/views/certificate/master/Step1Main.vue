@@ -14,11 +14,11 @@
           :horisontal="true"
         >
           <span
-            slot="describe"
+            slot="description"
           >Введите общее название сертификата. Оно будет отображаться на карточке сертификата в приложении Plus Cards</span>
           <template v-slot:input>
             <v-text-field
-              v-model="value.name"
+              v-model="cert.name"
               :validate-on-blur="true"
               :rules="nameRules"
               placeholder="Название сертификата"
@@ -31,62 +31,89 @@
 
         <BaseMasterFieldBlock title="Категория">
           <span
-            slot="describe"
+            slot="description"
           >Выберите до 3-х категорий сертификата, в которых он будет отображаться в приложении</span>
           <template v-slot:input>
             <v-select
-      v-model="value.category_id_list"
-      :items="category_id_list"
-      placeholder="Выберите категории"
-      item-value="id"
-      item-text="name"
-      outlined
-      multiple
-      chips
-      :ripple="false"
-    >     
-    </v-select>            
-           
+              v-model="cert.category_id_list"
+              :items="category_id_list"
+              :rules="categoryRules"
+              placeholder="Выберите категории"
+              item-value="id"
+              item-text="name"
+              outlined
+              multiple
+              chips
+              :ripple="false"
+            />
           </template>
         </BaseMasterFieldBlock>
 
         <BaseMasterFieldBlock title="Ключевые слова">
-          <span slot="describe">
+          <span slot="description">
             Введите ключевые слова, по которым можно будет искать ваш сертификат.
             Клиенты ищут не только по названию компании, но и по ключевым словам
           </span>
           <template v-slot:input>
-              <v-autocomplete
-      v-model="value.tags"
-      :items="tags_id_list"
+            <v-combobox
+      v-model="cert.tags"
       placeholder="Выберите ключевые слова"
-      item-value="id"
+      :items="tags_id_list"
+      :search-input.sync="tagSearch"
+      :return-object="false"
+      hide-selected
+      hint=""
+      label=""
+      no-data-text=""
+      item-value="name"
       item-text="name"
-      outlined
       multiple
+      persistent-hint
       chips
+      outlined
       deletable-chips
-      :ripple="false"
+      clearable
     >
-     
-    </v-autocomplete>            
-           
+      <template v-slot:no-data>
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>
+              Нет ключевых слов соотвествующих поиску "<strong>{{ tagSearch }}</strong>". Нажмите <kbd>Enter</kbd> для добавления нового слова
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
+    </v-combobox>
+            <!-- <v-autocomplete
+              v-model="cert.tags"
+              :items="tags_id_list"
+              :rules="tagsRules"
+              placeholder="Выберите ключевые слова"
+              item-value="id"
+              item-text="name"
+              outlined
+              multiple
+              chips
+              deletable-chips
+              :ripple="false"
+            /> -->
           </template>
         </BaseMasterFieldBlock>
 
         <BaseMasterFieldBlock title="Описание сертификата">
-          <span slot="describe">
+          <span slot="description">
             Заинтересуйте клиента своим сертификатом
             <br>Почему он должен купить именно этот, а не любой другой
           </span>
           <template v-slot:input>
             <v-textarea
-              v-model="value.name"
+              v-model="cert.description"
               :validate-on-blur="true"
-              :rules="nameRules"
+              :rules="descriptionRules"
+              :rows="1"
+              auto-grow
               placeholder="Введите описание сертификата"
               outlined
-              counter="255"
               maxlength="255"
             />
           </template>
@@ -106,10 +133,9 @@
           </v-col>
         </v-row>
       </v-form>
-      
     </v-row>
     {{ category_id_list }}
-      {{ tags_id_list }}
+    {{ tags_id_list }}
   </v-container>
 </template>
 
@@ -117,14 +143,19 @@
   import { mapGetters } from 'vuex'
 
   export default {
+    model: {
+      prop: 'cert',
+      event: 'change',
+    },
     props: {
-      value: {
+      cert: {
         type: Object,
         required: true,
       },
     },
     data () {
       return {
+        tagSearch: null,
         valid: false,
         GetCategoryListLoading: false,
         GetTagsListLoading: false,
@@ -133,7 +164,14 @@
           counter: (value) => value.length <= 20 || 'Max 20 characters',
         },
         nameRules: [(value) => !!value || 'Введите название'],
-        categoryRules: [],
+        categoryRules: [
+          (v) => !!v || 'Выберите категории',
+          (v) => (v.length >= 1 && v.length <= 3) || 'Выберите от 1 до 3 категорий',
+        ],
+        tagsRules: [
+          (v) => !!v || 'Выберите ключевые слова',
+        ],
+        descriptionRules: [],
       }
     },
     computed: {
@@ -161,6 +199,7 @@
           })
       },
       onNextClick () {
+        // this.value = null
         if (this.$refs.form.validate() || true) {
           this.$emit('continue', true)
         }
