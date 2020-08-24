@@ -42,6 +42,7 @@
           outlined
           required
           :rules="emailRules"
+          @blur="form.email = form.email ? form.email.trim() : null"
           validate-on-blur
         >
           <template slot="prepend-inner">
@@ -61,7 +62,6 @@
           outlined
           required
           :rules="passwordRules"
-          validate-on-blur
         >
           <template slot="prepend-inner">
             <span
@@ -142,19 +142,21 @@
       <div class="merchant-select-header">
         Продолжить работу:
       </div>
-      <div
-        v-for="(item, i) in merchants"
-        :key="i"
-        class="merchant-select-block"
-        @click="login(item.id)"
-      >
-        <v-img
-          src="@/assets/svg/plus_logo_sm.svg"
-          max-width="46px"
-          height="46px"
-        />
-        <div class="merchant-select-block-text">
-          {{ item.name }}
+      <div class="merchant-select-box app__scroll-y">
+        <div
+          v-for="(item, i) in merchants"
+          :key="i"
+          class="merchant-select-block"
+          @click="login(item.id)"
+        >
+          <v-img
+            src="@/assets/svg/plus_logo_sm.svg"
+            max-width="46px"
+            height="46px"
+          />
+          <div class="merchant-select-block-text">
+            {{ item.name }}
+          </div>
         </div>
       </div>
     </div>
@@ -164,6 +166,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import BackButton from '@/views/auth/components/BackButton'
+  import {validEmail} from '@/utils/validate.js'
 
   export default {
     components: {
@@ -179,7 +182,8 @@
         visible1: false,
         emailRules: [
           v => !!v || 'E-mail обязателен',
-          v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+          // v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+          v => validEmail(v) || 'E-mail неверного формата',
         ],
         passwordRules: [
           v => !!v || 'Пароль обязателен',
