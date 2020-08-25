@@ -1,7 +1,7 @@
 <template>
   <div class="loyalty-toolbar">
     <div class="loyalty-toolbar-name">
-      Программа лояльности
+      {{ program.name }}
     </div>
     <div class="loyalty-toolbar-period">
       <div>за сегодня</div>
@@ -59,7 +59,9 @@
       return {}
     },
     computed: {
-
+      program () {
+        return this.$store.getters['company/program/program']
+      },
     },
     mounted () {
 

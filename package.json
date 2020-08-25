@@ -14,8 +14,8 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@tinymce/tinymce-vue": "^3.2.2",
     "@riophae/vue-treeselect": "github:riophae/vue-treeselect",
+    "@tinymce/tinymce-vue": "^3.2.2",
     "array-sort": "^1.0.0",
     "axios": "^0.19.2",
     "clipboard": "^2.0.6",
@@ -25,6 +25,7 @@
     "file-loader": "^6.0.0",
     "fingerprintjs2": "^2.1.2",
     "js-cookie": "^2.2.1",
+    "moment": "^2.27.0",
     "sharp": "^0.25.4",
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",
