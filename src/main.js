@@ -29,6 +29,17 @@ import VueSession from './utils/session'
 import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'
 
+import moment from 'moment'
+import VueMoment from 'vue-moment'
+
+// Load Locales ('en' comes loaded by default)
+require('moment/locale/ru')
+
+// Choose Locale
+moment.locale('ru')
+
+Vue.use(VueMoment, { moment })
+
 Vue.use(Notifications)
 
 const options = {
