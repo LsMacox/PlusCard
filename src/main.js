@@ -55,6 +55,10 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
+Vue.prototype.$IsDebugMode = function () {
+  return this.$route.query.debug === 'true' || +this.$route.query.debug === 1
+}
+
 new Vue({
   router,
   store,

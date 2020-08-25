@@ -7,7 +7,6 @@
       <v-form
         ref="form"
         v-model="valid"
-        lazy-validation
       >
         <BaseMasterFieldBlock
           title="Номиналы сертификатов"
@@ -16,11 +15,13 @@
           <template v-slot:input>
             <div>
               <v-row>
-                <v-switch
-                  v-model="cert.quantity_unlimit"
-                  label="Бесконечное количество сертификатов"
-                  @change="quantityUnlimitChange"
-                />
+                <v-col>
+                  <v-switch
+                    v-model="cert.quantity_unlimit"
+                    label="Бесконечное количество сертификатов"
+                    @change="quantityUnlimitChange"
+                  />
+                </v-col>
               </v-row>
               <v-row
                 v-for="(item, index) in cert.nominals"
@@ -29,6 +30,7 @@
                 <v-col>
                   <v-text-field
                     v-model="item.nominal_name"
+                    :rules="nominalNameRules"
                     placeholder="Введите название номинала"
                     counter="20"
                     maxlength="20"
@@ -36,43 +38,75 @@
                   />
                 </v-col>
                 <v-col :cols="'auto'">
-                 
                   <!--  :value="formatSellingPrice(item.selling_price)" -->
                   <v-text-field
-                   v-model.number="item.selling_price"
+                    v-model.number="item.selling_price"
+                    :rules="sellingPriceRules"
                     :style="{width: '154px'}"
                     placeholder="Стоимость"
                     suffix="₽"
                     type="number"
-                    outlined                    
+                    outlined
                   />
                 </v-col>
                 <v-col :cols="'auto'">
                   <v-text-field
                     v-if="!cert.quantity_unlimit"
-                    :value="item.quantity === null ? '∞' : item.quantity"
-                    :append-outer-icon="'mdi-plus'"
-                    :prepend-icon="'mdi-minus'"
-                    :style="{width: '120px', 'text-align': 'center'}"
+                    v-model.number="item.quantity"
+                    :style="{width: '154px'}"
+                    class="text-align-center"
+                    placeholder="∞"
                     type="number"
                     outlined
-                    readonly
-                    @click:append-outer="item.quantity = (item.quantity === null? 1 : item.quantity + 1)"
-                    @click:prepend="item.quantity = (item.quantity === null? 0 : item.quantity - 1)"
-                  />
+                    @blur="onBlurQuantity(item)"
+                  >
+                    <template v-slot:prepend>
+                      <v-icon
+                        color="primary"
+                        @click="item.quantity = (item.quantity > 0 ? item.quantity - 1 : 0)"
+                      >
+                        mdi-minus
+                      </v-icon>
+                    </template>
+                    <template v-slot:append-outer>
+                      <v-icon
+                        color="primary"
+                        @click="item.quantity = (item.quantity === null? 1 : item.quantity + 1)"
+                      >
+                        mdi-plus
+                      </v-icon>
+                    </template>
+                  </v-text-field>
                 </v-col>
                 <v-col :cols="'auto'">
                   <v-btn
+                    v-if="cert.nominals.length>1"
                     fab
                     x-small
                     color="secondary"
+                    :style="{'margin-top': '12px'}"
                     @click="onRemoveNominalClick(item, index)"
                   >
-                   <span
-                          class="iconify trash_icon"
-                          data-icon="feather:trash"
-                          data-inline="false"
-                        />
+                    <span
+                      class="iconify trash_icon"
+                      data-icon="feather:trash"
+                      data-inline="false"
+                    />
+                  </v-btn>
+                  <v-btn
+                    v-else
+                    :disabled="isEmptyNominal(cert.nominals[0])"
+                    fab
+                    x-small
+                    color="secondary"
+                    :style="{'margin-top': '12px'}"
+                    @click="onClearNominalClick(item, index)"
+                  >
+                    <span
+                      class="iconify trash_icon"
+                      data-icon="feather:trash"
+                      data-inline="false"
+                    />
                   </v-btn>
                 </v-col>
                 <!-- <v-col v-if="!cert.quantity_unlimit">
@@ -83,20 +117,23 @@
                 </v-col> -->
               </v-row>
               <v-row>
-                <v-btn
-                  color="secondary"
-                  :text="true"
-                  :ripple="false"
-                  @click="onAppendNominalClick"
-                >  <span
-                              class="iconify"
-                              data-icon="uil:plus-circle"
-                              data-inline="false"
-                              width="21px"
-                              heigth="21px"
-                            />
-                  Добавить
-                </v-btn>
+                <v-col>
+                  <v-btn
+                    color="secondary"
+                    :text="true"
+                    :ripple="false"
+                    @click="onAppendNominalClick"
+                  >
+                    <span
+                      class="iconify"
+                      data-icon="uil:plus-circle"
+                      data-inline="false"
+                      width="21px"
+                      heigth="21px"
+                    />
+                    Добавить
+                  </v-btn>
+                </v-col>
               </v-row>
             </div>
           </template>
@@ -105,7 +142,9 @@
         <v-row>
           <v-col>
             <v-btn
+              v-show="valid"
               color="primary"
+              class="master-next-btn"
               @click="onEndClick"
             >
               Создать сертификат
@@ -123,6 +162,10 @@
 <script>
   import NumberParser from '@/utils/NumberParser.js'
 
+  const MIN_QUANTITY = 0
+  const MAX_QUANTITY = 999999
+   
+
   export default {
     model: {
       prop: 'cert',
@@ -137,6 +180,12 @@
     data () {
       return {
         valid: false,
+        nominalNameRules: [
+          (v) => !!v || 'Введите название номинала',
+        ],
+        sellingPriceRules: [
+          (v) => !!v || 'Введите стоимость',
+        ],
       }
     },
     computed: {
@@ -146,6 +195,21 @@
 
     },
     methods: {
+      onBlurQuantity (item) {
+        if (item.quantity < MIN_QUANTITY) {
+          item.quantity = MIN_QUANTITY
+        } else if (item.quantity > MAX_QUANTITY) {
+          item.quantity = MAX_QUANTITY
+        }
+      },
+      isEmptyNominal (nominal) {
+        return !(nominal.nominal_name || nominal.selling_price || nominal.quantity)
+      },
+      onClearNominalClick (item, index) {
+        this.cert.nominals[index].nominal_name = ''
+        this.cert.nominals[index].selling_price = null
+        this.cert.nominals[index].quantity = null
+      },
       keydownSellingPrice (item, event) {
         console.log('keydownSellingPrice', event.key)
         if (/\d/.test(event.key)) {
@@ -153,18 +217,16 @@
         } else {
           event.preventDefault()
         }
-        
       },
       inputSellingPrice (item, event) {
         console.log(item, event)
-        const number =  NumberParser('ru-RU').parse( event )
+        const number = NumberParser('ru-RU').parse(event)
         console.log('number', number)
         if (number != NaN) {
-            item.selling_price = number
+          item.selling_price = number
         } else {
-            item.selling_price = null
+          item.selling_price = null
         }
-        
       },
       formatSellingPrice (selling_price) {
         console.log('formatSellingPrice', selling_price)
@@ -176,12 +238,15 @@
         }) : ''
       },
       onEndClick () {
-        this.$emit('continue', true)
+        if (this.$refs.form.validate()) {
+          this.$emit('continue', true)
+        }
       },
       onAppendNominalClick () {
         this.cert.nominals.push({
           nominal_name: '',
-          selling_price: 0,
+          selling_price: null,
+          quantity: null,
         })
       },
       onRemoveNominalClick (nominal, index) {
@@ -193,9 +258,12 @@
           this.cert.nominals.forEach(item => (item.quantity = null))
         } else {
           this.cert.quantity = 0
-          this.cert.nominals.forEach(item => (item.quantity = 0))
+          // this.cert.nominals.forEach(item => (item.quantity = 0))
         }
       },
     },
   }
 </script>
+<style lang="scss" scoped>
+@import 'master-style.scss';
+</style>

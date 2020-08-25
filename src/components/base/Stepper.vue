@@ -1,51 +1,54 @@
 <template>
-  <v-row
-    align="center"
-    style="min-height: 100px"
-  >
-    <v-col cols="3">
-      <v-btn
-        color="secondary"
-        :text="true"
-        :ripple="false"
-        @click="onBackClick"
+  <v-row>
+    <v-col>
+      <v-row
+        align="center"
+        class="app-bar"
       >
-        <v-icon>mdi-arrow-left</v-icon>Назад
-      </v-btn>
-    </v-col>
-    <v-col cols="9">
-      <v-row class="stepper">
-        <template v-for="(item, index) in items">
-          <div
-            :key="'div' +index"
-            class="stepper-block first-step body-l-semibold"
-            :style="'color: ' + getCurrentColor(index)"
+        <v-col cols="3">
+          <v-btn
+            color="secondary"
+            :text="true"
+            :ripple="false"
+            @click="onBackClick"
           >
-            {{ item.title }}
-          </div>
-          <v-icon
-            v-if="index+1<items.length"
-            :key="'icon'+index"
-            class="stepper__icon"
-          >
-            mdi-chevron-right
-          </v-icon>
-        </template>
+            <v-icon>mdi-arrow-left</v-icon>Назад
+          </v-btn>
+        </v-col>
+        <v-col cols="9">
+          <v-row class="stepper">
+            <template v-for="(item, index) in items">
+              <div
+                :key="'div' +index"
+                class="stepper-block first-step body-l-semibold"
+                :style="'color: ' + getCurrentColor(index)"
+              >
+                {{ item.title }}
+              </div>
+              <v-icon
+                v-if="index+1<items.length"
+                :key="'icon'+index"
+                class="stepper__icon"
+              >
+                mdi-chevron-right
+              </v-icon>
+            </template>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row class="progressBar">
+        <div
+          class="progressLineFirst"
+          :style="'width: ' + getCurrentWidth() + '%'"
+        />
+        <div
+          class="progressLineSecond"
+          :style="'width: ' + (100 - getCurrentWidth()) + '%'"
+        />
       </v-row>
     </v-col>
   </v-row>
-  <!-- <v-stepper v-model="value">
-      <v-stepper-header>
-        <v-stepper-step
-          v-for="(item, index) in items"
-          :key="index"
-          :complete="value>index"
-          :step="index"
-        >
-          {{ item.title }}
-        </v-stepper-step>
-      </v-stepper-header>
-    </v-stepper>-->
 </template>
 
 <script>
@@ -83,10 +86,13 @@
       },
     },
     methods: {
+      getCurrentWidth () {
+        return Math.round((100 * (this.value + 1)) / (this.items.length + 1))
+      },
       onBackClick () {
         if (this.internalValue > 0) {
           this.$nextTick(() => (this.internalValue = this.internalValue - 1))
-          // this.internalValue--
+        // this.internalValue--
         } else {
           console.log('close')
           this.$emit('close')
@@ -115,3 +121,39 @@
     },
   }
 </script>
+<style lang="sass" scoped>
+@import '~@/sass/plus_ui/light_theme/_variables.sass'
+.app-bar
+    min-height: 100px
+
+    .nav-block
+      width: 84px
+      padding-left: 20px
+      cursor: pointer
+
+      &__icon, .nav-block__text
+        color: #4776E6
+
+    .stepper
+      display: flex
+      flex-direction: row
+      justify-content: space-between
+      max-width: 530px
+
+      &__icon
+        color: #D7D7E0
+
+.progressBar
+    display: flex
+    flex-direction: row
+
+    .progressLineFirst
+      height: 1px
+      border-radius: 0 100px 100px 0
+      background: #4776E6
+
+    .progressLineSecond
+      height: 1px
+      background-color: #F2F2F7
+
+</style>

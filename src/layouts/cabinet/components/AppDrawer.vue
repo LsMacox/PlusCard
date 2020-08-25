@@ -306,7 +306,7 @@
         {
           icon: '<span class="iconify" data-icon="ant-design:gift-outlined" data-inline="false"></span>',
           title: 'Сертификаты',
-          to: '###',
+          to: '/certificate',
         },
         {
           icon: '<span class="iconify" data-icon="ion:funnel-outline" data-inline="false"></span>',

@@ -3,11 +3,10 @@
     <v-row
       align="center"
       justify="center"
-    >
+    >    
       <v-form
         ref="form"
-        v-model="valid"
-        lazy-validation
+        v-model="valid"       
       >
         <BaseMasterFieldBlock
           title="Название сертификата"
@@ -44,6 +43,7 @@
               outlined
               multiple
               chips
+              deletable-chips
               :ripple="false"
             />
           </template>
@@ -56,47 +56,35 @@
           </span>
           <template v-slot:input>
             <v-combobox
-      v-model="cert.tags"
-      placeholder="Выберите ключевые слова"
-      :items="tags_id_list"
-      :search-input.sync="tagSearch"
-      :return-object="false"
-      hide-selected
-      hint=""
-      label=""
-      no-data-text=""
-      item-value="name"
-      item-text="name"
-      multiple
-      persistent-hint
-      chips
-      outlined
-      deletable-chips
-      clearable
-    >
-      <template v-slot:no-data>
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>
-              Нет ключевых слов соотвествующих поиску "<strong>{{ tagSearch }}</strong>". Нажмите <kbd>Enter</kbd> для добавления нового слова
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
-    </v-combobox>
-            <!-- <v-autocomplete
               v-model="cert.tags"
-              :items="tags_id_list"
-              :rules="tagsRules"
               placeholder="Выберите ключевые слова"
-              item-value="id"
+              :items="tags_id_list"
+               :rules="tagsRules"
+              :search-input.sync="tagSearch"
+              :return-object="false"
+              hide-selected
+              hint=""
+              label=""
+              no-data-text=""
+              item-value="name"
               item-text="name"
-              outlined
               multiple
+              persistent-hint
               chips
+              outlined
               deletable-chips
-              :ripple="false"
-            /> -->
+              clearable
+            >
+              <template v-slot:no-data>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      Нет ключевых слов соотвествующих поиску "<strong>{{ tagSearch }}</strong>". Нажмите <kbd>Enter</kbd> для добавления нового слова
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </template>
+            </v-combobox>           
           </template>
         </BaseMasterFieldBlock>
 
@@ -122,7 +110,9 @@
         <v-row>
           <v-col>
             <v-btn
+              v-show="valid"
               color="primary"
+              class="master-next-btn"
               @click="onNextClick"
             >
               Далее
@@ -134,8 +124,6 @@
         </v-row>
       </v-form>
     </v-row>
-    {{ category_id_list }}
-    {{ tags_id_list }}
   </v-container>
 </template>
 
@@ -171,7 +159,9 @@
         tagsRules: [
           (v) => !!v || 'Выберите ключевые слова',
         ],
-        descriptionRules: [],
+        descriptionRules: [
+           (v) => !!v || 'Введите описание',
+        ],
       }
     },
     computed: {
@@ -200,10 +190,13 @@
       },
       onNextClick () {
         // this.value = null
-        if (this.$refs.form.validate() || true) {
+        if (this.$refs.form.validate()) {
           this.$emit('continue', true)
         }
       },
     },
   }
 </script>
+<style lang="scss" scoped>
+@import 'master-style.scss';
+</style>

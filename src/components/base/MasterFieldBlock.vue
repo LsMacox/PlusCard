@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="master-field-block">
     <v-row>
-      <v-col>
+      <v-col class="pb-0">
         <master-field-title :title="title" />
       </v-col>
     </v-row>
-    <v-row v-if="horisontal">
+    <v-row v-if="horisontal" no-gutters>
       <v-col>
         <master-field-description>
           <slot name="description">
@@ -17,7 +17,7 @@
         <slot name="input" />
       </v-col>
     </v-row>
-    <v-row v-else>
+    <v-row v-else no-gutters>
       <v-col>
         <v-row>
           <v-col>
@@ -61,3 +61,8 @@
     computed: {},
   }
 </script>
+<style lang="scss" scoped>
+.master-field-block{
+  margin-top: 68px;
+}
+</style>

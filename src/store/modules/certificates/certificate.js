@@ -86,7 +86,7 @@ export default {
       commit('RESET_STATE')
     },
 
-    async GetList ({ commit }, programId) {
+    async GetCertList ({ commit }, programId) {
       const result = await ApiService.get(
         '/api-cabinet/program/certificates/list',
         {
