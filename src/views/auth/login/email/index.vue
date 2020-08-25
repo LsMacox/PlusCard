@@ -62,7 +62,6 @@
           outlined
           required
           :rules="passwordRules"
-          validate-on-blur
         >
           <template slot="prepend-inner">
             <span
@@ -143,19 +142,21 @@
       <div class="merchant-select-header">
         Продолжить работу:
       </div>
-      <div
-        v-for="(item, i) in merchants"
-        :key="i"
-        class="merchant-select-block"
-        @click="login(item.id)"
-      >
-        <v-img
-          src="@/assets/svg/plus_logo_sm.svg"
-          max-width="46px"
-          height="46px"
-        />
-        <div class="merchant-select-block-text">
-          {{ item.name }}
+      <div class="merchant-select-box app__scroll-y">
+        <div
+          v-for="(item, i) in merchants"
+          :key="i"
+          class="merchant-select-block"
+          @click="login(item.id)"
+        >
+          <v-img
+            src="@/assets/svg/plus_logo_sm.svg"
+            max-width="46px"
+            height="46px"
+          />
+          <div class="merchant-select-block-text">
+            {{ item.name }}
+          </div>
         </div>
       </div>
     </div>

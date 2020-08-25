@@ -1,0 +1,73 @@
+<template>
+  <div
+    class="loyalty-block"
+  >
+    <toolbar />
+    <widget-line />
+    <app-table />
+  </div>
+</template>
+
+<script>
+  import Toolbar from '@/views/loyalty/report/Toolbar'
+  import WidgetLine from '@/views/loyalty/report/widget/index'
+  import AppTable from '@/views/loyalty/report/table/index'
+
+  export default {
+    components: {
+      Toolbar,
+      WidgetLine,
+      AppTable,
+    },
+    data () {
+      return {
+        searchText: '',
+        loading: false,
+      }
+    },
+    computed: {
+      loadingRequest () {
+        return this.$store.getters['template/shared/loadingRequest']
+      },
+      loadingApp () {
+        return this.$store.getters['template/shared/loadingApp']
+      },
+      program () {
+        return this.$store.getters['brand/program/program']
+      },
+    },
+    created () {
+      if (!this.loadingApp) {
+        this.$store.dispatch('widget/filter')
+        this.$store.dispatch('widget/filterPeriod')
+        this.$store.dispatch('widget/operators/operators', this.program.id)
+        this.loadData()
+      }
+    },
+    methods: {
+      async loadData () {
+        if (this.program != null && this.program.id) {
+          const widget = {
+            program_id: this.program.id,
+            start_period: this.startPeriod,
+            end_period: this.endPeriod,
+            filter: this.filter,
+          }
+          console.log('load_data', widget)
+          this.loading = true
+          await this.$store.dispatch('widget/bonusClients/widget', widget)
+          await this.$store.dispatch('widget/operations/widget', widget)
+          await this.$store.dispatch('widget/operators/widget', widget)
+          await this.$store.dispatch('widget/bonuses/widget', widget)
+          await this.$store.dispatch('widget/table/widget', widget)
+          this.loading = false
+        }
+      },
+    },
+  }
+
+</script>
+
+<style lang="sass" scoped>
+@import "~@/sass/loyalty-report"
+</style>

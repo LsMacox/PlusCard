@@ -118,7 +118,7 @@
               <div class="right-block">
                 <div
                   class="card-wrapper"
-                  :style="'background: linear-gradient(140deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%)'"
+                  :style="'background: linear-gradient(140deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%); border: 1px solid ' + getBorderColor()"
                 >
                   <div class="card-bg">
                     <v-img
@@ -141,19 +141,39 @@
                           :close-on-content-click="false"
                         >
                           <template v-slot:activator="{ on }">
-                            <v-img
-                              src="@/assets/svg/color-fill-outline.svg"
-                              width="21px"
-                              height="21px"
-                              style="cursor:pointer;"
+                            <div
+                              style="cursor: pointer"
                               v-on="on"
-                            />
+                            >
+                              <div
+                                v-show="program.color === '#2A2A34'"
+                              >
+                                <span
+                                  class="iconify"
+                                  data-icon="ion:color-fill-outline"
+                                  data-inline="false"
+                                  color="#2A2A34"
+                                />
+                              </div>
+                              <div
+                                v-show="program.color !== '#2A2A34'"
+                                style="cursor: pointer"
+                              >
+                                <span
+                                  class="iconify"
+                                  data-icon="ion:color-fill-outline"
+                                  data-inline="false"
+                                  color="#FFFFFF"
+                                />
+                              </div>
+                            </div>
                           </template>
                           <div class="colorPickerWrapper">
                             <div class="pa-2">
                               <v-color-picker
                                 v-model="program.bgcolor[0]"
                                 hide-mode-switch
+                                mode="hexa"
                                 flat
                                 @input="changeColor"
                               />
@@ -166,30 +186,49 @@
                       <div class="bottomline-left">
                         <div
                           class="bottomline-left__number body-s-semibold"
-                          style="color: #ffffff"
+                          :style="'color: ' + program.color"
                         >
                           1234567891236
                         </div>
                         <div class="bottomline-left__balance">
                           <span
                             class="balance__number title-s-bold"
-                            style="color: #ffffff"
+                            :style="'color: ' + program.color"
                           >123 </span>
                           <span
                             class="body-xs-semibold"
-                            style="color: rgba(255, 255, 255, 0.5);"
+                            :style="'color: ' + getUnitColor()"
                           >бонуса</span>
                         </div>
                       </div>
                       <div class="bottomline-right">
-                        <v-img
+                        <div
                           v-if="!program.logo"
-                          src="@/assets/svg/logo_change.svg"
-                          width="58px"
-                          height="58px"
-                          style="cursor:pointer;border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%"
+                          :style="'cursor: pointer;border: 1px solid '+ getBorderColor() +' ;border-radius: 50%;width: 58px;height: 58px;display: flex;align-items: center;justify-content: center;'"
                           @click="$refs.smallImg.click()"
-                        />
+                        >
+                          <span
+                            v-show="program.color === '#2A2A34'"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="feather:download"
+                              data-inline="false"
+                              color="#2A2A34"
+                            />
+                          </span>
+                          <span
+                            v-show="program.color !== '#2A2A34'"
+                            style="cursor: pointer"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="feather:download"
+                              data-inline="false"
+                              color="#FFFFFF"
+                            />
+                          </span>
+                        </div>
                         <v-img
                           v-else
                           :src="program.logo"
@@ -758,7 +797,7 @@ line-height: 17px;"
                       </template>
                     </v-text-field>
                     <v-text-field
-                      v-model="social.site"
+                      v-model="program.website"
                       placeholder="Адрес сайта"
                       outlined
                       style="width: 300px;"
@@ -790,7 +829,7 @@ line-height: 17px;"
                   </div>
                   <div class="right-block">
                     <v-text-field
-                      v-model="social.vk"
+                      v-model="program.social.vk"
                       placeholder="/Группа Вконтакте"
                       outlined
                       style="width: 300px;"
@@ -802,7 +841,7 @@ line-height: 17px;"
                       </template>
                     </v-text-field>
                     <v-text-field
-                      v-model="social.youtube"
+                      v-model="program.social.youtube"
                       placeholder="/Канал на Youtube"
                       outlined
                       style="width: 300px;"
@@ -814,7 +853,7 @@ line-height: 17px;"
                       </template>
                     </v-text-field>
                     <v-text-field
-                      v-model="social.fb"
+                      v-model="program.social.fb"
                       placeholder="/Группа в Facebook"
                       outlined
                       style="width: 300px;"
@@ -830,7 +869,7 @@ line-height: 17px;"
                       </template>
                     </v-text-field>
                     <v-text-field
-                      v-model="social.instagram"
+                      v-model="program.social.instagram"
                       placeholder="/Профиль в Instagram"
                       outlined
                       style="width: 300px;"
@@ -847,9 +886,9 @@ line-height: 17px;"
                   <v-btn
                     color="primary"
                     style="width: 123px"
-                    @click="currentStep = 4"
+                    @click="createProgram()"
                   >
-                    Далее
+                    Завершить
                     <v-img
                       src="@/assets/svg/arrow-forward-outline.svg"
                       width="21px"
@@ -970,6 +1009,7 @@ line-height: 17px;"
 </template>
 
 <script>
+  import ApiService from '@/api/api-client'
   import ImageCropper from '@/components/dialogs/ImageCropper'
   import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import Color from 'color'
@@ -986,13 +1026,7 @@ line-height: 17px;"
     directives: { mask },
     data () {
       return {
-        social: {
-          site: '',
-          vk: '',
-          youtube: '',
-          fb: '',
-          instagram: '',
-        },
+
         // markerIcon: {
         //   layout: 'default#imageWithContent',
         //   content: '123 v12',
@@ -1070,6 +1104,13 @@ line-height: 17px;"
           bgcolor: ['#4776E6', '#8E54E9'],
           color: '#FFFFFF',
           logo: null,
+          website: '',
+          social: {
+            vk: '',
+            youtube: '',
+            fb: '',
+            instagram: '',
+          },
         },
         rules: {
           required: value => !!value || this.$t('required'),
@@ -1093,29 +1134,29 @@ line-height: 17px;"
       },
     },
     watch: {
-      'social.site' (v) {
+      'program.website' (v) {
         const regex = /^(http:\/\/|https:\/\/|)((www.|)[\w]+.[\w]+)\//gm
         const str = regex.exec(v)
         if (str && str[2] != null) {
-          this.social.site = str[2]
+          this.program.website = str[2]
         }
       },
-      'social.vk' (v) {
+      'program.social.vk' (v) {
         const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
-        this.social.vk = v.replace(regex, '')
+        this.program.social.vk = v.replace(regex, '')
       },
-      'social.fb' (v) {
+      'program.social.fb' (v) {
         const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
-        this.social.fb = v.replace(regex, '')
+        this.program.social.fb = v.replace(regex, '')
       },
-      'social.youtube' (v) {
+      'program.social.youtube' (v) {
         const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
-        this.social.youtube = v.replace(regex, '')
+        this.program.social.youtube = v.replace(regex, '')
       },
-      'social.instagram' (v) {
+      'program.social.instagram' (v) {
         console.log('instagram', v)
         const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
-        this.social.instagram = v.replace(regex, '')
+        this.program.social.instagram = v.replace(regex, '')
       },
       smallImg (v) {
         if (v.data.indexOf('base64') !== -1) {
@@ -1128,6 +1169,21 @@ line-height: 17px;"
       },
     },
     methods: {
+      async createProgram () {
+        const program = Object.assign({}, this.program)
+        program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
+        const result = await ApiService.post(
+          '/api-cabinet/company/create',
+          program,
+        )
+        console.log(result)
+      },
+      getUnitColor () {
+        if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.5)' } else { return 'rgba(0, 0, 0, 0.5)' }
+      },
+      getBorderColor () {
+        if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.2)' } else { return 'rgba(0, 0, 0, 0.2)' }
+      },
       arrayUnique (array) {
         var a = array.concat()
         for (var i = 0; i < a.length; ++i) {
@@ -1275,22 +1331,50 @@ line-height: 17px;"
           )
         }
       },
+      ColorToStr (rgb, mask, alpha) {
+        let red, green, blue
+        red = rgb[0] + (mask - rgb[0]) * alpha
+        green = rgb[1] + (mask - rgb[1]) * alpha
+        blue = rgb[2] + (mask - rgb[2]) * alpha
+
+        red = red ? this.dechex(red) : '00'
+        green = green ? this.dechex(green) : '00'
+        blue = blue ? this.dechex(blue) : '00'
+
+        if (red.length === 1) red = '0' + red
+        if (green.length === 1) green = '0' + green
+        if (blue.length === 1) blue = '0' + blue
+
+        return '#' + red + green + blue
+      },
+      dechex (number) {
+        if (number < 0) {
+          number = 0xFFFFFFFF + number + 1
+        }
+        return parseInt(number, 10)
+          .toString(16)
+      },
       changeColor (str) {
         const color = Color(str)
+        let alpha, mask
         if (color.isLight()) {
-          this.program.bgcolor[1] = color.darken(0.5).hex()
-          this.program.color = '#000000'
+          alpha = 0.04
+          mask = 0
+          this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
+          this.program.color = '#2A2A34'
+          console.log('color', this.program.bgcolor[1])
         } else {
-          this.program.bgcolor[1] = color.lighten(0.5).hex()
+          alpha = 0.1
+          mask = 255
+          this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#FFFFFF'
+          console.log('color', this.program.bgcolor[1])
         }
       },
       changeStep (step) {
         this.currentStep = step
       },
       async updateCompany () {
-        const program = Object.assign({}, this.program)
-        program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
         // await this.$store.dispatch("brand/company/updateDesign", program)
         this.changeStep(2)
       },
@@ -1451,7 +1535,10 @@ line-height: 17px;"
                 align-items: center
                 width: 260px
                 padding: 16px 5px 12px 7px
-
+                &__colorchange
+                  .iconify
+                    width: 21px
+                    height: 21px
               .card-bottomline
                 position: relative
                 z-index: 3
@@ -1461,6 +1548,10 @@ line-height: 17px;"
                 width: 260px
                 align-items: center
                 padding: 12px 5px 12px 7px
+                .bottomline-right
+                  .iconify
+                    width: 21px
+                    height: 21px
             //&__shadow
             //  width: 264px
             //  height: 140px

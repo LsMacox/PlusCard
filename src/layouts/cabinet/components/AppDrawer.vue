@@ -4,6 +4,7 @@
     :mini-variant="drawer"
     permanent
     width="280"
+    mini-variant-width="60"
     app
   >
     <!--    header-->
@@ -37,7 +38,7 @@
             color="error"
             overlap
             avatar
-            offset-x="15"
+            offset-x="5"
             offset-y="5"
           >
             <v-btn
@@ -85,16 +86,56 @@
     </v-container>
     <!--    header-end-->
     <v-divider style="border-color: #F2F2F7;" />
-    <div class="companySelectWrapper">
-      <v-select
-        v-model="selectedItem"
-        :items="selectItems"
+    <div
+      v-if="!drawer"
+      class="companySelectWrapper"
+    >
+      <v-list
         class="companySelect"
       >
-        <v-icon slot="append">
-          mdi-chevron-down
-        </v-icon>
-      </v-select>
+        <v-list-group
+          id="company_group_select"
+          @click="pressClick"
+        >
+          <template v-slot:appendIcon>
+            <div v-show="!activeGroup">
+              <span
+                class="iconify"
+                data-icon="entypo:chevron-down"
+                data-inline="false"
+              />
+            </div>
+            <div v-show="activeGroup">
+              <span
+                class="iconify"
+                data-icon="entypo:chevron-up"
+                data-inline="false"
+              />
+            </div>
+          </template>
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>{{ selectedCompany }}</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            v-for="(admin, i) in admins"
+            :key="i"
+            :ripple="false"
+            @click="changeCompany(admin[0])"
+          >
+            <v-list-item-title v-text="admin[0]" />
+          </v-list-item>
+        </v-list-group>
+      </v-list>
+    </div>
+    <div
+      v-else
+      class="miniCompany"
+      :style="'background: linear-gradient(140deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%); color:'+ program.color"
+    >
+      {{ selectedCompanyMini }}
     </div>
     <v-divider style="border-color: #F2F2F7;" />
     <v-list
@@ -125,7 +166,7 @@
       <div />
     </v-list>
     <template v-slot:append>
-      <v-list-item style="margin: 0 20px 0 0">
+      <v-list-item style="margin: 0">
         <v-list-item-avatar
           height="24px"
           width="24px"
@@ -228,6 +269,24 @@
       },
     },
     data: () => ({
+      program: {
+        companyName: '',
+        bgcolor: ['#4776E6', '#8E54E9'],
+        color: '#FFFFFF',
+        logo: null,
+      },
+      selectedCompany: 'Management',
+      activeGroup: false,
+      admins: [
+        ['Management', 'people_outline'],
+        ['Settings', 'settings'],
+      ],
+      cruds: [
+        ['Create', 'add'],
+        ['Read', 'insert_drive_file'],
+        ['Update', 'update'],
+        ['Delete', 'delete'],
+      ],
       selectItems: ['ООО Ромашка', 'ООО НМТ'],
       selectedItem: 'ООО Ромашка',
       item: 1,
@@ -277,6 +336,9 @@
       ],
     }),
     computed: {
+      selectedCompanyMini () {
+        return this.selectedCompany.slice(0, 1)
+      },
       drawer: {
         get () {
           return this.$store.getters.drawer
@@ -295,7 +357,19 @@
         }
       },
     },
+    mounted () {
+
+    },
     methods: {
+      changeCompany (company) {
+        this.selectedCompany = company
+      },
+      pressClick (e) {
+        const groupSelect = document.getElementById('company_group_select')
+        console.log('click classes', groupSelect.classList)
+        if (groupSelect.classList.contains('v-list-item--active')) this.activeGroup = false
+        else this.activeGroup = true
+      },
       mapItem (item) {
         return {
           ...item,

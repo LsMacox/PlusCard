@@ -54,11 +54,11 @@
               :disabled="!valid"
               @click="login()"
             >
-              <v-img
-                src="@/assets/svg/log-in-outline.svg"
-                max-width="21px"
-                max-height="21px"
+              <span
+                class="iconify"
                 style="margin-right: 8px;"
+                data-icon="ion:log-out-outline"
+                data-inline="false"
               />
               Войти в аккаунт
             </v-btn>

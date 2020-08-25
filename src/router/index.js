@@ -137,6 +137,11 @@ export default new Router({
           meta: { auth: false, title: 'Master', icon: 'master' },
         },
         {
+          path: '/loyalty',
+          component: () => import('@/views/loyalty/index.vue'),
+          name: 'loyalty',
+        },
+        {
           path: '/ui_kit',
           component: () => import('@/views/ui_kit/Components.vue'),
           name: 'components',
@@ -153,6 +158,19 @@ export default new Router({
           component: () => import('@/views/certificate/master/index.vue'),
           name: 'ProgramCertificateMaster',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
+        },
+
+        {
+          path: '/account/certificates',
+          component: () => import('@/views/account/Certificate'),
+          name: 'certificates',
+          meta: { title: 'Certificates', icon: 'certificates' },
+        },
+        {
+          path: '/account/report',
+          component: () => import('@/views/client/LoyaltyReport'),
+          name: 'certificates',
+          meta: { title: 'Certificates', icon: 'certificates' },
         },
 
       ],
