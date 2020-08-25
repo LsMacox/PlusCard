@@ -55,10 +55,60 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
+Vue.prototype.$IsDebugMode = function () {
+  return this.$route.query.debug === 'true' || +this.$route.query.debug === 1
+}
+
 new Vue({
   router,
   store,
   vuetify,
   i18n,
+  async created () {
+    /*
+     * глобальный прелоадер (обязательно первый)
+     */
+
+    await this.$store.dispatch('app/setLoadingApp', true)
+
+    console.log(this.$store.getters.loadingApp)
+
+    // устройство
+    await this.$store.dispatch('auth/auth/InitDevice')
+
+    /*
+     * проверка наличия access/refresh
+     */
+
+    let auth = false
+
+    const accessToken = this.$store._vm.$session.get('access_token')
+    const refreshToken = this.$store._vm.$session.get('refresh_token')
+    const merchantId = this.$store._vm.$session.get('merchant_id')
+
+    if (accessToken && refreshToken && merchantId) {
+      auth = true
+    }
+
+    if (auth) {
+      console.log('loadingApp')
+      await this.$store.dispatch('auth/auth/loadingApp')
+    } else {
+      if (this.$route.path !== '/login/email') this.$router.push('/login/email')
+      await this.stopLoading()
+      return
+    }
+
+    /*
+     * окончание загрузки
+     */
+
+    await this.$store.dispatch('app/setLoadingApp', false)
+  },
+  methods: {
+    async stopLoading () {
+      await this.$store.dispatch('app/setLoadingApp', false)
+    },
+  },
   render: h => h(App),
 }).$mount('#app')

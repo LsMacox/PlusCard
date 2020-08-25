@@ -14,6 +14,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@tinymce/tinymce-vue": "^3.2.2",
     "@riophae/vue-treeselect": "github:riophae/vue-treeselect",
     "array-sort": "^1.0.0",
     "axios": "^0.19.2",

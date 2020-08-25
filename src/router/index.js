@@ -140,6 +140,7 @@ export default new Router({
           path: '/loyalty',
           component: () => import('@/views/loyalty/index.vue'),
           name: 'loyalty',
+          meta: { auth: true },
         },
         {
           path: '/ui_kit',

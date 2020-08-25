@@ -86,3 +86,10 @@ export function isArray (arg) {
   }
   return Array.isArray(arg)
 }
+
+/**
+ * @returns {Boolean}
+ */
+export function isFilled (value) {
+  return !!value
+}

@@ -6,19 +6,23 @@ import VueSession from '@/utils/session'
 
 import router from '@/router'
 
-const state = {
-  isAuth: false,
-  user: null, // профиль пользователя
-  merchants: [], // доступные мерчанты
-  merchant_id: null, // выбранный мерчант
-  merchant: null, // выбранный мерчант
-  device: null, // данные тек устройства
+const getDefaultState = () => {
+  return {
+    isAuth: false,
+    user: null, // профиль пользователя
+    merchants: [], // доступные мерчанты
+    merchant_id: null, // выбранный мерчант
+    merchant: null, // выбранный мерчант
+    device: null, // данные тек устройства
+  }
 }
 
+const state = getDefaultState()
+
 const mutations = {
-  SET_DEVICE: (state, payload) => {
-    state.device = payload
-  },
+  RESET_STATE: (state) => Object.assign(state, getDefaultState()),
+  // eslint-disable-next-line no-return-assign
+  SET_DEVICE: (state, payload) => state.device = payload,
   SET_AUTH: (state, payload) => {
     VueSession.destroy()
     if (payload) {
@@ -39,6 +43,12 @@ const mutations = {
 }
 
 const actions = {
+
+  async loadingApp ({ dispatch }) {
+    await dispatch('profile/profile/read', null, { root: true })
+    await dispatch('company/program/list', null, { root: true })
+  },
+
   async InitDevice ({ commit }) {
     let murmur
     const options = {}

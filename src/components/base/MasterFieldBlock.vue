@@ -1,39 +1,48 @@
 <template>
-  <v-container>
-    <v-row><master-field-title :title="title" /></v-row> 
-    <v-row v-if="horisontal">
-      <v-col>
-        <master-field-describe>
-          <slot name="describe">
-            {{ describe }}
-          </slot>
-        </master-field-describe>
+  <div class="master-field-block">
+    <v-row>
+      <v-col class="pb-0">
+        <master-field-title :title="title" />
       </v-col>
-      <v-col><slot name="input" /></v-col>
     </v-row>
-    <v-row v-else>
-       <v-col>
- <v-row>
-        <master-field-describe>
-          <slot name="describe">
-            {{ describe }}
+    <v-row v-if="horisontal" no-gutters>
+      <v-col>
+        <master-field-description>
+          <slot name="description">
+            {{ description }}
           </slot>
-        </master-field-describe>
-      </v-row>
-      <v-row><slot name="input" /></v-row>
-       </v-col>
-     
+        </master-field-description>
+      </v-col>
+      <v-col>
+        <slot name="input" />
+      </v-col>
     </v-row>
-  </v-container>
+    <v-row v-else no-gutters>
+      <v-col>
+        <v-row>
+          <v-col>
+            <master-field-description>
+              <slot name="description">
+                {{ description }}
+              </slot>
+            </master-field-description>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col> <slot name="input" /></v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
   import MasterFieldTitle from './MasterFieldTitle'
-  import MasterFieldDescribe from './MasterFieldDescribe'
+  import MasterFieldDescription from './MasterFieldDescription'
 
   export default {
     name: 'MasterFieldBlock',
-    components: { MasterFieldTitle, MasterFieldDescribe },
+    components: { MasterFieldTitle, MasterFieldDescription },
     props: {
       horisontal: {
         type: Boolean,
@@ -43,7 +52,7 @@
         type: String,
         default: '',
       },
-      describe: {
+      description: {
         type: String,
         default: '',
       },
@@ -52,3 +61,8 @@
     computed: {},
   }
 </script>
+<style lang="scss" scoped>
+.master-field-block{
+  margin-top: 68px;
+}
+</style>
