@@ -33,7 +33,7 @@
             slot="description"
           >Выберите до 3-х категорий сертификата, в которых он будет отображаться в приложении</span>
           <template v-slot:input>
-            <v-select
+            <v-autocomplete
               v-model="cert.category_id_list"
               :items="category_id_list"
               :rules="categoryRules"
