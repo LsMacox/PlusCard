@@ -250,11 +250,11 @@
                 @click="updateCompany()"
               >
                 Далее
-                <v-img
-                  src="@/assets/svg/arrow-forward-outline.svg"
-                  width="21px"
-                  height="21px"
-                  max-width="21px"
+                <span
+                  class="iconify"
+                  data-icon="bi:arrow-right"
+                  data-inline="false"
+                  style="margin-left: 7px"
                 />
               </v-btn>
             </div>
@@ -276,14 +276,38 @@
                 class="map"
                 :coords="coords"
                 :scroll-zoom="true"
+
                 :init-without-markers="true"
                 @click="setMarker($event)"
               >
                 <ymap-marker
-                  #FFFFFF;
-                  marker-id="1"
-                  :coords="coords"
-                  :icon="markerIcon"
+                  v-for="(item, idx) in shops"
+                  :key="idx"
+                  :marker-id="idx"
+                  :coords="item.coords"
+                  :icon="{
+                    layout: 'default#imageWithContent',
+                    imageHref: require('@/assets/svg/Bottom-tail.svg'),
+                    imageSize: [150, 55],
+                    imageOffset: [-75, -50],
+                    content: item.name,
+                    contentOffset: [0, 0],
+                    contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+                  }"
+                />
+                <ymap-marker
+                  v-if="newShop.name && newShop.coords"
+                  :marker-id="shops.length"
+                  :coords="newShop.coords"
+                  :icon="{
+                    layout: 'default#imageWithContent',
+                    imageHref: require('@/assets/svg/Bottom-tail.svg'),
+                    imageSize: [150, 55],
+                    imageOffset: [-75, -50],
+                    content: newShop.name,
+                    contentOffset: [0, 0],
+                    contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+                  }"
                 />
               </yandex-map>
             </div>
@@ -302,7 +326,10 @@
                   Если у вас несколько точек продаж - внесите их контактные <br>данные и режимы работы, чтобы клиенты
                   могли связаться с <br>конкретным магазином и уточненить свои вопросы.
                 </div>
-                <div class="content-block__search">
+                <div
+                  v-if="shops.length >= 5"
+                  class="content-block__search"
+                >
                   <v-text-field
                     placeholder="Поиск по названию, городу, улице"
                     outlined
@@ -316,10 +343,13 @@
                     </template>
                   </v-text-field>
                 </div>
-                <div class="content-block__shop complete-shop">
+                <div
+                  v-for="(item, index) in shops"
+                  class="content-block__shop complete-shop"
+                >
                   <div class="complete-shop__header">
                     <div class="header__title body-l-semibold">
-                      Магазин №12 на Ленина
+                      {{ item.name }}
                     </div>
                     <div class="actions">
                       <div
@@ -352,14 +382,17 @@
                     </div>
                   </div>
                   <div class="complete-shop__content shop-content">
-                    <div class="shop-content__first">
+                    <div
+                      v-for="(worktime, itemid) in item.workTimes"
+                      class="shop-content__first"
+                    >
                       <div class="workdays body-m-regular">
                         <span
                           class="iconify"
                           data-icon="feather:calendar"
                           data-inline="false"
                         />
-                        Пн-пт, вс
+                        {{ getSelectedDays(worktime.days) }}
                       </div>
                       <div class="worktime body-m-regular">
                         <span
@@ -367,7 +400,7 @@
                           data-icon="feather:clock"
                           data-inline="false"
                         />
-                        10:00-22:00
+                        {{ worktime.startTime + '-' + worktime.endTime }}
                       </div>
                       <div class="breaktime body-m-regular">
                         <span
@@ -375,7 +408,7 @@
                           data-icon="feather:coffee"
                           data-inline="false"
                         />
-                        13:00-14:00
+                        {{ worktime.breakStart + '-' + worktime.breakEnd }}
                       </div>
                     </div>
                     <div class="shop-content__second">
@@ -385,7 +418,7 @@
                           data-icon="ion:location-outline"
                           data-inline="false"
                         />
-                        Москва, пр-т Ломоносова, 48-а.
+                        {{ item.address }}
                       </div>
                     </div>
                     <div class="shop-content__third">
@@ -395,7 +428,7 @@
                           data-icon="feather:phone"
                           data-inline="false"
                         />
-                        +7 (950) 748-23-42
+                        {{ item.phone }}
                       </div>
                     </div>
                   </div>
@@ -412,13 +445,17 @@
                     />
                   </div>
                   <div class="shop-card__city">
-                    <v-select
+                    <v-autocomplete
                       v-model="newShop.city"
-                      :items="items"
+                      :items="filtered_cities"
+                      :search-input.sync="searchCity"
+                      hide-details
+                      hide-no-data
                       placeholder="Выберите город"
-                      outlined
                       class="shop-card__city_select"
                       style="width: 380px;"
+                      item-text="name"
+                      item-value="id"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -450,24 +487,59 @@
                               data-inline="false"
                             />
                           </div>
-                          <span>{{ data.item }}</span>
+                          <span>{{ data.item.name }}</span>
                         </div>
                       </template>
-                    </v-select>
+                    </v-autocomplete>
                   </div>
                   <div class="shop-card__input shop-card__address">
-                    <v-text-field
+                    <v-autocomplete
                       v-model="newShop.address"
-                      placeholder="Введите адрес "
-                      outlined
+                      :items="filtered_addresses"
+                      :search-input.sync="searchString"
+                      hide-details
+                      hide-no-data
+                      placeholder="Введите адрес"
+                      class="shop-card__city_select"
                       style="width: 380px"
+                      item-text="name"
+                      item-value="pos"
+                      @change="generate(newShop.address)"
                     >
                       <template slot="prepend-inner">
                         <div>
                           <v-img src="@/assets/svg/location-outline.svg" />
                         </div>
                       </template>
-                    </v-text-field>
+
+                      <template v-slot:item="data">
+                        <div style="display: flex; align-items: center;">
+                          <div
+                            v-if="data.attrs.inputValue"
+                            :key="data.item + 'active'"
+                            class="active"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="eva:checkmark-square-2-fill"
+                              data-inline="false"
+                            />
+                          </div>
+                          <div
+                            v-else
+                            :key="data.item + 'inactive'"
+                            class="inactive"
+                          >
+                            <span
+                              class="iconify"
+                              data-icon="eva:square-outline"
+                              data-inline="false"
+                            />
+                          </div>
+                          <span>{{ data.item.name }}</span>
+                        </div>
+                      </template>
+                    </v-autocomplete>
                   </div>
                   <div class="shop-card__input shop-card__phone">
                     <v-text-field
@@ -483,211 +555,146 @@
                       </template>
                     </v-text-field>
                   </div>
-                  <div class="shop-card__work">
-                    <div class="work-block work-time">
-                      <div class="work-time__title body-m-semibold">
-                        Рабочее время
+                  <div
+                    v-for="(worktime, globalIndex) in newShop.workTimes"
+                    :key="globalIndex"
+                    class="shop-card__work"
+                  >
+                    <div class="work-block workdays">
+                      <div class="workdays__title body-m-semibold">
+                        Рабочие дни
                       </div>
-                      <div
-                        v-for="(worktime, globalIndex) in newShop.workTimes"
-                        :key="globalIndex"
-                        class="work-time__inputs"
+                      <v-select
+                        v-model="worktime.days"
+                        :items="days.filter(item => !selectedDays.includes(item.id) || worktime.days.includes(item.id))"
+                        item-value="id"
+                        placeholder="Дни"
+                        outlined
+                        multiple
                       >
-                        <div class="inputs__first">
-                          <v-text-field
-                            v-model="worktime.startTime"
-                            v-mask="'##:##'"
-                            placeholder="00:00"
-                            outlined
-                            style="width: 74px; margin-right: 4px"
-                          />
+                        <template v-slot:selection="{item, index}">
+                          <div
+                            v-if="index === 0"
+                            style="font-size: 12px"
+                          >
+                            {{ getSelectedWorkDays(globalIndex) }}
+                          </div>
+                        </template>
+                        <template v-slot:item="data">
+                          <div style="display: flex; align-items: center;">
+                            <div
+                              v-if="data.attrs.inputValue"
+                              class="active"
+                            >
+                              <span
+                                class="iconify"
+                                data-icon="eva:checkmark-square-2-fill"
+                                data-inline="false"
+                              />
+                            </div>
+                            <div
+                              v-else
+                              :key="data.item.id"
+                              class="inactive"
+                            >
+                              <span
+                                class="iconify"
+                                data-icon="eva:square-outline"
+                                data-inline="false"
+                              />
+                            </div>
+                            <span>{{ data.item.fullName }}</span>
+                          </div>
+                        </template>
+                      </v-select>
+                    </div>
+                    <div class="work-block-wrapper">
+                      <div class="work-block work-time">
+                        <div class="work-time__title body-m-semibold">
+                          Рабочее время
                         </div>
                         <div
-                          class="inputs__separator"
-                          style="height: 50px"
+
+                          class="work-time__inputs"
                         >
-                          -
-                        </div>
-                        <div class="inputs__second">
-                          <v-text-field
-                            v-model="worktime.endTime"
-                            v-mask="'##:##'"
-                            placeholder="По"
-                            outlined
-                            style="width: 74px;  margin: 0 16px 0 4px"
-                          />
-                        </div>
-                        <div class="inputs__third">
-                          <v-select
-                            v-model="worktime.days"
-                            :items="days"
-                            item-value="id"
-                            placeholder="Дни"
-                            outlined
-                            multiple
-                            style="width: 155px;margin-right: 18px"
-                          >
-                            <template v-slot:selection="{item, index}">
-                              <div
-                                v-if="index === 0"
-                                style="font-size: 12px"
-                              >
-                                {{ getSelectedWorkDays(globalIndex) }}
-                              </div>
-                            </template>
-                            <template v-slot:item="data">
-                              <div style="display: flex; align-items: center;">
-                                <div
-                                  v-if="data.attrs.inputValue"
-                                  class="active"
-                                >
-                                  <span
-                                    class="iconify"
-                                    data-icon="eva:checkmark-square-2-fill"
-                                    data-inline="false"
-                                  />
-                                </div>
-                                <div
-                                  v-else
-                                  :key="data.item.id"
-                                  class="inactive"
-                                >
-                                  <span
-                                    class="iconify"
-                                    data-icon="eva:square-outline"
-                                    data-inline="false"
-                                  />
-                                </div>
-                                <span>{{ data.item.fullName }}</span>
-                              </div>
-                            </template>
-                          </v-select>
-                        </div>
-                        <div
-                          v-if="newShop.workTimes.length - 1 === globalIndex"
-                          class="inputs__action"
-                        >
-                          <v-btn
-                            color="secondary"
-                            :text="true"
-                            style="padding: 0 !important;"
-                            :ripple="false"
-                            @click="addWorkTime()"
-                          >
-                            <span
-                              class="iconify"
-                              data-icon="uil:plus-circle"
-                              data-inline="false"
-                              width="21px"
-                              heigth="21px"
+                          <div class="inputs__first">
+                            <v-text-field
+                              v-model="worktime.startTime"
+                              v-mask="'##:##'"
+                              placeholder="00:00"
+                              outlined
+                              style="width: 74px; margin-right: 4px"
                             />
-                          </v-btn>
+                          </div>
+                          <div
+                            class="inputs__separator"
+                            style="height: 50px"
+                          >
+                            -
+                          </div>
+                          <div class="inputs__second">
+                            <v-text-field
+                              v-model="worktime.endTime"
+                              v-mask="'##:##'"
+                              placeholder="По"
+                              outlined
+                              style="width: 74px;  margin: 0 16px 0 4px"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="break-time">
+                        <div class="break-time__title body-m-semibold">
+                          Перерыв
+                        </div>
+                        <div
+                          class="break-time__inputs"
+                        >
+                          <div class="inputs__first">
+                            <v-text-field
+                              :ref="'from'+globalIndex"
+                              v-model="worktime.breakStart"
+                              v-mask="'##:##'"
+                              placeholder="С"
+                              outlined
+                              style="width: 74px; margin-right: 4px"
+                            />
+                          </div>
+                          <div
+                            class="inputs__separator"
+                            style="height: 50px"
+                          >
+                            -
+                          </div>
+                          <div class="inputs__second">
+                            <v-text-field
+                              v-model="worktime.breakEnd"
+                              v-mask="'##:##'"
+                              placeholder="По"
+                              outlined
+                              style="width: 74px;  margin: 0 16px 0 4px"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                    <div class="break-time">
-                      <div class="break-time__title body-m-semibold">
-                        Перерыв
-                      </div>
-                      <div
-                        v-for="(breaktime, i) in newShop.breakTimes"
-                        :key="i"
-                        class="break-time__inputs"
-                      >
-                        <div class="inputs__first">
-                          <v-text-field
-                            :ref="'from'+i"
-                            v-model="breaktime.startTime"
-                            v-mask="'##:##'"
-                            placeholder="С"
-                            outlined
-                            style="width: 74px; margin-right: 4px"
-                          />
-                        </div>
-                        <div
-                          class="inputs__separator"
-                          style="height: 50px"
-                        >
-                          -
-                        </div>
-                        <div class="inputs__second">
-                          <v-text-field
-                            v-model="breaktime.endTime"
-                            v-mask="'##:##'"
-                            placeholder="По"
-                            outlined
-                            style="width: 74px;  margin: 0 16px 0 4px"
-                          />
-                        </div>
-                        <div class="inputs__third">
-                          <v-select
-                            v-model="breaktime.days"
-                            :items="days"
-                            placeholder="Дни"
-                            item-value="id"
-                            outlined
-                            multiple
-                            style="width: 155px;margin-right: 18px"
-                          >
-                            <template v-slot:selection="{item, index}">
-                              <div
-                                v-if="index === 0"
-                                style="font-size: 12px"
-                              >
-                                {{ getSelectedBreakDays(i) }}
-                              </div>
-                            </template>
-                            <template v-slot:item="data">
-                              <div style="display: flex; align-items: center;">
-                                <div
-                                  v-if="data.attrs.inputValue"
-                                  :key="data.item.id + 100"
-                                  class="active"
-                                >
-                                  <span
-                                    class="iconify"
-                                    data-icon="eva:checkmark-square-2-fill"
-                                    data-inline="false"
-                                  />
-                                </div>
-                                <div
-                                  v-else
-                                  :key="data.item.id"
-                                  class="inactive"
-                                >
-                                  <span
-                                    class="iconify"
-                                    data-icon="eva:square-outline"
-                                    data-inline="false"
-                                  />
-                                </div>
-                                <span>{{ data.item.fullName }}</span>
-                              </div>
-                            </template>
-                          </v-select>
-                        </div>
-                        <div
-                          v-if="newShop.breakTimes.length - 1 === i"
-                          class="inputs__action"
-                        >
-                          <v-btn
-                            color="secondary"
-                            :text="true"
-                            style="padding: 0 !important;"
-                            :ripple="false"
-                            @click="addBreakTime()"
-                          >
-                            <span
-                              class="iconify"
-                              data-icon="uil:plus-circle"
-                              data-inline="false"
-                              width="21px"
-                              heigth="21px"
-                            />
-                          </v-btn>
-                        </div>
-                      </div>
-                    </div>
+                  </div>
+                  <div class="work-block-actions">
+                    <v-btn
+                      color="primary"
+                      text
+                      :ripple="false"
+                      @click="addWorkTime()"
+                    >
+                      <span
+                        class="iconify"
+                        data-icon="uil:plus-circle"
+                        data-inline="false"
+                        width="21px"
+                        heigth="21px"
+                      />
+                      Добавить период
+                    </v-btn>
                   </div>
                   <div class="shop-card__actions">
                     <div class="action__cancel">
@@ -712,6 +719,7 @@ line-height: 17px;"
                         color="secondary"
                         small
                         style="width: 265px; margin-right: 0"
+                        @click="saveShop()"
                       >
                         Сохранить
                       </v-btn>
@@ -736,6 +744,7 @@ line-height: 17px;"
                   <v-btn
                     color="primary"
                     style="width: 123px"
+
                     @click="currentStep = 3"
                   >
                     Далее
@@ -847,7 +856,7 @@ line-height: 17px;"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
-                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;">
+                        <div style="margin-top: 3px; width: 21px;margin-right: 5px;">
                           <v-img src="@/assets/svg/youtube_logo.svg" />
                         </div>
                       </template>
@@ -859,7 +868,7 @@ line-height: 17px;"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
-                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;display: flex;justify-content: center;">
+                        <div style="margin-top: 2px; width: 21px;margin-right: 5px;display: flex;justify-content: center;">
                           <v-img
                             src="@/assets/svg/facebook_logo.svg"
                             max-width="9px"
@@ -875,8 +884,8 @@ line-height: 17px;"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
-                        <div style="margin-top: 5px;width: 21px;margin-right: 5px;">
-                          <v-img src="@/assets/svg/vk_logo.svg" />
+                        <div style="width: 21px;margin-right: 5px;">
+                          <v-img src="@/assets/svg/logo_instagram.svg" />
                         </div>
                       </template>
                     </v-text-field>
@@ -1026,7 +1035,11 @@ line-height: 17px;"
     directives: { mask },
     data () {
       return {
-
+        resultAdr: '',
+        addresses: [],
+        cities: [],
+        searchCity: '',
+        searchString: '',
         // markerIcon: {
         //   layout: 'default#imageWithContent',
         //   content: '123 v12',
@@ -1051,18 +1064,14 @@ line-height: 17px;"
           city: '',
           address: '',
           phone: '',
+          coords: [],
           workTimes: [
             {
               startTime: '',
               endTime: '',
               days: [],
-            },
-          ],
-          breakTimes: [
-            {
-              startTime: '',
-              endTime: '',
-              days: [],
+              breakStart: '',
+              breakEnd: '',
             },
           ],
         },
@@ -1116,46 +1125,78 @@ line-height: 17px;"
           required: value => !!value || this.$t('required'),
           counter: value => value.length <= 20 || 'Max 20 characters',
         },
+        filtered_addr: [],
       }
     },
     computed: {
+      selectedDays () {
+        let array = []
+        this.newShop.workTimes.forEach(item => {
+          array = [...array, ...item.days]
+        })
+        console.log('selectedDays', array)
+        return array
+      },
+      filtered_addresses () {
+        if (this.filtered_addr.length > 0) {
+          return this.filtered_addr
+        } else { return [] }
+      },
+      filtered_cities () {
+        // console.log('searchInput', this.searchCity)
+        if (this.cities && this.cities.length && this.searchCity && this.searchCity.length > 2) {
+          const array = this.cities.filter(item => (item.name.toLowerCase()).includes(this.searchCity.toLowerCase()))
+          // console.log('output array', array)
+          return array
+        } else { return this.cities }
+      },
       sorted_work_array () {
         return this.sortById(this.newShop.workTimes)
       },
-      sorted_break_array () {
-        return this.sortById(this.newShop.breakTimes)
-      },
-      balloonTemplate () {
-        return `
-        <h1 class="red">Hi, everyone!</h1>
-        <p>I am here: ${this.coords}</p>
-        <img src="http://via.placeholder.com/350x150">
-      `
-      },
+
     },
     watch: {
+      searchString (v) {
+        if (v && v.length > 3) {
+          ApiService.get(`/api-cabinet/company/shops/search?query=${this.searchCity + ' ' + this.searchString}`).then(resp => {
+            this.addresses = resp.response.GeoObjectCollection.featureMember
+            var array = []
+            let i = 0
+            const regex = /[^a-zA-Zа-яА-Я0-9\s]/gm
+            for (i; i < this.addresses.length; i++) {
+              console.log('item', this.addresses[i])
+              array.push({
+                name: (this.addresses[i].GeoObject.name).replace(regex, ''),
+                pos: this.addresses[i].GeoObject.Point.pos,
+              })
+            }
+            console.log('output', array)
+            this.filtered_addr = array
+          })
+        }
+      },
       'program.website' (v) {
-        const regex = /^(http:\/\/|https:\/\/|)((www.|)[\w]+.[\w]+)\//gm
+        const regex = /^(http:\/\/|https:\/\/|)((www.|)[\w]+.[\w]+)(\/|)/gm
         const str = regex.exec(v)
         if (str && str[2] != null) {
           this.program.website = str[2]
         }
       },
       'program.social.vk' (v) {
-        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
         this.program.social.vk = v.replace(regex, '')
       },
       'program.social.fb' (v) {
-        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
         this.program.social.fb = v.replace(regex, '')
       },
       'program.social.youtube' (v) {
-        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm
         this.program.social.youtube = v.replace(regex, '')
       },
       'program.social.instagram' (v) {
-        console.log('instagram', v)
-        const regex = /^(http|https):\/\/((www.|www.ru-ru.|ru-ru.|)facebook.com\/groups|(www.|)vk.com|(www.|)youtube.com\/(c|user)|(www.|)instagram.com)\//gm
+        // console.log('instagram', v)
+        const regex = /^(http:\/\/|https:\/\/|)(www.|)(instagram.com)/gm
         this.program.social.instagram = v.replace(regex, '')
       },
       smallImg (v) {
@@ -1168,35 +1209,13 @@ line-height: 17px;"
         }
       },
     },
+    async mounted () {
+      const cities = await ApiService.get('/api-cabinet/company/shops/city/list')
+      this.cities = cities
+      // console.log('cities', cities)
+    },
     methods: {
-      async createProgram () {
-        const program = Object.assign({}, this.program)
-        program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
-        const result = await ApiService.post(
-          '/api-cabinet/company/create',
-          program,
-        )
-        console.log(result)
-      },
-      getUnitColor () {
-        if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.5)' } else { return 'rgba(0, 0, 0, 0.5)' }
-      },
-      getBorderColor () {
-        if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.2)' } else { return 'rgba(0, 0, 0, 0.2)' }
-      },
-      arrayUnique (array) {
-        var a = array.concat()
-        for (var i = 0; i < a.length; ++i) {
-          for (var j = i + 1; j < a.length; ++j) {
-            if (a[i] === a[j]) { a.splice(j--, 1) }
-          }
-        }
-
-        return a
-      },
-      getSelectedBreakDays (index) {
-        console.log('index', index)
-        const array = this.sorted_break_array[index].days
+      getSelectedDays (array) {
         let str = ''
         let length = 0
         const strArr = []
@@ -1224,8 +1243,54 @@ line-height: 17px;"
         str = str.slice(0, -2)
         return str
       },
+      generate (pos) {
+        const item = this.addresses.find(
+          item => item.GeoObject.Point.pos === pos,
+        )
+
+        const city = this.cities.find(
+          item => item.id === this.newShop.city,
+        )
+        this.resultAdr = city.name + ', ' + item.GeoObject.name
+        console.log('generate item', item)
+        const coordinates = item.GeoObject.Point.pos.split(' ')
+        this.newShop.coords = [coordinates[1], coordinates[0]]
+        this.coords = this.newShop.coords
+      },
+      saveShop () {
+        console.log('shop', this.newShop)
+        this.newShop.address = this.resultAdr
+        this.newShop.workTimes = this.sortById(this.newShop.workTimes)
+        this.shops.push(this.newShop)
+        this.cancelShop()
+      },
+      async createProgram () {
+        const program = Object.assign({}, this.program)
+        program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
+        const result = await ApiService.post(
+          '/api-cabinet/company/create',
+          program,
+        )
+        // console.log(result)
+      },
+      getUnitColor () {
+        if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.5)' } else { return 'rgba(0, 0, 0, 0.5)' }
+      },
+      getBorderColor () {
+        if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.2)' } else { return 'rgba(0, 0, 0, 0.2)' }
+      },
+      arrayUnique (array) {
+        const a = array.concat()
+        for (let i = 0; i < a.length; ++i) {
+          for (let j = i + 1; j < a.length; ++j) {
+            if (a[i] === a[j]) { a.splice(j--, 1) }
+          }
+        }
+
+        return a
+      },
       getSelectedWorkDays (index) {
-        console.log('index', index)
+        // console.log('index', index)
         const array = this.sorted_work_array[index].days
         let str = ''
         let length = 0
@@ -1255,7 +1320,7 @@ line-height: 17px;"
         return str
       },
       sortById (arr) {
-        console.log('input array', arr)
+        // console.log('input array', arr)
         // arr.sort((a, b) => a.id > b.id ? 1 : -1);
         const array = []
         arr.forEach(item => {
@@ -1264,7 +1329,7 @@ line-height: 17px;"
           })
           array.push(item)
         })
-        console.log('output array', array)
+        // console.log('output array', array)
         return array
       },
       cancelShop () {
@@ -1279,13 +1344,8 @@ line-height: 17px;"
               startTime: '',
               endTime: '',
               days: [],
-            },
-          ],
-          breakTimes: [
-            {
-              startTime: '',
-              endTime: '',
-              days: [],
+              breakStart: '',
+              breakEnd: '',
             },
           ],
         }
@@ -1294,17 +1354,15 @@ line-height: 17px;"
         this.newShopActive = true
       },
       setMarker (e) {
-        this.coords = Object.assign([], e.get('coords'))
-        /// ///console.log(this.coords)
+        this.newShop.coords = Object.assign([], e.get('coords'))
+        /// /////console.log(this.coords)
         this.shop.lat = this.coords[0]
         this.shop.lng = this.coords[1]
         this.shop = Object.assign({}, this.shop)
       },
 
       addWorkTime () {
-        console.log('current work_times', this.newShop.workTimes)
-        const last = this.newShop.workTimes[this.newShop.workTimes.length - 1]
-        if (last.days.length === 0 || !last.startTime || !last.endTime) {
+        if (this.newShop.workTimes.length === 7) {
           return false
         } else {
           this.newShop.workTimes.push(
@@ -1312,21 +1370,8 @@ line-height: 17px;"
               startTime: '',
               endTime: '',
               days: [],
-            },
-          )
-        }
-      },
-      addBreakTime () {
-        console.log('current break_times', this.newShop.breakTimes)
-        const last = this.newShop.breakTimes[this.newShop.breakTimes.length - 1]
-        if (last.days.length === 0 || !last.startTime || !last.endTime) {
-          return false
-        } else {
-          this.newShop.breakTimes.push(
-            {
-              startTime: '',
-              endTime: '',
-              days: [],
+              breakStart: '',
+              breakEnd: '',
             },
           )
         }
@@ -1362,13 +1407,13 @@ line-height: 17px;"
           mask = 0
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#2A2A34'
-          console.log('color', this.program.bgcolor[1])
+          // console.log('color', this.program.bgcolor[1])
         } else {
           alpha = 0.1
           mask = 255
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#FFFFFF'
-          console.log('color', this.program.bgcolor[1])
+          // console.log('color', this.program.bgcolor[1])
         }
       },
       changeStep (step) {
@@ -1424,6 +1469,18 @@ line-height: 17px;"
   }
 </script>
 <style lang="sass">
+.classMarker
+  display: flex
+  align-self: center
+  align-content: center
+  justify-content: center
+  width: 150px
+  height: 50px
+  color: #FFFFFF
+  font-weight: bold
+  text-align: center
+  line-height: 50px
+
   .ymapMarker
     width: 150px
     height: 50px
@@ -1607,7 +1664,6 @@ line-height: 17px;"
     &__first
       display: flex
       flex-direction: row
-      justify-content: space-between
       align-items: center
       color: $neutral-700
       margin: 12px 0 16px 0
@@ -1616,8 +1672,19 @@ line-height: 17px;"
         width: 21px
         height: 21px
         margin-right: 10px
-      .workdays,.worktime, .breaktime
+      .workdays
         display: flex
+        text-transform: lowercase
+        margin-right: 17.5px
+        max-width: 93px
+      .worktime
+        display: flex
+        width: 120px
+        margin-right: 17.5px
+      .breaktime
+        display: flex
+        width: 120px
+        margin-right: 17.5px
     &__second
       display: flex
       flex-direction: row
@@ -1727,9 +1794,19 @@ line-height: 17px;"
 
         &__input
           margin-top: 16px
+        .work-block-actions
+          position: relative
+          top: -15px
 
         &__work
-          margin-top: 34px
+          .workdays
+            &__title
+              color: #2A2A34
+              margin-bottom: 12px
+          .work-block-wrapper
+            display: flex
+            flex-direction: row
+            justify-content: space-between
 
           .work-time
             &__title
@@ -1739,6 +1816,9 @@ line-height: 17px;"
               flex-direction: row
               align-items: center
               margin-top: 12px
+              .inputs__third
+                position: relative
+                bottom: -60px
               .inputs__action
                 height: 50px
                 display: flex
@@ -1746,13 +1826,12 @@ line-height: 17px;"
                 align-items: flex-start
                 position: relative
                 left: -25px
+                bottom: -60px
                 .iconify
                   width: 21px
                   height: 21px
 
           .break-time
-            margin-top: 24px
-
             &__title
               color: #2A2A34
             &__inputs
