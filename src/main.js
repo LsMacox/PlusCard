@@ -40,6 +40,10 @@ moment.locale('ru')
 
 Vue.use(VueMoment, { moment })
 
+// window.moment = require('moment')
+// // eslint-disable-next-line no-undef
+// moment.locale('ru')
+
 Vue.use(Notifications)
 
 const options = {
@@ -66,10 +70,18 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
+Vue.prototype.$IsDebugMode = function () {
+  return this.$route.query.debug === 'true' || +this.$route.query.debug === 1
+}
+
 new Vue({
   router,
   store,
   vuetify,
   i18n,
+  async created () {
+    // устройство
+    await this.$store.dispatch('auth/auth/InitDevice')
+  },
   render: h => h(App),
 }).$mount('#app')

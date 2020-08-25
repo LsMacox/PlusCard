@@ -6,33 +6,49 @@
         :items="stepList"
       />
     </v-row>
-    <v-row>
-      <v-carousel
-        v-model="currentStep"     
-        :light="true"  
-        hide-delimiters
-        :show-arrows="false"
-      >
-        <v-carousel-item>
-          <step-main @continue="currentStep=1" />
-        </v-carousel-item>
-        <v-carousel-item>
-          <step-rules @continue="currentStep=2" />
-        </v-carousel-item>
-        <v-carousel-item>
-          <step-nominals @continue="currentStep=0" />
-        </v-carousel-item>
-      </v-carousel>
-
-      {{ currentStep }}
+    <v-row
+      justify="center"
+      no-gutters
+    >
+      <v-col :cols="8">
+        <v-carousel
+          v-model="currentStep"
+          :light="true"
+          hide-delimiters
+          :show-arrows="false"
+          height="100%"
+        >
+          <v-carousel-item>
+            <step-main
+              v-model="cert"
+              @continue="currentStep=1"
+            />
+          </v-carousel-item>
+          <v-carousel-item>
+            <step-rules
+              v-model="cert"
+              @continue="currentStep=2"
+            />
+          </v-carousel-item>
+          <v-carousel-item>
+            <step-nominals
+              v-model="cert"
+              @continue="createCert"
+            />
+          </v-carousel-item>
+        </v-carousel>
+      </v-col>
     </v-row>
+    <!--
+    {{ currentStep }}
+    {{ cert }} -->
   </v-container>
 </template>
 
 <script>
-  import StepMain from './StepMain'
-  import StepNominals from './StepNominals'
-  import StepRules from './StepRules'
+  import StepMain from './Step1Main'
+  import StepRules from './Step2Rules'
+  import StepNominals from './Step3Nominals'
 
   const stepList = [
     { title: 'Общая информация' },
@@ -45,6 +61,19 @@
     data () {
       return {
         currentStep: 0,
+        cert: {
+          name: '',
+          category_id_list: [],
+          certificate_usage_type: 'Everywhere',
+          guaranteed_period_unlimit: true,
+          guaranteed_period: null,
+          quantity_unlimit: true,
+          nominals: [{
+            nominal_name: '',
+            selling_price: null,
+            quantity: null,
+          }],
+        },
 
       }
     },
@@ -53,6 +82,11 @@
     },
     created () {
       this.stepList = stepList
+    },
+    methods: {
+      createCert () {
+        console.log(this.cert)
+      },
     },
   }
 </script>

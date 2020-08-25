@@ -33,12 +33,12 @@
           <template v-slot:item.operation="{ item }">
             <div class="td-padding-wrapper">
               <div class="td-content-main">
-                {{ item.operation }}
+                {{ item.title }}
               </div>
               <div
                 class="hint cell-hint"
               >
-                ID 103866
+                ID {{ item.bsid }}
               </div>
             </div>
           </template>
@@ -46,19 +46,19 @@
           <template v-slot:item.date="{ item }">
             <div class="td-padding-wrapper">
               <div class="td-content-main">
-                {{ item.date }}
+                {{ getDate(item.created_at) }}
               </div>
               <div
                 class="hint cell-hint"
               >
-                в 14:02
+                в {{ getTime(item.created_at) }}
               </div>
             </div>
           </template>
 
           <template v-slot:item.client="{ item }">
             <div class="avatar">
-              <img src="https://storage.yandexcloud.net/plusstorage/users/avatars/1db311620af449cf9aa354491e5310d4.jpg">
+              <img :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`">
             </div>
             <div class="td-content-wrapper">
               <div class="td-content-main">
@@ -67,7 +67,7 @@
               <div
                 class="hint cell-hint"
               >
-                Был(а) в сети 02.08.2020 в 04:32
+                Был(а) в сети 02.08.2020 в 04:32 {{ item.last_activity }}
               </div>
             </div>
           </template>
@@ -77,7 +77,7 @@
           </template>
 
           <template v-slot:item.amount="{ item }">
-            {{ item.amount }}
+            {{ item.value }}
           </template>
 
           <template v-slot:item.operator="{ item }">
@@ -172,75 +172,23 @@
           },
           { text: '', value: 'data-table-expand' },
         ],
-        tableData: [
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-        ],
       }
     },
+    computed: {
+      tableData () {
+        return this.$store.getters['widget/table/widgetData']
+      },
+    },
     methods: {
+      getDate (date) {
+        // eslint-disable-next-line no-undef
+        return moment(date).format('L')
+      },
+      getTime (date) {
+        // eslint-disable-next-line no-undef
+        const d = new Date(date).toISOString().split('T')[1]
+        return d.split(':')[0] + ':' + d.split(':')[1]
+      },
       paymentStatusIcon (status) {
         switch (status) {
           case 'waiting': return require('@/icons/svg/' + status + '.svg'); break

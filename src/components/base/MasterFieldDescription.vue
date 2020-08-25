@@ -3,15 +3,15 @@
     class="left-block__content body-m-regular"
     style="color: #70707D;"
   >
-    <slot>{{ describe }}</slot>
+    <slot>{{ description }}</slot>
   </div>
 </template>
 
 <script>
   export default {
-    name: 'MasterFieldDescribe',
+    name: 'MasterFieldDescription',
     props: {
-      describe: {
+      description: {
         type: String,
         default: '',
       },

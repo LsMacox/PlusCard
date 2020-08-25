@@ -1,10 +1,15 @@
 import ApiService from '@/api/api-client'
 
-const state = {
-    loginId: null,
+const getDefaultState = () => {
+    return {
+        loginId: null,
+    }
 }
 
+const state = getDefaultState()
+
 const mutations = {
+    RESET_STATE: (state) => Object.assign(state, getDefaultState()),
     // eslint-disable-next-line no-return-assign
     loginId: (state, payload) => state.loginId = payload.id,
 }
