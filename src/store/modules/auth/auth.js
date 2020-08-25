@@ -43,6 +43,12 @@ const mutations = {
 }
 
 const actions = {
+
+  async loadingApp ({ dispatch }) {
+    await dispatch('profile/profile/read', null, { root: true })
+    await dispatch('company/program/list', null, { root: true })
+  },
+
   async InitDevice ({ commit }) {
     let murmur
     const options = {}

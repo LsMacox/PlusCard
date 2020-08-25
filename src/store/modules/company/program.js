@@ -1,3 +1,5 @@
+import ApiService from '@/api/api-client'
+
 const getDefaultState = () => {
   return {
     programs: [], // компании продавца
@@ -21,8 +23,19 @@ const actions = {
   resetState ({ commit }) {
     commit('RESET_STATE')
   },
-  list ({ commit }, value) {
-    commit('SET_DRAWER', value)
+  async list ({ commit }) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const result = await ApiService.get('/api-cabinet/company/list')
+      console.log(result)
+      commit('SET_PROGRAMS', result)
+      if (result && result.length) {
+        console.log(result[0])
+        commit('SET_PROGRAM', result[0])
+      }
+    } catch (error) {
+      throw error
+    }
   },
 }
 

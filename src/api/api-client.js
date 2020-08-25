@@ -70,7 +70,7 @@ service.interceptors.response.use(
         // console.log('HTTP_UNAUTHORIZED')
         // axios.interceptors.response.eject(interceptor)
         return store
-          .dispatch('auth/RefreshToken')
+          .dispatch('auth/auth/RefreshToken')
           .then(result => {
             return axios(error.response.config)
           })
