@@ -6,7 +6,10 @@
         :items="stepList"
       />
     </v-row>
-    <v-row justify="center" no-gutters>
+    <v-row
+      justify="center"
+      no-gutters
+    >
       <v-col :cols="8">
         <v-carousel
           v-model="currentStep"
@@ -36,7 +39,7 @@
         </v-carousel>
       </v-col>
     </v-row>
-<!-- 
+    <!--
     {{ currentStep }}
     {{ cert }} -->
   </v-container>

@@ -110,7 +110,7 @@
         <v-row>
           <v-col>
             <v-btn
-              v-show="valid"
+              :disabled="!valid"
               color="primary"
               class="master-next-btn"
               @click="onNextClick"

@@ -115,8 +115,9 @@
           <v-col>
             <v-btn
               color="primary"
+              :disabled="!formValid"
               class="master-next-btn"
-              @click="onNextClick"
+              @click="onNextClick"              
             >
               Далее
               <v-icon right>
@@ -149,11 +150,15 @@
     },
     data () {
       return {
-        termsUserValid: true,
+        termsUserValid: false,
         valid: false,
       }
     },
-    computed: {},
+    computed: {
+      formValid(){
+        return this.valid && this.termsUserValid
+      }
+    },
     watch: {
       'cert.terms_of_use': function (v) {
         if (v) this.termsUserValid = true
@@ -172,7 +177,7 @@
       },
       onNextClick () {
         if (this.$refs.form.validate()) {
-          // if (!this.termsUserValidate()) return
+          if (!this.termsUserValidate()) return
           this.$emit('continue', true)
         }
       },

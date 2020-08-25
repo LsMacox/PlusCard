@@ -44,8 +44,10 @@
                     :rules="sellingPriceRules"
                     :style="{width: '154px'}"
                     placeholder="Стоимость"
+                    class="text-align-right"
                     suffix="₽"
                     type="number"
+                    @blur="item.selling_price = Math.min(Math.max(item.selling_price, 0), MAX_PRICE)"
                     outlined
                   />
                 </v-col>
@@ -58,7 +60,7 @@
                     placeholder="∞"
                     type="number"
                     outlined
-                    @blur="onBlurQuantity(item)"
+                    @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"                    
                   >
                     <template v-slot:prepend>
                       <v-icon
@@ -142,7 +144,7 @@
         <v-row>
           <v-col>
             <v-btn
-              v-show="valid"
+              :disabled="!valid"
               color="primary"
               class="master-next-btn"
               @click="onEndClick"
@@ -163,7 +165,8 @@
   import NumberParser from '@/utils/NumberParser.js'
 
   const MIN_QUANTITY = 0
-  const MAX_QUANTITY = 999999
+  const MAX_QUANTITY = 1000000
+  const MAX_PRICE = 1000000
    
 
   export default {
@@ -184,7 +187,7 @@
           (v) => !!v || 'Введите название номинала',
         ],
         sellingPriceRules: [
-          (v) => !!v || 'Введите стоимость',
+          (v) => (!!v && v>0) || 'Введите стоимость',
         ],
       }
     },
@@ -192,7 +195,8 @@
 
     },
     created () {
-
+      this.MAX_QUANTITY = MAX_QUANTITY
+      this.MAX_PRICE = MAX_PRICE
     },
     methods: {
       onBlurQuantity (item) {
