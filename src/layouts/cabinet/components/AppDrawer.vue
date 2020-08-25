@@ -95,6 +95,7 @@
       >
         <v-list-group
           id="company_group_select"
+          :value="expandedSelect"
           @click="pressClick"
         >
           <template v-slot:appendIcon>
@@ -120,13 +121,20 @@
           </template>
 
           <v-list-item
-            v-for="(item, i) in programs"
+            v-for="(item, i) in programs.filter(item => item.name != program.name)"
             :key="i"
             :ripple="false"
             @click="changeCompany(item)"
           >
             <v-list-item-title v-text="item.name" />
           </v-list-item>
+          <v-btn
+            block
+            color="secondary"
+            @click="goToMaster()"
+          >
+            Добавить компанию
+          </v-btn>
         </v-list-group>
       </v-list>
     </div>
@@ -269,6 +277,7 @@
       },
     },
     data: () => ({
+      expandedSelect: false,
       selectedCompany: 'Management',
       activeGroup: false,
       admins: [
@@ -368,10 +377,16 @@
 
     },
     methods: {
+      goToMaster () {
+        this.$router.push('/master')
+        this.expandedSelect = false
+      },
       changeCompany (item) {
+        this.expandedSelect = false
         this.program = Object.assign({}, item)
       },
       pressClick (e) {
+        this.expandedSelect = !this.expandedSelect
         const groupSelect = document.getElementById('company_group_select')
         console.log('click classes', groupSelect.classList)
         if (groupSelect.classList.contains('v-list-item--active')) this.activeGroup = false
