@@ -18,6 +18,8 @@ import store from './store'
 import './plugins/base'
 // import './plugins/vee-validate'
 import vuetify from './plugins/vuetify'
+import './plugins/iconify'
+
 import i18n from './i18n'
 
 import './AuthGuard'

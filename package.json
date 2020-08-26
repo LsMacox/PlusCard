@@ -45,6 +45,9 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
+    "@iconify/icons-ant-design": "^1.0.8",
+    "@iconify/icons-uil": "^1.0.14",
+    "@iconify/vue": "^1.0.3",
     "@vue/cli-plugin-babel": "^4.5.4",
     "@vue/cli-plugin-e2e-cypress": "^4.5.4",
     "@vue/cli-plugin-eslint": "^4.5.4",
