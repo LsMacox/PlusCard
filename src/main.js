@@ -31,7 +31,6 @@ import Notifications from 'vue-notification'
 
 import moment from 'moment'
 import VueMoment from 'vue-moment'
-
 // Load Locales ('en' comes loaded by default)
 require('moment/locale/ru')
 
@@ -39,10 +38,6 @@ require('moment/locale/ru')
 moment.locale('ru')
 
 Vue.use(VueMoment, { moment })
-
-// window.moment = require('moment')
-// // eslint-disable-next-line no-undef
-// moment.locale('ru')
 
 Vue.use(Notifications)
 
