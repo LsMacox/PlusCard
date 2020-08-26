@@ -40,10 +40,11 @@ service.interceptors.response.use(
   },
   error => {
     console.log('err', error) // for debug
+    store._vm.$Progress.fail()
+    store.commit('app/LOADING_REQUEST', false)
+
     if (error.response) {
-      console.log(' error.response.status ', error.response.status)
-      store._vm.$Progress.fail()
-      store.commit('app/LOADING_REQUEST', false)
+      console.log(' error.response.status ', error.response.status)      
       if (
         error.config &&
         (!Object.prototype.hasOwnProperty.call(error.config, 'errorHandle') ||
@@ -79,6 +80,13 @@ service.interceptors.response.use(
             return Promise.reject(error)
           })
       }
+    } else {
+      store._vm.$notify({
+        type: 'error',
+        group: 'api',
+        title: 'Ошибка',
+        text: 'Сервер недоступен',
+      })
     }
 
     return Promise.reject(error)

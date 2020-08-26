@@ -5,6 +5,8 @@ import '@fortawesome/fontawesome-free/css/all.css' // Ensure you are using css-l
 import '@/sass/main.sass'
 import '@/sass/plus_ui/overrides.sass'
 
+import { ICONIFY_ICONS } from '@/plugins/iconify'
+
 Vue.use(Vuetify)
 
 const theme = {
@@ -17,12 +19,30 @@ const theme = {
   error: '#EA4C2A',
 }
 
+function LoadIconifyIcons (iconList) {
+  const icons = {}
+  for (const icon of iconList) {
+      const name = `iconify_${icon.id}`
+      icons[name] = {
+        component: 'IconifyIcon',
+        props: {
+          icon: icon.id,
+        },
+      }
+  }
+  console.log('export LoadIconifyIcons', icons)
+  return icons
+}
+
 export default new Vuetify({
   lang: {
     t: (key, ...params) => i18n.t(key, params),
   },
   icons: {
     iconfont: 'fa',
+    values: {
+      ...LoadIconifyIcons(ICONIFY_ICONS),
+    },
   },
   theme: {
     themes: {

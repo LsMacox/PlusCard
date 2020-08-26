@@ -150,7 +150,7 @@
     },
     data () {
       return {
-        termsUserValid: false,
+        termsUserValid: true,
         valid: false,
       }
     },
