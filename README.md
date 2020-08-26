@@ -11,6 +11,6 @@
  *  Используюя @iconify/vue (https://www.npmjs.com/package/@iconify/vue)
     *  <iconify-icon icon="plus-circle" height="24" />  
  * Используюя vuetify
-    *  <v-icon>$iconify_plus_circle</v-icon>
-    *  <v-text-field  append-icon="$iconify_plus_circle"
+    *  <v-icon>$iconify_plus-circle</v-icon>
+    *  <v-text-field  append-icon="$iconify_plus-circle"
     
