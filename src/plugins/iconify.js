@@ -9,6 +9,7 @@ export const ICONIFY_ICONS = [
   { id: 'plus-circle-outlined', component: () => import('@iconify/icons-ant-design/plus-circle-outlined') },
   { id: 'bx-check', component: () => import('@iconify/icons-bx/bx-check') },
   { id: 'chrome-close', component: () => import('@iconify/icons-codicon/chrome-close') },
+  { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
 ]
 
 ICONIFY_ICONS.forEach((icon) => {

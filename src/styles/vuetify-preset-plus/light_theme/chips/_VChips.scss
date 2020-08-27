@@ -1,0 +1,10 @@
+
+ @import './_variables.scss';
+
+ .v-chip {
+    .v-chip__close.v-icon--is-component {
+        font-size: $chip-close-size;
+        max-height: $chip-close-size;
+        max-width: $chip-close-size;
+    }
+}

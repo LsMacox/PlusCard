@@ -44,8 +44,7 @@
               outlined
               multiple
               chips
-              deletable-chips
-              :ripple="false"
+              deletable-chips            
             />
           </template>
         </BaseMasterFieldBlock>
