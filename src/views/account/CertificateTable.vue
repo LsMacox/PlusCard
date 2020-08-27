@@ -1,239 +1,444 @@
 <template>
   <v-container>
     <v-row>
-      <v-form>
-        <v-container>
-          <v-row
-            no-gutters
-          >
-            <v-col
-              cols="3"
-              style="padding-right: 20px"
+      <v-container class="fill-height">
+        <v-row
+          align="center"
+          justify="center"
+        >
+          <v-form>
+            <v-row
+              no-gutters
             >
-              <v-text-field
-                outlined
-                placeholder="Поиск сертификатов, клиентов"
+              <v-col
+                cols="3"
+                style="padding-right: 20px"
               >
-                <template v-slot:prepend-inner>
-                  <span
-                    class="iconify"
-                    data-icon="ant-design:search-outlined"
-                    data-inline="false"
-                  />
-                </template>
-              </v-text-field>
-            </v-col>
+                <v-text-field
+                  outlined
+                  placeholder="Поиск сертификатов, клиентов"
+                >
+                  <template v-slot:prepend-inner>
+                    <span
+                      class="iconify"
+                      data-icon="ant-design:search-outlined"
+                      data-inline="false"
+                    />
+                  </template>
+                </v-text-field>
+              </v-col>
 
-            <v-col
-              cols="2"
-              style="padding-right: 20px"
-            >
-              <v-select
-                v-model="certPaymentStatus"
-                outlined
-                placeholder="Статус оплаты"
-                :items="certPaymentStatusEnum"
-                item-text="label"
-                item-value="id"
-              />
-            </v-col>
+              <v-col
+                cols="2"
+                style="padding-right: 20px"
+              >
+                <v-select
+                  v-model="toolbarFilter.certPaymentStatus"
+                  outlined
+                  placeholder="Статус оплаты"
+                  :items="certPaymentStatusEnum"
+                  item-text="label"
+                  item-value="id"
+                  clearable
+                />
+              </v-col>
 
-            <v-col
-              cols="2"
-              style="padding-right: 20px"
-            >
-              <v-select
-                v-model="certMerchantOrderStatus"
-                outlined
-                placeholder="Статус выплаты"
-                :items="certMerchantOrderStatusEnum"
-                item-text="label"
-                item-value="id"
-              />
-            </v-col>
+              <v-col
+                cols="2"
+                style="padding-right: 20px"
+              >
+                <v-select
+                  v-model="toolbarFilter.certMerchantOrderStatus"
+                  outlined
+                  placeholder="Статус выплаты"
+                  :items="certMerchantOrderStatusEnum"
+                  item-text="label"
+                  item-value="id"
+                  clearable
+                />
+              </v-col>
 
-            <v-col
-              cols="3"
-              style="padding-right: 20px"
-            >
-              <v-select
-                v-model="certOrderStatus"
-                outlined
-                placeholder="Статус сертификата"
-                :items="certOrderStatusEnum"
-                item-text="label"
-                item-value="id"
-              />
-            </v-col>
-
-            <v-col cols="2">
+              <v-col
+                cols="3"
+                style="padding-right: 20px"
+              >
+                <v-select
+                  v-model="toolbarFilter.certOrderStatus"
+                  outlined
+                  placeholder="Статус сертификата"
+                  :items="certOrderStatusEnum"
+                  item-text="label"
+                  item-value="id"
+                  clearable
+                />
+              </v-col>
               <v-chip
-                class="advanced-filter"
+                  class="advanced-filter"
+                  @click.stop="filterDrawer = !filterDrawer"
               >
+                  <span
+                      class="iconify"
+                      data-icon="fa:sliders"
+                      data-inline="false"
+                  />
+                <span>
+                    Все фильтры
+                  </span>
+              </v-chip>
+            </v-row>
+          </v-form>
+          <v-col
+            cols="12"
+            style="width: 1024px"
+          >
+            <v-data-table
+              :headers="headers"
+              :items="certificates"
+              :single-expand="true"
+              :expanded.sync="expanded"
+              item-key="id"
+              show-expand
+              class="plus-table"
+              hide-default-footer
+            >
+              <template v-slot:expanded-item="{ headers, item }">
+                <td :colspan="headers.length">
+                  More info about {{ item.id }}
+                </td>
+              </template>
+
+              <template v-slot:item.data-table-expand="{ expand, isExpanded }">
                 <span
                   class="iconify"
-                  data-icon="fa:sliders"
+                  data-icon="bi:chevron-right"
                   data-inline="false"
+                  @click="expand(!isExpanded)"
                 />
-                <span>
-                  Все фильтры
+              </template>
+
+              <template v-slot:item.certificate.name="{ item }">
+                <div class="td-padding-wrapper">
+                  <div class="td-content-main">
+                    {{ item.certificate.name }}
+                  </div>
+                  <div
+                    class="hint"
+                    style="color: #4776E6;"
+                  >
+                    {{ item.order.num }}
+                  </div>
+                </div>
+              </template>
+
+              <template v-slot:item.user.UserName="{ item }">
+                <div class="avatar">
+                  <img :src="item.user.avatar">
+                </div>
+                <div class="td-content-wrapper">
+                  <div class="td-content-main">
+                    {{ item.user.UserName }}
+                  </div>
+                  <div
+                    v-if="item.user.last_activity"
+                    class="hint"
+                    style="color: #9191A1"
+                  >
+                    Был(а) в сети {{ $moment(item.user.last_activity).format('DD.MM.YYYY\u00A0HH:mm') }}
+                  </div>
+                </div>
+              </template>
+
+              <template v-slot:item.nominal.selling_price="{ item }">
+                <span style="float: right">
+                  {{ item.nominal.selling_price }} &#8381
                 </span>
-              </v-chip>
+              </template>
+
+              <template v-slot:item.payment_status="{ item }">
+                <img :src="paymentStatusIcon(item.payment_status)">
+              </template>
+
+              <template v-slot:item.status="{ item }">
+                <img :src="statusIcon(item.status)">
+              </template>
+
+              <template v-slot:item.merchant_order_status="{ item }">
+                <img :src="merchantOrderStatusIcon(item.merchant_order_status)">
+              </template>
+
+              <template v-slot:item.date_issued="{ item }">
+                <div
+                  v-if="item.date_issued"
+                  class="td-content-wrapper"
+                >
+                  <div class="td-content-main">
+                    {{ $moment(item.date_issued).format('DD.MM.YYYY') }}
+                  </div>
+                  <div
+                    v-if="item.expires_at"
+                    class="hint"
+                  >
+                    {{ $moment(item.expires_at).format('DD.MM.YYYY') }}
+                  </div>
+                </div>
+              </template>
+
+              <template v-slot:item.used_at="{ item }">
+                <div
+                  v-if="item.used_at"
+                  class="td-content-wrapper"
+                >
+                  <div class="td-content-main">
+                    {{ $moment(item.used_at).format('DD.MM.YYYY') }}
+                  </div>
+                  <div class="hint">
+                    в {{ $moment(item.used_at).format('HH:mm') }}
+                  </div>
+                </div>
+              </template>
+            </v-data-table>
+          </v-col>
+        </v-row>
+
+        <v-row
+          align="center"
+          class="pagination"
+        >
+          <v-col class="pagination-total">
+            <span>Всего {{ totalCount }}</span>
+          </v-col>
+
+          <v-col cols="8">
+            <div class="text-center">
+              <v-pagination
+                v-model="page"
+                next-icon="fas fa-chevron-right"
+                prev-icon="fas fa-chevron-left"
+                :length="pagesCount"
+                :total-visible="7"
+                circle
+              />
+            </div>
+          </v-col>
+
+          <v-col class="pagination-per-page">
+            <v-select
+              v-model="perPage"
+              class="pagination-select"
+              :items="paginationOptions"
+              item-text="text"
+              item-value="value"
+              append-icon="fas fa-chevron-down"
+              dense
+            />
+          </v-col>
+        </v-row>
+      </v-container>
+
+      <v-navigation-drawer
+        v-model="filterDrawer"
+        absolute
+        temporary
+        right
+        width="783px"
+      >
+        <div class="filter-drawer-content">
+          <v-row no-gutters>
+            <v-col cols="12">
+              <div class="close-filter" @click="filterDrawer = false">
+                <div class="back-arrow">
+                  <span class="iconify" data-icon="bi:arrow-left" data-inline="false"></span>
+                </div>
+                <div class="back-label">
+                  <span>
+                    Назад
+                  </span>
+                </div>
+              </div>
+            </v-col>
+            <v-col cols="12">
+              <div class="filter-drawer-caption">
+                <span>
+                  Фильтры
+                </span>
+              </div>
+            </v-col>
+            <v-col cols="12">
+              <div class="filter-drawer-form">
+                <v-form>
+                  <v-row no-gutters>
+                    <v-col cols="12">
+                      <v-text-field
+                          outlined
+                          label="Покупатель"
+                      ></v-text-field>
+                    </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                        outlined
+                        label="Телефон/Почта"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                        outlined
+                        label="Номер сертификата"
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                        outlined
+                        label="Номинал"
+                    ></v-text-field>
+                  </v-col>
+                    <v-col
+                        cols="12"
+                    >
+                      <v-select
+                          v-model="filterForm.certPaymentStatus"
+                          outlined
+                          placeholder="Статус оплаты"
+                          :items="certPaymentStatusEnum"
+                          item-text="label"
+                          item-value="id"
+                          clearable
+                      />
+                    </v-col>
+                    <v-col
+                        cols="12"
+                    >
+                      <v-select
+                          v-model="filterForm.certMerchantOrderStatus"
+                          outlined
+                          placeholder="Статус выплаты"
+                          :items="certMerchantOrderStatusEnum"
+                          item-text="label"
+                          item-value="id"
+                          clearable
+                      />
+                    </v-col>
+                    <v-col
+                        cols="12"
+                    >
+                      <v-select
+                          v-model="filterForm.certOrderStatus"
+                          outlined
+                          placeholder="Статус сертификата"
+                          :items="certOrderStatusEnum"
+                          item-text="label"
+                          item-value="id"
+                          clearable
+                      />
+                    </v-col>
+
+                    <v-col
+                        cols="12"
+                    >
+                      <date-range-picker
+                          ref="picker"
+                          opens="right"
+                          :ranges="false"
+                          :auto-apply="false"
+                          :locale-data="{
+                            firstDay: 0,
+                            applyLabel: 'Применить',
+                            cancelLabel: 'Отменить',
+                            monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                            daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                          }"
+                          v-model="filterForm.paymentDate"
+                      >
+                        <template #input="picker" style="min-width: 350px;">
+                          {{ $moment(picker.startDate).format('DD.MM.YYYY') }} - {{ $moment(picker.endDate).format('DD.MM.YYYY') }}
+                        </template>
+
+                        <div slot="footer" slot-scope="data">
+                          <div class="footer-content">
+                              <div class="range">
+                                {{ formatRange(data.rangeText) }}
+                              </div>
+                              <div class="actions">
+                                <v-btn
+                                    color="primary"
+                                    small
+                                    @click="data.clickCancel()"
+                                >
+                                  Отменить
+                                </v-btn>
+                                <v-btn
+                                    small
+                                    color="primary"
+                                    @click="data.clickApply"
+                                >
+                                  <span
+                                      class="iconify"
+                                      data-icon="carbon:checkmark-outline"
+                                      data-inline="false"
+                                  />
+                                  Применить
+                                </v-btn>
+                            </div>
+                          </div>
+                        </div>
+
+                      </date-range-picker>
+                    </v-col>
+
+<!--                    <v-col-->
+<!--                        cols="12"-->
+<!--                    >-->
+<!--                      <date-range-picker-->
+<!--                          ref="picker"-->
+<!--                          opens="right"-->
+<!--                          :ranges="false"-->
+<!--                          :locale-data="{-->
+<!--                            firstDay: 0,-->
+<!--                            applyLabel: 'Применить',-->
+<!--                            cancelLabel: 'Отменить',-->
+<!--                          }"-->
+<!--                          v-model="filterForm.issueDate"-->
+<!--                      >-->
+<!--                        <template #input="picker" style="min-width: 350px;">-->
+<!--                          {{ $moment(picker.startDate).format('DD.MM.YYYY') }} - {{ $moment(picker.endDate).format('DD.MM.YYYY') }}-->
+<!--                        </template>-->
+<!--                      </date-range-picker>-->
+<!--                    </v-col>-->
+
+<!--                    <v-col-->
+<!--                        cols="12"-->
+<!--                    >-->
+<!--                      <date-range-picker-->
+<!--                          ref="picker"-->
+<!--                          opens="right"-->
+<!--                          :ranges="false"-->
+<!--                          :locale-data="{-->
+<!--                            firstDay: 0,-->
+<!--                            applyLabel: 'Применить',-->
+<!--                            cancelLabel: 'Отменить',-->
+<!--                          }"-->
+<!--                          v-model="filterForm.useDate"-->
+<!--                      >-->
+<!--                        <template #input="picker" style="min-width: 350px;">-->
+<!--                          {{ $moment(picker.startDate).format('DD.MM.YYYY') }} - {{ $moment(picker.endDate).format('DD.MM.YYYY') }}-->
+<!--                        </template>-->
+<!--                      </date-range-picker>-->
+<!--                    </v-col>-->
+
+                  </v-row>
+                </v-form>
+              </div>
             </v-col>
           </v-row>
-        </v-container>
-      </v-form>
-
-      <v-col
-        cols="12"
-        style="width: 1024px"
-      >
-        <v-data-table
-          :headers="headers"
-          :items="certificates"
-          :single-expand="true"
-          :expanded.sync="expanded"
-          item-key="id"
-          show-expand
-          class="plus-table"
-          hide-default-footer
-        >
-          <template v-slot:expanded-item="{ headers, item }">
-            <td :colspan="headers.length">
-              More info about {{ item.id }}
-            </td>
-          </template>
-
-          <template v-slot:item.data-table-expand="{ expand, isExpanded }">
-            <span
-              class="iconify"
-              data-icon="bi:chevron-right"
-              data-inline="false"
-              @click="expand(!isExpanded)"
-            />
-          </template>
-
-          <template v-slot:item.certificate.name="{ item }">
-            <div class="td-padding-wrapper">
-              <div class="td-content-main">
-                {{ item.certificate.name }}
-              </div>
-              <div
-                class="hint"
-                style="color: #4776E6;"
-              >
-                {{ item.order.num }}
-              </div>
-            </div>
-          </template>
-
-          <template v-slot:item.user.UserName="{ item }">
-            <div class="avatar">
-              <img :src="item.user.avatar">
-            </div>
-            <div class="td-content-wrapper">
-              <div class="td-content-main">
-                {{ item.user.UserName }}
-              </div>
-              <div
-                v-if="item.user.last_activity"
-                class="hint"
-                style="color: #9191A1"
-              >
-                Был(а) в сети {{ $moment(item.user.last_activity).format("DD.MM.YYYY\u00A0HH:mm") }}
-              </div>
-            </div>
-          </template>
-
-          <template v-slot:item.nominal.selling_price="{ item }">
-            <span style="float: right">
-              {{ item.nominal.selling_price }} &#8381
-            </span>
-          </template>
-
-          <template v-slot:item.payment_status="{ item }">
-            <img :src="paymentStatusIcon(item.payment_status)">
-          </template>
-
-          <template v-slot:item.status="{ item }">
-            <img :src="statusIcon(item.status)">
-          </template>
-
-          <template v-slot:item.merchant_order_status="{ item }">
-            <img :src="merchantOrderStatusIcon(item.merchant_order_status)">
-          </template>
-
-          <template v-slot:item.date_issued="{ item }">
-            <div
-              v-if="item.date_issued"
-              class="td-content-wrapper"
-            >
-              <div class="td-content-main">
-                {{ $moment(item.date_issued).format("DD.MM.YYYY") }}
-              </div>
-              <div
-                v-if="item.expires_at"
-                class="hint"
-              >
-                {{ $moment(item.expires_at).format("DD.MM.YYYY") }}
-              </div>
-            </div>
-          </template>
-
-          <template v-slot:item.used_at="{ item }">
-            <div
-              v-if="item.used_at"
-              class="td-content-wrapper"
-            >
-              <div class="td-content-main">
-                {{ $moment(item.used_at).format("DD.MM.YYYY") }}
-              </div>
-              <div class="hint">
-                в {{ $moment(item.used_at).format("HH:mm") }}
-              </div>
-            </div>
-          </template>
-        </v-data-table>
-      </v-col>
-    </v-row>
-
-    <v-row
-      align="center"
-      class="pagination"
-    >
-      <v-col class="pagination-total">
-        <span>Всего {{ totalCount }}</span>
-      </v-col>
-
-      <v-col cols="8">
-        <div class="text-center">
-          <v-pagination
-            v-model="page"
-            next-icon="fas fa-chevron-right"
-            prev-icon="fas fa-chevron-left"
-            :length="pagesCount"
-            :total-visible="7"
-            circle
-          />
         </div>
-      </v-col>
-
-      <v-col class="pagination-per-page">
-        <v-select
-          v-model="perPage"
-          class="pagination-select"
-          :items="paginationOptions"
-          item-text="text"
-          item-value="value"
-          append-icon="fas fa-chevron-down"
-          dense
-        />
-      </v-col>
+      </v-navigation-drawer>
     </v-row>
   </v-container>
 </template>
 
 <script>
+  import DateRangePicker from 'vue2-daterange-picker'
+  import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
+
   import FuzzySearch from 'fuzzy-search'
 
   var arraySort = require('array-sort')
@@ -242,53 +447,87 @@
     default: {
       border: '2px dashed #808B8D',
       color: '#808B8D',
-      // background: "linear-gradient(180deg, #B5B5B5 0%, #7E7E7E 100%)"
+    // background: "linear-gradient(180deg, #B5B5B5 0%, #7E7E7E 100%)"
     },
     yellow: {
       border: '2px dashed #E29D3A',
       color: '#E29D3A',
-      // background: "linear-gradient(180deg, #E09B3D 0%, #B8771E 100%)"
+    // background: "linear-gradient(180deg, #E09B3D 0%, #B8771E 100%)"
     },
     lightGreen: {
       border: '2px dashed #7DB529',
       color: '#7DB529',
-      // background: "linear-gradient(180deg, #7DB529 0%, #5F802E 100%)"
+    // background: "linear-gradient(180deg, #7DB529 0%, #5F802E 100%)"
     },
     green: {
       border: '2px dashed #199653',
       color: '#199653',
-      // background: "linear-gradient(180deg, #29B572 0%, #117042 100%)"
+    // background: "linear-gradient(180deg, #29B572 0%, #117042 100%)"
     },
     red: {
       border: '2px dashed #A31419',
       color: '#A31419',
-      // background: "linear-gradient(180deg, #EC1C24 0%, #A31419 100%)"
+    // background: "linear-gradient(180deg, #EC1C24 0%, #A31419 100%)"
     },
     blue: {
       border: '2px dashed #07426C',
       color: '#07426C',
-      // background: "linear-gradient(180deg, #0D64A1 0%, #07426C 100%)"
+    // background: "linear-gradient(180deg, #0D64A1 0%, #07426C 100%)"
     },
     black: {
       border: '2px dashed #4C4E4F',
       color: '#4C4E4F',
-      // background: "linear-gradient(180deg, #808B8D 0%, #4C4E4F 100%)"
+    // background: "linear-gradient(180deg, #808B8D 0%, #4C4E4F 100%)"
     },
   })
 
   export default {
+    components: { DateRangePicker },
     name: 'Certificates',
     data () {
       return {
-        certPaymentStatus: String,
-        certMerchantOrderStatus: String,
-        certOrderStatus: String,
+        filterForm: {
+          user: '',
+          phoneOrEmail: '',
+          certNum: null,
+          nominal: null,
+          paymentDate: {
+            startDate: null,
+            endDate: null,
+          },
+          issueDate: {
+            startDate: null,
+            endDate: null,
+          },
+          useDate: {
+            startDate: null,
+            endDate: null,
+          },
+          certPaymentStatus: null,
+          certMerchantOrderStatus: null,
+          certOrderStatus: null,
+        },
+        toolbarFilter: {
+          certPaymentStatus: null,
+          certMerchantOrderStatus: null,
+          certOrderStatus: null,
+        },
+        filterDrawer: false,
         page: 1,
         perPage: 10,
         paginationOptions: [
-          { text: '5 на странице', value: 5 },
-          { text: '10 на странице', value: 10 },
-          { text: '15 на странице', value: 15 },
+          {
+            text: '5 на странице',
+            value: 5,
+          },
+          {
+            text: '10 на странице',
+            value: 10,
+          },
+          {
+            text: '15 на странице',
+            value: 15,
+          },
         ],
         expanded: [],
         headers: [
@@ -325,7 +564,10 @@
             text: 'Использован',
             value: 'used_at',
           },
-          { text: '', value: 'data-table-expand' },
+          {
+            text: '',
+            value: 'data-table-expand',
+          },
         ],
         certPaymentStatusEnum: [
           {
@@ -516,9 +758,9 @@
           .map(item => {
             // Vue.set(item, 'loadingRequest', false)
             return item
-          // return Object.assign(item, {
-          //   loadingRequest: false
-          // });
+            // return Object.assign(item, {
+            //   loadingRequest: false
+            // });
           })
           .filter(
             // item => this.program && item.certificate.program_id == this.program.id,
@@ -542,7 +784,9 @@
           return arraySort(this.certificates_searched, this.sortOptions.prop, {
             reverse: this.sortOptions.order !== 'ascending',
           })
-        } else return []
+        } else {
+          return []
+        }
       },
       certificates_table_data () {
         if (this.certificates_chunked.length >= this.listQuery.page) {
@@ -756,6 +1000,18 @@
       perPage (val) {
         this.loadData()
       },
+      filterForm: {
+        handler (val) {
+          console.log(val)
+        },
+        deep: true,
+      },
+      toolbarFilter: {
+        handler (val) {
+          console.log(val)
+        },
+        deep: true,
+      },
     },
     mounted () {
       this.loadData()
@@ -769,6 +1025,14 @@
       }
     },
     methods: {
+      formatRange (range) {
+        const start = range.split(' - ')[0]
+        const end = range.split(' - ')[1]
+        if (start !== undefined && start !== null && end !== undefined && end !== null) {
+          return this.$moment(start).format('ll') + ' - ' + this.$moment(end).format('ll')
+        }
+        return ' - '
+      },
       statusIcon (status) {
         if (status === 'wait_payment') {
           status = 'wait'
@@ -777,16 +1041,25 @@
       },
       merchantOrderStatusIcon (status) {
         switch (status) {
-          case 'not_required': status = 'dont_needed'; break
-          case 'succeded': status = 'paid'; break
+          case 'not_required':
+            status = 'dont_needed'
+            break
+          case 'succeded':
+            status = 'paid'
+            break
         }
         return require('@/icons/svg/payments/' + status + '.svg')
       },
       paymentStatusIcon (status) {
         switch (status) {
-          case 'SBERBANK': status = 'card'; break
-          case 'PLUS_CASH': status = 'cashier'; break
-          default: status = 'another'
+          case 'SBERBANK':
+            status = 'card'
+            break
+          case 'PLUS_CASH':
+            status = 'cashier'
+            break
+          default:
+            status = 'another'
         }
 
         return require('@/icons/svg/' + status + '.svg')
