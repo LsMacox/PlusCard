@@ -121,7 +121,7 @@
           </template>
 
           <v-list-item
-            v-for="(item, i) in programs.filter(item => item.name != program.name)"
+            v-for="(item, i) in programs.filter(item => item.id != program.id)"
             :key="i"
             :ripple="false"
             @click="changeCompany(item)"
@@ -141,7 +141,7 @@
     <div
       v-else
       class="miniCompany"
-      :style="'background: linear-gradient(140deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%); color:'+ program.color"
+      :style="'background: linear-gradient(140deg,'+ bgcolor1 + ' 0% ,' + bgcolor2 + ' 99.35%); color:'+ program.font_color"
     >
       {{ selectedCompanyMini }}
     </div>
@@ -344,6 +344,12 @@
       ],
     }),
     computed: {
+      bgcolor1 () {
+        return this.program.bgcolor1 ? this.program.bgcolor1 : '#000000'
+      },
+      bgcolor2 () {
+        return this.program.bgcolor2 ? this.program.bgcolor2 : '#eaeaea'
+      },
       selectedCompanyMini () {
         return this.selectedCompany.slice(0, 1)
       },
@@ -387,10 +393,7 @@
       },
       pressClick (e) {
         this.expandedSelect = !this.expandedSelect
-        const groupSelect = document.getElementById('company_group_select')
-        console.log('click classes', groupSelect.classList)
-        if (groupSelect.classList.contains('v-list-item--active')) this.activeGroup = false
-        else this.activeGroup = true
+        this.activeGroup = !this.activeGroup
       },
       mapItem (item) {
         return {

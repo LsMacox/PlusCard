@@ -368,16 +368,26 @@
                         class="actions_icons"
                         @mouseleave="actionsShow = false"
                       >
-                        <span
-                          class="iconify trash_icon"
-                          data-icon="feather:trash"
-                          data-inline="false"
-                        />
-                        <span
-                          class="iconify edit_icon"
-                          data-icon="feather:edit"
-                          data-inline="false"
-                        />
+                        <div
+                          style="display: inline-block"
+                          @click="deleteShop(item)"
+                        >
+                          <span
+                            class="iconify trash_icon"
+                            data-icon="feather:trash"
+                            data-inline="false"
+                          />
+                        </div>
+                        <div
+                          style="display: inline-block"
+                          @click="editShop(item)"
+                        >
+                          <span
+                            class="iconify edit_icon"
+                            data-icon="feather:edit"
+                            data-inline="false"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -793,6 +803,7 @@ line-height: 17px;"
                   </div>
                   <div class="right-block">
                     <v-text-field
+                      v-model="program.phone"
                       placeholder="Номер горячей линии"
                       outlined
                       style="width: 300px;"
@@ -1065,6 +1076,8 @@ line-height: 17px;"
           address: '',
           phone: '',
           coords: [],
+          lat: '',
+          lng: '',
           workTimes: [
             {
               startTime: '',
@@ -1129,6 +1142,9 @@ line-height: 17px;"
       }
     },
     computed: {
+      merchant_id () {
+        return JSON.parse(localStorage.getItem('vue-session-key')).merchant_id
+      },
       selectedDays () {
         let array = []
         this.newShop.workTimes.forEach(item => {
@@ -1210,11 +1226,24 @@ line-height: 17px;"
       },
     },
     async mounted () {
+      this.changeColor(this.program.bgcolor[0])
       const cities = await ApiService.get('/api-cabinet/company/shops/city/list')
       this.cities = cities
       // console.log('cities', cities)
     },
+    async created () {
+      this.changeColor(this.program.bgcolor[0])
+    },
     methods: {
+      deleteShop (shop) {
+        const index = this.shops.findIndex(item => item.name === shop.name)
+        this.shops.splice(index, 1)
+      },
+      editShop (shop) {
+        this.newShop = shop
+        this.newShopActive = true
+        this.deleteShop(shop)
+      },
       getSelectedDays (array) {
         let str = ''
         let length = 0
@@ -1260,18 +1289,28 @@ line-height: 17px;"
       saveShop () {
         console.log('shop', this.newShop)
         this.newShop.address = this.resultAdr
+        let i = 0
+        let work = ''
+        for (i; i < this.newShop.workTimes.length; i++) {
+          console.log('work item', this.getSelectedDays(this.newShop.workTimes[i].days))
+          work += this.getSelectedDays(this.newShop.workTimes[i].days) + ' ' + this.newShop.workTimes[i].startTime + '-' + this.newShop.workTimes[i].endTime + '|' + this.newShop.workTimes[i].breakStart + '-' + this.newShop.workTimes[i].breakEnd + '\n'
+        }
+        this.newShop.worktime = work
         this.newShop.workTimes = this.sortById(this.newShop.workTimes)
+        this.newShop.worktime_json = JSON.stringify(this.newShop.workTimes)
         this.shops.push(this.newShop)
         this.cancelShop()
       },
       async createProgram () {
         const program = Object.assign({}, this.program)
         program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
+        program.shops = this.shops
+        program.merchant_id = this.merchant_id
         const result = await ApiService.post(
           '/api-cabinet/company/create',
           program,
         )
-        // console.log(result)
+        console.log(result)
       },
       getUnitColor () {
         if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.5)' } else { return 'rgba(0, 0, 0, 0.5)' }
@@ -1338,7 +1377,10 @@ line-height: 17px;"
           name: '',
           city: '',
           address: '',
+          lat: '',
+          lng: '',
           phone: '',
+          coords: '',
           workTimes: [
             {
               startTime: '',
@@ -1356,8 +1398,8 @@ line-height: 17px;"
       setMarker (e) {
         this.newShop.coords = Object.assign([], e.get('coords'))
         /// /////console.log(this.coords)
-        this.shop.lat = this.coords[0]
-        this.shop.lng = this.coords[1]
+        this.newShop.lat = this.newShop.coords[0]
+        this.newShop.lng = this.newShop.coords[1]
         this.shop = Object.assign({}, this.shop)
       },
 
@@ -1420,6 +1462,7 @@ line-height: 17px;"
         this.currentStep = step
       },
       async updateCompany () {
+        console.log('merchant_id', this.merchant_id)
         // await this.$store.dispatch("brand/company/updateDesign", program)
         this.changeStep(2)
       },
