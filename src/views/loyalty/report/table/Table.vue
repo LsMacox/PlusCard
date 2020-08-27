@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <div>
     <v-row>
       <v-col
         cols="12"
@@ -105,36 +105,36 @@
       align="center"
       class="pagination"
     >
-      <v-col class="pagination-total">
-        <span>Всего {{ totalCount }}1 239 операций на 124 страницах</span>
-      </v-col>
+      <v-col>
+        <div class="table-pagination-block">
+          <div>Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}</div>
 
-      <v-col cols="8">
-        <div class="text-center">
-          <v-pagination
-            v-model="tableOptions.page"
-            next-icon="fas fa-chevron-right"
-            prev-icon="fas fa-chevron-left"
-            :length="pagesCount"
-            :total-visible="7"
-            circle
+          <v-select
+            v-model="tableOptions.itemsPerPage"
+            class="pagination-select table-pagination-block-select"
+            :items="paginationOptions"
+            item-text="text"
+            item-value="value"
+            append-icon="fas fa-chevron-down"
+            dense
           />
+
+          <div class="app__spacer" />
+
+          <div class="text-center">
+            <v-pagination
+              v-model="tableOptions.page"
+              next-icon="fas fa-chevron-right"
+              prev-icon="fas fa-chevron-left"
+              :length="pagesCount"
+              :total-visible="7"
+              circle
+            />
+          </div>
         </div>
       </v-col>
-
-      <v-col class="pagination-per-page">
-        <v-select
-          v-model="tableOptions.itemsPerPage"
-          class="pagination-select"
-          :items="paginationOptions"
-          item-text="text"
-          item-value="value"
-          append-icon="fas fa-chevron-down"
-          dense
-        />
-      </v-col>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -243,6 +243,10 @@
         if (value >= 0) return `<span style="color: #00D15D;">+${value}</span>`
         return `<span style="color: #EA4C2A;">-${value}</span>`
       },
+      getWord (number, words) {
+        const cases = [2, 0, 1, 1, 1, 2]
+        return words[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
+      },
       fetchData () {
         this.loadingList = true
         const list = {
@@ -285,4 +289,13 @@
   width: 25px
   height: 25px
   border-radius: 25px
+
+.table-pagination-block
+  display: flex
+  align-items: center
+  .table-pagination-block-select
+    position: relative
+    top: 6px
+    left: 20px
+    width: 250px
 </style>

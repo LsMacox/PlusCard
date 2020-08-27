@@ -1534,7 +1534,7 @@ line-height: 17px;"
 </style>
 
 <style lang="sass" scoped>
-@import '~@/sass/plus_ui/light_theme/_variables.sass'
+@import '~@/styles/vuetify-preset-plus/light_theme/_variables.sass'
 #master
   height: 100%
 

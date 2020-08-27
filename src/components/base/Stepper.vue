@@ -122,7 +122,7 @@
   }
 </script>
 <style lang="sass" scoped>
-@import '~@/sass/plus_ui/light_theme/_variables.sass'
+@import '~@/styles/vuetify-preset-plus/light_theme/_variables.sass'
 .app-bar
     min-height: 100px
 

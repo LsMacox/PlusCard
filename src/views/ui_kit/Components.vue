@@ -426,11 +426,21 @@
           multiple
         >        
         </v-select>
+         <v-autocomplete  
+         :value="'a'"           
+              :items="['a','b']"              
+              placeholder="Выберите категории"              
+              outlined
+              multiple
+              chips
+              deletable-chips            
+            />
       </v-col>
     </v-row>
+    
     <v-row><v-col>
        <v-icon>$iconify_plus-circle</v-icon>
-       <iconify-icon icon="plus-circle" height="24" />
+       <iconify-icon icon="plus-circle" height="14" />
       </v-col></v-row>
   </v-container>
 </template>
