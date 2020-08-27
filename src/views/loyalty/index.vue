@@ -70,6 +70,9 @@
           }
           console.log('load_data', widget)
           this.loading = true
+          await this.$store.dispatch('company/bonus_resources/GetActiveShortList', this.program.id)
+          await this.$store.dispatch('company/bonus_units/loadBonusUnits', this.program.id)
+          //
           await this.$store.dispatch('widget/bonusClients/widget', widget)
           await this.$store.dispatch('widget/operations/widget', widget)
           await this.$store.dispatch('widget/operators/widget', widget)

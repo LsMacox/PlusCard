@@ -51,11 +51,13 @@
                 <div class="app__popover-content-header">
                   Операции
                 </div>
-                <div class="app__popover-content-chip">
-                  Сервис начисления за услуги 5%
-                </div>
-                <div class="app__popover-content-chip">
-                  Ручное начисление
+                <div
+                  v-for="(item, i) in operations"
+                  :key="i"
+                  class="app__popover-content-chip"
+                  @click="setFilterOperation(item)"
+                >
+                  {{ item.title }}
                 </div>
               </v-col>
             </v-row>
@@ -65,25 +67,16 @@
                   Валюта
                 </div>
                 <div
+                  v-for="(item, i) in units"
+                  :key="i"
                   class="app__popover-content-checkbox"
                 >
                   <input
-                    v-model="checkbox1"
                     type="checkbox"
+                    @click="setFilterUnit(item)"
                   >
                   <div>
-                    Бонусные рубли
-                  </div>
-                </div>
-                <div
-                  class="app__popover-content-checkbox"
-                >
-                  <input
-                    v-model="checkbox2"
-                    type="checkbox"
-                  >
-                  <div>
-                    Бонусные баллы
+                    {{ item.name }}
                   </div>
                 </div>
               </v-col>
@@ -126,15 +119,28 @@
     data () {
       return {
         show: false,
-        checkbox1: false,
-        checkbox2: false,
+        filter: {},
       }
+    },
+    computed: {
+      operations () {
+        return this.$store.getters['company/bonus_resources/activeBonusResourcesShort']
+      },
+      units () {
+        return this.$store.getters['company/bonus_units/bonusUnits']
+      },
     },
     methods: {
       async switchShow () {
         this.show = !this.show
         await this.$nextTick()
         this.$refs.search.focus()
+      },
+      setFilterOperation (item) {
+        //
+      },
+      setFilterUnit (item) {
+        //
       },
       close () {
         this.show = false
@@ -198,6 +204,7 @@
         color: #9191A1
         background: #F2F2F7
         border-radius: 8px
+        cursor: pointer
 
       .app__popover-content-checkbox
         display: inline-block
