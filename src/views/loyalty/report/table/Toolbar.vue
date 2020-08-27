@@ -1,124 +1,122 @@
 <template>
-  <v-container>
-    <v-row
-      no-gutters
-    >
-      <v-col>
-        <div class="app__popover">
+  <v-row
+    no-gutters
+  >
+    <v-col>
+      <div class="app__popover">
+        <div
+          class="app__popover-block-input"
+          style="border: 1px solid #D7D7E0; border-radius: 10px;"
+        >
+          <v-icon>
+            $iconify_search-outlined
+          </v-icon>
+          <input
+            class="app__popover-block-input-field"
+            placeholder="Поиск и фильтр"
+            @focus="switchShow"
+          >
+        </div>
+        <div
+          v-show="show"
+          class="app__popover-block"
+        >
           <div
             class="app__popover-block-input"
-            style="border: 1px solid #D7D7E0; border-radius: 10px;"
           >
             <v-icon>
               $iconify_search-outlined
             </v-icon>
             <input
+              ref="search"
               class="app__popover-block-input-field"
               placeholder="Поиск и фильтр"
-              @focus="switchShow"
             >
+            <v-icon
+              class="app__popover-block-icon-close"
+              @click="close()"
+            >
+              $iconify_chrome-close
+            </v-icon>
+            <v-icon
+              class="app__popover-block-icon-check"
+              @click="apply()"
+            >
+              $iconify_bx-check
+            </v-icon>
           </div>
-          <div
-            v-show="show"
-            class="app__popover-block"
-          >
-            <div
-              class="app__popover-block-input"
-            >
-              <v-icon>
-                $iconify_search-outlined
-              </v-icon>
-              <input
-                ref="search"
-                class="app__popover-block-input-field"
-                placeholder="Поиск и фильтр"
-              >
-              <v-icon
-                class="app__popover-block-icon-close"
-                @click="close()"
-              >
-                $iconify_chrome-close
-              </v-icon>
-              <v-icon
-                class="app__popover-block-icon-check"
-                @click="apply()"
-              >
-                $iconify_bx-check
-              </v-icon>
-            </div>
-            <div class="app__popover-content">
-              <v-row>
-                <v-col>
-                  <div class="app__popover-content-header">
-                    Операции
-                  </div>
-                  <div class="app__popover-content-chip">
-                    Сервис начисления за услуги 5%
-                  </div>
-                  <div class="app__popover-content-chip">
-                    Ручное начисление
-                  </div>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <div class="app__popover-content-header">
-                    Валюта
-                  </div>
-                  <div
-                    class="app__popover-content-checkbox"
+          <div class="app__popover-content">
+            <v-row>
+              <v-col>
+                <div class="app__popover-content-header">
+                  Операции
+                </div>
+                <div class="app__popover-content-chip">
+                  Сервис начисления за услуги 5%
+                </div>
+                <div class="app__popover-content-chip">
+                  Ручное начисление
+                </div>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <div class="app__popover-content-header">
+                  Валюта
+                </div>
+                <div
+                  class="app__popover-content-checkbox"
+                >
+                  <input
+                    v-model="checkbox1"
+                    type="checkbox"
                   >
-                    <input
-                      v-model="checkbox1"
-                      type="checkbox"
-                    >
-                    <div>
-                      Бонусные рубли
-                    </div>
+                  <div>
+                    Бонусные рубли
                   </div>
-                  <div
-                    class="app__popover-content-checkbox"
+                </div>
+                <div
+                  class="app__popover-content-checkbox"
+                >
+                  <input
+                    v-model="checkbox2"
+                    type="checkbox"
                   >
-                    <input
-                      v-model="checkbox2"
-                      type="checkbox"
-                    >
-                    <div>
-                      Бонусные баллы
-                    </div>
-                  </div>
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <div class="app__popover-content-header">
-                    Операторы
-                  </div>
                   <div>
-                    <input
-                      class="app__popover-content-input"
-                      placeholder="Начните вводить имя оператора"
-                    >
+                    Бонусные баллы
                   </div>
-                </v-col>
-                <v-col>
-                  <div class="app__popover-content-header">
-                    Клиенты
-                  </div>
-                  <div>
-                    <input
-                      class="app__popover-content-input"
-                      placeholder="Начните вводить имя клиента"
-                    >
-                  </div>
-                </v-col>
-              </v-row>
-            </div>
+                </div>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <div class="app__popover-content-header">
+                  Операторы
+                </div>
+                <div>
+                  <input
+                    class="app__popover-content-input"
+                    placeholder="Начните вводить имя оператора"
+                  >
+                </div>
+              </v-col>
+              <v-col>
+                <div class="app__popover-content-header">
+                  Клиенты
+                </div>
+                <div>
+                  <input
+                    class="app__popover-content-input"
+                    placeholder="Начните вводить имя клиента"
+                  >
+                </div>
+              </v-col>
+            </v-row>
           </div>
         </div>
-      </v-col>
-    </v-row>
-  </v-container>
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
