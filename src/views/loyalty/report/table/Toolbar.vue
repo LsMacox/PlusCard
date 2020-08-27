@@ -5,55 +5,58 @@
     >
       <v-col>
         <div class="app__popover">
-          <v-text-field
-            outlined
-            placeholder="Поиск и фильтр"
-            @focus="switchShow"
+          <div
+            class="app__popover-block-input"
+            style="border: 1px solid #D7D7E0; border-radius: 10px;"
           >
-            <template v-slot:prepend-inner>
-              <span
-                class="iconify"
-                data-icon="ant-design:search-outlined"
-                data-inline="false"
-              />
-            </template>
-          </v-text-field>
+            <v-icon>
+              $iconify_search-outlined
+            </v-icon>
+            <input
+              class="app__popover-block-input-field"
+              placeholder="Поиск и фильтр"
+              @focus="switchShow"
+            >
+          </div>
           <div
             v-show="show"
             class="app__popover-block"
           >
-            <v-text-field
-              ref="search"
-              outlined
-              placeholder="Поиск и фильтр"
+            <div
+              class="app__popover-block-input"
             >
-              <template v-slot:prepend-inner>
-                <span
-                  class="iconify"
-                  data-icon="ant-design:search-outlined"
-                  data-inline="false"
-                />
-              </template>
-              <template v-slot:append>
-                <v-icon
-                  class="app__popover-block-icon-close"
-                  @click="close()"
-                >
-                  $iconify_chrome-close
-                </v-icon>
-                <v-icon
-                  class="app__popover-block-icon-check"
-                  @click="apply()"
-                >
-                  $iconify_bx-check
-                </v-icon>
-              </template>
-            </v-text-field>
+              <v-icon>
+                $iconify_search-outlined
+              </v-icon>
+              <input
+                ref="search"
+                class="app__popover-block-input-field"
+                placeholder="Поиск и фильтр"
+              >
+              <v-icon
+                class="app__popover-block-icon-close"
+                @click="close()"
+              >
+                $iconify_chrome-close
+              </v-icon>
+              <v-icon
+                class="app__popover-block-icon-check"
+                @click="apply()"
+              >
+                $iconify_bx-check
+              </v-icon>
+            </div>
             <div class="app__popover-content">
               <v-row>
                 <v-col>
                   <div class="app__popover-content-header">
                     Операции
+                  </div>
+                  <div class="app__popover-content-chip">
+                    Сервис начисления за услуги 5%
+                  </div>
+                  <div class="app__popover-content-chip">
+                    Ручное начисление
                   </div>
                 </v-col>
               </v-row>
@@ -61,6 +64,28 @@
                 <v-col>
                   <div class="app__popover-content-header">
                     Валюта
+                  </div>
+                  <div
+                    class="app__popover-content-checkbox"
+                  >
+                    <input
+                      v-model="checkbox1"
+                      type="checkbox"
+                    >
+                    <div>
+                      Бонусные рубли
+                    </div>
+                  </div>
+                  <div
+                    class="app__popover-content-checkbox"
+                  >
+                    <input
+                      v-model="checkbox2"
+                      type="checkbox"
+                    >
+                    <div>
+                      Бонусные баллы
+                    </div>
                   </div>
                 </v-col>
               </v-row>
@@ -103,6 +128,8 @@
     data () {
       return {
         show: false,
+        checkbox1: false,
+        checkbox2: false,
       }
     },
     methods: {
@@ -138,7 +165,7 @@
     z-index: 1000
 
     .app__popover-content
-      padding: 20px 20px 8px 20px
+      padding: 8px 20px
 
       .app__popover-content-header
         margin-bottom: 12px
@@ -162,6 +189,56 @@
         box-sizing: border-box
         border-radius: 10px
 
+      .app__popover-content-chip
+        display: inline-block
+        margin-right: 8px
+        padding: 10px 12px
+        font-style: normal
+        font-weight: 600
+        font-size: 13px
+        line-height: 17px
+        color: #9191A1
+        background: #F2F2F7
+        border-radius: 8px
+
+      .app__popover-content-checkbox
+        display: inline-block
+        margin-right: 20px
+        font-style: normal
+        font-weight: 500
+        font-size: 15px
+        line-height: 21px
+        color: #9191A1
+
+        input
+          display: inline-block
+          margin-right: 11px
+
+        div
+          display: inline-block
+          position: relative
+          top: -1px
+
+.app__popover-block-input
+  display: flex
+  align-items: center
+  padding: 11px 12px
+  color: #9191A1
+  border-bottom: 1px solid #D7D7E0
+  box-sizing: border-box
+  border-top-left-radius: 10px
+  border-top-right-radius: 10px
+
+  .app__popover-block-input-field
+    display: block
+    width: 100%
+    outline: none !important
+    padding: 0 10px
+    font-style: normal
+    font-weight: 500
+    font-size: 13px
+    line-height: 17px
+
 .app__popover-block-icon-close
   color: #B5B5C4 !important
   cursor: pointer
@@ -170,7 +247,7 @@
   width: 42px !important
   height: 28px !important
   position: relative
-  top: -4px
+  top: -1px
   margin-left: 5px
   color: #4776E6 !important
   cursor: pointer

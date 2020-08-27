@@ -10,6 +10,7 @@ export const ICONIFY_ICONS = [
   { id: 'bx-check', component: () => import('@iconify/icons-bx/bx-check') },
   { id: 'chrome-close', component: () => import('@iconify/icons-codicon/chrome-close') },
   { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
+  { id: 'search-outlined', component: () => import('@iconify/icons-ant-design/search-outlined') },
 ]
 
 ICONIFY_ICONS.forEach((icon) => {
