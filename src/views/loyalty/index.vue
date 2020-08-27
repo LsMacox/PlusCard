@@ -74,7 +74,7 @@
           await this.$store.dispatch('widget/operations/widget', widget)
           await this.$store.dispatch('widget/operators/widget', widget)
           await this.$store.dispatch('widget/bonuses/widget', widget)
-          await this.$store.dispatch('widget/table/widget', widget)
+          // await this.$store.dispatch('widget/table/widget', widget)
           this.loading = false
         }
       },

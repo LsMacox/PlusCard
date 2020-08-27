@@ -60,6 +60,7 @@ const mutations = {
 const actions = {
 
     async list ({ commit }, { merchant_id, offset, limit }) {
+        // eslint-disable-next-line no-useless-catch
         try {
             // console.log('merchant_id', merchant_id)
             console.log(offset, limit)

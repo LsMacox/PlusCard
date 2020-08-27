@@ -112,6 +112,8 @@
           <v-btn
             color="primary"
           >
+           <v-icon>$iconify_plus-circle-outlined</v-icon>   
+             <iconify-icon icon="plus-circle-outlined" height="24" />        
             <span
               class="iconify"
               data-icon="ant-design:plus-circle-outlined"
@@ -416,8 +418,20 @@
             </div>
           </template>
         </v-select>
+        <v-select
+          v-model="selectedFruits"
+          :items="fruits"
+          placeholder="multiple select"
+          outlined
+          multiple
+        >        
+        </v-select>
       </v-col>
     </v-row>
+    <v-row><v-col>
+       <v-icon>$iconify_plus-circle</v-icon>
+       <iconify-icon icon="plus-circle" height="24" />
+      </v-col></v-row>
   </v-container>
 </template>
 
