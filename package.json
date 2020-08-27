@@ -47,6 +47,8 @@
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
     "@iconify/icons-ant-design": "^1.0.8",
+    "@iconify/icons-bx": "^1.0.3",
+    "@iconify/icons-codicon": "^1.0.0",
     "@iconify/icons-uil": "^1.0.14",
     "@iconify/vue": "^1.0.3",
     "@vue/cli-plugin-babel": "^4.5.4",
