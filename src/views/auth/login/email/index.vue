@@ -233,5 +233,5 @@
 </script>
 
 <style lang="sass" scoped>
-@import "~@/sass/auth"
+@import "~@/styles/auth"
 </style>

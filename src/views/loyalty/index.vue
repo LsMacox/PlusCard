@@ -84,5 +84,5 @@
 </script>
 
 <style lang="sass" scoped>
-@import "~@/sass/loyalty-report"
+@import "~@/styles/loyalty-report"
 </style>
