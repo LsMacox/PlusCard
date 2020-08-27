@@ -1,21 +1,34 @@
 <template>
   <div class="loyalty-toolbar">
     <div class="loyalty-toolbar-name">
-      Программа лояльности
+      {{ program.name }}
     </div>
     <div class="loyalty-toolbar-period">
-      <div>за сегодня</div>
-      <div class="loyalty-toolbar-period-chevron">
-        <span
-          class="iconify"
-          data-icon="feather:chevron-down"
-          data-inline="false"
-        />
-      </div>
+      <item-select
+        min-width="250px"
+        :items="periods"
+        :item.sync="period"
+      />
     </div>
     <div class="app__spacer" />
     <div
       style="display: inline-grid; margin-right: 6px;"
+    >
+      <div
+        class="loyalty-toolbar-text-btn"
+        @click=""
+      >
+        <span
+          class="iconify loyalty-toolbar-text-btn-icon"
+          style="margin-right: 2px;"
+          data-icon="ion:document-outline"
+          data-inline="false"
+        />
+        Экспорт в XLS
+      </div>
+    </div>
+    <div
+      style="display: inline-grid; margin-left: 6px;"
     >
       <v-btn
         color="secondary"
@@ -28,38 +41,39 @@
           data-icon="feather:settings"
           data-inline="false"
         />
-        Настроить
-      </v-btn>
-    </div>
-    <div
-      style="display: inline-grid; margin-left: 6px;"
-    >
-      <v-btn
-        color="primary"
-        small
-        @click=""
-      >
-        <span
-          class="iconify"
-          style="margin-right: 8px;"
-          data-icon="ion:document-outline"
-          data-inline="false"
-        />
-        Экспорт в XLS
+        Настроить программу лояльности
       </v-btn>
     </div>
   </div>
 </template>
 
 <script>
+  import ItemSelect from '@/components/dialogs/ItemSelect'
+
   export default {
+    components: {
+      ItemSelect,
+    },
     props: {
     },
     data () {
-      return {}
+      return {
+        period: null,
+        periods: [
+          { name: 'За сегодня' },
+          { name: 'За последние 7 дней' },
+          { name: 'За последние 30 дней' },
+          { name: 'За последние 90 дней' },
+          { name: 'За последние 180 дней' },
+          { name: 'За последние 365 дней' },
+          { name: 'Собственный диапазон' },
+        ],
+      }
     },
     computed: {
-
+      program () {
+        return this.$store.getters['company/program/program']
+      },
     },
     mounted () {
 
@@ -101,4 +115,19 @@
       position: relative
       top: 4px
 
+  .loyalty-toolbar-text-btn
+    position: relative
+    top: -2px
+    margin-right: 2px
+    font-style: normal
+    font-weight: 600
+    font-size: 13px
+    line-height: 17px
+    color: #4776E6
+    cursor: pointer
+
+    .loyalty-toolbar-text-btn-icon
+      position: relative
+      top: 4px
+      font-size: 18px
 </style>

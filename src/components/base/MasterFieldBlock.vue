@@ -5,7 +5,7 @@
         <master-field-title :title="title" />
       </v-col>
     </v-row>
-    <v-row v-if="horisontal" no-gutters>
+    <v-row v-if="horisontal">
       <v-col>
         <master-field-description>
           <slot name="description">
@@ -17,7 +17,7 @@
         <slot name="input" />
       </v-col>
     </v-row>
-    <v-row v-else no-gutters>
+    <v-row v-else>
       <v-col>
         <v-row>
           <v-col>

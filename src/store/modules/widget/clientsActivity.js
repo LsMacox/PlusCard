@@ -1,10 +1,8 @@
-import ApiService from '@/api/api-client'
-
 export default {
     namespaced: true,
     state: {
         loading: false,
-        widgetData: [],
+        widgetData: []
     },
     mutations: {
         clearState (state) {
@@ -16,16 +14,15 @@ export default {
         },
         widgetData (state, payload) {
             state.widgetData = payload
-        },
+        }
     },
     actions: {
 
-        async widget ({ commit }, widget) {
-            commit('loading', true)
-            const success = await ApiService.post('/api-cabinet/widget/operations', widget)
-            commit('widgetData', success)
-            commit('loading', false)
-        },
+        async LoadWidgetData ({commit}, widget) {            
+                const success = await axios.post('/api/widget/clients/activity', widget)
+                commit('widgetData', success.data.data)
+
+        }
 
     },
     getters: {
@@ -34,6 +31,6 @@ export default {
         },
         widgetData (state) {
             return state.widgetData
-        },
-    },
+        }
+    }
 }

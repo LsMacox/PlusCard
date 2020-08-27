@@ -27,10 +27,10 @@ const actions = {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.get('/api-cabinet/company/list')
-      console.log(result)
+      // console.log(result)
       commit('SET_PROGRAMS', result)
       if (result && result.length) {
-        console.log(result[0])
+        // console.log(result[0])
         commit('SET_PROGRAM', result[0])
       }
     } catch (error) {

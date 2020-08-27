@@ -8,6 +8,7 @@
         <v-data-table
           :headers="headers"
           :items="tableData"
+          :options="tableOptions"
           :single-expand="true"
           :expanded.sync="expanded"
           item-key="bsid"
@@ -31,61 +32,67 @@
           </template>
 
           <template v-slot:item.operation="{ item }">
-            <div class="td-padding-wrapper">
-              <div class="td-content-main">
-                {{ item.operation }}
-              </div>
-              <div
-                class="hint cell-hint"
-              >
-                ID 103866
-              </div>
+            <div class="cell-text">
+              {{ item.title }}
+            </div>
+            <div
+              class="cell-hint"
+            >
+              ID {{ item.bsid }}
             </div>
           </template>
 
           <template v-slot:item.date="{ item }">
-            <div class="td-padding-wrapper">
-              <div class="td-content-main">
-                {{ item.date }}
-              </div>
-              <div
-                class="hint cell-hint"
-              >
-                в 14:02
-              </div>
+            <div class="cell-text">
+              {{ getDate(item.created_at) }}
+            </div>
+            <div
+              class="cell-hint"
+            >
+              {{ getTime(item.created_at) }}
             </div>
           </template>
 
           <template v-slot:item.client="{ item }">
-            <div class="avatar">
-              <img src="https://storage.yandexcloud.net/plusstorage/users/avatars/1db311620af449cf9aa354491e5310d4.jpg">
-            </div>
-            <div class="td-content-wrapper">
-              <div class="td-content-main">
-                {{ item.client }}
-              </div>
-              <div
-                class="hint cell-hint"
+            <div style="display: flex;">
+              <img
+                class="cell-avatar"
+                style="position: relative; top: -5px;"
+                :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`"
               >
-                Был(а) в сети 02.08.2020 в 04:32
+              <div>
+                <div class="cell-text">
+                  {{ item.client }}
+                </div>
+                <div
+                  class="cell-hint"
+                >
+                  {{ getLastActivity(item.last_activity) }}
+                </div>
               </div>
             </div>
           </template>
 
           <template v-slot:item.unit="{ item }">
-            {{ item.unit }}
+            <div class="cell-text">
+              {{ item.unit }}
+            </div>
           </template>
 
           <template v-slot:item.amount="{ item }">
-            {{ item.amount }}
+            <div
+              class="cell-text"
+              v-html="getValue(item.value)"
+            />
           </template>
 
           <template v-slot:item.operator="{ item }">
-            <div class="avatar">
-              <img src="https://storage.yandexcloud.net/plusstorage/users/avatars/1db311620af449cf9aa354491e5310d4.jpg">
-            </div>
-            <div class="td-content-wrapper">
-              <div class="td-content-main">
+            <div style="display: flex; align-items: center">
+              <img
+                class="cell-avatar"
+                src="https://storage.yandexcloud.net/plusstorage/users/avatars/1db311620af449cf9aa354491e5310d4.jpg"
+              >
+              <div class="cell-text">
                 {{ item.operator }}
               </div>
             </div>
@@ -99,16 +106,16 @@
       class="pagination"
     >
       <v-col class="pagination-total">
-        <span>Всего {{ total }}</span>
+        <span>Всего {{ totalCount }}1 239 операций на 124 страницах</span>
       </v-col>
 
       <v-col cols="8">
         <div class="text-center">
           <v-pagination
-            v-model="page"
+            v-model="tableOptions.page"
             next-icon="fas fa-chevron-right"
             prev-icon="fas fa-chevron-left"
-            :length="20"
+            :length="pagesCount"
             :total-visible="7"
             circle
           />
@@ -117,7 +124,7 @@
 
       <v-col class="pagination-per-page">
         <v-select
-          v-model="perPage"
+          v-model="tableOptions.itemsPerPage"
           class="pagination-select"
           :items="paginationOptions"
           item-text="text"
@@ -134,14 +141,17 @@
   export default {
     data () {
       return {
-        page: 0,
-        total: 150,
-        perPage: 10,
+        tableOptions: {
+          page: 1,
+          itemsPerPage: 25,
+        },
         paginationOptions: [
-          { text: '5 на странице', value: 5 },
-          { text: '10 на странице', value: 10 },
-          { text: '15 на странице', value: 15 },
-          { text: 'Показать все', value: 0 },
+          { text: '25 на странице', value: 25 },
+          { text: '50 на странице', value: 50 },
+          { text: '100 на странице', value: 100 },
+          { text: '150 на странице', value: 150 },
+          { text: '250 на странице', value: 250 },
+          { text: '500 на странице', value: 500 },
         ],
         expanded: [],
         headers: [
@@ -172,81 +182,82 @@
           },
           { text: '', value: 'data-table-expand' },
         ],
-        tableData: [
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-          {
-            operation: 'Ручное списание',
-            date: '21.04.2020',
-            client: 'Ivanov Ivan',
-            unit: 'Бонусные рубли',
-            amount: 1000,
-            operator: 'Ivanov Ivan',
-          },
-        ],
+        wordPages: ['странице', 'страницах', 'страницах'],
+        wordOperations: ['операция', 'операции', 'операций'],
       }
     },
+    computed: {
+      tableData () {
+        return this.$store.getters['widget/table/widgetData']
+      },
+      totalCount () {
+        return this.$store.getters['widget/table/count']
+      },
+      pagesCount () {
+        const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
+        if (count) return count
+        return 1
+      },
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+      startPeriod () {
+        console.log('start', this.$store.getters['widget/filter/startPeriodFilter'])
+        return this.$store.getters['widget/filter/startPeriodFilter']
+      },
+      endPeriod () {
+        return this.$store.getters['widget/filter/endPeriodFilter']
+      },
+      filter () {
+        return this.$store.getters['widget/filter/filter']
+      },
+    },
+    watch: {
+      program (v) {
+        if (v) this.fetchData()
+      },
+      'tableOptions.page' (v) {
+        if (v) this.fetchData()
+      },
+      'tableOptions.itemsPerPage' (v) {
+        if (v) this.fetchData()
+      },
+    },
+    created () {
+      this.fetchData()
+    },
     methods: {
-      paymentStatusIcon (status) {
-        switch (status) {
-          case 'waiting': return require('@/icons/svg/' + status + '.svg'); break
-          case 'cashier': return require('@/icons/svg/cashier.svg'); break
-          case 'card': return '@/icons/svg/card.svg'; break
-          default: return '@/icons/svg/another.svg'
+      getDate (date) {
+        return this.$moment(date).format('L')
+      },
+      getTime (date) {
+        // eslint-disable-next-line no-undef
+        const d = new Date(date).toISOString().split('T')[1]
+        return 'в ' + d.split(':')[0] + ':' + d.split(':')[1]
+      },
+      getLastActivity (date) {
+        return 'Был(а) в сети ' + this.getDate(date) + ' ' + this.getTime(date)
+      },
+      getValue (value) {
+        value = Number(value)
+        if (value >= 0) return `<span style="color: #00D15D;">+${value}</span>`
+        return `<span style="color: #EA4C2A;">-${value}</span>`
+      },
+      fetchData () {
+        this.loadingList = true
+        const list = {
+          program_id: this.program.id,
+          start_period: this.startPeriod,
+          end_period: this.endPeriod,
+          filter: this.filter,
+          offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
+          limit: this.tableOptions.itemsPerPage,
+        }
+        // console.log(list)
+        try {
+          this.$store.dispatch('widget/table/widget', list)
+        } finally {
+          this.loadingList = false
         }
       },
     },
@@ -254,10 +265,24 @@
 </script>
 
 <style lang="sass" scoped>
+.cell-text
+  font-style: normal
+  font-weight: 600
+  font-size: 13px
+  line-height: 17px
+  color: #2A2A34
+
 .cell-hint
+  margin-top: 4px
   font-style: normal
   font-weight: 600
   font-size: 11px
   line-height: 14px
   color: #9191A1
+
+.cell-avatar
+  margin-right: 8px
+  width: 25px
+  height: 25px
+  border-radius: 25px
 </style>

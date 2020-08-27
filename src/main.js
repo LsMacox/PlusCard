@@ -18,6 +18,8 @@ import store from './store'
 import './plugins/base'
 // import './plugins/vee-validate'
 import vuetify from './plugins/vuetify'
+import './plugins/iconify'
+
 import i18n from './i18n'
 
 import './AuthGuard'
@@ -28,6 +30,16 @@ import VueSession from './utils/session'
 
 import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'
+
+import moment from 'moment'
+import VueMoment from 'vue-moment'
+// Load Locales ('en' comes loaded by default)
+require('moment/locale/ru')
+
+// Choose Locale
+moment.locale('ru')
+
+Vue.use(VueMoment, { moment })
 
 Vue.use(Notifications)
 
@@ -65,50 +77,8 @@ new Vue({
   vuetify,
   i18n,
   async created () {
-    /*
-     * глобальный прелоадер (обязательно первый)
-     */
-
-    await this.$store.dispatch('app/setLoadingApp', true)
-
-    console.log(this.$store.getters.loadingApp)
-
     // устройство
     await this.$store.dispatch('auth/auth/InitDevice')
-
-    /*
-     * проверка наличия access/refresh
-     */
-
-    let auth = false
-
-    const accessToken = this.$store._vm.$session.get('access_token')
-    const refreshToken = this.$store._vm.$session.get('refresh_token')
-    const merchantId = this.$store._vm.$session.get('merchant_id')
-
-    if (accessToken && refreshToken && merchantId) {
-      auth = true
-    }
-
-    if (auth) {
-      console.log('loadingApp')
-      await this.$store.dispatch('auth/auth/loadingApp')
-    } else {
-      if (this.$route.path !== '/login/email') this.$router.push('/login/email')
-      await this.stopLoading()
-      return
-    }
-
-    /*
-     * окончание загрузки
-     */
-
-    await this.$store.dispatch('app/setLoadingApp', false)
-  },
-  methods: {
-    async stopLoading () {
-      await this.$store.dispatch('app/setLoadingApp', false)
-    },
   },
   render: h => h(App),
 }).$mount('#app')

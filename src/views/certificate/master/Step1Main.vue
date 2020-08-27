@@ -7,7 +7,7 @@
       <v-form
         ref="form"
         v-model="valid"       
-      >
+      >     
         <BaseMasterFieldBlock
           title="Название сертификата"
           :horisontal="true"
@@ -16,13 +16,14 @@
             slot="description"
           >Введите общее название сертификата. Оно будет отображаться на карточке сертификата в приложении Plus Cards</span>
           <template v-slot:input>
-            <v-text-field
+            <base-text-field
               v-model="cert.name"
               :validate-on-blur="true"
               :rules="nameRules"
               placeholder="Название сертификата"
               outlined
-              counter="30"
+              counter
+              minlength="1"
               maxlength="30"
             />
           </template>
@@ -33,7 +34,7 @@
             slot="description"
           >Выберите до 3-х категорий сертификата, в которых он будет отображаться в приложении</span>
           <template v-slot:input>
-            <v-select
+            <v-autocomplete
               v-model="cert.category_id_list"
               :items="category_id_list"
               :rules="categoryRules"
@@ -108,7 +109,8 @@
         </BaseMasterFieldBlock>
 
         <v-row>
-          <v-col>
+          <v-col>          
+             
             <v-btn
               :disabled="!valid"
               color="primary"

@@ -33,13 +33,28 @@
         return this.$store.getters['template/shared/loadingApp']
       },
       program () {
-        return this.$store.getters['brand/program/program']
+        return this.$store.getters['company/program/program']
+      },
+      startPeriod () {
+        console.log('start', this.$store.getters['widget/filter/startPeriodFilter'])
+        return this.$store.getters['widget/filter/startPeriodFilter']
+      },
+      endPeriod () {
+        return this.$store.getters['widget/filter/endPeriodFilter']
+      },
+      filter () {
+        return this.$store.getters['widget/filter/filter']
+      },
+    },
+    watch: {
+      program (v) {
+        if (v) this.loadData()
       },
     },
     created () {
       if (!this.loadingApp) {
-        this.$store.dispatch('widget/filter')
-        this.$store.dispatch('widget/filterPeriod')
+        this.$store.dispatch('widget/filter/filter')
+        this.$store.dispatch('widget/filter/filterPeriod')
         this.$store.dispatch('widget/operators/operators', this.program.id)
         this.loadData()
       }
@@ -59,7 +74,7 @@
           await this.$store.dispatch('widget/operations/widget', widget)
           await this.$store.dispatch('widget/operators/widget', widget)
           await this.$store.dispatch('widget/bonuses/widget', widget)
-          await this.$store.dispatch('widget/table/widget', widget)
+          // await this.$store.dispatch('widget/table/widget', widget)
           this.loading = false
         }
       },

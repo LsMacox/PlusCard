@@ -119,6 +119,7 @@
     name: 'Toolbar',
     props: {
       pSearchText: String,
+      pCPS: Object, // certPaymentStatusEnum
     },
     data () {
       return {
