@@ -47,7 +47,7 @@
 
 <style lang="sass" scoped>
 .widget-line
-  margin: 34px 24px 0 24px
+  margin: 34px -10px 0 -10px
   display: flex
   align-items: center
 

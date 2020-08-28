@@ -1,0 +1,15 @@
+@import '../variables';
+
+.v-chip.v-chip--select  {
+    height: 33px;
+    padding: 0px 8px;
+    background: #EBF1FF;
+    border-radius: 6px;
+    color: $primary-base;
+
+    font-family: Gilroy;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+}

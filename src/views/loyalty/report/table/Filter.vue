@@ -49,7 +49,8 @@
             <v-row>
               <v-col>
                 <div class="app__popover-content-header">
-                  Операции {{ filter }}
+                  Операции {{ filter }}<br>
+                  {{ operators }}
                 </div>
                 <div
                   v-for="(item, i) in operations"
@@ -82,10 +83,18 @@
                   Операторы
                 </div>
                 <div>
-                  <input
-                    class="app__popover-content-input"
-                    placeholder="Начните вводить имя оператора"
-                  >
+                  <v-autocomplete
+                    v-model="filter.operator"
+                    :items="operators"
+                    placeholder="Выберите оператора"
+                    item-text="label"
+                    item-value="id"
+                    dense
+                    outlined
+                    multiple
+                    chips
+                    deletable-chips
+                  />
                 </div>
               </v-col>
               <v-col>
@@ -94,7 +103,7 @@
                 </div>
                 <div>
                   <input
-                  v-model="filter.client"
+                    v-model="filter.client"
                     class="app__popover-content-input"
                     placeholder="Начните вводить имя клиента"
                   >
@@ -124,7 +133,9 @@
         return this.$store.getters['widget/filter/filterDefault']
       },
       operators () {
-        return this.$store.getters['widget/operators/operators']
+        const operators = this.$store.getters['widget/operators/operators']
+        if (operators && operators[0] && operators[0].children) return operators[0].children
+        return []
       },
       operations () {
         return this.$store.getters['company/bonus_resources/activeBonusResourcesShort']
@@ -136,17 +147,15 @@
     watch: {
       show (v) {
         if (v) {
-          console.log('this.filter - set')
-          console.log(this.filterStore)
-          this.filter = Object.assign({}, this.filterStore)
-          // this.filterBuffer = JSON.parse(JSON.stringify(this.filter))
-          console.log('this.filter', this.filter)
+          // this.filter = Object.assign({}, this.filterStore)
+          this.filter = JSON.parse(JSON.stringify(this.filterStore))
         } else {
-          console.log('this.filter - default', this.filterDefault)
           this.filter = Object.assign({}, this.filterDefault)
-          console.log('this.filter', this.filter)
         }
       },
+    },
+    created () {
+      this.filter = this.filterDefault
     },
     methods: {
       async switchShow () {
@@ -156,7 +165,7 @@
       },
       getFilterClass (field, item) {
         // const filter = Object.assign({}, this.filter)
-        if (Object.prototype.hasOwnProperty.call(this.filter, field) && this.filter[field].includes(item.id)) return 'app__popover-content-chip app__popover-content-chip-active'
+        if (this.filter && this.filter[field].includes(item.id)) return 'app__popover-content-chip app__popover-content-chip-active'
         return 'app__popover-content-chip'
       },
       setFilter (field, item) {
@@ -169,18 +178,12 @@
         }
       },
       close () {
-        console.log('close')
-        // this.$store.commit('widget/filter/filter', this.filter)
         this.show = false
       },
       apply () {
-        console.log('apply')
         this.$store.commit('widget/filter/filter', this.filter)
         this.show = false
       },
-    },
-    created() {
-      this.filter = this.filterDefault
     },
   }
 </script>

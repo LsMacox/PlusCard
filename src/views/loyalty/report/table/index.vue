@@ -33,5 +33,5 @@
 
 <style lang="sass" scoped>
 .table-block
-  margin: 34px
+  margin: 34px 0 0 0
 </style>

@@ -22,7 +22,7 @@
 
 .v-input.v-select.v-input--dense {
     &.v-select--chips{
-        @import './chips.scss';
+        @import './chips-dense.scss';
     }
     .v-input__control{
         .v-input__slot{

@@ -88,7 +88,7 @@
 .loyalty-toolbar
   display: flex
   align-items: center
-  margin: 34px 34px 0 34px
+  margin: 0
 
   .loyalty-toolbar-name
     font-style: normal
