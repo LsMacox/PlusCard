@@ -2,5 +2,20 @@
 
 
 .v-input.v-select {
-    
+    &.v-select--chips{
+        @import './chips.scss';
+    }
+    .v-input__control{
+        .v-input__slot{
+            .v-select__slot {
+                .v-select__selections{
+                    padding: 4px 0px;
+                    min-height: 53px;
+                }
+                .v-input__append-inner{
+                    margin: auto;
+                }
+            }
+        }
+    }
 }

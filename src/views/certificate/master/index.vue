@@ -1,51 +1,99 @@
 <template lang="">
-  <v-container>
-    <v-row>
-      <base-stepper
-        v-model="currentStep"
-        :items="stepList"
-      />
-    </v-row>
-    <v-row
-      justify="center"
-      no-gutters
-    >
-      <v-col :cols="8">
-        <v-carousel
+  <div style="height: 100%;">
+    <v-container v-if="currentStep<3">
+      <v-row>
+        <base-stepper
           v-model="currentStep"
-          :light="true"
-          hide-delimiters
-          :show-arrows="false"
-          height="100%"
-        >
-          <v-carousel-item>
-            <step-main
-              v-model="cert"
-              @continue="currentStep=1"
+          :items="stepList"
+        />
+      </v-row>
+      <v-row
+        justify="center"
+        no-gutters
+      >
+        <v-col :cols="8">
+          <v-carousel
+            v-model="currentStep"
+            :light="true"
+            hide-delimiters
+            :show-arrows="false"
+            height="100%"
+          >
+            <v-carousel-item>
+              <step-main
+                v-model="cert"
+                @continue="currentStep=1"
+              />
+            </v-carousel-item>
+            <v-carousel-item>
+              <step-rules
+                v-model="cert"
+                @continue="currentStep=2"
+              />
+            </v-carousel-item>
+            <v-carousel-item>
+              <step-nominals
+                v-model="cert"
+                @continue="currentStep=3"
+              />
+            </v-carousel-item>
+          </v-carousel>
+        </v-col>
+      </v-row>
+    </v-container>
+    <v-row
+      v-else
+      align="center"
+      justify="center"
+      style="height: 100%;"
+    >
+      <v-col cols="auto">
+        <v-row justify="center">
+          <v-col cols="auto">
+            <v-img
+              src="@/assets/svg/Check-3D.svg"
+              width="109.62px"
+              height="94px"
             />
-          </v-carousel-item>
-          <v-carousel-item>
-            <step-rules
-              v-model="cert"
-              @continue="currentStep=2"
-            />
-          </v-carousel-item>
-          <v-carousel-item>
-            <step-nominals
-              v-model="cert"
-              @continue="createCert"
-            />
-          </v-carousel-item>
-        </v-carousel>
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col style="width:502px">
+            <v-row justify="center">
+              <p class="title-s-bold">
+                Сертификат создан!
+              </p>
+            </v-row>
+            <v-row justify="center">
+              <p
+                class="body-m-regular"
+                style="text-align:center;"
+              >
+                После того как сертификат пройдет модерацию, он станет доступен<br> для покупки в приложении Plus Cards.
+              </p>
+            </v-row>
+            <v-row justify="center">
+              <v-btn
+                color="primary"
+                @click="onClickNew"
+              >
+                <iconify-icon
+                  icon="plus-circle-outlined"
+                  height="21"
+                />
+                Создать еще сертификат
+              </v-btn>
+            </v-row>
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
-    <!--
-    {{ currentStep }}
-    {{ cert }} -->
-  </v-container>
+  </div>
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   import StepMain from './Step1Main'
   import StepRules from './Step2Rules'
   import StepNominals from './Step3Nominals'
@@ -58,35 +106,48 @@
 
   export default {
     components: { StepMain, StepNominals, StepRules },
-    data () {
-      return {
-        currentStep: 0,
-        cert: {
-          name: '',
-          category_id_list: [],
-          certificate_usage_type: 'Everywhere',
-          guaranteed_period_unlimit: true,
-          guaranteed_period: null,
-          quantity_unlimit: true,
-          nominals: [{
+    constants: {
+      DEFAULT_CERT: {
+        name: '',
+        short_description: '',
+        description: '',
+        category_id_list: [],
+        certificate_usage_type: 'Everywhere',
+        guaranteed_period_unlimit: true,
+        guaranteed_period: null,
+        quantity_unlimit: true,
+        nominals: [
+          {
             nominal_name: '',
             selling_price: null,
             quantity: null,
-          }],
-        },
-
+          },
+        ],
+      },
+    },
+    data () {
+      return {
+        createCertificateLoading: false,
+        currentStep: 3,
+        cert: null,
       }
     },
     computed: {
-
+      ...mapGetters('company/program', ['program']),
     },
     created () {
       this.stepList = stepList
+      this.cert = Object.assign({}, this.DEFAULT_CERT)
     },
     methods: {
-      createCert () {
-        console.log(this.cert)
+      init () {
+        this.cert = Object.assign({}, this.DEFAULT_CERT)
+        this.currentStep = 0
       },
+      onClickNew () {
+        this.init()
+      },
+
     },
   }
 </script>

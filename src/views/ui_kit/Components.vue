@@ -427,8 +427,8 @@
         >        
         </v-select>
          <v-autocomplete  
-         :value="'a'"           
-              :items="['a','b']"              
+            v-model="selectedFruits"           
+              :items="fruits"              
               placeholder="Выберите категории"              
               outlined
               multiple

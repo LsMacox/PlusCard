@@ -146,6 +146,7 @@
           <v-col>
             <v-btn
               :disabled="!valid"
+              :loading="createCertificateLoading"
               color="primary"
               class="master-next-btn"
               @click="onEndClick"
@@ -164,6 +165,7 @@
 
 <script>
   import NumberParser from '@/utils/NumberParser.js'
+   import { mapGetters } from 'vuex'
 
   const MIN_QUANTITY = 0
   const MAX_QUANTITY = 1000000
@@ -183,6 +185,7 @@
     },
     data () {
       return {
+        createCertificateLoading: false,
         valid: false,
         nominalNameRules: [
           (v) => !!v || 'Введите название номинала',
@@ -193,7 +196,7 @@
       }
     },
     computed: {
-
+ ...mapGetters('company/program', ['program']),
     },
     created () {
       this.MAX_QUANTITY = MAX_QUANTITY
@@ -244,7 +247,7 @@
       },
       onEndClick () {
         if (this.$refs.form.validate()) {
-          this.$emit('continue', true)
+          this.createCert()            
         }
       },
       onAppendNominalClick () {
@@ -265,6 +268,35 @@
           this.cert.quantity = 0
           // this.cert.nominals.forEach(item => (item.quantity = 0))
         }
+      },
+      createCert () {
+        const post_data = {
+          program_id: this.program.id,
+          name: this.cert.name,
+          short_description: this.cert.short_description,
+          description: this.cert.description,
+          nominals: this.cert.nominals,
+          tags: this.cert.tags,
+          activation_rules: this.cert.activation_rules,
+          terms_of_use: this.cert.terms_of_use,
+          certificate_usage_type: this.cert.certificate_usage_type,
+          guaranteed_period: this.cert.guaranteed_period_unlimit
+            ? null
+            : this.cert.guaranteed_period,
+          quantity: this.cert.quantity_unlimit ? null : this.cert.quantity,
+          category_id_list: this.cert.category_id_list,
+          allow_digital_use: true,
+        }
+        this.createCertificateLoading = true
+        this.$store
+          .dispatch('certificates/certificate/CreateCertificate', post_data)
+          .then(() => {           
+            this.$emit('continue', true)        
+          })
+          .finally(() => {
+            this.createCertificateLoading = false
+          })
+      // console.log(this.cert)
       },
     },
   }

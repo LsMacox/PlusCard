@@ -105,8 +105,9 @@ export default {
     },
 
     async CreateCertificate ({ commit }, certificate) {
-      const result = ApiService.post('/api-cabinet/program/certificates/create')
+      const result = ApiService.post('/api-cabinet/program/certificates/create', certificate)
       commit('ADD_CERTIFICATE', result)
+      return result
     },
 
     async AddCertificateNominal ({ commit }, nominal) {
