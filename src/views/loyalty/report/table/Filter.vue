@@ -94,6 +94,7 @@
                 </div>
                 <div>
                   <input
+                  v-model="filter.client"
                     class="app__popover-content-input"
                     placeholder="Начните вводить имя клиента"
                   >
@@ -111,7 +112,7 @@
   export default {
     data () {
       return {
-        filter: this.filterDefault,
+        filter: null,
         show: false,
       }
     },
@@ -177,6 +178,9 @@
         this.$store.commit('widget/filter/filter', this.filter)
         this.show = false
       },
+    },
+    created() {
+      this.filter = this.filterDefault
     },
   }
 </script>
