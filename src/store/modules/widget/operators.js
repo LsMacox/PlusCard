@@ -33,6 +33,7 @@ export default {
         async operators ({ commit }, id) {
             commit('loading', true)
             const success = await ApiService.get('/api-cabinet/widget/operatorList?program_id=' + id)
+            console.log('/widget/operatorList')
             console.log(success)
             commit('operators', success)
             commit('loading', false)

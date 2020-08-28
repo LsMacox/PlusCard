@@ -48,7 +48,10 @@
     },
     watch: {
       program (v) {
-        if (v) this.loadData()
+        if (v) this.fetchData()
+      },
+      filter (v) {
+        if (v) this.fetchData()
       },
     },
     created () {
@@ -56,11 +59,11 @@
         this.$store.dispatch('widget/filter/filter')
         this.$store.dispatch('widget/filter/filterPeriod')
         this.$store.dispatch('widget/operators/operators', this.program.id)
-        this.loadData()
+        this.fetchData()
       }
     },
     methods: {
-      async loadData () {
+      async fetchData () {
         if (this.program != null && this.program.id) {
           const widget = {
             program_id: this.program.id,

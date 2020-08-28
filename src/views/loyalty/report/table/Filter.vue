@@ -49,13 +49,13 @@
             <v-row>
               <v-col>
                 <div class="app__popover-content-header">
-                  Операции
+                  Операции {{ filter }}
                 </div>
                 <div
                   v-for="(item, i) in operations"
                   :key="i"
-                  class="app__popover-content-chip"
-                  @click="setFilterOperation(item)"
+                  :class="getFilterClass('pbr', item)"
+                  @click="setFilter('pbr', item)"
                 >
                   {{ item.title }}
                 </div>
@@ -69,15 +69,10 @@
                 <div
                   v-for="(item, i) in units"
                   :key="i"
-                  class="app__popover-content-checkbox"
+                  :class="getFilterClass('bu', item)"
+                  @click="setFilter('bu', item)"
                 >
-                  <input
-                    type="checkbox"
-                    @click="setFilterUnit(item)"
-                  >
-                  <div>
-                    {{ item.name }}
-                  </div>
+                  {{ item.name }}
                 </div>
               </v-col>
             </v-row>
@@ -114,20 +109,42 @@
 
 <script>
   export default {
-    props: {
-    },
     data () {
       return {
+        filter: this.filterDefault,
         show: false,
-        filter: {},
       }
     },
     computed: {
+      filterStore () {
+        return this.$store.getters['widget/filter/filter']
+      },
+      filterDefault () {
+        return this.$store.getters['widget/filter/filterDefault']
+      },
+      operators () {
+        return this.$store.getters['widget/operators/operators']
+      },
       operations () {
         return this.$store.getters['company/bonus_resources/activeBonusResourcesShort']
       },
       units () {
         return this.$store.getters['company/bonus_units/bonusUnits']
+      },
+    },
+    watch: {
+      show (v) {
+        if (v) {
+          console.log('this.filter - set')
+          console.log(this.filterStore)
+          this.filter = Object.assign({}, this.filterStore)
+          // this.filterBuffer = JSON.parse(JSON.stringify(this.filter))
+          console.log('this.filter', this.filter)
+        } else {
+          console.log('this.filter - default', this.filterDefault)
+          this.filter = Object.assign({}, this.filterDefault)
+          console.log('this.filter', this.filter)
+        }
       },
     },
     methods: {
@@ -136,16 +153,28 @@
         await this.$nextTick()
         this.$refs.search.focus()
       },
-      setFilterOperation (item) {
-        //
+      getFilterClass (field, item) {
+        // const filter = Object.assign({}, this.filter)
+        if (Object.prototype.hasOwnProperty.call(this.filter, field) && this.filter[field].includes(item.id)) return 'app__popover-content-chip app__popover-content-chip-active'
+        return 'app__popover-content-chip'
       },
-      setFilterUnit (item) {
-        //
+      setFilter (field, item) {
+        // const filter = Object.assign({}, this.filter)
+        const index = this.filter[field].indexOf(item.id)
+        if (index === -1) {
+          this.filter[field].push(item.id)
+        } else {
+          this.filter[field].splice(index, 1)
+        }
       },
       close () {
+        console.log('close')
+        // this.$store.commit('widget/filter/filter', this.filter)
         this.show = false
       },
       apply () {
+        console.log('apply')
+        this.$store.commit('widget/filter/filter', this.filter)
         this.show = false
       },
     },
@@ -205,6 +234,10 @@
         background: #F2F2F7
         border-radius: 8px
         cursor: pointer
+
+      .app__popover-content-chip-active
+        background: #EBF1FF
+        color: #4776E6
 
       .app__popover-content-checkbox
         display: inline-block

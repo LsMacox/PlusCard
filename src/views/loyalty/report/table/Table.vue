@@ -216,6 +216,9 @@
       program (v) {
         if (v) this.fetchData()
       },
+      filter (v) {
+        if (v) this.fetchData()
+      },
       'tableOptions.page' (v) {
         if (v) this.fetchData()
       },
