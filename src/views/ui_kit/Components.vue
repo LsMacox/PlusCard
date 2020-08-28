@@ -437,6 +437,21 @@
             />
       </v-col>
     </v-row>
+    <v-row>
+      <v-col>
+        SMALL
+           <v-autocomplete  
+            v-model="selectedFruits"           
+              :items="fruits"              
+              placeholder="Выберите категории"              
+              outlined
+              multiple
+              chips
+              deletable-chips    
+              dense        
+            />
+      </v-col>
+    </v-row>
     
     <v-row><v-col>
        <v-icon>$iconify_plus-circle</v-icon>
