@@ -95,6 +95,7 @@
       >
         <v-list-group
           id="company_group_select"
+          :value="expandedSelect"
           @click="pressClick"
         >
           <template v-slot:appendIcon>
@@ -120,20 +121,27 @@
           </template>
 
           <v-list-item
-            v-for="(item, i) in programs"
+            v-for="(item, i) in programs.filter(item => item.id != program.id)"
             :key="i"
             :ripple="false"
             @click="changeCompany(item)"
           >
             <v-list-item-title v-text="item.name" />
           </v-list-item>
+          <v-btn
+            block
+            color="secondary"
+            @click="goToMaster()"
+          >
+            Добавить компанию
+          </v-btn>
         </v-list-group>
       </v-list>
     </div>
     <div
       v-else
       class="miniCompany"
-      :style="'background: linear-gradient(140deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%); color:'+ program.color"
+      :style="'background: linear-gradient(140deg,'+ bgcolor1 + ' 0% ,' + bgcolor2 + ' 99.35%); color:'+ program.font_color"
     >
       {{ selectedCompanyMini }}
     </div>
@@ -269,6 +277,7 @@
       },
     },
     data: () => ({
+      expandedSelect: false,
       selectedCompany: 'Management',
       activeGroup: false,
       admins: [
@@ -335,6 +344,12 @@
       ],
     }),
     computed: {
+      bgcolor1 () {
+        return this.program.bgcolor1 ? this.program.bgcolor1 : '#000000'
+      },
+      bgcolor2 () {
+        return this.program.bgcolor2 ? this.program.bgcolor2 : '#eaeaea'
+      },
       selectedCompanyMini () {
         return this.selectedCompany.slice(0, 1)
       },
@@ -369,14 +384,17 @@
 
     },
     methods: {
+      goToMaster () {
+        this.$router.push('/master')
+        this.expandedSelect = false
+      },
       changeCompany (item) {
+        this.expandedSelect = false
         this.program = Object.assign({}, item)
       },
       pressClick (e) {
-        const groupSelect = document.getElementById('company_group_select')
-        console.log('click classes', groupSelect.classList)
-        if (groupSelect.classList.contains('v-list-item--active')) this.activeGroup = false
-        else this.activeGroup = true
+        this.expandedSelect = !this.expandedSelect
+        this.activeGroup = !this.activeGroup
       },
       mapItem (item) {
         return {

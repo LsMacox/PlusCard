@@ -1,17 +1,17 @@
 <template>
   <div class="table-block">
-    <toolbar />
+    <app-filter />
     <app-table />
   </div>
 </template>
 
 <script>
-  import Toolbar from './Toolbar'
+  import AppFilter from './Filter'
   import AppTable from './Table'
 
   export default {
     components: {
-      Toolbar,
+      AppFilter,
       AppTable,
     },
     props: {
