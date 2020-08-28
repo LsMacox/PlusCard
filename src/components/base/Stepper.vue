@@ -1,9 +1,9 @@
 <template>
-  <v-row>
+  <v-row no-gutters>
     <v-col>
       <v-row
-        align="center"
-        class="app-bar"
+        align="center" 
+                     
       >
         <v-col cols="3">
           <v-btn
@@ -37,7 +37,7 @@
         </v-col>
       </v-row>
 
-      <v-row class="progressBar">
+      <v-row class="stepper-progress-bar" no-gutters >
         <div
           class="progressLineFirst"
           :style="'width: ' + getCurrentWidth() + '%'"
@@ -122,30 +122,13 @@
   }
 </script>
 <style lang="sass" scoped>
-@import '~@/styles/vuetify-preset-plus/light_theme/_variables.sass'
-.app-bar
-    min-height: 100px
+@import '@/styles/variables.scss'
 
-    .nav-block
-      width: 84px
-      padding-left: 20px
-      cursor: pointer
-
-      &__icon, .nav-block__text
-        color: #4776E6
-
-    .stepper
-      display: flex
-      flex-direction: row
-      justify-content: space-between
-      max-width: 530px
-
-      &__icon
-        color: #D7D7E0
-
-.progressBar
+.stepper-progress-bar
     display: flex
     flex-direction: row
+    margin-top: 39px
+    margin-left: -$page-content-padding-size
 
     .progressLineFirst
       height: 1px

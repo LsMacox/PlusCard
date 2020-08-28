@@ -1,46 +1,53 @@
 <template lang="">
   <div style="height: 100%;">
-    <v-container v-if="currentStep<3">
-      <v-row>
-        <base-stepper
-          v-model="currentStep"
-          :items="stepList"
-        />
-      </v-row>
-      <v-row
-        justify="center"
-        no-gutters
-      >
-        <v-col :cols="8">
-          <v-carousel
+    <v-row
+      v-if="currentStep<3"
+      no-gutters
+    >
+      <v-col>
+        <v-row class="cert-stepper-row">
+          <base-stepper
             v-model="currentStep"
-            :light="true"
-            hide-delimiters
-            :show-arrows="false"
-            height="100%"
-          >
-            <v-carousel-item>
-              <step-main
-                v-model="cert"
-                @continue="currentStep=1"
-              />
-            </v-carousel-item>
-            <v-carousel-item>
-              <step-rules
-                v-model="cert"
-                @continue="currentStep=2"
-              />
-            </v-carousel-item>
-            <v-carousel-item>
-              <step-nominals
-                v-model="cert"
-                @continue="currentStep=3"
-              />
-            </v-carousel-item>
-          </v-carousel>
-        </v-col>
-      </v-row>
-    </v-container>
+            :items="stepList"
+            @close="$router.back()"
+          />
+        </v-row>
+        <v-row
+          justify="center"
+          class="cert-master-row"
+          no-gutters
+        >
+          <v-col :cols="8">
+            <v-carousel
+              v-model="currentStep"
+              :light="true"
+              hide-delimiters
+              :show-arrows="false"
+              height="100%"
+            >
+              <v-carousel-item>
+                <step-main
+                  v-model="cert"
+                  @continue="currentStep=1"
+                />
+              </v-carousel-item>
+              <v-carousel-item>
+                <step-rules
+                  v-model="cert"
+                  @continue="currentStep=2"
+                />
+              </v-carousel-item>
+              <v-carousel-item>
+                <step-nominals
+                  v-model="cert"
+                  @continue="currentStep=3"
+                />
+              </v-carousel-item>
+            </v-carousel>
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
     <v-row
       v-else
       align="center"
@@ -128,7 +135,7 @@
     data () {
       return {
         createCertificateLoading: false,
-        currentStep: 3,
+        currentStep: 0,
         cert: null,
       }
     },
@@ -151,3 +158,20 @@
     },
   }
 </script>
+<style lang="scss" scoped>
+@import '@/styles/variables.scss';
+
+.cert-stepper-row {
+  position: fixed;
+  width: 100%;
+  margin: $page-content-padding-disable;
+  padding: $page-content-padding;
+  background: $material-light-backgroung-color;
+  z-index: 200;
+
+}
+
+.cert-master-row {
+  margin-top: $page-content-padding-size;
+}
+</style>

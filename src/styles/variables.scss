@@ -10,6 +10,16 @@ $btn-letter-spacing: 0;
 $btn-font-weight: 400;
 $card-text-font-size: 16px;
 
+//Base colors
+$neutral-100: #ffffff;
+//Interface colors
+$material-light-backgroung-color: $neutral-100;
+
+
+$page-content-padding-size: 34px;
+$page-content-padding: $page-content-padding-size $page-content-padding-size 0px $page-content-padding-size;
+$page-content-padding-disable: (-$page-content-padding-size) (-$page-content-padding-size) -0px (-$page-content-padding-size);
+
 $headings: (
   'h1': (
     'size': 3.3125rem,
