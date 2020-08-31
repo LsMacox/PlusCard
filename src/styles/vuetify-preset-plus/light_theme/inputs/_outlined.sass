@@ -9,24 +9,24 @@
       .v-counter.theme--light
         color: $color !important
         position: absolute
-        z-index: 1000
+        z-index: 100
         top: 23px
         right: 16px
         font-weight: 600
         font-size: 11px
-        line-height: 14px  
+        line-height: 14px
 
 .v-input.theme--light.v-text-field.v-text-field--outlined
   border-radius: 12px
   margin-top: 0 !important
   caret-color: $neutral-900 !important
-  &.v-input--counter 
-    @include v-input-counter($color: $success-500)     
+  &.v-input--counter
+    @include v-input-counter($color: $success-500)
     &.v-input--counter-success-text
-      @include v-input-counter($color: $success-500)    
+      @include v-input-counter($color: $success-500)
     &.v-input--counter-error-text
-      @include v-input-counter($color: $error-500)    
-   
+      @include v-input-counter($color: $error-500)
+
   .v-text-field__slot
     input
       font-style: normal

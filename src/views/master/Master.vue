@@ -1,70 +1,75 @@
 <template>
   <div id="master">
-    <div
-      v-if="currentStep !== 4"
-      class="app-bar"
-    >
-      <v-row
-        align="center"
-        style="min-height: 100px"
+    <div class="sticky">
+      <div
+        v-if="currentStep !== 4"
+        class="app-bar"
       >
-        <v-col cols="3">
-          <div
-            class="nav-block"
-            @click="$router.push('/dashboard')"
-          >
-            <v-icon class="nav-block__icon">
-              mdi-arrow-left
-            </v-icon>
-            <span class="body-s-semibold nav-block__text">Назад</span>
-          </div>
-        </v-col>
-        <v-col cols="9">
-          <div class="stepper">
+        <v-row
+          align="center"
+          style="min-height: 100px"
+        >
+          <v-col cols="3">
             <div
-              class="stepper-block first-step body-l-semibold"
-              :style="'color: ' + getCurrentColor('first')"
+              class="nav-block"
+              @click="goToPrevent()"
             >
-              Общая информация
+              <v-icon class="nav-block__icon">
+                mdi-arrow-left
+              </v-icon>
+              <span class="body-s-semibold nav-block__text">Назад</span>
             </div>
-            <v-icon class="stepper__icon">
-              mdi-chevron-right
-            </v-icon>
-            <div
-              class="stepper-block second-step body-l-semibold"
-              :style="'color: ' + getCurrentColor('second')"
-            >
-              Точки продаж
+          </v-col>
+          <v-col cols="9">
+            <div class="stepper">
+              <div
+                class="stepper-block first-step body-l-semibold"
+                :style="'color: ' + getCurrentColor('first')+ ';cursor: pointer;'"
+                @click="currentStep = 1"
+              >
+                Общая информация
+              </div>
+              <v-icon class="stepper__icon">
+                mdi-chevron-right
+              </v-icon>
+              <div
+                class="stepper-block second-step body-l-semibold"
+                :style="'color: ' + getCurrentColor('second')+ ';cursor: pointer;'"
+                @click="currentStep = 2"
+              >
+                Точки продаж
+              </div>
+              <v-icon class="stepper__icon">
+                mdi-chevron-right
+              </v-icon>
+              <div
+                class="stepper-block third-step body-l-semibold"
+                :style="'color: ' + getCurrentColor('third')+ ';cursor: pointer;'"
+                @click="currentStep = 3"
+              >
+                Контактные данные
+              </div>
             </div>
-            <v-icon class="stepper__icon">
-              mdi-chevron-right
-            </v-icon>
-            <div
-              class="stepper-block third-step body-l-semibold"
-              :style="'color: ' + getCurrentColor('third')"
-            >
-              Контактные данные
-            </div>
-          </div>
-        </v-col>
-      </v-row>
-    </div>
-    <div class="progressBar">
-      <div
-        class="progressLineFirst"
-        :style="'width: ' + getCurrentWidth() + '%'"
-      />
-      <div
-        class="progressLineSecond"
-        :style="'width: ' + (100 - getCurrentWidth()) + '%'"
-      />
+          </v-col>
+        </v-row>
+      </div>
+      <div class="progressBar">
+        <div
+          class="progressLineFirst"
+          :style="'width: ' + getCurrentWidth() + '%'"
+        />
+        <div
+          class="progressLineSecond"
+          :style="'width: ' + (100 - getCurrentWidth()) + '%'"
+        />
+      </div>
     </div>
     <div class="content-wrapper">
       <div
         v-if="currentStep === 0 || currentStep === 1"
         class="content-firstStep"
       >
-        <div>
+        <v-container>
           <div class="content-blocks-wrapper">
             <div class="content-block content-block__first">
               <div class="left-block">
@@ -247,6 +252,7 @@
               <v-btn
                 color="primary"
                 style="width: 123px"
+                :disabled="!program.companyName || !program.logo || !program.bgcolor"
                 @click="updateCompany()"
               >
                 Далее
@@ -259,7 +265,7 @@
               </v-btn>
             </div>
           </div>
-        </div>
+        </v-container>
       </div>
 
       <div
@@ -345,6 +351,7 @@
                 </div>
                 <div
                   v-for="(item, index) in shops"
+                  :key="index"
                   class="content-block__shop complete-shop"
                 >
                   <div class="complete-shop__header">
@@ -394,6 +401,7 @@
                   <div class="complete-shop__content shop-content">
                     <div
                       v-for="(worktime, itemid) in item.workTimes"
+                      :key="itemid + 1000"
                       class="shop-content__first"
                     >
                       <div class="workdays body-m-regular">
@@ -444,7 +452,7 @@
                   </div>
                 </div>
                 <div
-                  v-if="newShopActive"
+                  v-if="newShopActive || newShopEdit"
                   class="content-block__shop shop-card"
                 >
                   <div class="shop-card__name">
@@ -466,6 +474,8 @@
                       style="width: 380px;"
                       item-text="name"
                       item-value="id"
+                      aria-autocomplete="none"
+                      autocomplete="new-street-city"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -514,6 +524,8 @@
                       style="width: 380px"
                       item-text="name"
                       item-value="pos"
+                      aria-autocomplete="none"
+                      autocomplete="new-street-address"
                       @change="generate(newShop.address)"
                     >
                       <template slot="prepend-inner">
@@ -754,7 +766,6 @@ line-height: 17px;"
                   <v-btn
                     color="primary"
                     style="width: 123px"
-
                     @click="currentStep = 3"
                   >
                     Далее
@@ -1046,6 +1057,7 @@ line-height: 17px;"
     directives: { mask },
     data () {
       return {
+        newShopEdit: false,
         resultAdr: '',
         addresses: [],
         cities: [],
@@ -1229,19 +1241,24 @@ line-height: 17px;"
       this.changeColor(this.program.bgcolor[0])
       const cities = await ApiService.get('/api-cabinet/company/shops/city/list')
       this.cities = cities
-      // console.log('cities', cities)
+    // console.log('cities', cities)
     },
     async created () {
       this.changeColor(this.program.bgcolor[0])
     },
     methods: {
+      goToPrevent () {
+        if (this.currentStep <= 1) {
+          this.$router.push('/dashboard')
+        } else this.currentStep -= 1
+      },
       deleteShop (shop) {
         const index = this.shops.findIndex(item => item.name === shop.name)
         this.shops.splice(index, 1)
       },
       editShop (shop) {
         this.newShop = shop
-        this.newShopActive = true
+        this.newShopEdit = true
         this.deleteShop(shop)
       },
       getSelectedDays (array) {
@@ -1372,6 +1389,10 @@ line-height: 17px;"
         return array
       },
       cancelShop () {
+        if (this.newShopEdit) {
+          this.shops.push(this.newShop)
+          this.newShopEdit = false
+        }
         this.newShopActive = false
         this.newShop = {
           name: '',
@@ -1449,13 +1470,13 @@ line-height: 17px;"
           mask = 0
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#2A2A34'
-          // console.log('color', this.program.bgcolor[1])
+        // console.log('color', this.program.bgcolor[1])
         } else {
           alpha = 0.1
           mask = 255
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#FFFFFF'
-          // console.log('color', this.program.bgcolor[1])
+        // console.log('color', this.program.bgcolor[1])
         }
       },
       changeStep (step) {
@@ -1512,6 +1533,14 @@ line-height: 17px;"
   }
 </script>
 <style lang="sass">
+.sticky
+  top: 0
+  z-index: 200
+  background-color: #ffffff
+  margin: 0px -34px
+  position: fixed
+  width: 100%
+
 .classMarker
   display: flex
   align-self: center
@@ -1637,8 +1666,8 @@ line-height: 17px;"
                 padding: 16px 5px 12px 7px
                 &__colorchange
                   .iconify
-                    width: 21px
-                    height: 21px
+                  width: 21px
+                  height: 21px
               .card-bottomline
                 position: relative
                 z-index: 3
@@ -1821,19 +1850,19 @@ line-height: 17px;"
                   color: #B5B5C4 !important
         &__name
           .v-input.theme--light.v-text-field.v-text-field--is-booted
-            .v-input__control
-              .v-input__slot
-                input
-                  color: #B5B5C4
+          .v-input__control
+            .v-input__slot
+              input
+                color: #B5B5C4
 
         &__city
           &_select
             .v-input__control
-              .v-select__slot
-                .v-input__append-inner
-                  .v-input__icon.v-input__icon--append
-                    .v-icon
-                      color: red !important
+            .v-select__slot
+              .v-input__append-inner
+                .v-input__icon.v-input__icon--append
+                  .v-icon
+                    color: red !important
 
         &__input
           margin-top: 16px
@@ -1843,9 +1872,9 @@ line-height: 17px;"
 
         &__work
           .workdays
-            &__title
-              color: #2A2A34
-              margin-bottom: 12px
+          &__title
+            color: #2A2A34
+            margin-bottom: 12px
           .work-block-wrapper
             display: flex
             flex-direction: row
