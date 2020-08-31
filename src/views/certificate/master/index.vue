@@ -5,7 +5,7 @@
       no-gutters
     >
       <v-col>
-        <v-row class="cert-stepper-row">
+        <v-row class="cert-stepper-row" no-gutters>
           <base-stepper
             v-model="currentStep"
             :items="stepList"
@@ -162,10 +162,13 @@
 @import '@/styles/variables.scss';
 
 .cert-stepper-row {
-  position: fixed;
+  position: sticky;
+  top: 0;
   width: 100%;
-  margin: $page-content-padding-disable;
-  padding: $page-content-padding;
+  margin-top: -$page-content-padding-size;
+  padding-top: $page-content-padding-size;
+  // margin: $page-content-padding-disable;
+  // padding: $page-content-padding;
   background: $material-light-backgroung-color;
   z-index: 200;
 

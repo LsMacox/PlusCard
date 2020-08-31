@@ -2,8 +2,9 @@
   <v-row no-gutters>
     <v-col>
       <v-row
-        align="center" 
-                     
+        align="center"
+        class="stepper-header"
+        no-gutters
       >
         <v-col cols="3">
           <v-btn
@@ -37,7 +38,10 @@
         </v-col>
       </v-row>
 
-      <v-row class="stepper-progress-bar" no-gutters >
+      <v-row
+        class="stepper-progress-bar"
+        no-gutters
+      >
         <div
           class="progressLineFirst"
           :style="'width: ' + getCurrentWidth() + '%'"
@@ -121,22 +125,30 @@
     },
   }
 </script>
-<style lang="sass" scoped>
-@import '@/styles/variables.scss'
+<style lang="scss" scoped>
+@import "@/styles/variables.scss";
 
-.stepper-progress-bar
-    display: flex
-    flex-direction: row
-    margin-top: 39px
-    margin-left: -$page-content-padding-size
+.stepper-header {
+  .col {
+    padding: 6px 0px;
+  }
+}
+.stepper-progress-bar {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  margin-left: -$page-content-padding-size;
+  margin-right: -$page-content-padding-size;
 
-    .progressLineFirst
-      height: 1px
-      border-radius: 0 100px 100px 0
-      background: #4776E6
+  .progressLineFirst {
+    height: 1px;
+    border-radius: 0 100px 100px 0;
+    background: #4776e6;
+  }
 
-    .progressLineSecond
-      height: 1px
-      background-color: #F2F2F7
-
+  .progressLineSecond {
+    height: 1px;
+    background-color: #f2f2f7;
+  }
+}
 </style>
