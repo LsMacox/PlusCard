@@ -9,27 +9,8 @@
         .v-input__slot{
             .v-select__slot {
                 .v-select__selections{
-                    padding: 4px 0px;
-                    min-height: 53px;
-                }
-                .v-input__append-inner{
-                    margin: auto;
-                }
-            }
-        }
-    }
-}
-
-.v-input.v-select.v-input--dense {
-    &.v-select--chips{
-        @import './chips-dense.scss';
-    }
-    .v-input__control{
-        .v-input__slot{
-            .v-select__slot {
-                .v-select__selections{
-                    padding: 4px 0px;
-                    min-height: 41px;
+                    padding: 0;
+                    min-height: 45px;
                 }
                 .v-input__append-inner{
                     margin: auto;
