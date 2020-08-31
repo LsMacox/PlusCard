@@ -1,57 +1,66 @@
 <template>
   <v-row no-gutters>
-    <v-col>
-      <v-row
-        align="center"
-        class="stepper-header"
-        no-gutters
-      >
-        <v-col cols="3">
-          <v-btn
-            color="secondary"
-            :text="true"
-            :ripple="false"
-            @click="onBackClick"
-          >
-            <v-icon>mdi-arrow-left</v-icon>Назад
-          </v-btn>
-        </v-col>
-        <v-col cols="9">
-          <v-row class="stepper">
-            <template v-for="(item, index) in items">
-              <div
-                :key="'div' +index"
-                class="stepper-block first-step body-l-semibold"
-                :style="'color: ' + getCurrentColor(index)"
-              >
-                {{ item.title }}
-              </div>
-              <v-icon
-                v-if="index+1<items.length"
-                :key="'icon'+index"
-                class="stepper__icon"
-              >
-                mdi-chevron-right
-              </v-icon>
-            </template>
-          </v-row>
-        </v-col>
-      </v-row>
+    <v-row
+      class="stepper-row"
+      no-gutters
+    >
+      <v-col>
+        <v-row
+          align="center"
+          class="stepper-header"
+          no-gutters
+        >
+          <v-col cols="3">
+            <v-btn
+              color="secondary"
+              :text="true"
+              :ripple="false"
+              @click="onBackClick"
+            >
+              <v-icon>mdi-arrow-left</v-icon>Назад
+            </v-btn>
+          </v-col>
+          <v-col cols="9">
+            <v-row class="stepper">
+              <template v-for="(item, index) in items">
+                <div
+                  :key="'div' +index"
+                  class="stepper-block first-step body-l-semibold"
+                  :style="'color: ' + getCurrentColor(index)"
+                >
+                  {{ item.title }}
+                </div>
+                <v-icon
+                  v-if="index+1<items.length"
+                  :key="'icon'+index"
+                  class="stepper__icon"
+                >
+                  mdi-chevron-right
+                </v-icon>
+              </template>
+            </v-row>
+          </v-col>
+        </v-row>
 
-      <v-row
-        class="stepper-progress-bar"
-        no-gutters
-      >
-        <div
-          class="progressLineFirst"
-          :style="'width: ' + getCurrentWidth() + '%'"
-        />
-        <div
-          class="progressLineSecond"
-          :style="'width: ' + (100 - getCurrentWidth()) + '%'"
-        />
-      </v-row>
-    </v-col>
+        <v-row
+          class="stepper-progress-bar"
+          no-gutters
+        >
+          <div
+            class="progressLineFirst"
+            :style="'width: ' + getCurrentWidth() + '%'"
+          />
+          <div
+            class="progressLineSecond"
+            :style="'width: ' + (100 - getCurrentWidth()) + '%'"
+          />
+        </v-row>
+      </v-col>
+    </v-row>
+
+    <v-row no-gutters>
+      <slot />
+    </v-row>
   </v-row>
 </template>
 
@@ -133,6 +142,20 @@
     padding: 6px 0px;
   }
 }
+
+.stepper-row {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  margin-top: -$page-content-padding-size;
+  padding-top: $page-content-padding-size;
+  // margin: $page-content-padding-disable;
+  // padding: $page-content-padding;
+  background: $material-light-backgroung-color;
+  z-index: 200;
+
+}
+
 .stepper-progress-bar {
   display: flex;
   flex-direction: row;
