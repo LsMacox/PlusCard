@@ -106,6 +106,7 @@ const actions = {
 const getters = {
   merchants: state => state.merchants,
   merchant: state => state.merchant,
+  merchant_id: state => state.merchant_id,
   device: state => state.device,
 }
 
