@@ -89,7 +89,6 @@
                     placeholder="Выберите оператора"
                     item-text="label"
                     item-value="id"
-                    dense
                     outlined
                     multiple
                     chips
@@ -102,11 +101,19 @@
                   Клиенты
                 </div>
                 <div>
-                  <input
+                  <v-autocomplete
                     v-model="filter.client"
-                    class="app__popover-content-input"
+                    :loading="loading"
+                    :items="foundClients"
+                    :search-input.sync="searchClient"
                     placeholder="Начните вводить имя клиента"
-                  >
+                    item-text="label"
+                    item-value="id"
+                    outlined
+                    multiple
+                    chips
+                    deletable-chips
+                  />
                 </div>
               </v-col>
             </v-row>
@@ -123,14 +130,24 @@
       return {
         filter: null,
         show: false,
+        searchClient: null,
+        loading: false,
       }
     },
     computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
       filterStore () {
         return this.$store.getters['widget/filter/filter']
       },
       filterDefault () {
         return this.$store.getters['widget/filter/filterDefault']
+      },
+      foundClients () {
+        const clients = this.$store.getters['widget/filter/foundClients']
+        if (clients && clients[0] && clients[0].children) return clients[0].children
+        return []
       },
       operators () {
         const operators = this.$store.getters['widget/operators/operators']
@@ -152,6 +169,9 @@
         } else {
           this.filter = Object.assign({}, this.filterDefault)
         }
+      },
+      searchClient (v) {
+        v && v !== this.filter.client && this.querySearchClient(v)
       },
     },
     created () {
@@ -177,6 +197,19 @@
           this.filter[field].splice(index, 1)
         }
       },
+      async querySearchClient (search) {
+        if (search.length >= 3) {
+          this.loading = true
+          console.log(search)
+          const item = {
+            program_id: this.program.id,
+            search,
+          }
+
+          await this.$store.dispatch('widget/filter/foundClients', item)
+          this.loading = false
+        }
+      },
       close () {
         this.show = false
       },
@@ -188,112 +221,112 @@
   }
 </script>
 
-<style lang="sass" scoped>
-.app__popover
-  position: relative
+<style lang="scss" scoped>
+.app__popover {
+  position: relative;
 
-  .app__popover-block
-    position: absolute
-    top: 0
-    left: 0
-    width: 100%
-    background: #FFFFFF
-    border: 1px solid #E8E8ED
-    box-sizing: border-box
-    box-shadow: 0px 12px 24px rgba(88, 93, 106, 0.1)
-    border-radius: 10px
-    z-index: 1000
+  .app__popover-block {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #E8E8ED;
+    box-sizing: border-box;
+    box-shadow: 0px 12px 24px rgba(88, 93, 106, 0.1);
+    border-radius: 10px;
+    z-index: 1000;
 
-    .app__popover-content
-      padding: 8px 20px
+    .app__popover-content {
+      padding: 8px 20px;
 
-      .app__popover-content-header
-        margin-bottom: 12px
-        font-style: normal
-        font-weight: 600
-        font-size: 15px
-        line-height: 21px
-        letter-spacing: 0.1px
-        color: #2A2A34
+      .app__popover-content-header {
+        margin-bottom: 4px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 21px;
+        letter-spacing: 0.1px;
+        color: #2A2A34;
+      }
 
-      .app__popover-content-input
-        width: 100%
-        outline: none !important
-        padding: 11px 12px
-        font-style: normal
-        font-weight: 500
-        font-size: 13px
-        line-height: 17px
-        color: #9191A1
-        border: 1px solid #D7D7E0
-        box-sizing: border-box
-        border-radius: 10px
+      .app__popover-content-chip {
+        display: inline-block;
+        margin: 8px 8px 0 0;
+        padding: 10px 12px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 13px;
+        line-height: 17px;
+        color: #9191A1;
+        background: #F2F2F7;
+        border-radius: 8px;
+        cursor: pointer;
+      }
 
-      .app__popover-content-chip
-        display: inline-block
-        margin-right: 8px
-        padding: 10px 12px
-        font-style: normal
-        font-weight: 600
-        font-size: 13px
-        line-height: 17px
-        color: #9191A1
-        background: #F2F2F7
-        border-radius: 8px
-        cursor: pointer
+      .app__popover-content-chip-active {
+        background: #EBF1FF;
+        color: #4776E6;
+      }
 
-      .app__popover-content-chip-active
-        background: #EBF1FF
-        color: #4776E6
+      .app__popover-content-checkbox {
+        display: inline-block;
+        margin-right: 20px;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 15px;
+        line-height: 21px;
+        color: #9191A1;
 
-      .app__popover-content-checkbox
-        display: inline-block
-        margin-right: 20px
-        font-style: normal
-        font-weight: 500
-        font-size: 15px
-        line-height: 21px
-        color: #9191A1
+        input {
+          display: inline-block;
+          margin-right: 11px;
+        }
 
-        input
-          display: inline-block
-          margin-right: 11px
+        div {
+          display: inline-block;
+          position: relative;
+          top: -1px;
+        }
+      }
+    }
+  }
+}
+.app__popover-block-input {
+  display: flex;
+  align-items: center;
+  min-height: 45px;
+  padding: 6px 12px;
+  color: #9191A1;
+  border-bottom: 1px solid #D7D7E0;
+  box-sizing: border-box;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
-        div
-          display: inline-block
-          position: relative
-          top: -1px
+  .app__popover-block-input-field {
+    display: block;
+    width: 100%;
+    outline: none !important;
+    padding: 0 10px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+  }
+}
 
-.app__popover-block-input
-  display: flex
-  align-items: center
-  padding: 11px 12px
-  color: #9191A1
-  border-bottom: 1px solid #D7D7E0
-  box-sizing: border-box
-  border-top-left-radius: 10px
-  border-top-right-radius: 10px
+.app__popover-block-icon-close {
+  color: #B5B5C4 !important;
+  cursor: pointer;
+}
 
-  .app__popover-block-input-field
-    display: block
-    width: 100%
-    outline: none !important
-    padding: 0 10px
-    font-style: normal
-    font-weight: 500
-    font-size: 13px
-    line-height: 17px
-
-.app__popover-block-icon-close
-  color: #B5B5C4 !important
-  cursor: pointer
-
-.app__popover-block-icon-check
-  width: 42px !important
-  height: 28px !important
-  position: relative
-  top: -1px
-  margin-left: 5px
-  color: #4776E6 !important
-  cursor: pointer
+.app__popover-block-icon-check {
+  width: 42px !important;
+  height: 28px !important;
+  position: relative;
+  top: -1px;
+  margin-left: 5px;
+  color: #4776E6 !important;
+  cursor: pointer;
+}
 </style>
