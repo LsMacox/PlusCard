@@ -95,18 +95,22 @@
       >
         <v-list-group
           id="company_group_select"
-          :value="expandedSelect"
-          @click="pressClick"
+          ref="programListGroup"
+          :value="false"
+          @click="setExpandProgramList"
         >
+          <template v-slot:activator>
+            <v-list-item-title>{{ program.name }}</v-list-item-title>
+          </template>
           <template v-slot:appendIcon>
-            <div v-show="!activeGroup">
+            <div v-show="!expandProgramList">
               <span
                 class="iconify"
                 data-icon="entypo:chevron-down"
                 data-inline="false"
               />
             </div>
-            <div v-show="activeGroup">
+            <div v-show="expandProgramList">
               <span
                 class="iconify"
                 data-icon="entypo:chevron-up"
@@ -114,16 +118,10 @@
               />
             </div>
           </template>
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>{{ program.name }}</v-list-item-title>
-            </v-list-item-content>
-          </template>
 
           <v-list-item
-            v-for="(item, i) in programs.filter(item => item.id != program.id)"
+            v-for="(item, i) in programs"
             :key="i"
-            :ripple="false"
             @click="changeCompany(item)"
           >
             <v-list-item-title v-text="item.name" />
@@ -146,34 +144,35 @@
       {{ selectedCompanyMini }}
     </div>
     <v-divider style="border-color: #F2F2F7;" />
-    <v-list
-      expand
-      nav
-      class="sidebarMenu"
-    >
-      <!-- Style cascading bug  -->
-      <!-- https://github.com/vuetifyjs/vuetify/pull/8574 -->
-      <div />
-      <v-list-item-group color="primary">
-        <v-list-item
-          v-for="(item, index) in items"
-          :key="index"
-          :class="{ 'v-list-item--active': $route.path.includes(item.to) }"
-          @click="$router.push(item.to)"
-        >
-          <v-list-item-icon>
-            <span v-html="item.icon" />
-          </v-list-item-icon>
-          <v-list-item-title style="cursor:pointer;">
-            {{ item.title }}
-          </v-list-item-title>
-        </v-list-item>
-      </v-list-item-group>
-      <!-- Style cascading bug  -->
-      <!-- https://github.com/vuetifyjs/vuetify/pull/8574 -->
-      <div />
-    </v-list>
-    <template v-slot:append>
+    <div class="app__drawer-scrollable-block">
+      <v-list
+        expand
+        nav
+        class="sidebarMenu"
+      >
+        <!-- Style cascading bug  -->
+        <!-- https://github.com/vuetifyjs/vuetify/pull/8574 -->
+        <div />
+        <v-list-item-group color="primary">
+          <v-list-item
+            v-for="(item, index) in items"
+            :key="index"
+            :class="{ 'v-list-item--active': $route.path.includes(item.to) }"
+            @click="$router.push(item.to)"
+          >
+            <v-list-item-icon>
+              <span v-html="item.icon" />
+            </v-list-item-icon>
+            <v-list-item-title style="cursor:pointer;">
+              {{ item.title }}
+            </v-list-item-title>
+          </v-list-item>
+        </v-list-item-group>
+        <!-- Style cascading bug  -->
+        <!-- https://github.com/vuetifyjs/vuetify/pull/8574 -->
+        <div />
+      </v-list>
+
       <v-list-item style="margin: 0">
         <v-list-item-avatar
           height="24px"
@@ -263,23 +262,16 @@
           </v-icon>
         </v-list-item-icon>
       </v-list-item>
-    </template>
+    </div>
   </v-navigation-drawer>
 </template>
 
 <script>
   export default {
     name: 'DashboardCoreDrawer',
-    props: {
-      expandOnHover: {
-        type: Boolean,
-        default: false,
-      },
-    },
     data: () => ({
-      expandedSelect: false,
+      expandProgramList: false,
       selectedCompany: 'Management',
-      activeGroup: false,
       admins: [
         ['Management', 'people_outline'],
         ['Settings', 'settings'],
@@ -368,7 +360,7 @@
         return this.$store.getters['profile/profile/profile']
       },
       programs () {
-        return this.$store.getters['company/program/programs']
+        return this.$store.getters['company/program/programs'].filter(item => item.id !== this.program.id)
       },
       program: {
         get () {
@@ -385,17 +377,16 @@
 
     },
     methods: {
+      setExpandProgramList () {
+        this.expandProgramList = !this.expandProgramList
+      },
       goToMaster () {
         this.$router.push('/master')
-        this.expandedSelect = false
+        this.$refs.programListGroup.click()
       },
       changeCompany (item) {
-        this.expandedSelect = false
         this.program = Object.assign({}, item)
-      },
-      pressClick (e) {
-        this.expandedSelect = !this.expandedSelect
-        this.activeGroup = !this.activeGroup
+        this.$refs.programListGroup.click()
       },
       mapItem (item) {
         return {
@@ -421,6 +412,11 @@
 #core-navigation-drawer
   .v-navigation-drawer__content
     overflow-y: hidden
+
+    // scrollable block
+    .app__drawer-scrollable-block
+      height: calc(100vh - 185px)
+      overflow-y: auto
 
     .v-list-group__header.v-list-item--active:before
       opacity: .24
