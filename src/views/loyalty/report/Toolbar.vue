@@ -84,50 +84,59 @@
   }
 </script>
 
-<style lang="sass" scoped>
-.loyalty-toolbar
-  display: flex
-  align-items: center
-  margin: 0
+<style lang="scss" scoped>
+.loyalty-toolbar {
+  display: flex;
+  align-items: center;
+  margin: 0;
 
-  .loyalty-toolbar-name
-    font-style: normal
-    font-weight: bold
-    font-size: 22px
-    line-height: 26px
-    letter-spacing: -0.2px
-    color: #2A2A34
+  .loyalty-toolbar-name {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 22px;
+    line-height: 26px;
+    letter-spacing: -0.2px;
+    color: #2A2A34;
+    max-width: 35%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-  .loyalty-toolbar-period
-    display: flex
-    align-items: flex-end
-    margin-left: 12px
-    font-style: normal
-    font-weight: 600
-    font-size: 17px
-    line-height: 22px
-    letter-spacing: 0.4px
-    color: #4776E6
-    cursor: pointer
+  .loyalty-toolbar-period {
+    display: flex;
+    align-items: flex-end;
+    margin-left: 12px;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 22px;
+    letter-spacing: 0.4px;
+    color: #4776E6;
+    cursor: pointer;
 
-    .loyalty-toolbar-period-chevron
-      font-size: 24px
-      position: relative
-      top: 4px
+    .loyalty-toolbar-period-chevron {
+      font-size: 24px;
+      position: relative;
+      top: 4px;
+    }
+  }
 
-  .loyalty-toolbar-text-btn
-    position: relative
-    top: -2px
-    margin-right: 2px
-    font-style: normal
-    font-weight: 600
-    font-size: 13px
-    line-height: 17px
-    color: #4776E6
-    cursor: pointer
+  .loyalty-toolbar-text-btn {
+    position: relative;
+    top: -2px;
+    margin-right: 2px;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+    color: #4776E6;
+    cursor: pointer;
 
-    .loyalty-toolbar-text-btn-icon
-      position: relative
-      top: 4px
-      font-size: 18px
+    .loyalty-toolbar-text-btn-icon {
+      position: relative;
+      top: 4px;
+      font-size: 18px;
+    }
+  }
+}
 </style>

@@ -1,11 +1,14 @@
+import ApiService from '@/api/api-client'
+
 const getDefaultState = () => {
     return {
         startPeriod: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
         endPeriod: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
-        filter: { enable: false, pbr: [], bu: [], client: '', operator: [] },
+        filter: { enable: false, pbr: [], bu: [], client: [], operator: [] },
         // startPeriodFilter: localStorage.getItem('startPeriodFilter') ? localStorage.getItem('startPeriodFilter') : new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
         startPeriodFilter: localStorage.getItem('startPeriodFilter') ? localStorage.getItem('startPeriodFilter') : new Date(Date.now() - 7776000000 - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
         endPeriodFilter: localStorage.getItem('endPeriodFilter') ? localStorage.getItem('endPeriodFilter') : new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+        foundClients: [],
     }
 }
 
@@ -35,6 +38,9 @@ const mutations = {
         state.endPeriodFilter = payload
         localStorage.setItem('endPeriodFilter', payload)
     },
+    foundClients (state, payload) {
+        state.foundClients = payload
+    },
 }
 
 const actions = {
@@ -55,6 +61,12 @@ const actions = {
         if (startPeriod) commit('startPeriodFilter', startPeriod)
         if (endPeriod) commit('endPeriodFilter', endPeriod)
     },
+    async foundClients ({ commit }, item) {
+        const res = await ApiService.get(`/api-cabinet/widget/findClient?program_id=${item.program_id}&client=${item.search}`)
+        console.log('/api-cabinet/widget/findClient')
+        console.log(res)
+        commit('foundClients', res)
+    },
 }
 
 const getters = {
@@ -67,6 +79,7 @@ const getters = {
     },
     startPeriodFilter: (state) => state.startPeriodFilter,
     endPeriodFilter: (state) => state.endPeriodFilter,
+    foundClients: (state) => state.foundClients,
 }
 
 export default {

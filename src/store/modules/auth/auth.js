@@ -21,8 +21,8 @@ const state = getDefaultState()
 
 const mutations = {
   RESET_STATE: (state) => Object.assign(state, getDefaultState()),
-  // eslint-disable-next-line no-return-assign
-  SET_DEVICE: (state, payload) => state.device = payload,
+  SET_DEVICE: (state, payload) => { state.device = payload },
+  SET_MERCHANT_ID: (state, payload) => { state.merchant_id = payload },
   SET_AUTH: (state, payload) => {
     VueSession.destroy()
     if (payload) {
@@ -44,7 +44,9 @@ const mutations = {
 
 const actions = {
 
-  async loadingApp ({ dispatch }) {
+  async loadingApp ({ dispatch, commit }) {
+    commit('SET_MERCHANT_ID', VueSession.get('merchant_id'))
+    // todo load merchant info
     await dispatch('profile/profile/read', null, { root: true })
     await dispatch('company/program/list', null, { root: true })
   },
@@ -104,6 +106,7 @@ const actions = {
 const getters = {
   merchants: state => state.merchants,
   merchant: state => state.merchant,
+  merchant_id: state => state.merchant_id,
   device: state => state.device,
 }
 

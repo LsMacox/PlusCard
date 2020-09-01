@@ -27,6 +27,6 @@
     position: relative    
     padding: $page-content-padding
     height: 100%
-    overflow: hidden
+    // overflow: hidden
     box-shadow: 0px 0px 44px rgba(19, 31, 95, 0.13)
 </style>
