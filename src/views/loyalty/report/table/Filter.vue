@@ -3,52 +3,133 @@
     no-gutters
   >
     <v-col>
-      <div class="app__popover">
+      <div class="app__filter">
         <div
-          class="app__popover-block-input"
+          class="app__filter-block-input"
           style="border: 1px solid #D7D7E0; border-radius: 10px;"
         >
-          <v-icon>
+          <v-icon
+            v-show="emptyFastFilter"
+            class="app__filter-block-input-icon-prepend"
+          >
             $iconify_search-outlined
           </v-icon>
+
+          <!--операции-->
+          <div
+            v-for="(item, i) in fastFilter.pbr"
+            :key="i"
+            class="app__filter-chip"
+          >
+            <div class="app__filter-chip-content">
+              {{ item.label }}
+              <v-icon
+                class="app__filter-chip-icon-append"
+                @click=""
+              >
+                $iconify_jam-close
+              </v-icon>
+            </div>
+          </div>
+
+          <!--валюты-->
+          <div
+            v-for="(item, i) in fastFilter.bu"
+            :key="i"
+            class="app__filter-chip"
+          >
+            <div class="app__filter-chip-content">
+              {{ item.label }}
+              <v-icon
+                class="app__filter-chip-icon-append"
+                @click=""
+              >
+                $iconify_jam-close
+              </v-icon>
+            </div>
+          </div>
+
+          <!--операторы-->
+          <div
+            v-for="(item, i) in fastFilter.operator"
+            :key="i"
+            class="app__filter-chip"
+          >
+            <div class="app__filter-chip-content">
+              {{ item.label }}
+              <v-icon
+                class="app__filter-chip-icon-append"
+                @click=""
+              >
+                $iconify_jam-close
+              </v-icon>
+            </div>
+          </div>
+
+          <!--клиенты-->
+          <div
+            v-for="(item, i) in fastFilter.client"
+            :key="i"
+            class="app__filter-chip"
+          >
+            <div class="app__filter-chip-content">
+              {{ item.label }}
+              <v-icon
+                class="app__filter-chip-icon-append"
+                @click=""
+              >
+                $iconify_jam-close
+              </v-icon>
+            </div>
+          </div>
+
           <input
-            class="app__popover-block-input-field"
+            class="app__filter-block-input-field"
             placeholder="Поиск и фильтр"
             @focus="switchShow"
           >
+          <v-icon
+            v-show="!emptyFastFilter"
+            class="app__filter-block-input-icon-append"
+            click=""
+          >
+            $iconify_chrome-close
+          </v-icon>
         </div>
         <div
           v-show="show"
-          class="app__popover-block"
+          class="app__filter-block"
         >
           <div
-            class="app__popover-block-input"
+            class="app__filter-block-input"
           >
-            <v-icon>
+            <v-icon
+              class="app__filter-block-input-icon-prepend"
+            >
               $iconify_search-outlined
             </v-icon>
             <input
               ref="search"
-              class="app__popover-block-input-field"
+              class="app__filter-block-input-field"
               placeholder="Поиск и фильтр"
             >
             <v-icon
-              class="app__popover-block-icon-close"
+              class="app__filter-block-input-icon-append app__filter-block-icon-close"
               @click="close()"
             >
               $iconify_chrome-close
             </v-icon>
             <v-icon
-              class="app__popover-block-icon-check"
+              class="app__filter-block-input-icon-append app__filter-block-icon-check"
               @click="apply()"
             >
               $iconify_bx-check
             </v-icon>
           </div>
-          <div class="app__popover-content">
+          <div class="app__filter-content">
             <v-row>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Операции {{ filter }}<br>
                   {{ operators }}
                 </div>
@@ -64,7 +145,7 @@
             </v-row>
             <v-row>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Валюта
                 </div>
                 <div
@@ -79,7 +160,7 @@
             </v-row>
             <v-row>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Операторы
                 </div>
                 <div>
@@ -97,7 +178,7 @@
                 </div>
               </v-col>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Клиенты
                 </div>
                 <div>
@@ -129,6 +210,12 @@
     data () {
       return {
         filter: null,
+        fastFilter: {
+          pbr: [],
+          bu: [],
+          operator: [],
+          client: [],
+        },
         show: false,
         searchClient: null,
         loading: false,
@@ -158,6 +245,13 @@
       units () {
         return this.$store.getters['company/bonus_units/bonusUnits']
       },
+      emptyFastFilter () {
+        if (this.fastFilter.pbr.length ||
+          this.fastFilter.bu.length ||
+          this.fastFilter.operator.length ||
+          this.fastFilter.client.length) return false
+        return true
+      },
     },
     watch: {
       show (v) {
@@ -181,8 +275,8 @@
         this.$refs.search.focus()
       },
       getFilterClass (field, item) {
-        if (this.filter && this.filter[field].includes(item.id)) return 'app__popover-content-chip app__popover-content-chip-active'
-        return 'app__popover-content-chip'
+        if (this.filter && this.filter[field].includes(item.id)) return 'app__filter-content-chip app__filter-content-chip-active'
+        return 'app__filter-content-chip'
       },
       setFilter (field, item) {
         const index = this.filter[field].indexOf(item.id)
@@ -191,6 +285,22 @@
         } else {
           this.filter[field].splice(index, 1)
         }
+      },
+      setFastFilter (filter) {
+        console.log('setFastFilter')
+        console.log(filter)
+        filter.pbr.forEach(item => {
+          if (!this.fastFilter.pbr.includes(item)) this.fastFilter.pbr.push({ id: item, label: `Операция: ${item}` })
+        })
+        filter.bu.forEach(item => {
+          if (!this.fastFilter.bu.includes(item)) this.fastFilter.bu.push({ id: item, label: `Валюта: ${item}` })
+        })
+        filter.operator.forEach(item => {
+          if (!this.fastFilter.operator.includes(item)) this.fastFilter.operator.push({ id: item, label: `Оператор: ${item}` })
+        })
+        filter.client.forEach(item => {
+          if (!this.fastFilter.client.includes(item)) this.fastFilter.client.push({ id: item, label: `Клиент: ${item}` })
+        })
       },
       async querySearchClient (search) {
         if (search.length >= 3) {
@@ -209,6 +319,7 @@
       },
       apply () {
         this.$store.commit('widget/filter/filter', this.filter)
+        this.setFastFilter(this.filter)
         this.show = false
       },
     },
@@ -216,10 +327,10 @@
 </script>
 
 <style lang="scss" scoped>
-.app__popover {
+.app__filter {
   position: relative;
 
-  .app__popover-block {
+  .app__filter-block {
     position: absolute;
     top: 0;
     left: 0;
@@ -231,10 +342,10 @@
     border-radius: 10px;
     z-index: 1000;
 
-    .app__popover-content {
+    .app__filter-content {
       padding: 8px 20px;
 
-      .app__popover-content-header {
+      .app__filter-content-header {
         margin-bottom: 4px;
         font-style: normal;
         font-weight: 600;
@@ -244,7 +355,7 @@
         color: #2A2A34;
       }
 
-      .app__popover-content-chip {
+      .app__filter-content-chip {
         display: inline-block;
         margin: 8px 8px 0 0;
         padding: 10px 12px;
@@ -258,12 +369,12 @@
         cursor: pointer;
       }
 
-      .app__popover-content-chip-active {
+      .app__filter-content-chip-active {
         background: #EBF1FF;
         color: #4776E6;
       }
 
-      .app__popover-content-checkbox {
+      .app__filter-content-checkbox {
         display: inline-block;
         margin-right: 20px;
         font-style: normal;
@@ -286,21 +397,29 @@
     }
   }
 }
-.app__popover-block-input {
+.app__filter-block-input {
   display: flex;
   align-items: center;
   min-height: 45px;
-  padding: 6px 12px;
   color: #9191A1;
   border-bottom: 1px solid #D7D7E0;
   box-sizing: border-box;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
 
-  .app__popover-block-input-field {
+  .app__filter-block-input-icon-prepend {
+    margin: 6px 0 6px 12px;
+  }
+
+  .app__filter-block-input-icon-append {
+    margin: 6px 12px 6px 0;
+  }
+
+  .app__filter-block-input-field {
     display: block;
     width: 100%;
     outline: none !important;
+    margin: 6px 0;
     padding: 0 10px;
     font-style: normal;
     font-weight: 500;
@@ -309,18 +428,46 @@
   }
 }
 
-.app__popover-block-icon-close {
+.app__filter-block-icon-close {
   color: #B5B5C4 !important;
   cursor: pointer;
 }
 
-.app__popover-block-icon-check {
-  width: 42px !important;
+.app__filter-block-icon-check {
+  width: 30px !important;
   height: 28px !important;
   position: relative;
   top: -1px;
-  margin-left: 5px;
   color: #4776E6 !important;
   cursor: pointer;
+}
+
+.app__filter-chip {
+  display: inline-flex;
+  align-items: center;
+  background-color: #EBF1FF;
+  border-radius: 6px;
+  max-width: 100%;
+  margin: 3px;
+  padding: 0 6px 0 12px;
+  height: 37px;
+  white-space: nowrap;
+
+  .app__filter-chip-content {
+    align-items: center;
+    display: inline-flex;
+    height: 100%;
+    max-width: 100%;
+    color: #4776E6;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .app__filter-chip-icon-append {
+    margin: 0 0 0 6px;
+    color: #4776E6;
+  }
 }
 </style>
