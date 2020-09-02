@@ -160,20 +160,12 @@ export default new Router({
           name: 'ProgramCertificateMaster',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
-
         {
           path: '/account/certificates',
           component: () => import('@/views/account/Certificate'),
           name: 'certificates',
           meta: { title: 'Certificates', icon: 'certificates' },
         },
-        {
-          path: '/account/report',
-          component: () => import('@/views/client/LoyaltyReport'),
-          name: 'certificates',
-          meta: { title: 'Certificates', icon: 'certificates' },
-        },
-
       ],
     },
   ],

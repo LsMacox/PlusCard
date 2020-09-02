@@ -39,7 +39,21 @@ const mutations = {
         localStorage.setItem('endPeriodFilter', payload)
     },
     foundClients (state, payload) {
-        state.foundClients = payload
+        if (payload && payload[0] && payload[0].children) {
+            // объединяем массивы и удаляем дубли
+            const stateArr = Object.assign([], state.foundClients)
+            const arr = payload[0].children
+            // массив найденных клиентов
+            for (let i = 0; i < arr.length; i++) {
+                let find = false
+                // массив state
+                for (let j = 0; j < stateArr.length; j++) {
+                    if (arr[i].id === stateArr[j].id) find = true
+                }
+                if (!find) stateArr.push(arr[i])
+            }
+            state.foundClients = Object.assign([], stateArr)
+        }
     },
 }
 
