@@ -11,7 +11,7 @@
           :options="tableOptions"
           :single-expand="true"
           :expanded.sync="expanded"
-          item-key="bsid"
+          item-key="uuid"
           show-expand
           class="plus-table"
           hide-default-footer
@@ -244,7 +244,7 @@
       getValue (value) {
         value = Number(value)
         if (value >= 0) return `<span style="color: #00D15D;">+${value}</span>`
-        return `<span style="color: #EA4C2A;">-${value}</span>`
+        return `<span style="color: #EA4C2A;">${value}</span>`
       },
       getWord (number, words) {
         const cases = [2, 0, 1, 1, 1, 2]

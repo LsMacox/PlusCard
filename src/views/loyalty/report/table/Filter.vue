@@ -145,9 +145,7 @@
         return this.$store.getters['widget/filter/filterDefault']
       },
       foundClients () {
-        const clients = this.$store.getters['widget/filter/foundClients']
-        if (clients && clients[0] && clients[0].children) return clients[0].children
-        return []
+        return this.$store.getters['widget/filter/foundClients']
       },
       operators () {
         const operators = this.$store.getters['widget/operators/operators']
@@ -164,7 +162,6 @@
     watch: {
       show (v) {
         if (v) {
-          // this.filter = Object.assign({}, this.filterStore)
           this.filter = JSON.parse(JSON.stringify(this.filterStore))
         } else {
           this.filter = Object.assign({}, this.filterDefault)
@@ -184,12 +181,10 @@
         this.$refs.search.focus()
       },
       getFilterClass (field, item) {
-        // const filter = Object.assign({}, this.filter)
         if (this.filter && this.filter[field].includes(item.id)) return 'app__popover-content-chip app__popover-content-chip-active'
         return 'app__popover-content-chip'
       },
       setFilter (field, item) {
-        // const filter = Object.assign({}, this.filter)
         const index = this.filter[field].indexOf(item.id)
         if (index === -1) {
           this.filter[field].push(item.id)
@@ -205,7 +200,6 @@
             program_id: this.program.id,
             search,
           }
-
           await this.$store.dispatch('widget/filter/foundClients', item)
           this.loading = false
         }

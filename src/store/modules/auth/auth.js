@@ -22,6 +22,7 @@ const state = getDefaultState()
 const mutations = {
   RESET_STATE: (state) => Object.assign(state, getDefaultState()),
   SET_DEVICE: (state, payload) => { state.device = payload },
+  SET_MERCHANT: (state, payload) => { state.merchant = payload },
   SET_MERCHANT_ID: (state, payload) => { state.merchant_id = payload },
   SET_AUTH: (state, payload) => {
     VueSession.destroy()
@@ -44,9 +45,8 @@ const mutations = {
 
 const actions = {
 
-  async loadingApp ({ dispatch, commit }) {
-    commit('SET_MERCHANT_ID', VueSession.get('merchant_id'))
-    // todo load merchant info
+  async loadingApp ({ dispatch }) {
+    await dispatch('auth/merchant/read', null, { root: true })
     await dispatch('profile/profile/read', null, { root: true })
     await dispatch('company/program/list', null, { root: true })
   },
