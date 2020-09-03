@@ -51,6 +51,13 @@ const actions = {
     await dispatch('company/program/list', null, { root: true })
   },
 
+  async clearApp ({ commit }) {
+    await commit('auth/auth/RESET_STATE', null, { root: true })
+    await commit('profile/profile/RESET_STATE', null, { root: true })
+    await commit('company/program/RESET_STATE', null, { root: true })
+    await commit('widget/filter/RESET_STATE', null, { root: true })
+  },
+
   async InitDevice ({ commit }) {
     let murmur
     const options = {}
@@ -69,14 +76,16 @@ const actions = {
   },
 
   // logout
-  async logout ({ commit, state, dispatch }) {
+  async logout ({ dispatch, commit }) {
     try {
       await ApiService.post('/api-cabinet/logout')
     // eslint-disable-next-line no-useless-catch
     } catch (error) {
       throw error
     } finally {
+      router.push('/login')
       commit('SET_AUTH', null)
+      dispatch('clearApp')
     }
   },
 

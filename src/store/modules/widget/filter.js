@@ -2,12 +2,12 @@ import ApiService from '@/api/api-client'
 
 const getDefaultState = () => {
     return {
-        startPeriod: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
-        endPeriod: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+        startPeriod: new Date(Date.now()).toISOString(),
+        endPeriod: new Date(Date.now()).toISOString(),
+        startPeriodFilter: localStorage.getItem('startPeriodFilter') ? localStorage.getItem('startPeriodFilter') : new Date(Date.now()).toISOString(),
+        endPeriodFilter: localStorage.getItem('endPeriodFilter') ? localStorage.getItem('endPeriodFilter') : new Date(Date.now()).toISOString(),
+        period: localStorage.getItem('filterPeriod') ? JSON.parse(localStorage.getItem('filterPeriod')) : { name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
         filter: { enable: false, pbr: [], bu: [], client: [], operator: [] },
-        // startPeriodFilter: localStorage.getItem('startPeriodFilter') ? localStorage.getItem('startPeriodFilter') : new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
-        startPeriodFilter: localStorage.getItem('startPeriodFilter') ? localStorage.getItem('startPeriodFilter') : new Date(Date.now() - 7776000000 - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
-        endPeriodFilter: localStorage.getItem('endPeriodFilter') ? localStorage.getItem('endPeriodFilter') : new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
         foundClients: [],
     }
 }
@@ -26,9 +26,9 @@ const mutations = {
     endPeriod (state, payload) {
         state.endPeriod = payload
     },
-    filter (state, payload) {
-        state.filter = payload
-        localStorage.setItem('reportFilter', JSON.stringify(state.filter))
+    period (state, payload) {
+        state.period = payload
+        localStorage.setItem('filterPeriod', JSON.stringify(payload))
     },
     startPeriodFilter (state, payload) {
         state.startPeriodFilter = payload
@@ -37,6 +37,10 @@ const mutations = {
     endPeriodFilter (state, payload) {
         state.endPeriodFilter = payload
         localStorage.setItem('endPeriodFilter', payload)
+    },
+    filter (state, payload) {
+        state.filter = payload
+        localStorage.setItem('reportFilter', JSON.stringify(state.filter))
     },
     foundClients (state, payload) {
         // объединяем массивы и удаляем дубли
@@ -65,9 +69,6 @@ const actions = {
         }
     },
     async filterPeriod ({ commit }) {
-        // console.log('filterPeriod')
-        // console.log('localFilterStartPeriod', localStorage.getItem('startPeriodFilter'))
-        // console.log('localFilterEndPeriod', localStorage.getItem('endPeriodFilter'))
         const startPeriod = localStorage.getItem('startPeriodFilter')
         const endPeriod = localStorage.getItem('endPeriodFilter')
         if (startPeriod) commit('startPeriodFilter', startPeriod)
@@ -84,13 +85,14 @@ const actions = {
 const getters = {
     startPeriod: (state) => state.startPeriod,
     endPeriod: (state) => state.endPeriod,
+    startPeriodFilter: (state) => state.startPeriodFilter,
+    endPeriodFilter: (state) => state.endPeriodFilter,
     filter: (state) => state.filter,
     filterDefault: () => {
         const defaultState = getDefaultState()
         return defaultState.filter
     },
-    startPeriodFilter: (state) => state.startPeriodFilter,
-    endPeriodFilter: (state) => state.endPeriodFilter,
+    period: (state) => state.period,
     foundClients: (state) => state.foundClients,
 }
 

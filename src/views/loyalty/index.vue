@@ -35,11 +35,8 @@
       program () {
         return this.$store.getters['company/program/program']
       },
-      startPeriod () {
-        return this.$store.getters['widget/filter/startPeriodFilter']
-      },
-      endPeriod () {
-        return this.$store.getters['widget/filter/endPeriodFilter']
+      period () {
+        return this.$store.getters['widget/filter/period']
       },
       filter () {
         return this.$store.getters['widget/filter/filter']
@@ -52,13 +49,16 @@
       filter (v) {
         if (v) this.fetchData()
       },
+      period (v) {
+        if (v) this.fetchData()
+      },
     },
     created () {
       if (!this.loadingApp) {
         this.$store.dispatch('widget/filter/filter')
         this.$store.dispatch('widget/filter/filterPeriod')
         this.$store.dispatch('widget/operators/operators', this.program.id)
-        this.fetchData()
+        // this.fetchData()
       }
     },
     methods: {
@@ -66,11 +66,12 @@
         if (this.program != null && this.program.id) {
           const widget = {
             program_id: this.program.id,
-            start_period: this.startPeriod,
-            end_period: this.endPeriod,
+            start_period: this.period.start,
+            end_period: this.period.end,
             filter: this.filter,
           }
           // console.log('load_data', widget)
+          // console.log('load_data', this.period)
           this.loading = true
           await this.$store.dispatch('company/bonus_resources/GetActiveShortList', this.program.id)
           await this.$store.dispatch('company/bonus_units/loadBonusUnits', this.program.id)
