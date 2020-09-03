@@ -61,7 +61,7 @@
                 :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`"
               >
               <div>
-                <div class="cell-text">
+                <div class="cell-text-bold">
                   {{ item.client }}
                 </div>
                 <div
@@ -81,7 +81,7 @@
 
           <template v-slot:item.amount="{ item }">
             <div
-              class="cell-text"
+              class="cell-text-bold"
               v-html="getValue(item.value)"
             />
           </template>
@@ -90,7 +90,7 @@
             <div style="display: flex; align-items: center">
               <img
                 class="cell-avatar"
-                src="https://storage.yandexcloud.net/plusstorage/users/avatars/1db311620af449cf9aa354491e5310d4.jpg"
+                :src="(item.operator_avatar === 'system' || item.operator_avatar === 'external') ? require('@/assets/svg/plus_logo_sm.svg') : item.operator_avatar"
               >
               <div class="cell-text">
                 {{ item.operator }}
@@ -270,34 +270,48 @@
   }
 </script>
 
-<style lang="sass" scoped>
-.cell-text
-  font-style: normal
-  font-weight: 600
-  font-size: 13px
-  line-height: 17px
-  color: #2A2A34
+<style lang="scss" scoped>
+.cell-text {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 17px;
+  color: #2A2A34;
+}
 
-.cell-hint
-  margin-top: 4px
-  font-style: normal
-  font-weight: 600
-  font-size: 11px
-  line-height: 14px
-  color: #9191A1
+.cell-text-bold {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 17px;
+  color: #2A2A34;
+}
 
-.cell-avatar
-  margin-right: 8px
-  width: 25px
-  height: 25px
-  border-radius: 25px
+.cell-hint {
+  margin-top: 4px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 14px;
+  color: #9191A1;
+}
 
-.table-pagination-block
-  display: flex
-  align-items: center
-  .table-pagination-block-select
-    position: relative
-    top: 6px
-    left: 20px
-    width: 250px
+.cell-avatar {
+  margin-right: 8px;
+  width: 25px;
+  height: 25px;
+  border-radius: 25px;
+}
+
+.table-pagination-block {
+  display: flex;
+  align-items: center;
+
+  .table-pagination-block-select {
+    position: relative;
+    top: 6px;
+    left: 20px;
+    width: 250px;
+  }
+}
 </style>
