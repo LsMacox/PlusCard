@@ -72,8 +72,8 @@ export default {
         },
         async GetActiveShortList ({ commit }, id) {
           const response = await ApiService.get('/api-cabinet/program/bonus/resource/list/short?program_id=' + id)
-          console.log('GetActiveShortList')
-          console.log(response)
+          // console.log('GetActiveShortList')
+          // console.log(response)
           commit('activeBonusResourcesShort', response)
           return response
       },

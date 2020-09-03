@@ -364,7 +364,6 @@
       },
       program: {
         get () {
-          console.log(this.$store.getters['company/program/program'])
           return this.$store.getters['company/program/program']
         },
         set (v) {

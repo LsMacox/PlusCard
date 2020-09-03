@@ -36,7 +36,6 @@
         return this.$store.getters['company/program/program']
       },
       startPeriod () {
-        console.log('start', this.$store.getters['widget/filter/startPeriodFilter'])
         return this.$store.getters['widget/filter/startPeriodFilter']
       },
       endPeriod () {
@@ -71,7 +70,7 @@
             end_period: this.endPeriod,
             filter: this.filter,
           }
-          console.log('load_data', widget)
+          // console.log('load_data', widget)
           this.loading = true
           await this.$store.dispatch('company/bonus_resources/GetActiveShortList', this.program.id)
           await this.$store.dispatch('company/bonus_units/loadBonusUnits', this.program.id)
