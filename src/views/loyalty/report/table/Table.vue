@@ -202,7 +202,6 @@
         return this.$store.getters['company/program/program']
       },
       startPeriod () {
-        console.log('start', this.$store.getters['widget/filter/startPeriodFilter'])
         return this.$store.getters['widget/filter/startPeriodFilter']
       },
       endPeriod () {

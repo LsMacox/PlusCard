@@ -39,21 +39,19 @@ const mutations = {
         localStorage.setItem('endPeriodFilter', payload)
     },
     foundClients (state, payload) {
-        if (payload && payload[0] && payload[0].children) {
-            // объединяем массивы и удаляем дубли
-            const stateArr = Object.assign([], state.foundClients)
-            const arr = payload[0].children
-            // массив найденных клиентов
-            for (let i = 0; i < arr.length; i++) {
-                let find = false
-                // массив state
-                for (let j = 0; j < stateArr.length; j++) {
-                    if (arr[i].id === stateArr[j].id) find = true
-                }
-                if (!find) stateArr.push(arr[i])
+        // объединяем массивы и удаляем дубли
+        const stateArr = Object.assign([], state.foundClients)
+        const arr = payload
+        // массив найденных клиентов
+        for (let i = 0; i < arr.length; i++) {
+            let find = false
+            // массив state
+            for (let j = 0; j < stateArr.length; j++) {
+                if (arr[i].id === stateArr[j].id) find = true
             }
-            state.foundClients = Object.assign([], stateArr)
+            if (!find) stateArr.push(arr[i])
         }
+        state.foundClients = Object.assign([], stateArr)
     },
 }
 
@@ -76,9 +74,9 @@ const actions = {
         if (endPeriod) commit('endPeriodFilter', endPeriod)
     },
     async foundClients ({ commit }, item) {
-        const res = await ApiService.get(`/api-cabinet/widget/findClient?program_id=${item.program_id}&client=${item.search}`)
-        console.log('/api-cabinet/widget/findClient')
-        console.log(res)
+        const res = await ApiService.get(`/api-cabinet/widget/findClient2?program_id=${item.program_id}&client=${item.search}`)
+        // console.log('/api-cabinet/widget/findClient')
+        // console.log(res)
         commit('foundClients', res)
     },
 }
@@ -88,7 +86,7 @@ const getters = {
     endPeriod: (state) => state.endPeriod,
     filter: (state) => state.filter,
     filterDefault: () => {
-        const defaultState = Object.assign({}, getDefaultState())
+        const defaultState = getDefaultState()
         return defaultState.filter
     },
     startPeriodFilter: (state) => state.startPeriodFilter,

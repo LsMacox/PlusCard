@@ -4,6 +4,7 @@
   >
     <v-col>
       <div class="app__filter">
+        <!--поле выбора-->
         <div
           class="app__filter-block-input"
           style="border: 1px solid #D7D7E0; border-radius: 10px;"
@@ -18,14 +19,14 @@
           <!--операции-->
           <div
             v-for="(item, i) in fastFilter.pbr"
-            :key="i"
+            :key="`operation${i}`"
             class="app__filter-chip"
           >
             <div class="app__filter-chip-content">
               {{ item.label }}
               <v-icon
                 class="app__filter-chip-icon-append"
-                @click=""
+                @click="clearItemFastFilter('pbr', item)"
               >
                 $iconify_jam-close
               </v-icon>
@@ -35,14 +36,14 @@
           <!--валюты-->
           <div
             v-for="(item, i) in fastFilter.bu"
-            :key="i"
+            :key="`unit${i}`"
             class="app__filter-chip"
           >
             <div class="app__filter-chip-content">
               {{ item.label }}
               <v-icon
                 class="app__filter-chip-icon-append"
-                @click=""
+                @click="clearItemFastFilter('bu', item)"
               >
                 $iconify_jam-close
               </v-icon>
@@ -52,14 +53,14 @@
           <!--операторы-->
           <div
             v-for="(item, i) in fastFilter.operator"
-            :key="i"
+            :key="`operator${i}`"
             class="app__filter-chip"
           >
             <div class="app__filter-chip-content">
               {{ item.label }}
               <v-icon
                 class="app__filter-chip-icon-append"
-                @click=""
+                @click="clearItemFastFilter('operator', item)"
               >
                 $iconify_jam-close
               </v-icon>
@@ -69,14 +70,14 @@
           <!--клиенты-->
           <div
             v-for="(item, i) in fastFilter.client"
-            :key="i"
+            :key="`client${i}`"
             class="app__filter-chip"
           >
             <div class="app__filter-chip-content">
               {{ item.label }}
               <v-icon
                 class="app__filter-chip-icon-append"
-                @click=""
+                @click="clearItemFastFilter('client', item)"
               >
                 $iconify_jam-close
               </v-icon>
@@ -91,11 +92,13 @@
           <v-icon
             v-show="!emptyFastFilter"
             class="app__filter-block-input-icon-append"
-            click=""
+            @click="clearFastFilter"
           >
             $iconify_chrome-close
           </v-icon>
         </div>
+
+        <!--окно фильтра-->
         <div
           v-show="show"
           class="app__filter-block"
@@ -130,8 +133,7 @@
             <v-row>
               <v-col>
                 <div class="app__filter-content-header">
-                  Операции {{ filter }}<br>
-                  {{ operators }}
+                  Операции
                 </div>
                 <div
                   v-for="(item, i) in operations"
@@ -210,12 +212,7 @@
     data () {
       return {
         filter: null,
-        fastFilter: {
-          pbr: [],
-          bu: [],
-          operator: [],
-          client: [],
-        },
+        fastFilter: {},
         show: false,
         searchClient: null,
         loading: false,
@@ -235,9 +232,7 @@
         return this.$store.getters['widget/filter/foundClients']
       },
       operators () {
-        const operators = this.$store.getters['widget/operators/operators']
-        if (operators && operators[0] && operators[0].children) return operators[0].children
-        return []
+        return this.$store.getters['widget/operators/operators']
       },
       operations () {
         return this.$store.getters['company/bonus_resources/activeBonusResourcesShort']
@@ -264,9 +259,15 @@
       searchClient (v) {
         v && v !== this.filter.client && this.querySearchClient(v)
       },
+      program (v) {
+        // обнуление при смене программы
+        this.filter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+      },
     },
     created () {
-      this.filter = this.filterDefault
+      this.filter = JSON.parse(JSON.stringify(this.filterDefault))
+      this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
     },
     methods: {
       async switchShow () {
@@ -288,19 +289,53 @@
       },
       setFastFilter (filter) {
         console.log('setFastFilter')
+        console.log('filter')
         console.log(filter)
+        console.log('fastFilter')
+        console.log(this.fastFilter)
         filter.pbr.forEach(item => {
-          if (!this.fastFilter.pbr.includes(item)) this.fastFilter.pbr.push({ id: item, label: `Операция: ${item}` })
+          const operation = this.operations.find(objItem => objItem.id === item)
+          if (operation) {
+            const obj = { id: item, label: `Операция: ${operation.title}` }
+            if (!this.fastFilter.pbr.find(objItem => objItem.id === item)) this.fastFilter.pbr.push(obj)
+          }
         })
         filter.bu.forEach(item => {
-          if (!this.fastFilter.bu.includes(item)) this.fastFilter.bu.push({ id: item, label: `Валюта: ${item}` })
+          const unit = this.units.find(objItem => objItem.id === item)
+          if (unit) {
+            const obj = { id: item, label: `Валюта: ${unit.name}` }
+            if (!this.fastFilter.bu.find(objItem => objItem.id === item)) this.fastFilter.bu.push(obj)
+          }
         })
         filter.operator.forEach(item => {
-          if (!this.fastFilter.operator.includes(item)) this.fastFilter.operator.push({ id: item, label: `Оператор: ${item}` })
+          const operator = this.operators.find(objItem => objItem.id === item)
+          if (operator) {
+            const obj = { id: item, label: `Оператор: ${operator.label}` }
+            if (!this.fastFilter.operator.find(objItem => objItem.id === item)) this.fastFilter.operator.push(obj)
+          }
         })
         filter.client.forEach(item => {
-          if (!this.fastFilter.client.includes(item)) this.fastFilter.client.push({ id: item, label: `Клиент: ${item}` })
+          const client = this.foundClients.find(objItem => objItem.id === item)
+          if (client) {
+            const obj = { id: item, label: `Клиент: ${client.label}` }
+            if (!this.fastFilter.client.find(objItem => objItem.id === item)) this.fastFilter.client.push(obj)
+          }
         })
+      },
+      clearItemFastFilter (field, item) {
+        const i = this.fastFilter[field].findIndex(objItem => objItem.id === item.id)
+        if (typeof i !== 'undefined') this.fastFilter[field].splice(i, 1)
+
+        const filter = JSON.parse(JSON.stringify(this.filterStore))
+        const j = filter[field].findIndex(objItem => objItem.id === item.id)
+        if (typeof j !== 'undefined') filter[field].splice(j, 1)
+        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(filter)))
+      },
+      clearFastFilter () {
+        console.log('clearFastFilter')
+        this.filter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(this.filterDefault)))
       },
       async querySearchClient (search) {
         if (search.length >= 3) {

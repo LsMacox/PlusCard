@@ -3,7 +3,7 @@ export default {
     state: {
         loading: false,
         widgetData: [],
-        clients: []
+        clients: [],
     },
     mutations: {
         clearState (state) {
@@ -17,27 +17,26 @@ export default {
             state.widgetData = payload
         },
         clients (state, payload) {
-            state.clients = payload;
-        }
+            state.clients = payload
+        },
     },
     actions: {
 
-        async widget ({commit}, widget) {
+        async widget ({ commit }, widget) {
             commit('loading', true)
 
             const success = await axios.post('/api/widget/clients', widget)
             commit('widgetData', success.data.data)
-            commit('loading', false)  
-           
+            commit('loading', false)
         },
 
-        async findClient({commit}, widget) {
+        async findClient ({ commit }, widget) {
             commit('loading', true)
 
-            const success = await APIBackendCabinet.get('/widget/findClient?program_id='+widget.program_id + '&client='+widget.query);
+            const success = await APIBackendCabinet.get('/widget/findClient?program_id=' + widget.program_id + '&client=' + widget.query)
             commit('clients', success.data[0].children)
             commit('loading', false)
-        }
+        },
 
     },
     getters: {
@@ -49,6 +48,6 @@ export default {
         },
         clients (state) {
             return state.clients
-        }
-    }
+        },
+    },
 }

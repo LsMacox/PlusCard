@@ -26,15 +26,15 @@ export default {
         async widget ({ commit }, widget) {
             commit('loading', true)
             const success = await ApiService.post('/api-cabinet/widget/operators', widget)
-            console.log(success)
+            // console.log(success)
             commit('widgetData', success)
             commit('loading', false)
         },
         async operators ({ commit }, id) {
             commit('loading', true)
-            const success = await ApiService.get('/api-cabinet/widget/operatorList?program_id=' + id)
-            console.log('/widget/operatorList')
-            console.log(success)
+            const success = await ApiService.get('/api-cabinet/widget/operatorList2?program_id=' + id)
+            // console.log('/widget/operatorList')
+            // console.log(success)
             commit('operators', success)
             commit('loading', false)
         },
