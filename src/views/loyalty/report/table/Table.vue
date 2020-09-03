@@ -90,7 +90,9 @@
             <div style="display: flex; align-items: center">
               <img
                 class="cell-avatar"
-                :src="(item.operator_avatar === 'system' || item.operator_avatar === 'external') ? require('@/assets/svg/plus_logo_sm.svg') : item.operator_avatar"
+                :src="(item.operator_avatar === 'system' || item.operator_avatar === 'external')
+                  ? program.logo_short
+                  : `https://storage.yandexcloud.net/plusstorage/${item.operator_avatar}`"
               >
               <div class="cell-text">
                 {{ item.operator }}
@@ -201,11 +203,8 @@
       program () {
         return this.$store.getters['company/program/program']
       },
-      startPeriod () {
-        return this.$store.getters['widget/filter/startPeriodFilter']
-      },
-      endPeriod () {
-        return this.$store.getters['widget/filter/endPeriodFilter']
+      period () {
+        return this.$store.getters['widget/filter/period']
       },
       filter () {
         return this.$store.getters['widget/filter/filter']
@@ -216,6 +215,9 @@
         if (v) this.fetchData()
       },
       filter (v) {
+        if (v) this.fetchData()
+      },
+      period (v) {
         if (v) this.fetchData()
       },
       'tableOptions.page' (v) {
@@ -253,12 +255,13 @@
         this.loadingList = true
         const list = {
           program_id: this.program.id,
-          start_period: this.startPeriod,
-          end_period: this.endPeriod,
+          start_period: this.period.start,
+          end_period: this.period.end,
           filter: this.filter,
           offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
           limit: this.tableOptions.itemsPerPage,
         }
+        // console.log('table/list')
         // console.log(list)
         try {
           this.$store.dispatch('widget/table/widget', list)

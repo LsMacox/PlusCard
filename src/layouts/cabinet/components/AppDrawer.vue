@@ -397,7 +397,6 @@
         this.exitRequest = true
         this.$store.dispatch('auth/auth/logout').finally(() => {
           this.exitRequest = false
-          this.$router.push('/login')
         })
       },
     },

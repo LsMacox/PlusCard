@@ -8,6 +8,7 @@
         min-width="250px"
         :items="periods"
         :item.sync="period"
+        :item-id="'name'"
       />
     </div>
     <div class="app__spacer" />
@@ -58,15 +59,14 @@
     },
     data () {
       return {
-        period: null,
         periods: [
-          { name: 'За сегодня' },
-          { name: 'За последние 7 дней' },
-          { name: 'За последние 30 дней' },
-          { name: 'За последние 90 дней' },
-          { name: 'За последние 180 дней' },
-          { name: 'За последние 365 дней' },
-          { name: 'Собственный диапазон' },
+          { name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
+          { name: 'За последние 7 дней', start: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { name: 'За последние 30 дней', start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { name: 'За последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { name: 'За последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { name: 'За последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { name: 'Собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
         ],
       }
     },
@@ -74,12 +74,14 @@
       program () {
         return this.$store.getters['company/program/program']
       },
-    },
-    mounted () {
-
-    },
-    methods: {
-
+      period: {
+        get () {
+          return this.$store.getters['widget/filter/period']
+        },
+        set (v) {
+          this.$store.commit('widget/filter/period', v)
+        },
+      },
     },
   }
 </script>

@@ -1,9 +1,10 @@
 import ApiService from '@/api/api-client'
+import VueSession from '@/utils/session'
 
 const getDefaultState = () => {
   return {
     programs: [], // компании продавца
-    program: {},
+    program: VueSession.get('program'),
   }
 }
 
@@ -16,6 +17,7 @@ const mutations = {
   },
   SET_PROGRAM (state, payload) {
     state.program = payload
+    VueSession.set('program', payload)
   },
 }
 
@@ -30,8 +32,10 @@ const actions = {
       // console.log(result)
       commit('SET_PROGRAMS', result)
       if (result && result.length) {
-        // console.log(result[0])
-        commit('SET_PROGRAM', result[0])
+        if (!VueSession.get('program')) {
+          commit('SET_PROGRAM', result[0])
+          VueSession.set('program', result[0])
+        }
       }
     } catch (error) {
       throw error
