@@ -103,14 +103,18 @@
             <v-list-item-title>{{ program.name }}</v-list-item-title>
           </template>
           <template v-slot:appendIcon>
-            <div v-show="!expandProgramList">
+            <div
+              v-show="!expandProgramList"
+            >
               <span
                 class="iconify"
                 data-icon="entypo:chevron-down"
                 data-inline="false"
               />
             </div>
-            <div v-show="expandProgramList">
+            <div
+              v-show="expandProgramList"
+            >
               <span
                 class="iconify"
                 data-icon="entypo:chevron-up"
@@ -327,11 +331,6 @@
           icon: '<span class="iconify" data-icon="feather:settings" data-inline="false"></span>',
           title: 'Настройки компаний',
           to: '#######',
-        },
-        {
-          icon: '<span class="iconify" data-icon="bi:ui-checks" data-inline="false"></span>',
-          title: 'UI_KIT',
-          to: '/ui_kit',
         },
       ],
     }),
