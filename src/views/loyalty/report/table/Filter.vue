@@ -288,11 +288,6 @@
         }
       },
       setFastFilter (filter) {
-        console.log('setFastFilter')
-        console.log('filter')
-        console.log(filter)
-        console.log('fastFilter')
-        console.log(this.fastFilter)
         filter.pbr.forEach(item => {
           const operation = this.operations.find(objItem => objItem.id === item)
           if (operation) {
@@ -332,7 +327,6 @@
         this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       clearFastFilter () {
-        console.log('clearFastFilter')
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
         this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(this.filterDefault)))
@@ -340,7 +334,6 @@
       async querySearchClient (search) {
         if (search.length >= 3) {
           this.loading = true
-          console.log(search)
           const item = {
             program_id: this.program.id,
             search,
