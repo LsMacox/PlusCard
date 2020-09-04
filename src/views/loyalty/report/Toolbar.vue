@@ -4,7 +4,7 @@
       {{ program.name }}
     </div>
     <div class="loyalty-toolbar-period">
-      <item-select
+      <date-range-select
         min-width="250px"
         :items="periods"
         :model.sync="periodId"
@@ -50,16 +50,20 @@
 </template>
 
 <script>
-  import ItemSelect from '@/components/dialogs/ItemSelect'
+  import DateRangeSelect from '@/components/dialogs/DateRangeSelect'
 
   export default {
     components: {
-      ItemSelect,
+      DateRangeSelect,
     },
     props: {
     },
     data () {
       return {
+        dateRange: {
+          startDate: null,
+          endDate: null,
+        },
         periodId: null,
         periods: [
           { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
@@ -68,7 +72,7 @@
           { id: 4, name: 'за последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
           { id: 5, name: 'за последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
           { id: 6, name: 'за последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 7, name: 'собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          // { id: 7, name: 'собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
         ],
       }
     },
@@ -92,6 +96,16 @@
     },
     created () {
       if (this.period) this.periodId = this.period.id
+    },
+    methods: {
+      formatRange (range) {
+        const start = range.split(' - ')[0]
+        const end = range.split(' - ')[1]
+        if (start !== undefined && start !== null && end !== undefined && end !== null) {
+          return this.$moment(start).format('ll') + ' - ' + this.$moment(end).format('ll')
+        }
+        return ' - '
+      },
     },
   }
 </script>
