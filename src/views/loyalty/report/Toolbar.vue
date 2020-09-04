@@ -7,8 +7,9 @@
       <item-select
         min-width="250px"
         :items="periods"
-        :item.sync="period"
-        :item-id="'name'"
+        :model.sync="periodId"
+        item-value="id"
+        item-label="name"
       />
     </div>
     <div class="app__spacer" />
@@ -59,14 +60,15 @@
     },
     data () {
       return {
+        periodId: null,
         periods: [
-          { name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
-          { name: 'За последние 7 дней', start: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { name: 'За последние 30 дней', start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { name: 'За последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { name: 'За последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { name: 'За последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { name: 'Собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 2, name: 'за последние 7 дней', start: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 3, name: 'за последние 30 дней', start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 4, name: 'за последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 5, name: 'за последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 6, name: 'за последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 7, name: 'собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
         ],
       }
     },
@@ -82,6 +84,14 @@
           this.$store.commit('widget/filter/period', v)
         },
       },
+    },
+    watch: {
+      periodId (v) {
+        if (v) this.period = this.periods.find(item => item.id === v)
+      },
+    },
+    created () {
+      if (this.period) this.periodId = this.period.id
     },
   }
 </script>

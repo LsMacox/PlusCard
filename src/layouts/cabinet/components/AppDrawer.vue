@@ -130,13 +130,15 @@
           >
             <v-list-item-title v-text="item.name" />
           </v-list-item>
-          <v-btn
-            block
-            color="secondary"
-            @click="goToMaster()"
-          >
-            Добавить компанию
-          </v-btn>
+          <div style="padding: 0 16px;">
+            <v-btn
+              block
+              color="secondary"
+              @click="goToMaster()"
+            >
+              Добавить компанию
+            </v-btn>
+          </div>
         </v-list-group>
       </v-list>
     </div>
@@ -414,6 +416,11 @@
     .app__drawer-scrollable-block
       height: calc(100vh - 185px)
       overflow-y: auto
+      -ms-overflow-style: none
+      overflow: -moz-scrollbars-none
+
+    .app__drawer-scrollable-block::-webkit-scrollbar
+      width: 0
 
     .v-list-group__header.v-list-item--active:before
       opacity: .24
