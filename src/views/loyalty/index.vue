@@ -54,35 +54,28 @@
       },
     },
     created () {
-      if (!this.loadingApp) {
-        this.$store.dispatch('widget/filter/filter')
-        this.$store.dispatch('widget/filter/filterPeriod')
-        this.$store.dispatch('widget/operators/operators', this.program.id)
-        // this.fetchData()
-      }
+      this.$store.dispatch('widget/operators/operators', this.program.id)
     },
     methods: {
       async fetchData () {
-        if (this.program != null && this.program.id) {
-          const widget = {
-            program_id: this.program.id,
-            start_period: this.period.start,
-            end_period: this.period.end,
-            filter: this.filter,
-          }
-          // console.log('load_data', widget)
-          // console.log('load_data', this.period)
-          this.loading = true
-          await this.$store.dispatch('company/bonus_resources/GetActiveShortList', this.program.id)
-          await this.$store.dispatch('company/bonus_units/loadBonusUnits', this.program.id)
-          //
-          await this.$store.dispatch('widget/bonusClients/widget', widget)
-          await this.$store.dispatch('widget/operations/widget', widget)
-          await this.$store.dispatch('widget/operators/widget', widget)
-          await this.$store.dispatch('widget/bonuses/widget', widget)
-          // await this.$store.dispatch('widget/table/widget', widget)
-          this.loading = false
+        const widget = {
+          program_id: this.program.id,
+          start_period: this.period.start,
+          end_period: this.period.end,
+          filter: this.filter,
         }
+        // console.log('load_data', widget)
+        // console.log('load_data', this.period)
+        this.loading = true
+        await this.$store.dispatch('company/bonus_resources/GetActiveShortList', this.program.id)
+        await this.$store.dispatch('company/bonus_units/loadBonusUnits', this.program.id)
+        //
+        await this.$store.dispatch('widget/bonusClients/widget', widget)
+        await this.$store.dispatch('widget/operations/widget', widget)
+        await this.$store.dispatch('widget/operators/widget', widget)
+        await this.$store.dispatch('widget/bonuses/widget', widget)
+        // await this.$store.dispatch('widget/table/widget', widget)
+        this.loading = false
       },
     },
   }

@@ -17,78 +17,82 @@
           </v-icon>
 
           <!--операции-->
-          <div
-            v-for="(item, i) in fastFilter.pbr"
-            :key="`operation${i}`"
-            class="app__filter-chip"
-          >
-            <div class="app__filter-chip-content">
-              {{ item.label }}
-              <v-icon
-                class="app__filter-chip-icon-append"
-                @click="clearItemFastFilter('pbr', item)"
-              >
-                $iconify_jam-close
-              </v-icon>
+          <div>
+            <div
+              v-for="(item, i) in fastFilter.pbr"
+              :key="`operation${i}`"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ item.label }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('pbr', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
             </div>
+
+            <!--валюты-->
+            <div
+              v-for="(item, i) in fastFilter.bu"
+              :key="`unit${i}`"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ item.label }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('bu', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <!--операторы-->
+            <div
+              v-for="(item, i) in fastFilter.operator"
+              :key="`operator${i}`"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ item.label }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('operator', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <!--клиенты-->
+            <div
+              v-for="(item, i) in fastFilter.client"
+              :key="`client${i}`"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ item.label }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('client', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <!--поле ввода-->
+            <input
+              class="app__filter-block-input-field"
+              placeholder="Поиск и фильтр"
+              @focus="switchShow"
+            >
           </div>
 
-          <!--валюты-->
-          <div
-            v-for="(item, i) in fastFilter.bu"
-            :key="`unit${i}`"
-            class="app__filter-chip"
-          >
-            <div class="app__filter-chip-content">
-              {{ item.label }}
-              <v-icon
-                class="app__filter-chip-icon-append"
-                @click="clearItemFastFilter('bu', item)"
-              >
-                $iconify_jam-close
-              </v-icon>
-            </div>
-          </div>
-
-          <!--операторы-->
-          <div
-            v-for="(item, i) in fastFilter.operator"
-            :key="`operator${i}`"
-            class="app__filter-chip"
-          >
-            <div class="app__filter-chip-content">
-              {{ item.label }}
-              <v-icon
-                class="app__filter-chip-icon-append"
-                @click="clearItemFastFilter('operator', item)"
-              >
-                $iconify_jam-close
-              </v-icon>
-            </div>
-          </div>
-
-          <!--клиенты-->
-          <div
-            v-for="(item, i) in fastFilter.client"
-            :key="`client${i}`"
-            class="app__filter-chip"
-          >
-            <div class="app__filter-chip-content">
-              {{ item.label }}
-              <v-icon
-                class="app__filter-chip-icon-append"
-                @click="clearItemFastFilter('client', item)"
-              >
-                $iconify_jam-close
-              </v-icon>
-            </div>
-          </div>
-
-          <input
-            class="app__filter-block-input-field"
-            placeholder="Поиск и фильтр"
-            @focus="switchShow"
-          >
           <v-icon
             v-show="!emptyFastFilter"
             class="app__filter-block-input-icon-append"
@@ -447,7 +451,7 @@
     display: block;
     width: 100%;
     outline: none !important;
-    margin: 6px 0;
+    margin: 13px 0;
     padding: 0 10px;
     font-style: normal;
     font-weight: 500;
