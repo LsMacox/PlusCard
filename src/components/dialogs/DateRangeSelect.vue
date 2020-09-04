@@ -49,12 +49,85 @@
           />
         </div>
       </div>
+      <!--выбор календарь-->
+      <date-range-picker
+        ref="picker"
+        v-model="dateRange"
+        opens="right"
+        :ranges="false"
+        :auto-apply="false"
+        :locale-data="{
+          firstDay: 0,
+          applyLabel: 'Применить',
+          cancelLabel: 'Отменить',
+          monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+          daysOfWeek: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+        }"
+      >
+        <div
+          slot="input"
+          class="app__date-select-block-item"
+          style="display: none;"
+        >
+          <div class="app__date-select-block-item-text">
+            собственный диапазон
+          </div>
+          <div
+            v-if="isActiveItem({ id: 7, name: 'собственный диапазон', start: null, end: null })"
+            style="position: relative;"
+          >
+            <span
+              class="iconify app__date-select-block-item-icon"
+              data-icon="bx:bx-check"
+              data-inline="false"
+            />
+          </div>
+        </div>
+
+        <div
+          slot="footer"
+          slot-scope="data"
+        >
+          <div class="footer-content">
+            <div class="range">
+              {{ formatRange(data.rangeText) }}
+            </div>
+            <div class="actions">
+              <v-btn
+                color="primary"
+                small
+                @click="data.clickCancel()"
+              >
+                Отменить
+              </v-btn>
+              <v-btn
+                small
+                color="primary"
+                @click="data.clickApply"
+              >
+                <span
+                  class="iconify"
+                  data-icon="carbon:checkmark-outline"
+                  data-inline="false"
+                />
+                Применить
+              </v-btn>
+            </div>
+          </div>
+        </div>
+      </date-range-picker>
     </div>
   </div>
 </template>
 
 <script>
+  import DateRangePicker from 'vue2-daterange-picker'
+  import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
+
   export default {
+    components: {
+      DateRangePicker,
+    },
     props: [
       'minWidth',
       'items',
@@ -65,6 +138,10 @@
     data () {
       return {
         show: false,
+        dateRange: {
+          startDate: new Date(Date.now()),
+          endDate: new Date(Date.now()),
+        },
       }
     },
     methods: {
@@ -91,6 +168,14 @@
       },
       updateItem (v) {
         this.$emit('update:model', v)
+      },
+      formatRange (range) {
+        const start = range.split(' - ')[0]
+        const end = range.split(' - ')[1]
+        if (start !== undefined && start !== null && end !== undefined && end !== null) {
+          return this.$moment(start).format('ll') + ' - ' + this.$moment(end).format('ll')
+        }
+        return ' - '
       },
     },
   }
@@ -168,5 +253,11 @@
       }
     }
   }
+}
+
+.form-control.reportrange-text {
+  padding: 0;
+  border: none;
+  height: 0 !important;
 }
 </style>

@@ -1,5 +1,7 @@
 <template>
-  <div class="side-panel">
+  <div
+    class="side-panel"
+  >
     <v-img
       src="@/assets/svg/plus_logo_lg.svg"
       max-width="113px"
@@ -17,11 +19,10 @@
         :key="i"
       >
         <v-img
-          v-if="activeOffer === i"
+          v-show="activeOffer === i"
           :src="item.img"
-          width="213px"
-          height="172px"
-          style="margin: 25px auto;"
+          style="width: 213px; height: 172px; margin: 25px auto;"
+          eager
         />
       </div>
       <div
@@ -83,51 +84,60 @@
   }
 </script>
 
-<style lang="sass" scoped>
-  .side-panel
-    display: flex
-    flex-direction: column
-    width: 340px
-    height: 100vh
-    overflow-y: auto
-    background: #EBF1FF
-    @media(max-width: 776px)
-      display: none
+<style lang="scss" scoped>
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    width: 340px;
+    height: 100vh;
+    overflow-y: auto;
+    background: #EBF1FF;
+    @media(max-width: 776px) {
+      display: none;
+    }
 
-    .side-panel-logo
-      flex: 0 0 auto
-      margin: 48px auto 0 auto
+    .side-panel-logo {
+      flex: 0 0 auto;
+      margin: 48px auto 0 auto;
+    }
 
-    .side-panel-empty
-      flex: 1 0 auto
+    .side-panel-empty {
+      flex: 1 0 auto;
+    }
 
-    .side-panel-carousel
-      flex: 0 0 auto
-      text-align: center
+    .side-panel-carousel {
+      flex: 0 0 auto;
+      text-align: center;
 
-      .side-panel-carousel-text
-        font-size: 20px
-        line-height: 24px
-        font-style: normal
-        font-weight: bold
-        color: #2A2A34
+      .side-panel-carousel-text {
+        font-size: 20px;
+        line-height: 24px;
+        font-style: normal;
+        font-weight: bold;
+        color: #2A2A34;
+      }
 
-      .side-panel-carousel-control
-        display: flex
-        align-items: center
-        justify-content: center
-        margin: 46px 0
+      .side-panel-carousel-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 46px 0;
 
-        .side-panel-carousel-control-item
-          margin: 2px
-          width: 4px
-          height: 4px
-          border-radius: 10px
-          background-color: #D7D7E0
-          cursor: pointer
+        .side-panel-carousel-control-item {
+          margin: 2px;
+          width: 4px;
+          height: 4px;
+          border-radius: 10px;
+          background-color: #D7D7E0;
+          cursor: pointer;
+        }
 
-        .active
-          width: 6px
-          height: 6px
-          background-color: #4776E6
+        .active {
+          width: 6px;
+          height: 6px;
+          background-color: #4776E6;
+        }
+      }
+    }
+  }
 </style>

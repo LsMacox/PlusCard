@@ -60,9 +60,9 @@ const actions = {
         }
     },
     async filterPeriod ({ commit }) {
-        console.log('filterPeriod')
-        console.log('localFilterStartPeriod', localStorage.getItem('startPeriodFilter'))
-        console.log('localFilterEndPeriod', localStorage.getItem('endPeriodFilter'))
+        // console.log('filterPeriod')
+        // console.log('localFilterStartPeriod', localStorage.getItem('startPeriodFilter'))
+        // console.log('localFilterEndPeriod', localStorage.getItem('endPeriodFilter'))
         const startPeriod = localStorage.getItem('startPeriodFilter')
         const endPeriod = localStorage.getItem('endPeriodFilter')
         if (startPeriod) commit('startPeriodFilter', startPeriod)

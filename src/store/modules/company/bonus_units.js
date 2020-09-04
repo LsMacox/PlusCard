@@ -75,8 +75,8 @@ export default {
         }, programId) {
             try {
                 const success = await ApiService.get(`/api-cabinet/bonus_units/list?program_id=${programId}`)
-                console.log('/api/bonus_units/list')
-                console.log(success)
+                // console.log('/api/bonus_units/list')
+                // console.log(success)
                 commit('bonusUnits', success)
             } catch (error) {
 

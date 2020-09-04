@@ -23,8 +23,8 @@ export default {
         async widget ({ commit }, widget) {
             commit('loading', true)
             const success = await ApiService.post('/api-cabinet/widget/clients', widget)
-            console.log('/widget/clients')
-            console.log(success)
+            // console.log('/widget/clients')
+            // console.log(success)
             commit('widgetData', success)
             commit('loading', false)
         },

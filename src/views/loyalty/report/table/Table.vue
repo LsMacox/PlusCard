@@ -11,7 +11,7 @@
           :options="tableOptions"
           :single-expand="true"
           :expanded.sync="expanded"
-          item-key="bsid"
+          item-key="uuid"
           show-expand
           class="plus-table"
           hide-default-footer
@@ -61,7 +61,7 @@
                 :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`"
               >
               <div>
-                <div class="cell-text">
+                <div class="cell-text-bold">
                   {{ item.client }}
                 </div>
                 <div
@@ -81,7 +81,7 @@
 
           <template v-slot:item.amount="{ item }">
             <div
-              class="cell-text"
+              class="cell-text-bold"
               v-html="getValue(item.value)"
             />
           </template>
@@ -90,7 +90,9 @@
             <div style="display: flex; align-items: center">
               <img
                 class="cell-avatar"
-                src="https://storage.yandexcloud.net/plusstorage/users/avatars/1db311620af449cf9aa354491e5310d4.jpg"
+                :src="(item.operator_avatar === 'system' || item.operator_avatar === 'external')
+                  ? program.logo_short
+                  : `https://storage.yandexcloud.net/plusstorage/${item.operator_avatar}`"
               >
               <div class="cell-text">
                 {{ item.operator }}
@@ -201,12 +203,8 @@
       program () {
         return this.$store.getters['company/program/program']
       },
-      startPeriod () {
-        console.log('start', this.$store.getters['widget/filter/startPeriodFilter'])
-        return this.$store.getters['widget/filter/startPeriodFilter']
-      },
-      endPeriod () {
-        return this.$store.getters['widget/filter/endPeriodFilter']
+      period () {
+        return this.$store.getters['widget/filter/period']
       },
       filter () {
         return this.$store.getters['widget/filter/filter']
@@ -217,6 +215,9 @@
         if (v) this.fetchData()
       },
       filter (v) {
+        if (v) this.fetchData()
+      },
+      period (v) {
         if (v) this.fetchData()
       },
       'tableOptions.page' (v) {
@@ -244,7 +245,7 @@
       getValue (value) {
         value = Number(value)
         if (value >= 0) return `<span style="color: #00D15D;">+${value}</span>`
-        return `<span style="color: #EA4C2A;">-${value}</span>`
+        return `<span style="color: #EA4C2A;">${value}</span>`
       },
       getWord (number, words) {
         const cases = [2, 0, 1, 1, 1, 2]
@@ -254,12 +255,13 @@
         this.loadingList = true
         const list = {
           program_id: this.program.id,
-          start_period: this.startPeriod,
-          end_period: this.endPeriod,
+          start_period: this.period.start,
+          end_period: this.period.end,
           filter: this.filter,
           offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
           limit: this.tableOptions.itemsPerPage,
         }
+        // console.log('table/list')
         // console.log(list)
         try {
           this.$store.dispatch('widget/table/widget', list)
@@ -271,34 +273,48 @@
   }
 </script>
 
-<style lang="sass" scoped>
-.cell-text
-  font-style: normal
-  font-weight: 600
-  font-size: 13px
-  line-height: 17px
-  color: #2A2A34
+<style lang="scss" scoped>
+.cell-text {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 17px;
+  color: #2A2A34;
+}
 
-.cell-hint
-  margin-top: 4px
-  font-style: normal
-  font-weight: 600
-  font-size: 11px
-  line-height: 14px
-  color: #9191A1
+.cell-text-bold {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 17px;
+  color: #2A2A34;
+}
 
-.cell-avatar
-  margin-right: 8px
-  width: 25px
-  height: 25px
-  border-radius: 25px
+.cell-hint {
+  margin-top: 4px;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 14px;
+  color: #9191A1;
+}
 
-.table-pagination-block
-  display: flex
-  align-items: center
-  .table-pagination-block-select
-    position: relative
-    top: 6px
-    left: 20px
-    width: 250px
+.cell-avatar {
+  margin-right: 8px;
+  width: 25px;
+  height: 25px;
+  border-radius: 25px;
+}
+
+.table-pagination-block {
+  display: flex;
+  align-items: center;
+
+  .table-pagination-block-select {
+    position: relative;
+    top: 6px;
+    left: 20px;
+    width: 250px;
+  }
+}
 </style>
