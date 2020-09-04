@@ -91,7 +91,12 @@
     },
     watch: {
       periodId (v) {
-        if (v) this.period = this.periods.find(item => item.id === v)
+        if (v) {
+          const period = this.periods.find(item => item.id === v)
+          if (period) {
+            this.period = period
+          }
+        }
       },
     },
     created () {
