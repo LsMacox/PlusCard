@@ -17,7 +17,7 @@
           </v-icon>
 
           <!--операции-->
-          <div>
+          <div style="width: 100%;">
             <div
               v-for="(item, i) in fastFilter.pbr"
               :key="`operation${i}`"
@@ -120,6 +120,9 @@
               class="app__filter-block-input-field"
               placeholder="Поиск и фильтр"
             >
+
+            <div class="app__spacer" />
+
             <v-icon
               class="app__filter-block-input-icon-append app__filter-block-icon-close"
               @click="close()"
@@ -448,8 +451,7 @@
   }
 
   .app__filter-block-input-field {
-    display: block;
-    width: 100%;
+    display: inline;
     outline: none !important;
     margin: 13px 0;
     padding: 0 10px;
