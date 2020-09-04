@@ -71,7 +71,6 @@ const actions = {
                     limit: limit,
                 },
             })
-            console.log(success)
             commit('certificates', success.certificates)
             commit('totalCount', success.totalCount)
         } catch (error) {
