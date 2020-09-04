@@ -22,6 +22,8 @@
         />
       </div>
     </div>
+
+    <!--модальный блок-->
     <div
       v-show="show"
       class="app__date-select-block"
@@ -49,40 +51,45 @@
           />
         </div>
       </div>
+
+      <!--активатор собственного диапазона-->
+      <div
+        class="app__date-select-block-item"
+        @click="openDatePicker"
+      >
+        <div
+          class="app__date-select-block-item-text"
+          style="color: #9191A1; font-weight: normal;"
+        >
+          собственный диапазон
+        </div>
+      </div>
+    </div>
+
+    <!--модальный блок datepicker-->
+    <div
+      v-show="showDatePicker"
+      class="app__date-select-block-datepicker"
+      :style="`min-width: ${minWidth};`"
+    >
+      <div class="app__date-select-block-square" />
       <!--выбор календарь-->
       <date-range-picker
         ref="picker"
         v-model="dateRange"
-        opens="right"
+        opens="inline"
         :ranges="false"
         :auto-apply="false"
+        :show-dropdowns="true"
         :locale-data="{
-          firstDay: 0,
+          firstDay: 1,
           applyLabel: 'Применить',
           cancelLabel: 'Отменить',
           monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-          daysOfWeek: ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'],
+          daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
         }"
       >
-        <div
-          slot="input"
-          class="app__date-select-block-item"
-          style="display: none;"
-        >
-          <div class="app__date-select-block-item-text">
-            собственный диапазон
-          </div>
-          <div
-            v-if="isActiveItem({ id: 7, name: 'собственный диапазон', start: null, end: null })"
-            style="position: relative;"
-          >
-            <span
-              class="iconify app__date-select-block-item-icon"
-              data-icon="bx:bx-check"
-              data-inline="false"
-            />
-          </div>
-        </div>
+        <div slot="input" />
 
         <div
           slot="footer"
@@ -96,14 +103,14 @@
               <v-btn
                 color="primary"
                 small
-                @click="data.clickCancel()"
+                @click="closeDatePicker"
               >
                 Отменить
               </v-btn>
               <v-btn
                 small
                 color="primary"
-                @click="data.clickApply"
+                @click="applyDatePicker"
               >
                 <span
                   class="iconify"
@@ -138,6 +145,7 @@
     data () {
       return {
         show: false,
+        showDatePicker: false,
         dateRange: {
           startDate: new Date(Date.now()),
           endDate: new Date(Date.now()),
@@ -148,7 +156,8 @@
       getItemLabel (model) {
         if (model) {
           const elem = this.items.find(objItem => objItem[this.itemValue] === model)
-          return elem[this.itemLabel]
+          if (elem) return elem[this.itemLabel]
+          return 'undefined'
         }
         if (this.items[0] && this.items[0][this.itemLabel]) return this.items[0][this.itemLabel]
         return 'undefined'
@@ -168,6 +177,29 @@
       },
       updateItem (v) {
         this.$emit('update:model', v)
+      },
+      // DATEPICKER
+      openDatePicker () {
+        this.show = false
+        this.showDatePicker = true
+      },
+      closeDatePicker () {
+        this.show = false
+        this.showDatePicker = false
+      },
+      applyDatePicker () {
+        console.log(this.dateRange)
+        const date = {
+          id: 7,
+          name: 'собственный диапазон',
+          start: this.dateRange.startDate.toISOString(),
+          end: this.dateRange.endDate.toISOString(),
+        }
+        console.log(date)
+        this.show = false
+        this.showDatePicker = false
+        this.updateItem(date.id)
+        this.$store.commit('widget/filter/period', date)
       },
       formatRange (range) {
         const start = range.split(' - ')[0]
@@ -253,11 +285,15 @@
       }
     }
   }
-}
 
-.form-control.reportrange-text {
-  padding: 0;
-  border: none;
-  height: 0 !important;
+  .app__date-select-block-datepicker {
+    position: absolute;
+    top: 40px;
+    left: -20px;
+    background: #FFFFFF;
+    box-shadow: 0px 5px 20px rgba(88, 93, 106, 0.1);
+    border-radius: 12px;
+    z-index: 1000;
+  }
 }
 </style>
