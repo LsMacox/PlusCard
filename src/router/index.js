@@ -163,7 +163,7 @@ export default new Router({
 
         {
           path: '/account/certificates',
-          component: () => import('@/views/account/Certificate'),
+          component: () => import('@/views/account/certificate/table/index'),
           name: 'certificates',
           meta: { title: 'Certificates', icon: 'certificates' },
         },

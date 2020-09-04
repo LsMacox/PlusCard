@@ -1,0 +1,690 @@
+<template>
+  <v-container>
+    <v-row>
+      <v-container class="fill-height">
+        <v-row
+          align="center"
+          justify="center"
+        >
+<!--          <v-form>-->
+<!--            <v-row-->
+<!--              no-gutters-->
+<!--            >-->
+<!--              <v-col-->
+<!--                cols="3"-->
+<!--                style="padding-right: 20px"-->
+<!--              >-->
+<!--                <v-text-field-->
+<!--                  outlined-->
+<!--                  placeholder="Поиск сертификатов, клиентов"-->
+<!--                >-->
+<!--                  <template v-slot:prepend-inner>-->
+<!--                    <span-->
+<!--                      class="iconify"-->
+<!--                      data-icon="ant-design:search-outlined"-->
+<!--                      data-inline="false"-->
+<!--                    />-->
+<!--                  </template>-->
+<!--                </v-text-field>-->
+<!--              </v-col>-->
+
+<!--              <v-col-->
+<!--                cols="2"-->
+<!--                style="padding-right: 20px"-->
+<!--              >-->
+<!--                <v-select-->
+<!--                  v-model="toolbarFilter.certPaymentStatus"-->
+<!--                  outlined-->
+<!--                  placeholder="Статус оплаты"-->
+<!--                  :items="certPaymentStatusEnum"-->
+<!--                  item-text="label"-->
+<!--                  item-value="id"-->
+<!--                  clearable-->
+<!--                />-->
+<!--              </v-col>-->
+
+<!--              <v-col-->
+<!--                cols="2"-->
+<!--                style="padding-right: 20px"-->
+<!--              >-->
+<!--                <v-select-->
+<!--                  v-model="toolbarFilter.certMerchantOrderStatus"-->
+<!--                  outlined-->
+<!--                  placeholder="Статус выплаты"-->
+<!--                  :items="certMerchantOrderStatusEnum"-->
+<!--                  item-text="label"-->
+<!--                  item-value="id"-->
+<!--                  clearable-->
+<!--                />-->
+<!--              </v-col>-->
+
+<!--              <v-col-->
+<!--                cols="3"-->
+<!--                style="padding-right: 20px"-->
+<!--              >-->
+<!--                <v-select-->
+<!--                  v-model="toolbarFilter.certOrderStatus"-->
+<!--                  outlined-->
+<!--                  placeholder="Статус сертификата"-->
+<!--                  :items="certOrderStatusEnum"-->
+<!--                  item-text="label"-->
+<!--                  item-value="id"-->
+<!--                  clearable-->
+<!--                />-->
+<!--              </v-col>-->
+<!--              <v-chip-->
+<!--                  class="advanced-filter"-->
+<!--                  @click.stop="filterDrawer = !filterDrawer"-->
+<!--              >-->
+<!--                  <span-->
+<!--                      class="iconify"-->
+<!--                      data-icon="fa:sliders"-->
+<!--                      data-inline="false"-->
+<!--                  />-->
+<!--                <span>-->
+<!--                    Все фильтры-->
+<!--                  </span>-->
+<!--              </v-chip>-->
+<!--            </v-row>-->
+<!--          </v-form>-->
+          <v-col
+            cols="12"
+            style="width: 1024px"
+          >
+            <v-data-table
+              :headers="headers"
+              :items="certificates"
+              :single-expand="true"
+              :options="tableOptions"
+              :expanded.sync="expanded"
+              item-key="id"
+              show-expand
+              class="plus-table"
+              hide-default-footer
+            >
+              <template v-slot:expanded-item="{ headers, item }">
+                <td :colspan="headers.length">
+                  More info about {{ item.id }}
+                </td>
+              </template>
+
+              <template v-slot:item.data-table-expand="{ expand, isExpanded }">
+                <span
+                  class="iconify"
+                  data-icon="bi:chevron-right"
+                  data-inline="false"
+                  @click="expand(!isExpanded)"
+                />
+              </template>
+
+              <template v-slot:item.certificate.name="{ item }">
+                <div class="td-padding-wrapper">
+                  <div class="td-content-main">
+                    {{ item.certificate.name }}
+                  </div>
+                  <div
+                    class="hint"
+                    style="color: #4776E6;"
+                  >
+                    {{ item.order.num }}
+                  </div>
+                </div>
+              </template>
+
+              <template v-slot:item.user.UserName="{ item }">
+                <div class="avatar">
+                  <img :src="item.user.avatar">
+                </div>
+                <div class="td-content-wrapper">
+                  <div class="td-content-main">
+                    {{ item.user.UserName }}
+                  </div>
+                  <div
+                    v-if="item.user.last_activity"
+                    class="hint"
+                    style="color: #9191A1"
+                  >
+                    Был(а) в сети {{ $moment(item.user.last_activity).format('DD.MM.YYYY\u00A0HH:mm') }}
+                  </div>
+                </div>
+              </template>
+
+              <template v-slot:item.nominal.selling_price="{ item }">
+                <span style="float: right">
+                  {{ item.nominal.selling_price }} &#8381
+                </span>
+              </template>
+
+              <template v-slot:item.payment_status="{ item }">
+                <img :src="paymentStatusIcon(item.payment_status)">
+              </template>
+
+              <template v-slot:item.status="{ item }">
+                <img :src="statusIcon(item.status)">
+              </template>
+
+              <template v-slot:item.merchant_order_status="{ item }">
+                <img :src="merchantOrderStatusIcon(item.merchant_order_status)">
+              </template>
+
+              <template v-slot:item.date_issued="{ item }">
+                <div
+                  v-if="item.date_issued"
+                  class="td-content-wrapper"
+                >
+                  <div class="td-content-main">
+                    {{ $moment(item.date_issued).format('DD.MM.YYYY') }}
+                  </div>
+                  <div
+                    v-if="item.expires_at"
+                    class="hint"
+                  >
+                    {{ $moment(item.expires_at).format('DD.MM.YYYY') }}
+                  </div>
+                </div>
+              </template>
+
+              <template v-slot:item.used_at="{ item }">
+                <div
+                  v-if="item.used_at"
+                  class="td-content-wrapper"
+                >
+                  <div class="td-content-main">
+                    {{ $moment(item.used_at).format('DD.MM.YYYY') }}
+                  </div>
+                  <div class="hint">
+                    в {{ $moment(item.used_at).format('HH:mm') }}
+                  </div>
+                </div>
+              </template>
+            </v-data-table>
+          </v-col>
+        </v-row>
+
+        <v-row
+          align="center"
+          class="pagination"
+        >
+          <v-col class="pagination-total">
+            <span>Всего {{ totalCount }}</span>
+          </v-col>
+
+          <v-col cols="8">
+            <div class="text-center">
+              <v-pagination
+                v-model="tableOptions.page"
+                next-icon="fas fa-chevron-right"
+                prev-icon="fas fa-chevron-left"
+                :length="pagesCount"
+                :total-visible="7"
+                circle
+              />
+            </div>
+          </v-col>
+
+          <v-col class="pagination-per-page">
+            <v-select
+              v-model="tableOptions.itemsPerPage"
+              class="pagination-select"
+              :items="paginationOptions"
+              item-text="text"
+              item-value="value"
+              append-icon="fas fa-chevron-down"
+              dense
+            />
+          </v-col>
+        </v-row>
+      </v-container>
+
+    </v-row>
+  </v-container>
+</template>
+
+<script>
+  import FuzzySearch from 'fuzzy-search'
+
+  var arraySort = require('array-sort')
+
+  export default {
+    name: 'Certificates',
+    data () {
+      return {
+        filterDrawer: false,
+        tableOptions: {
+          page: 1,
+          itemsPerPage: 5,
+        },
+        paginationOptions: [
+          {
+            text: '5 на странице',
+            value: 5,
+          },
+          {
+            text: '10 на странице',
+            value: 10,
+          },
+          {
+            text: '15 на странице',
+            value: 15,
+          },
+        ],
+        expanded: [],
+        headers: [
+          {
+            text: 'Сертификат',
+            align: 'start',
+            value: 'certificate.name',
+          },
+          {
+            text: 'Цена',
+            value: 'nominal.selling_price',
+          },
+          {
+            text: 'Покупатель',
+            value: 'user.UserName',
+          },
+          {
+            text: 'Оплата',
+            value: 'payment_status',
+          },
+          {
+            text: 'Статус',
+            value: 'status',
+          },
+          {
+            text: 'Выплата',
+            value: 'merchant_order_status',
+          },
+          {
+            text: 'Выпущен',
+            value: 'date_issued',
+          },
+          {
+            text: 'Использован',
+            value: 'used_at',
+          },
+          {
+            text: '',
+            value: 'data-table-expand',
+          },
+        ],
+      }
+    },
+    computed: {
+      pagesCount () {
+        const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
+        if (count) {
+          return count
+        }
+        return 1
+      },
+      // DisplayCertColumns () {
+      //   let columnList = []
+      //   if (this.filterStatus === 'storage') {
+      //     columnList = [
+      //       this.CertColumns.CertificateName,
+      //       this.CertColumns.Order,
+      //       this.CertColumns.SellingPrice,
+      //       this.CertColumns.Status,
+      //       this.CertColumns.CreatedAt,
+      //
+      //     ]
+      //   } else {
+      //     columnList = [
+      //       this.CertColumns.UserAvatar,
+      //       this.CertColumns.UserName,
+      //       this.CertColumns.UserContacts,
+      //       this.CertColumns.Order,
+      //       this.CertColumns.SellingPrice,
+      //       this.CertColumns.PaymentStatus,
+      //       this.CertColumns.MerchantOrderStatus,
+      //       this.CertColumns.Status,
+      //       this.CertColumns.DateIssued,
+      //       this.CertColumns.UsedAt,
+      //     ]
+      //   }
+      //
+      //   if (this.$IsDebugMode()) {
+      //     columnList.unshift(this.CertColumns.ID)
+      //   }
+      //   return columnList
+      // },
+      // isFilter () {
+      //   return !this.isEmpty(this.filter) && this.filter.enable
+      // },
+      // loadingRequest () {
+      //   return this.$store.getters['template/shared/loadingRequest']
+      // },
+      programs () {
+        return this.$store.getters['company/program/programs']
+      },
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+      merchantId () {
+        return this.$store.getters['auth/auth/merchant_id']
+      },
+      certificates () {
+        return this.$store.getters['account/certificate/certificates']
+          .map(item => {
+            // Vue.set(item, 'loadingRequest', false)
+            return item
+            // return Object.assign(item, {
+            //   loadingRequest: false
+            // });
+          })
+          .filter(
+            item => this.program && item.certificate.program_id == this.program.id,
+          ) // filter by program
+      },
+      totalCount () {
+        return this.$store.getters['account/certificate/totalCount']
+      },
+      // storage_certificates_count () {
+      //   return this.certificates.filter(this.GetStatusFilter('storage')).length
+      // },
+      // active_certificates_count () {
+      //   return this.certificates.filter(this.GetStatusFilter('active')).length
+      // },
+      // archive_certificates_count () {
+      //   return this.certificates.filter(this.GetStatusFilter('archive')).length
+      // },
+      // certificates_sorted () {
+      //   if (this.certificates_searched && this.certificates_searched.length > 0) {
+      //     return arraySort(this.certificates_searched, this.sortOptions.prop, {
+      //       reverse: this.sortOptions.order !== 'ascending',
+      //     })
+      //   } else {
+      //     return []
+      //   }
+      // },
+      // certificates_table_data () {
+      //   if (this.certificates_chunked.length >= this.listQuery.page) {
+      //     return this.certificates_chunked[this.listQuery.page - 1]
+      //   } else {
+      //     return []
+      //   }
+      // },
+      // certificates_chunked () {
+      //   const chunkedList = []
+      //   var i
+      //   var j
+      //   var temparray
+      //   var chunk = this.listQuery.limit
+      //   for (i = 0, j = this.certificates_sorted.length; i < j; i += chunk) {
+      //     temparray = this.certificates_sorted.slice(i, i + chunk)
+      //     chunkedList.push(temparray)
+      //   }
+      //   return chunkedList
+      // },
+      // certificateSearcher () {
+      //   return new FuzzySearch(
+      //     this.certificates_filtered,
+      //     ['user.UserName', 'user.phone', 'user.email', 'order.num', 'number'],
+      //     {
+      //       caseSensitive: false,
+      //     },
+      //   )
+      // },
+      // certificates_searched () {
+      //   // Поиск
+      //   const search_text_trim = this.search_text.trim()
+      //
+      //   if (search_text_trim && search_text_trim.length >= 3) {
+      //     return this.certificateSearcher.search(search_text_trim)
+      //   } else {
+      //     return this.certificates_filtered
+      //   }
+      // },
+      // certificates_filtered () {
+      //   let res = this.certificates
+      //
+      //   // res = res.filter(item => item.certificate.program.id == this.program.id);
+      //   /// /console.log('certificates_filtered1', res.length)
+      //   // Фильтрация по вкладкам
+      //   res = res.filter(this.GetStatusFilter(this.filterStatus))
+      //   // console.log("certificates_filtered2", res.length);
+      //   // if (this.filterStatus == "active") {
+      //   //   res = res.filter(item => item.archived_at == null && item.user_id != null);
+      //   // } else if (this.filterStatus == "archive") {
+      //   //   //sort archived_at desc
+      //   //   res = res
+      //   //     .filter(item => item.archived_at != null && item.user_id != null)
+      //   //     .sort((a, b) => {
+      //   //       return (
+      //   //         moment(b.archived_at).valueOf() - moment(a.archived_at).valueOf()
+      //   //       );
+      //   //     });
+      //   // } else if (this.filterStatus == "storage"){
+      //   //    res = res.filter(item => item.user_id == null);
+      //   // }
+      //
+      //   if (this.isFilter) {
+      //     if (this.filter.id) {
+      //       res = res.filter(item => item.id == this.filter.id)
+      //     }
+      //     // Имя серта
+      //     if (this.filter.name) {
+      //       const search_name = this.filter.name.toLowerCase().trim()
+      //       res = res.filter(item =>
+      //         item.certificate.name
+      //           .toLowerCase()
+      //           .trim()
+      //           .includes(search_name),
+      //       )
+      //     }
+      //     // Номер
+      //     if (this.filter.number) {
+      //       res = res.filter(
+      //         item => item.number && item.number.includes(this.filter.number),
+      //       )
+      //     }
+      //     // ФИО
+      //     if (this.filter.fio) {
+      //       const search_fio = this.filter.fio.trim().toLowerCase()
+      //       res = res.filter(item =>
+      //         item.user.FullName.toLowerCase().includes(this.filter.fio),
+      //       )
+      //     }
+      //     // Телефон или почта
+      //     if (this.filter.phoneOrEmail) {
+      //       res = res.filter(
+      //         item =>
+      //           (item.user.phone &&
+      //             item.user.phone.includes(this.filter.phoneOrEmail)) ||
+      //           (item.user.email &&
+      //             item.user.email.includes(this.filter.phoneOrEmail)),
+      //       )
+      //     }
+      //
+      //     // Номинал
+      //     if (this.filter.nominal) {
+      //       res = res.filter(
+      //         item =>
+      //           item.nominal.nominal &&
+      //           item.nominal.nominal.toString().includes(this.filter.nominal),
+      //       )
+      //     }
+      //
+      //     // Цена
+      //     if (this.filter.price) {
+      //       res = res.filter(
+      //         item =>
+      //           item.nominal.selling_price &&
+      //           item.nominal.selling_price.toString().includes(this.filter.price),
+      //       )
+      //     }
+      //
+      //     // Статус
+      //     if (this.filter.status) {
+      //       res = res.filter(item => item.status == this.filter.status)
+      //     }
+      //
+      //     // Метод оплаты
+      //     if (this.filter.payment_method) {
+      //       res = res.filter(
+      //         item =>
+      //           item.order &&
+      //           this.paymentMethodEnum.get(this.getOrderPaymentMethod(item.order))
+      //             .id == this.filter.payment_method,
+      //       )
+      //     }
+      //
+      //     // Статус оплаты
+      //     if (this.filter.payment_status) {
+      //       res = res.filter(
+      //         item => item.payment_status == this.filter.payment_status,
+      //       )
+      //     }
+      //
+      //     // Статус оплаты партнеру
+      //     if (this.filter.merchant_order_status) {
+      //       res = res.filter(
+      //         item =>
+      //           item.merchant_order_status == this.filter.merchant_order_status,
+      //       )
+      //     }
+      //
+      //     // Дата оплаты
+      //     if (this.filter.paid_at_range.length) {
+      //       res = res
+      //         .filter(item => !!item.paid_at)
+      //         .filter(
+      //           item =>
+      //             item.paid_at &&
+      //             this.$moment.utc(item.paid_at) >=
+      //             this.$moment(this.filter.paid_at_range[0]) &&
+      //             this.$moment.utc(item.paid_at) <=
+      //             this.$moment(this.filter.paid_at_range[1]),
+      //         )
+      //     }
+      //
+      //     // Дата выпуска
+      //     if (this.filter.date_issued_range.length) {
+      //       res = res
+      //         .filter(item => !!item.date_issued)
+      //         .filter(
+      //           item =>
+      //             item.date_issued &&
+      //             this.$moment.utc(item.date_issued) >=
+      //             this.$moment(this.filter.date_issued_range[0]) &&
+      //             this.$moment.utc(item.date_issued) <=
+      //             this.$moment(this.filter.date_issued_range[1]),
+      //         )
+      //     }
+      //
+      //     if (this.filter.expired) {
+      //       res = res
+      //         .filter(item => !!item.expires_at)
+      //         .filter(
+      //           item =>
+      //             item.expires_at &&
+      //             this.$MomentUTC
+      //               .DateTimeFormat(item.expires_at)
+      //               .includes(this.filter.expired),
+      //         )
+      //     }
+      //
+      //     // Дата использования
+      //     if (this.filter.used_at_range.length) {
+      //       res = res
+      //         .filter(item => !!item.used_at)
+      //         .filter(
+      //           item =>
+      //             item.used_at &&
+      //             this.$moment.utc(item.used_at) >=
+      //             this.$moment(this.filter.used_at_range[0]) &&
+      //             this.$moment.utc(item.used_at) <=
+      //             this.$moment(this.filter.used_at_range[1]),
+      //         )
+      //     }
+      //   }
+      //
+      //   return res
+      // },
+    },
+    watch: {
+      'tableOptions.page' (v) {
+        console.log(this.tableOptions)
+        if (v) this.fetchData()
+      },
+      'tableOptions.itemsPerPage' (v) {
+        console.log(this.tableOptions)
+        if (v) this.fetchData()
+      },
+      // page (newPage) {
+      //   this.page = newPage
+      //   this.loadData()
+      // },
+      // perPage (val) {
+      //   this.perPage = val
+      //   console.log(this.perPage)
+      //   this.loadData()
+      // },
+      filterForm: {
+        handler (val) {
+          console.log(val)
+        },
+        deep: true,
+      },
+      toolbarFilter: {
+        handler (val) {
+          console.log(val)
+        },
+        deep: true,
+      },
+    },
+    created () {
+      this.fetchData()
+    },
+    methods: {
+      statusIcon (status) {
+        if (status === 'wait_payment') {
+          status = 'wait'
+        }
+        return require('@/icons/svg/' + status + '.svg')
+      },
+      merchantOrderStatusIcon (status) {
+        switch (status) {
+          case 'not_required':
+            status = 'dont_needed'
+            break
+          case 'succeded':
+            status = 'paid'
+            break
+        }
+        return require('@/icons/svg/payments/' + status + '.svg')
+      },
+      paymentStatusIcon (status) {
+        switch (status) {
+          case 'SBERBANK':
+            status = 'card'
+            break
+          case 'PLUS_CASH':
+            status = 'cashier'
+            break
+          default:
+            status = 'another'
+        }
+        return require('@/icons/svg/' + status + '.svg')
+      },
+      fetchData () {
+        this.loadingList = true
+        console.log('page: ' + this.tableOptions.page + '  itemsPerPage: ' + this.tableOptions.itemsPerPage)
+        this.$store
+          .dispatch('account/certificate/list', {
+            merchant_id: this.merchantId,
+            offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
+            limit: this.tableOptions.itemsPerPage,
+          })
+          .finally(() => {
+            this.loadingList = false
+          })
+      },
+    },
+  }
+</script>
+
+<style scoped>
+
+</style>
