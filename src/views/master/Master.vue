@@ -252,7 +252,6 @@
               <v-btn
                 color="primary"
                 style="width: 123px"
-                :disabled="!program.companyName || !program.logo || !program.bgcolor"
                 @click="updateCompany()"
               >
                 Далее
@@ -476,6 +475,7 @@
                       item-value="id"
                       aria-autocomplete="none"
                       autocomplete="new-street-city"
+                      @change="selectCity"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -513,7 +513,18 @@
                     </v-autocomplete>
                   </div>
                   <div class="shop-card__input shop-card__address">
+                    <v-text-field
+                      v-if="markerGenerated"
+                      v-model="newShop.address"
+                    >
+                      <template slot="prepend-inner">
+                        <div>
+                          <v-img src="@/assets/svg/location-outline.svg" />
+                        </div>
+                      </template>
+                    </v-text-field>
                     <v-autocomplete
+                      v-if="!markerGenerated"
                       v-model="newShop.address"
                       :items="filtered_addresses"
                       :search-input.sync="searchString"
@@ -658,7 +669,7 @@
                             <v-text-field
                               v-model="worktime.endTime"
                               v-mask="'##:##'"
-                              placeholder="По"
+                              placeholder="00:00"
                               outlined
                               style="width: 74px;  margin: 0 16px 0 4px"
                             />
@@ -677,7 +688,7 @@
                               :ref="'from'+globalIndex"
                               v-model="worktime.breakStart"
                               v-mask="'##:##'"
-                              placeholder="С"
+                              placeholder="00:00"
                               outlined
                               style="width: 74px; margin-right: 4px"
                             />
@@ -692,7 +703,7 @@
                             <v-text-field
                               v-model="worktime.breakEnd"
                               v-mask="'##:##'"
-                              placeholder="По"
+                              placeholder="00:00"
                               outlined
                               style="width: 74px;  margin: 0 16px 0 4px"
                             />
@@ -1057,6 +1068,7 @@ line-height: 17px;"
     directives: { mask },
     data () {
       return {
+        markerGenerated: false,
         newShopEdit: false,
         resultAdr: '',
         addresses: [],
@@ -1162,7 +1174,7 @@ line-height: 17px;"
         this.newShop.workTimes.forEach(item => {
           array = [...array, ...item.days]
         })
-        console.log('selectedDays', array)
+        // console.log('selectedDays', array)
         return array
       },
       filtered_addresses () {
@@ -1171,10 +1183,10 @@ line-height: 17px;"
         } else { return [] }
       },
       filtered_cities () {
-        // console.log('searchInput', this.searchCity)
+        // //console.log('searchInput', this.searchCity)
         if (this.cities && this.cities.length && this.searchCity && this.searchCity.length > 2) {
           const array = this.cities.filter(item => (item.name.toLowerCase()).includes(this.searchCity.toLowerCase()))
-          // console.log('output array', array)
+          // //console.log('output array', array)
           return array
         } else { return this.cities }
       },
@@ -1184,6 +1196,9 @@ line-height: 17px;"
 
     },
     watch: {
+      'worktime.endTime' (v) {
+        // console.log('value', v)
+      },
       searchString (v) {
         if (v && v.length > 3) {
           ApiService.get(`/api-cabinet/company/shops/search?query=${this.searchCity + ' ' + this.searchString}`).then(resp => {
@@ -1192,13 +1207,13 @@ line-height: 17px;"
             let i = 0
             const regex = /[^a-zA-Zа-яА-Я0-9\s]/gm
             for (i; i < this.addresses.length; i++) {
-              console.log('item', this.addresses[i])
+              // console.log('item', this.addresses[i])
               array.push({
                 name: (this.addresses[i].GeoObject.name).replace(regex, ''),
                 pos: this.addresses[i].GeoObject.Point.pos,
               })
             }
-            console.log('output', array)
+            // console.log('output', array)
             this.filtered_addr = array
           })
         }
@@ -1223,7 +1238,7 @@ line-height: 17px;"
         this.program.social.youtube = v.replace(regex, '')
       },
       'program.social.instagram' (v) {
-        // console.log('instagram', v)
+        // //console.log('instagram', v)
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(instagram.com)/gm
         this.program.social.instagram = v.replace(regex, '')
       },
@@ -1241,12 +1256,19 @@ line-height: 17px;"
       this.changeColor(this.program.bgcolor[0])
       const cities = await ApiService.get('/api-cabinet/company/shops/city/list')
       this.cities = cities
-    // console.log('cities', cities)
+    // //console.log('cities', cities)
     },
     async created () {
       this.changeColor(this.program.bgcolor[0])
     },
     methods: {
+      selectCity () {
+        const shop = this.cities.filter(item => item.id === this.newShop.city)[0]
+        ApiService.get(`/api-cabinet/company/shops/search?query=${shop.name}`).then(resp => {
+          const coords = (resp.response.GeoObjectCollection.featureMember[0].GeoObject.Point.pos).split(' ')
+          this.coords = [coords[1], coords[0]]
+        })
+      },
       goToPrevent () {
         if (this.currentStep <= 1) {
           this.$router.push('/dashboard')
@@ -1298,20 +1320,33 @@ line-height: 17px;"
           item => item.id === this.newShop.city,
         )
         this.resultAdr = city.name + ', ' + item.GeoObject.name
-        console.log('generate item', item)
+        // console.log('generate item', item)
         const coordinates = item.GeoObject.Point.pos.split(' ')
         this.newShop.coords = [coordinates[1], coordinates[0]]
         this.coords = this.newShop.coords
       },
       saveShop () {
-        console.log('shop', this.newShop)
+        // console.log('shop', this.newShop)
         this.newShop.address = this.resultAdr
         let i = 0
         let work = ''
         for (i; i < this.newShop.workTimes.length; i++) {
-          console.log('work item', this.getSelectedDays(this.newShop.workTimes[i].days))
+          // console.log('work item', this.getSelectedDays(this.newShop.workTimes[i].days))
+          if (this.newShop.workTimes[i].startTime.length === 2) {
+            this.newShop.workTimes[i].startTime += ':00'
+          }
+          if (this.newShop.workTimes[i].endTime.length === 2) {
+            this.newShop.workTimes[i].endTime += ':00'
+          }
+          if (this.newShop.workTimes[i].breakStart.length === 2) {
+            this.newShop.workTimes[i].breakStart += ':00'
+          }
+          if (this.newShop.workTimes[i].breakEnd.length === 2) {
+            this.newShop.workTimes[i].breakEnd += ':00'
+          }
           work += this.getSelectedDays(this.newShop.workTimes[i].days) + ' ' + this.newShop.workTimes[i].startTime + '-' + this.newShop.workTimes[i].endTime + '|' + this.newShop.workTimes[i].breakStart + '-' + this.newShop.workTimes[i].breakEnd + '\n'
         }
+        if (this.newShopEdit) this.newShopEdit = false
         this.newShop.worktime = work
         this.newShop.workTimes = this.sortById(this.newShop.workTimes)
         this.newShop.worktime_json = JSON.stringify(this.newShop.workTimes)
@@ -1327,7 +1362,7 @@ line-height: 17px;"
           '/api-cabinet/company/create',
           program,
         )
-        console.log(result)
+        // console.log(result)
       },
       getUnitColor () {
         if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.5)' } else { return 'rgba(0, 0, 0, 0.5)' }
@@ -1346,7 +1381,7 @@ line-height: 17px;"
         return a
       },
       getSelectedWorkDays (index) {
-        // console.log('index', index)
+        // //console.log('index', index)
         const array = this.sorted_work_array[index].days
         let str = ''
         let length = 0
@@ -1376,7 +1411,7 @@ line-height: 17px;"
         return str
       },
       sortById (arr) {
-        // console.log('input array', arr)
+        // //console.log('input array', arr)
         // arr.sort((a, b) => a.id > b.id ? 1 : -1);
         const array = []
         arr.forEach(item => {
@@ -1385,7 +1420,7 @@ line-height: 17px;"
           })
           array.push(item)
         })
-        // console.log('output array', array)
+        // //console.log('output array', array)
         return array
       },
       cancelShop () {
@@ -1416,12 +1451,28 @@ line-height: 17px;"
       addShop () {
         this.newShopActive = true
       },
-      setMarker (e) {
-        this.newShop.coords = Object.assign([], e.get('coords'))
-        /// /////console.log(this.coords)
-        this.newShop.lat = this.newShop.coords[0]
-        this.newShop.lng = this.newShop.coords[1]
-        this.shop = Object.assign({}, this.shop)
+      async setMarker (e) {
+        this.coords = e.get('coords')
+        const queryCoords = this.coords[1] + ',' + this.coords[0]
+        const success = await ApiService.get(
+          `/api-cabinet/company/shops/search/coords?query=${queryCoords}`,
+        )
+        // console.log(success.response.GeoObjectCollection)
+        const descr = success.response.GeoObjectCollection.featureMember[0].GeoObject
+          .description
+        const address =
+          success.response.GeoObjectCollection.featureMember[0].GeoObject
+            .name
+        const city = descr.split(',')[0]
+        const newCity = this.cities.filter(item => item.name === city)[0]
+        // console.log('city - ' + newCity, 'address - ' + address)
+        this.newShop.city = newCity.id
+        this.newShop.address = address
+        this.newShop.lat = this.coords[0]
+        this.newShop.lng = this.coords[1]
+        this.newShop.coords = this.coords
+        this.markerGenerated = true
+        // console.log('currentShop', this.newShop)
       },
 
       addWorkTime () {
@@ -1470,20 +1521,20 @@ line-height: 17px;"
           mask = 0
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#2A2A34'
-        // console.log('color', this.program.bgcolor[1])
+        // //console.log('color', this.program.bgcolor[1])
         } else {
           alpha = 0.1
           mask = 255
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#FFFFFF'
-        // console.log('color', this.program.bgcolor[1])
+        // //console.log('color', this.program.bgcolor[1])
         }
       },
       changeStep (step) {
         this.currentStep = step
       },
       async updateCompany () {
-        console.log('merchant_id', this.merchant_id)
+        // console.log('merchant_id', this.merchant_id)
         // await this.$store.dispatch("brand/company/updateDesign", program)
         this.changeStep(2)
       },

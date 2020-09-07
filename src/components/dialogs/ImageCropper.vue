@@ -38,118 +38,106 @@
         <v-col cols="12">
           <v-btn-toggle>
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+              color="secondary"
+              style="border-radius: 0 !important"
               @click="setDragMode('move')"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-arrows-alt
               </v-icon>
             </v-btn>
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+              color="secondary"
               @click="setDragMode('crop')"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-crop-alt
               </v-icon>
             </v-btn>
           </v-btn-toggle>
           <v-btn-toggle class="ml-1">
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+              color="secondary"
+              style="border-radius: 0 !important"
               @click="zoom(0.1)"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-search-plus
               </v-icon>
             </v-btn>
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+              color="secondary"
+              style="border-radius: 0 !important"
               @click="zoom(-0.1)"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-search-minus
               </v-icon>
             </v-btn>
           </v-btn-toggle>
           <v-btn-toggle class="ml-1">
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+              color="secondary"
+              style="border-radius: 0 !important"
               @click="move(-1, 0)"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-arrow-left
               </v-icon>
             </v-btn>
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+              color="secondary"
+              style="border-radius: 0 !important"
               @click="move(1, 0)"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-arrow-right
               </v-icon>
             </v-btn>
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+              color="secondary"
+              style="border-radius: 0 !important"
               @click="move(0, -1)"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-arrow-up
               </v-icon>
             </v-btn>
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+              color="secondary"
+              style="border-radius: 0 !important"
               @click="move(0, 1)"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-arrow-down
               </v-icon>
             </v-btn>
           </v-btn-toggle>
           <v-btn-toggle class="ml-1">
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+              color="secondary"
+              style="border-radius: 0 !important"
               @click="setImage($event)"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-upload
               </v-icon>
             </v-btn>
             <v-btn
-              rounded
-              small
-              color="primary"
-              style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+              color="secondary"
+              style="border-radius: 0 !important"
               @click="cropImage"
             >
-              <v-icon color="#fff">
+              <v-icon color="#4776E6">
                 fa-check
               </v-icon>
             </v-btn>
@@ -192,118 +180,108 @@
           <v-col cols="12">
             <v-btn-toggle>
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="setDragMode('move')"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-arrows-alt
                 </v-icon>
               </v-btn>
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="setDragMode('crop')"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-crop-alt
                 </v-icon>
               </v-btn>
             </v-btn-toggle>
             <v-btn-toggle class="ml-1">
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="zoom(0.1)"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-search-plus
                 </v-icon>
               </v-btn>
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="zoom(-0.1)"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-search-minus
                 </v-icon>
               </v-btn>
             </v-btn-toggle>
             <v-btn-toggle class="ml-1">
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="move(-1, 0)"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-arrow-left
                 </v-icon>
               </v-btn>
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="move(1, 0)"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-arrow-right
                 </v-icon>
               </v-btn>
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="move(0, -1)"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-arrow-up
                 </v-icon>
               </v-btn>
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="move(0, 1)"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-arrow-down
                 </v-icon>
               </v-btn>
             </v-btn-toggle>
             <v-btn-toggle class="ml-1">
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="setImage($event)"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-upload
                 </v-icon>
               </v-btn>
               <v-btn
-                rounded
-                small
-                color="primary"
-                style="width:25px; height:15px;border-radius: 0; background: mediumblue !important"
+
+                color="secondary"
+                style="border-radius: 0 !important"
                 @click="cropImage"
               >
-                <v-icon color="#fff">
+                <v-icon color="#4776E6">
                   fa-check
                 </v-icon>
               </v-btn>
@@ -839,39 +817,6 @@ label.btn {
 .tooltip-inner {
   white-space: normal;
 }
-
-.btn-upload .tooltip-inner,
-.btn-toggle .tooltip-inner {
-  white-space: nowrap;
-}
-
-.btn-toggle {
-  padding: 0.5rem;
-}
-
-.btn-toggle > .docs-tooltip {
-  margin: -0.5rem;
-  padding: 0.5rem;
-}
-
-@media (max-width: 400px) {
-  .btn-group-crop {
-    margin-right: -1rem !important;
-  }
-
-  .btn-group-crop > .btn {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
-
-  .btn-group-crop .docs-tooltip {
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
-}
-
 .docs-options .dropdown-menu {
   width: 100%;
 }
@@ -968,39 +913,6 @@ label.btn {
 .tooltip-inner {
   white-space: normal;
 }
-
-.btn-upload .tooltip-inner,
-.btn-toggle .tooltip-inner {
-  white-space: nowrap;
-}
-
-.btn-toggle {
-  padding: 0.5rem;
-}
-
-.btn-toggle > .docs-tooltip {
-  margin: -0.5rem;
-  padding: 0.5rem;
-}
-
-@media (max-width: 400px) {
-  .btn-group-crop {
-    margin-right: -1rem !important;
-  }
-
-  .btn-group-crop > .btn {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
-
-  .btn-group-crop .docs-tooltip {
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
-  }
-}
-
 .docs-options .dropdown-menu {
   width: 100%;
 }
@@ -1028,15 +940,6 @@ label.btn {
 .cropper-bg {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA3NCSVQICAjb4U/gAAAABlBMVEXMzMz////TjRV2AAAACXBIWXMAAArrAAAK6wGCiw1aAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABFJREFUCJlj+M/AgBVhF/0PAH6/D/HkDxOGAAAAAElFTkSuQmCC);
   background-repeat: repeat;
-}
-
-.btn-primary {
-  background-color: #409eff;
-  border-color: #409eff;
-  &:hover {
-    background-color: #66b1ff;
-    border-color: #66b1ff;
-  }
 }
 
 .el-dialog.el-dialog--center.cropperDialog .el-dialog__body {
