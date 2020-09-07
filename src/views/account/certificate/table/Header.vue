@@ -14,7 +14,7 @@
     </div>
     <div class="app__spacer" />
     <div
-      style="display: inline-grid; margin-right: 6px;"
+      style="display: inline-grid;"
     >
       <div
         class="loyalty-toolbar-text-btn"
@@ -30,7 +30,7 @@
       </div>
     </div>
     <div
-      style="display: inline-grid; margin-left: 6px;"
+      style="display: inline-grid; margin-left: 16px;"
     >
     <v-btn
         color="secondary"        
@@ -40,7 +40,7 @@
       </v-btn>      
     </div>
     <div
-      style="display: inline-grid; margin-left: 6px;"
+      style="display: inline-grid; margin-left: 16px;"
     >
       <v-btn
         color="primary"        
