@@ -32,18 +32,12 @@
     <div
       style="display: inline-grid; margin-left: 6px;"
     >
-      <v-btn
+    <v-btn
         color="secondary"        
         @click="onMasterCreateCert"
       >
-        <span
-          class="iconify"
-          style="margin-right: 8px;"
-          data-icon="feather:settings"
-          data-inline="false"
-        />
-        Настроить сертификаты
-      </v-btn>
+       <v-icon left>$iconify_feather-settings</v-icon> Настроить сертификаты
+      </v-btn>      
     </div>
     <div
       style="display: inline-grid; margin-left: 6px;"
@@ -52,7 +46,7 @@
         color="primary"        
         @click=""
       >
-        Создать новый сертификат
+       <v-icon left>$iconify_plus-circle-outlined</v-icon> Создать новый сертификат
       </v-btn>
     </div>
   </div>
