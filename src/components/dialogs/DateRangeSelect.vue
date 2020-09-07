@@ -81,6 +81,7 @@
         :ranges="false"
         :auto-apply="false"
         :show-dropdowns="true"
+        :linked-calendars="false"
         :locale-data="{
           firstDay: 1,
           applyLabel: 'Применить',
@@ -89,7 +90,12 @@
           daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
         }"
       >
-        <div slot="input" />
+        <template
+          v-slot:input="picker"
+          style="min-width: 350px;"
+        >
+          {{ picker.startDate }} - {{ picker.endDate }}
+        </template>
 
         <div
           slot="footer"
@@ -188,6 +194,7 @@
         this.showDatePicker = false
       },
       applyDatePicker () {
+        console.log('applyDatePicker')
         console.log(this.dateRange)
         const date = {
           id: 7,
@@ -195,7 +202,7 @@
           start: this.dateRange.startDate.toISOString(),
           end: this.dateRange.endDate.toISOString(),
         }
-        console.log(date)
+        // console.log(date)
         this.show = false
         this.showDatePicker = false
         this.updateItem(date.id)
