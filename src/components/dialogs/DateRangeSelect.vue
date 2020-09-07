@@ -59,9 +59,9 @@
       >
         <div
           class="app__date-select-block-item-text"
-          style="color: #9191A1; font-weight: normal;"
+          :style="getStyle({id: 7})"
         >
-          собственный диапазон
+          {{ getMyPeriod() }}
         </div>
       </div>
     </div>
@@ -89,6 +89,7 @@
           monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
           daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
         }"
+        @update="updateDateRange"
       >
         <template
           v-slot:input="picker"
@@ -116,7 +117,7 @@
               <v-btn
                 small
                 color="primary"
-                @click="applyDatePicker"
+                @click="data.clickApply"
               >
                 <span
                   class="iconify"
@@ -158,15 +159,40 @@
         },
       }
     },
+    computed: {
+      period () {
+        return this.$store.getters['widget/filter/period']
+      },
+    },
+    created () {
+      if (this.period && this.period.id === 7) {
+        this.dateRange = {
+          startDate: this.period.start,
+          endDate: this.period.end,
+        }
+      }
+    },
     methods: {
       getItemLabel (model) {
         if (model) {
           const elem = this.items.find(objItem => objItem[this.itemValue] === model)
           if (elem) return elem[this.itemLabel]
+          else if (this.dateRange.startDate && this.dateRange.endDate) {
+            return this.$moment(this.dateRange.startDate).format('DD.MM.YYYY') + ' - ' +
+              this.$moment(this.dateRange.endDate).format('DD.MM.YYYY')
+          }
           return 'undefined'
         }
         if (this.items[0] && this.items[0][this.itemLabel]) return this.items[0][this.itemLabel]
         return 'undefined'
+      },
+      getMyPeriod () {
+        if (this.period && this.period.id === 7) {
+          return this.$moment(this.dateRange.startDate).format('DD.MM.YYYY') + ' - ' +
+            this.$moment(this.dateRange.endDate).format('DD.MM.YYYY')
+        } else {
+          return 'собственный диапазон'
+        }
       },
       getStyle (item) {
         if (item[this.itemValue] === this.model) return 'color: #4776E6; font-weight: 600;'
@@ -193,9 +219,7 @@
         this.show = false
         this.showDatePicker = false
       },
-      applyDatePicker () {
-        console.log('applyDatePicker')
-        console.log(this.dateRange)
+      updateDateRange (v) {
         const date = {
           id: 7,
           name: 'собственный диапазон',
