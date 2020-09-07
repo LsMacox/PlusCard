@@ -86,6 +86,22 @@
             </div>
 
             <!--поле ввода-->
+            <!--chip быстрый поиск-->
+            <div
+              v-if="fastFilter.query"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ fastFilter.query }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearFilterQuery()"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+            <!--поле ввода-->
             <input
               class="app__filter-block-input-field"
               placeholder="Поиск и фильтр"
@@ -117,6 +133,7 @@
             </v-icon>
             <input
               ref="search"
+              v-model="filter.query"
               class="app__filter-block-input-field"
               placeholder="Поиск и фильтр"
             >
@@ -248,10 +265,11 @@
         return this.$store.getters['company/bonus_units/bonusUnits']
       },
       emptyFastFilter () {
-        if (this.fastFilter.pbr.length ||
-          this.fastFilter.bu.length ||
-          this.fastFilter.operator.length ||
-          this.fastFilter.client.length) return false
+        if (this.fastFilter.query ||
+          (this.fastFilter.pbr && this.fastFilter.pbr.length) ||
+          (this.fastFilter.bu && this.fastFilter.bu.length) ||
+          (this.fastFilter.operator && this.fastFilter.operator.length) ||
+          (this.fastFilter.client && this.fastFilter.client.length)) return false
         return true
       },
     },
@@ -270,11 +288,13 @@
         // обнуление при смене программы
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.setFastFilter(this.filter)
       },
     },
     created () {
       this.filter = JSON.parse(JSON.stringify(this.filterDefault))
       this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+      this.setFastFilter(this.filter)
     },
     methods: {
       async switchShow () {
@@ -292,9 +312,11 @@
           this.filter[field].push(item.id)
         } else {
           this.filter[field].splice(index, 1)
+          this.clearItemFastFilter(field, item)
         }
       },
       setFastFilter (filter) {
+        if (filter && filter.query) this.fastFilter.query = `Быстрый поиск: ${filter.query}`
         filter.pbr.forEach(item => {
           const operation = this.operations.find(objItem => objItem.id === item)
           if (operation) {
@@ -336,6 +358,7 @@
       clearFastFilter () {
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.setFastFilter(this.filter)
         this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(this.filterDefault)))
       },
       async querySearchClient (search) {
@@ -348,6 +371,11 @@
           await this.$store.dispatch('widget/filter/foundClients', item)
           this.loading = false
         }
+      },
+      clearFilterQuery () {
+        this.fastFilter.query = null
+        this.filter.query = null
+        this.$store.commit('widget/filter/filter', this.filter)
       },
       close () {
         this.show = false
