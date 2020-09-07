@@ -266,10 +266,10 @@
       },
       emptyFastFilter () {
         if (this.fastFilter.query ||
-          (this.fastFilter.pbr && this.fastFilter.pbr.length) ||
-          (this.fastFilter.bu && this.fastFilter.bu.length) ||
-          (this.fastFilter.operator && this.fastFilter.operator.length) ||
-          (this.fastFilter.client && this.fastFilter.client.length)) return false
+          this.fastFilter.pbr.length ||
+          this.fastFilter.bu.length ||
+          this.fastFilter.operator.length ||
+          this.fastFilter.client.length) return false
         return true
       },
     },
