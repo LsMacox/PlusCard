@@ -60,10 +60,6 @@
     },
     data () {
       return {
-        dateRange: {
-          startDate: null,
-          endDate: null,
-        },
         periodId: null,
         periods: [
           { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
