@@ -647,7 +647,6 @@
                           Рабочее время
                         </div>
                         <div
-
                           class="work-time__inputs"
                         >
                           <div class="inputs__first">
@@ -657,6 +656,7 @@
                               placeholder="00:00"
                               outlined
                               style="width: 74px; margin-right: 4px"
+                              @blur="checkLength('startTime', globalIndex)"
                             />
                           </div>
                           <div
@@ -672,6 +672,7 @@
                               placeholder="00:00"
                               outlined
                               style="width: 74px;  margin: 0 16px 0 4px"
+                              @blur="checkLength('endTime', globalIndex)"
                             />
                           </div>
                         </div>
@@ -691,6 +692,7 @@
                               placeholder="00:00"
                               outlined
                               style="width: 74px; margin-right: 4px"
+                              @blur="checkLength('breakStart', globalIndex)"
                             />
                           </div>
                           <div
@@ -706,6 +708,7 @@
                               placeholder="00:00"
                               outlined
                               style="width: 74px;  margin: 0 16px 0 4px"
+                              @blur="checkLength('breakEnd', globalIndex)"
                             />
                           </div>
                         </div>
@@ -1262,6 +1265,28 @@ line-height: 17px;"
       this.changeColor(this.program.bgcolor[0])
     },
     methods: {
+      checkLength (label, index) {
+        if (label === 'startTime') {
+          if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 2) {
+            this.newShop.workTimes[index].startTime += ':00'
+          }
+        }
+        if (label === 'endTime') {
+          if (this.newShop.workTimes[index].endTime && this.newShop.workTimes[index].endTime.length === 2) {
+            this.newShop.workTimes[index].endTime += ':00'
+          }
+        }
+        if (label === 'breakStart') {
+          if (this.newShop.workTimes[index].breakStart && this.newShop.workTimes[index].breakStart.length === 2) {
+            this.newShop.workTimes[index].breakStart += ':00'
+          }
+        }
+        if (label === 'breakEnd') {
+          if (this.newShop.workTimes[index].breakEnd && this.newShop.workTimes[index].breakEnd.length === 2) {
+            this.newShop.workTimes[index].breakEnd += ':00'
+          }
+        }
+      },
       selectCity () {
         const shop = this.cities.filter(item => item.id === this.newShop.city)[0]
         ApiService.get(`/api-cabinet/company/shops/search?query=${shop.name}`).then(resp => {
@@ -1362,7 +1387,6 @@ line-height: 17px;"
           '/api-cabinet/company/create',
           program,
         )
-        // console.log(result)
       },
       getUnitColor () {
         if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.5)' } else { return 'rgba(0, 0, 0, 0.5)' }
