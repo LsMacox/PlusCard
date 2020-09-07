@@ -302,6 +302,7 @@
                   }"
                 />
                 <ymap-marker
+                  v-if="newShop.name && newShop.coords"
                   :marker-id="shops.length"
                   :coords="newShop.coords"
                   :icon="{
