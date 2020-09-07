@@ -68,7 +68,7 @@
 
     <!--модальный блок datepicker-->
     <div
-      v-show="showDatePicker"
+      v-if="showDatePicker"
       class="app__date-select-block-datepicker"
       :style="`min-width: ${minWidth};`"
     >
@@ -165,7 +165,7 @@
       },
     },
     created () {
-      if (this.period && this.period.id === 7) {
+      if (this.period) {
         this.dateRange = {
           startDate: this.period.start,
           endDate: this.period.end,
@@ -204,6 +204,10 @@
       },
       selectItem (item) {
         const elem = this.items.find(objItem => objItem[this.itemValue] === item[this.itemValue])
+        this.dateRange = {
+          startDate: elem.start,
+          endDate: elem.end,
+        }
         this.updateItem(elem[this.itemValue])
         this.show = !this.show
       },

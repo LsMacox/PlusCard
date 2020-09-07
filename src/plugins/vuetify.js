@@ -34,7 +34,7 @@ const options = {
   icons: {
     iconfont: 'fa',
     values: {
-      delete: IconifyIconWrap('ion-close', 14),
+      delete: IconifyIconWrap('ion-close'),
       ...LoadIconifyIcons(ICONIFY_ICONS),
     },
   },
