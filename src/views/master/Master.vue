@@ -252,6 +252,7 @@
               <v-btn
                 color="primary"
                 style="width: 123px"
+                :disabled="!program.companyName || !program.logo"
                 @click="updateCompany()"
               >
                 Далее
@@ -301,7 +302,6 @@
                   }"
                 />
                 <ymap-marker
-                  v-if="newShop.name && newShop.coords"
                   :marker-id="shops.length"
                   :coords="newShop.coords"
                   :icon="{
@@ -1453,6 +1453,7 @@ line-height: 17px;"
           this.newShopEdit = false
         }
         this.newShopActive = false
+        this.markerGenerated = false
         this.newShop = {
           name: '',
           city: '',
@@ -1473,6 +1474,7 @@ line-height: 17px;"
         }
       },
       addShop () {
+        this.markerGenerated = false
         this.newShopActive = true
       },
       async setMarker (e) {
