@@ -30,9 +30,6 @@
         @percent-calc="setDiagramPercent"
       />
     </div>
-    <v-btn small>
-      Normal
-    </v-btn>
   </div>
 </template>
 
