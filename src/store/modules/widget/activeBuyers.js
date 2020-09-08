@@ -3,7 +3,7 @@ export default {
     state: {
         loading: false,
         period: 7,
-        widgetData: []
+        widgetData: [],
     },
     mutations: {
         clearState (state) {
@@ -19,18 +19,17 @@ export default {
         },
         widgetData (state, payload) {
             state.widgetData = payload
-        }
+        },
     },
     actions: {
 
-        async widget ({commit}, widget) {
+        async widget ({ commit }, widget) {
             commit('loading', true)
             const success = await axios.post('/api/widget/activebuyers', widget)
             // ////console.log(success)
             commit('widgetData', success.data.data)
-            commit('loading', false)               
-
-        }
+            commit('loading', false)
+        },
 
     },
     getters: {
@@ -42,6 +41,6 @@ export default {
         },
         widgetData (state) {
             return state.widgetData
-        }
-    }
+        },
+    },
 }

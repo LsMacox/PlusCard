@@ -33,7 +33,8 @@ import Notifications from 'vue-notification'
 
 import moment from 'moment'
 import VueMoment from 'vue-moment'
-import VueCostants  from './plugins/vue-constants'
+import VueConstants from './plugins/vue-constants'
+import VueUnderScore from 'vue-underscore'
 // import DateRangePicker from 'vue2-daterange-picker'
 //
 // Vue.use(DateRangePicker)
@@ -47,7 +48,8 @@ moment.locale('ru')
 Vue.use(VueMoment, { moment })
 
 Vue.use(Notifications)
-Vue.use(VueCostants)
+Vue.use(VueConstants)
+Vue.use(VueUnderScore)
 
 const options = {
   // color: '#bffaf3',
