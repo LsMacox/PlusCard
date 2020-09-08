@@ -23,7 +23,6 @@
       />
       <diagram-line
         v-if="_isMounted"
-        :data="diagramData"
         :width="widgetBodyWidth"
         :height="90"
         class="widget-box-body__diagram"
@@ -42,12 +41,6 @@
     },
     data () {
       return {
-        widgetRequest: {
-          start_period: '2020-08-20',
-          filter: this.$store.getters['widget/filter/filter'] ?? this.$store.getters['widget/filter/filterDefault'],
-          program_id: this.$store.getters['company/program/program'].id,
-          end_period: '2020-08-20',
-        },
         widgetBodyWidth: null,
         percent: 0,
       }
@@ -55,6 +48,23 @@
     computed: {
       loadingData () {
         return this.$store.getters['widget/bonusClients/loading']
+      },
+      widgetRequest () {
+        return {
+          start_period: this.period.start,
+          filter: this.filter,
+          program_id: this.program.id,
+          end_period: this.period.end,
+        }
+      },
+      filter () {
+        return this.$store.getters['widget/filter/filter'] ?? this.$store.getters['widget/filter/filterDefault']
+      },
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+      period () {
+        return this.$store.getters['widget/filter/period']
       },
       widgetData () {
         return this.$store.getters['widget/bonusClients/widgetData']
