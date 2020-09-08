@@ -266,10 +266,10 @@
       },
       emptyFastFilter () {
         if (this.fastFilter.query ||
-          (this.fastFilter.pbr && this.fastFilter.pbr.length) ||
-          (this.fastFilter.bu && this.fastFilter.bu.length) ||
-          (this.fastFilter.operator && this.fastFilter.operator.length) ||
-          (this.fastFilter.client && this.fastFilter.client.length)) return false
+          this.fastFilter.pbr.length ||
+          this.fastFilter.bu.length ||
+          this.fastFilter.operator.length ||
+          this.fastFilter.client.length) return false
         return true
       },
     },
@@ -374,8 +374,9 @@
       },
       clearFilterQuery () {
         this.fastFilter.query = null
-        this.filter.query = null
-        this.$store.commit('widget/filter/filter', this.filter)
+        const filter = JSON.parse(JSON.stringify(this.filterStore))
+        filter.query = null
+        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       close () {
         this.show = false
