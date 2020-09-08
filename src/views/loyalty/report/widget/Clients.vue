@@ -23,6 +23,7 @@
       />
       <diagram-line
         v-if="_isMounted"
+        :data="diagramData"
         :width="widgetBodyWidth"
         :height="90"
         class="widget-box-body__diagram"
@@ -50,6 +51,7 @@
         return this.$store.getters['widget/bonusClients/loading']
       },
       widgetRequest () {
+        this.fetchData()
         return {
           start_period: this.period.start,
           filter: this.filter,
@@ -70,8 +72,6 @@
         return this.$store.getters['widget/bonusClients/widgetData']
       },
       diagramData () {
-        if (!this.loading) return
-
         var newArr = []
 
         this.widgetData.forEach(function (data, key) {
