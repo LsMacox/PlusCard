@@ -12,9 +12,11 @@
         item-label="name"
       />
     </div>
+
     <div class="app__spacer" />
+
     <div
-      style="display: inline-grid; margin-right: 6px;"
+      style="display: inline-grid; margin-right: 12px;"
     >
       <div
         class="loyalty-toolbar-text-btn"
@@ -30,7 +32,7 @@
       </div>
     </div>
     <div
-      style="display: inline-grid; margin-left: 6px;"
+      style="display: inline-grid;"
     >
       <v-btn
         color="secondary"
@@ -116,8 +118,12 @@
   display: flex;
   align-items: center;
   margin: 0;
+  @media (max-width: 1120px) {
+    display: block;
+  }
 
   .loyalty-toolbar-name {
+    display: inline-grid;
     font-style: normal;
     font-weight: bold;
     font-size: 22px;
@@ -130,8 +136,7 @@
   }
 
   .loyalty-toolbar-period {
-    display: flex;
-    align-items: flex-end;
+    display: inline-grid;
     margin-left: 12px;
     font-style: normal;
     font-weight: 600;
