@@ -48,7 +48,7 @@
     },
     computed: {
       widgetRequest () {
-        this.fetchData()
+        // this.fetchData()
         return {
           start_period: this.period.start,
           filter: this.filter,
