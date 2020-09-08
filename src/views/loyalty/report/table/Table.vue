@@ -16,7 +16,7 @@
           class="plus-table"
           hide-default-footer
         >
-          <template v-slot:expanded-item="{ headers, item }">
+          <template v-slot:expanded-item="{ Headers, item }">
             <td :colspan="headers.length">
               More info about {{ item.bsid }}
             </td>

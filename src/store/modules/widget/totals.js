@@ -2,26 +2,26 @@ export default {
     namespaced: true,
     state: {
         loading: false,
-        startPeriod: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0],
-        endPeriod: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0],
+        startPeriod: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+        endPeriod: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
 
         period: 7,
         widgetData: [],
         graphData: {
             labels: [],
-            datasets: []
-        }
+            datasets: [],
+        },
     },
     mutations: {
         clearState (state) {
             state.loading = false
-            state.startPeriod = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0]
-            state.endPeriod = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split("T")[0]
+            state.startPeriod = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0]
+            state.endPeriod = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0]
             state.period = 7
             state.widgetData = []
             state.graphData = {
                 labels: [],
-                datasets: []
+                datasets: [],
             }
         },
         loading (state, payload) {
@@ -41,12 +41,12 @@ export default {
         },
         graphData (state, payload) {
             state.graphData = payload
-        }
+        },
     },
     actions: {
-        async widget ({commit}, widget) {
+        async widget ({ commit }, widget) {
             const success = await axios.post('/api/widget/totals', widget)
-            commit('widgetData', success.data.data)   
+            commit('widgetData', success.data.data)
         },
 
     },
@@ -72,12 +72,12 @@ export default {
         },
         operationsSumm (state) {
             if (state.widgetData.length) {
-                let operationsSumm = Object.assign([], state.widgetData)
+                const operationsSumm = Object.assign([], state.widgetData)
                 operationsSumm.reverse()
-                operationsSumm.forEach(item => item['operations_summ'] = item['operations_summ'] / 1000)
+                operationsSumm.forEach(item => item.operations_summ = item.operations_summ / 1000)
                 return operationsSumm
             }
             return []
-        }
-    }
+        },
+    },
 }

@@ -18,7 +18,6 @@
     >
       <div
         class="loyalty-toolbar-text-btn"
-        @click=""
       >
         <span
           class="iconify loyalty-toolbar-text-btn-icon"
@@ -35,7 +34,6 @@
       <v-btn
         color="secondary"
         small
-        @click=""
       >
         <span
           class="iconify"

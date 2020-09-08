@@ -1,6 +1,6 @@
 <template>
   <v-container>
-  <certificate-table></certificate-table>
+    <certificate-table />
   </v-container>
 </template>
 

@@ -73,17 +73,17 @@
                 />
               </v-col>
               <v-chip
-                  class="advanced-filter"
-                  @click.stop="filterDrawer = !filterDrawer"
+                class="advanced-filter"
+                @click.stop="filterDrawer = !filterDrawer"
               >
-                  <span
-                      class="iconify"
-                      data-icon="fa:sliders"
-                      data-inline="false"
-                  />
+                <span
+                  class="iconify"
+                  data-icon="fa:sliders"
+                  data-inline="false"
+                />
                 <span>
-                    Все фильтры
-                  </span>
+                  Все фильтры
+                </span>
               </v-chip>
             </v-row>
           </v-form>
@@ -245,9 +245,16 @@
         <div class="filter-drawer-content">
           <v-row no-gutters>
             <v-col cols="12">
-              <div class="close-filter" @click="filterDrawer = false">
+              <div
+                class="close-filter"
+                @click="filterDrawer = false"
+              >
                 <div class="back-arrow">
-                  <span class="iconify" data-icon="bi:arrow-left" data-inline="false"></span>
+                  <span
+                    class="iconify"
+                    data-icon="bi:arrow-left"
+                    data-inline="false"
+                  />
                 </div>
                 <div class="back-label">
                   <span>
@@ -269,161 +276,165 @@
                   <v-row no-gutters>
                     <v-col cols="12">
                       <v-text-field
-                          outlined
-                          label="Покупатель"
-                      ></v-text-field>
+                        outlined
+                        label="Покупатель"
+                      />
                     </v-col>
-                  <v-col cols="12">
-                    <v-text-field
+                    <v-col cols="12">
+                      <v-text-field
                         outlined
                         label="Телефон/Почта"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
+                      />
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field
                         outlined
                         label="Номер сертификата"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field
+                      />
+                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field
                         outlined
                         label="Номинал"
-                    ></v-text-field>
-                  </v-col>
-                    <v-col
-                        cols="12"
-                    >
-                      <v-select
-                          v-model="filterForm.certPaymentStatus"
-                          outlined
-                          placeholder="Статус оплаты"
-                          :items="certPaymentStatusEnum"
-                          item-text="label"
-                          item-value="id"
-                          clearable
                       />
                     </v-col>
                     <v-col
-                        cols="12"
+                      cols="12"
                     >
                       <v-select
-                          v-model="filterForm.certMerchantOrderStatus"
-                          outlined
-                          placeholder="Статус выплаты"
-                          :items="certMerchantOrderStatusEnum"
-                          item-text="label"
-                          item-value="id"
-                          clearable
+                        v-model="filterForm.certPaymentStatus"
+                        outlined
+                        placeholder="Статус оплаты"
+                        :items="certPaymentStatusEnum"
+                        item-text="label"
+                        item-value="id"
+                        clearable
                       />
                     </v-col>
                     <v-col
-                        cols="12"
+                      cols="12"
                     >
                       <v-select
-                          v-model="filterForm.certOrderStatus"
-                          outlined
-                          placeholder="Статус сертификата"
-                          :items="certOrderStatusEnum"
-                          item-text="label"
-                          item-value="id"
-                          clearable
+                        v-model="filterForm.certMerchantOrderStatus"
+                        outlined
+                        placeholder="Статус выплаты"
+                        :items="certMerchantOrderStatusEnum"
+                        item-text="label"
+                        item-value="id"
+                        clearable
+                      />
+                    </v-col>
+                    <v-col
+                      cols="12"
+                    >
+                      <v-select
+                        v-model="filterForm.certOrderStatus"
+                        outlined
+                        placeholder="Статус сертификата"
+                        :items="certOrderStatusEnum"
+                        item-text="label"
+                        item-value="id"
+                        clearable
                       />
                     </v-col>
 
                     <v-col
-                        cols="12"
+                      cols="12"
                     >
                       <date-range-picker
-                          ref="picker"
-                          opens="right"
-                          :ranges="false"
-                          :auto-apply="false"
-                          :locale-data="{
-                            firstDay: 0,
-                            applyLabel: 'Применить',
-                            cancelLabel: 'Отменить',
-                            monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                            daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                          }"
-                          v-model="filterForm.paymentDate"
+                        ref="picker"
+                        v-model="filterForm.paymentDate"
+                        opens="right"
+                        :ranges="false"
+                        :auto-apply="false"
+                        :locale-data="{
+                          firstDay: 0,
+                          applyLabel: 'Применить',
+                          cancelLabel: 'Отменить',
+                          monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                          daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                        }"
                       >
-                        <template #input="picker" style="min-width: 350px;">
+                        <template
+                          #input="picker"
+                          style="min-width: 350px;"
+                        >
                           {{ $moment(picker.startDate).format('DD.MM.YYYY') }} - {{ $moment(picker.endDate).format('DD.MM.YYYY') }}
                         </template>
 
-                        <div slot="footer" slot-scope="data">
+                        <div
+                          slot="footer"
+                          slot-scope="data"
+                        >
                           <div class="footer-content">
-                              <div class="range">
-                                {{ formatRange(data.rangeText) }}
-                              </div>
-                              <div class="actions">
-                                <v-btn
-                                    color="primary"
-                                    small
-                                    @click="data.clickCancel()"
-                                >
-                                  Отменить
-                                </v-btn>
-                                <v-btn
-                                    small
-                                    color="primary"
-                                    @click="data.clickApply"
-                                >
-                                  <span
-                                      class="iconify"
-                                      data-icon="carbon:checkmark-outline"
-                                      data-inline="false"
-                                  />
-                                  Применить
-                                </v-btn>
+                            <div class="range">
+                              {{ formatRange(data.rangeText) }}
+                            </div>
+                            <div class="actions">
+                              <v-btn
+                                color="primary"
+                                small
+                                @click="data.clickCancel()"
+                              >
+                                Отменить
+                              </v-btn>
+                              <v-btn
+                                small
+                                color="primary"
+                                @click="data.clickApply"
+                              >
+                                <span
+                                  class="iconify"
+                                  data-icon="carbon:checkmark-outline"
+                                  data-inline="false"
+                                />
+                                Применить
+                              </v-btn>
                             </div>
                           </div>
                         </div>
-
                       </date-range-picker>
                     </v-col>
 
-<!--                    <v-col-->
-<!--                        cols="12"-->
-<!--                    >-->
-<!--                      <date-range-picker-->
-<!--                          ref="picker"-->
-<!--                          opens="right"-->
-<!--                          :ranges="false"-->
-<!--                          :locale-data="{-->
-<!--                            firstDay: 0,-->
-<!--                            applyLabel: 'Применить',-->
-<!--                            cancelLabel: 'Отменить',-->
-<!--                          }"-->
-<!--                          v-model="filterForm.issueDate"-->
-<!--                      >-->
-<!--                        <template #input="picker" style="min-width: 350px;">-->
-<!--                          {{ $moment(picker.startDate).format('DD.MM.YYYY') }} - {{ $moment(picker.endDate).format('DD.MM.YYYY') }}-->
-<!--                        </template>-->
-<!--                      </date-range-picker>-->
-<!--                    </v-col>-->
+                    <!--                    <v-col-->
+                    <!--                        cols="12"-->
+                    <!--                    >-->
+                    <!--                      <date-range-picker-->
+                    <!--                          ref="picker"-->
+                    <!--                          opens="right"-->
+                    <!--                          :ranges="false"-->
+                    <!--                          :locale-data="{-->
+                    <!--                            firstDay: 0,-->
+                    <!--                            applyLabel: 'Применить',-->
+                    <!--                            cancelLabel: 'Отменить',-->
+                    <!--                          }"-->
+                    <!--                          v-model="filterForm.issueDate"-->
+                    <!--                      >-->
+                    <!--                        <template #input="picker" style="min-width: 350px;">-->
+                    <!--                          {{ $moment(picker.startDate).format('DD.MM.YYYY') }} - {{ $moment(picker.endDate).format('DD.MM.YYYY') }}-->
+                    <!--                        </template>-->
+                    <!--                      </date-range-picker>-->
+                    <!--                    </v-col>-->
 
-<!--                    <v-col-->
-<!--                        cols="12"-->
-<!--                    >-->
-<!--                      <date-range-picker-->
-<!--                          ref="picker"-->
-<!--                          opens="right"-->
-<!--                          :ranges="false"-->
-<!--                          :locale-data="{-->
-<!--                            firstDay: 0,-->
-<!--                            applyLabel: 'Применить',-->
-<!--                            cancelLabel: 'Отменить',-->
-<!--                          }"-->
-<!--                          v-model="filterForm.useDate"-->
-<!--                      >-->
-<!--                        <template #input="picker" style="min-width: 350px;">-->
-<!--                          {{ $moment(picker.startDate).format('DD.MM.YYYY') }} - {{ $moment(picker.endDate).format('DD.MM.YYYY') }}-->
-<!--                        </template>-->
-<!--                      </date-range-picker>-->
-<!--                    </v-col>-->
-
+                    <!--                    <v-col-->
+                    <!--                        cols="12"-->
+                    <!--                    >-->
+                    <!--                      <date-range-picker-->
+                    <!--                          ref="picker"-->
+                    <!--                          opens="right"-->
+                    <!--                          :ranges="false"-->
+                    <!--                          :locale-data="{-->
+                    <!--                            firstDay: 0,-->
+                    <!--                            applyLabel: 'Применить',-->
+                    <!--                            cancelLabel: 'Отменить',-->
+                    <!--                          }"-->
+                    <!--                          v-model="filterForm.useDate"-->
+                    <!--                      >-->
+                    <!--                        <template #input="picker" style="min-width: 350px;">-->
+                    <!--                          {{ $moment(picker.startDate).format('DD.MM.YYYY') }} - {{ $moment(picker.endDate).format('DD.MM.YYYY') }}-->
+                    <!--                        </template>-->
+                    <!--                      </date-range-picker>-->
+                    <!--                    </v-col>-->
                   </v-row>
                 </v-form>
               </div>
@@ -482,8 +493,8 @@
   })
 
   export default {
-    components: { DateRangePicker },
     name: 'Certificates',
+    components: { DateRangePicker },
     data () {
       return {
         filterForm: {

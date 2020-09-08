@@ -1,5 +1,4 @@
 
-
 const getDefaultState = () => {
   return {
     program: null, // тек. выбранная компания
@@ -34,7 +33,7 @@ const actions = {
 
 const getters = {
   program: state => state.program,
-  programs: state => state.programs,  
+  programs: state => state.programs,
 }
 
 export default {

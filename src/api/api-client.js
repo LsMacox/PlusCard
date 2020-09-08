@@ -10,7 +10,6 @@ const service = axios.create({
   // timeout: 5000, // request timeout
 })
 
-
 // request interceptor
 service.interceptors.request.use(
   config => {
@@ -44,7 +43,7 @@ service.interceptors.response.use(
     store.commit('app/LOADING_REQUEST', false)
 
     if (error.response) {
-      console.log(' error.response.status ', error.response.status)      
+      console.log(' error.response.status ', error.response.status)
       if (
         error.config &&
         (!Object.prototype.hasOwnProperty.call(error.config, 'errorHandle') ||
