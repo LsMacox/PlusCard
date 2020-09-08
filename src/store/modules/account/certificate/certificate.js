@@ -2,6 +2,7 @@ import ApiService from '@/api/api-client'
 
 const state = {
     certificates: [],
+    programCertificates: [],
     totalCount: 0,
 }
 
@@ -12,6 +13,10 @@ const mutations = {
 
     certificates (state, payload) {
         state.certificates = payload
+    },
+
+    programCertificates (state, payload) {
+        state.programCertificates = payload
     },
 
     totalCount (state, payload) {
@@ -52,27 +57,41 @@ const mutations = {
     remove (state, payload) {
         const items = state.certificates
         items.forEach((item, index) => {
-            if (item.id == payload.id) items.splice(index, 1)
+            if (item.id === payload.id) items.splice(index, 1)
         })
     },
 }
 
 const actions = {
 
-    async list ({ commit }, { merchant_id, offset, limit }) {
+    async list ({ commit }, { merchantId, offset, limit }) {
         // eslint-disable-next-line no-useless-catch
         try {
             // console.log('merchant_id', merchant_id)
             console.log(offset, limit)
             const success = await ApiService.get('api-cabinet/client/certificate/list2', {
                 params: {
-                    merchant_id: merchant_id,
+                    merchant_id: merchantId,
                     offset: offset,
                     limit: limit,
                 },
             })
             commit('certificates', success.certificates)
             commit('totalCount', success.totalCount)
+        } catch (error) {
+            throw error
+        }
+    },
+    async programCertificates ({ commit }, programId) {
+        console.log(programId)
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const success = await ApiService.get('api-cabinet/client/certificate/program/list', {
+                params: {
+                    program_id: programId,
+                },
+            })
+            commit('programCertificates', success)
         } catch (error) {
             throw error
         }
@@ -119,7 +138,9 @@ const getters = {
     certificates (state) {
         return state.certificates
     },
-
+    programCertificates (state) {
+        return state.programCertificates
+    },
     totalCount (state) {
         return state.totalCount
     },

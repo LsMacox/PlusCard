@@ -3,182 +3,312 @@
     no-gutters
   >
     <v-col>
-      <div class="app__popover">
+      <div class="app__filter">
         <div
-          class="app__popover-block-input"
+          class="app__filter-block-input"
           style="border: 1px solid #D7D7E0; border-radius: 10px;"
         >
-          <v-icon>
+          <v-icon
+            v-show="emptyFastFilter"
+            class="app__filter-block-input-icon-prepend"
+          >
             $iconify_search-outlined
           </v-icon>
-          <input
-            class="app__popover-block-input-field"
-            placeholder="Поиск и фильтр"
-            @focus="switchShow"
+
+          <div style="width: 100%;">
+            <div
+              v-for="(item, i) in fastFilter.certificates"
+              :key="`certificates${i}`"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ item.label }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('certificates', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <div
+              v-for="(item, i) in fastFilter.certPaymentStatus"
+              :key="`certPaymentStatus${i}`"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ item.label }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('certPaymentStatus', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <div
+              v-for="(item, i) in fastFilter.certOrderStatus"
+              :key="`certOrderStatus${i}`"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ item.label }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('certOrderStatus', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <div
+              v-for="(item, i) in fastFilter.certMerchantOrderStatus"
+              :key="`certMerchantOrderStatus${i}`"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ item.label }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('certMerchantOrderStatus', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <div
+              v-for="(item, i) in fastFilter.buyers"
+              :key="`buyers${i}`"
+              class="app__filter-chip"
+            >
+              <div class="app__filter-chip-content">
+                {{ item.label }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('buyers', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <!--поле ввода-->
+            <input
+              class="app__filter-block-input-field"
+              placeholder="Поиск и фильтр"
+              @focus="switchShow"
+            >
+          </div>
+
+          <v-icon
+            v-show="!emptyFastFilter"
+            class="app__filter-block-input-icon-append"
+            @click="clearFastFilter"
           >
+            $iconify_chrome-close
+          </v-icon>
         </div>
+
+        <!--окно фильтра-->
         <div
           v-show="show"
-          class="app__popover-block"
+          class="app__filter-block"
         >
           <div
-            class="app__popover-block-input"
+            class="app__filter-block-input"
           >
-            <v-icon>
+            <v-icon
+              class="app__filter-block-input-icon-prepend"
+            >
               $iconify_search-outlined
             </v-icon>
             <input
               ref="search"
-              class="app__popover-block-input-field"
+              class="app__filter-block-input-field"
               placeholder="Поиск и фильтр"
             >
+
+            <div class="app__spacer" />
+
             <v-icon
-              class="app__popover-block-icon-close"
+              class="app__filter-block-input-icon-append app__filter-block-icon-close"
               @click="close()"
             >
               $iconify_chrome-close
             </v-icon>
             <v-icon
-              class="app__popover-block-icon-check"
+              class="app__filter-block-input-icon-append app__filter-block-icon-check"
               @click="apply()"
             >
               $iconify_bx-check
             </v-icon>
           </div>
-          <div class="app__popover-content">
+          <div class="app__filter-content">
             <v-row>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Сертификаты {{ filter }}<br>
                 </div>
-<!--                <div-->
-<!--                  v-for="(item, i) in operations"-->
-<!--                  :key="i"-->
-<!--                  :class="getFilterClass('pbr', item)"-->
-<!--                  @click="setFilter('pbr', item)"-->
-<!--                >-->
-<!--                  {{ item.title }}-->
-<!--                </div>-->
+                <div
+                  v-for="(item, i) in programCertificates"
+                  :key="i"
+                  :class="getFilterClass('certificates', item)"
+                  @click="setFilter('certificates', item)"
+                >
+                  {{ item.name }}
+                </div>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Оплаты
                 </div>
                 <div
                   v-for="(item, i) in certPaymentStatusEnum"
                   :key="i"
-                  :class="getFilterClass('certOrderStatus', item)"
-                  @click="setFilter('certOrderStatus', item)"
+                  :class="getFilterClass('certPaymentStatus', item)"
+                  @click="setFilter('certPaymentStatus', item)"
                 >
-                    <img :src="paymentStatusIcon(item.id)">
-                    <span>
-                      {{ item.label }}
-                      {{ item.label }}
-                    </span>
+                  <div>
+                    <div class="app__filter-content-chip-icon">
+                      <img :src="paymentStatusIcon(item.id)">
+                      <span>
+                        {{ item.label }}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Статусы
                 </div>
                 <div
-                    v-for="(item, i) in certOrderStatusEnum"
-                    :key="i"
-                    :class="getFilterClass('certOrderStatus', item)"
-                    @click="setFilter('certOrderStatus', item)"
+                  v-for="(item, i) in certOrderStatusEnum"
+                  :key="i"
+                  :class="getFilterClass('certOrderStatus', item)"
+                  @click="setFilter('certOrderStatus', item)"
                 >
-                  <img :src="statusIcon(item.id)">
-                  {{ item.label }}
+                  <div class="app__filter-content-chip-icon">
+                    <img :src="statusIcon(item.id)">
+                    <span>
+                      {{ item.label }}
+                    </span>
+                  </div>
                 </div>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Выплаты
                 </div>
                 <div
-                    v-for="(item, i) in certMerchantOrderStatusEnum"
-                    :key="i"
-                    :class="getFilterClass('certOrderStatus', item)"
-                    @click="setFilter('certOrderStatus', item)"
+                  v-for="(item, i) in certMerchantOrderStatusEnum"
+                  :key="i"
+                  :class="getFilterClass('certMerchantOrderStatus', item)"
+                  @click="setFilter('certMerchantOrderStatus', item)"
                 >
-                  <img :src="merchantOrderStatusIcon(item.id)">
-                  {{ item.label }}
+                  <div class="app__filter-content-chip-icon">
+                    <img :src="merchantOrderStatusIcon(item.id)">
+                    <span>
+                      {{ item.label }}
+                    </span>
+                  </div>
                 </div>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Выпущен
                 </div>
                 <div>
                   <date-range-picker
-                      ref="picker"
-                      opens="right"
-                      :ranges="false"
-                      :auto-apply="false"
-                      :locale-data="{
-                            firstDay: 0,
-                            separator: ' * ',
-                            applyLabel: 'Применить',
-                            cancelLabel: 'Отменить',
-                            monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                            daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                          }"
-                      v-model="filter.issueDate"
+                    ref="picker"
+                    v-model="filter.issueDate"
+                    opens="right"
+                    :ranges="false"
+                    :auto-apply="false"
+                    :linked-calendars="false"
+                    :locale-data="{
+                      firstDay: 0,
+                      separator: ' * ',
+                      applyLabel: 'Применить',
+                      cancelLabel: 'Отменить',
+                      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
+                      daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                    }"
                   >
-                    <template #input="picker" style="min-width: 350px;">
-                      {{ $moment(picker.startDate).format('DD.MM.YYYY') }} - {{ $moment(picker.endDate).format('DD.MM.YYYY') }}
+                    <template
+                      #input="picker"
+                      style="min-width: 350px;"
+                    >
+                      <div class="date-range-value">
+                        {{ issueDateRange(picker.startDate, picker.endDate) }}
+                      </div>
+                      <div class="calendar-icon">
+                        <span class="iconify" data-icon="feather:calendar" data-inline="false"></span>
+                      </div>
                     </template>
 
-                    <div slot="footer" slot-scope="data">
+                    <div
+                      slot="footer"
+                      slot-scope="data"
+                    >
                       <div class="footer-content">
                         <div class="range">
                           {{ formatRange(data.rangeText) }}
                         </div>
                         <div class="actions">
                           <v-btn
-                              color="primary"
-                              small
-                              @click="data.clickCancel()"
+                            color="primary"
+                            small
+                            @click="data.clickCancel()"
                           >
                             Отменить
                           </v-btn>
                           <v-btn
-                              small
-                              color="primary"
-                              @click="data.clickApply"
+                            small
+                            color="primary"
+                            @click="data.clickApply"
                           >
-                                  <span
-                                      class="iconify"
-                                      data-icon="carbon:checkmark-outline"
-                                      data-inline="false"
-                                  />
+                            <span
+                              class="iconify"
+                              data-icon="carbon:checkmark-outline"
+                              data-inline="false"
+                            />
                             Применить
                           </v-btn>
                         </div>
                       </div>
                     </div>
-
                   </date-range-picker>
                 </div>
               </v-col>
               <v-col>
-                <div class="app__popover-content-header">
+                <div class="app__filter-content-header">
                   Покупатели
                 </div>
                 <div>
-                  <input
+                  <v-autocomplete
                     v-model="filter.buyers"
-                    class="app__popover-content-input"
+                    :items="buyers"
                     placeholder="Начните вводить имя клиента"
-                  >
+                    item-text="userName"
+                    item-value="id"
+                    outlined
+                    multiple
+                    chips
+                    deletable-chips
+                  />
                 </div>
               </v-col>
             </v-row>
@@ -193,44 +323,6 @@
   import DateRangePicker from 'vue2-daterange-picker'
   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
 
-  const statusStyles = Object.freeze({
-    default: {
-      border: '2px dashed #808B8D',
-      color: '#808B8D',
-      // background: "linear-gradient(180deg, #B5B5B5 0%, #7E7E7E 100%)"
-    },
-    yellow: {
-      border: '2px dashed #E29D3A',
-      color: '#E29D3A',
-      // background: "linear-gradient(180deg, #E09B3D 0%, #B8771E 100%)"
-    },
-    lightGreen: {
-      border: '2px dashed #7DB529',
-      color: '#7DB529',
-      // background: "linear-gradient(180deg, #7DB529 0%, #5F802E 100%)"
-    },
-    green: {
-      border: '2px dashed #199653',
-      color: '#199653',
-      // background: "linear-gradient(180deg, #29B572 0%, #117042 100%)"
-    },
-    red: {
-      border: '2px dashed #A31419',
-      color: '#A31419',
-      // background: "linear-gradient(180deg, #EC1C24 0%, #A31419 100%)"
-    },
-    blue: {
-      border: '2px dashed #07426C',
-      color: '#07426C',
-      // background: "linear-gradient(180deg, #0D64A1 0%, #07426C 100%)"
-    },
-    black: {
-      border: '2px dashed #4C4E4F',
-      color: '#4C4E4F',
-      // background: "linear-gradient(180deg, #808B8D 0%, #4C4E4F 100%)"
-    },
-  })
-
   export default {
     components: {
       DateRangePicker,
@@ -238,6 +330,7 @@
     data () {
       return {
         filter: null,
+        fastFilter: {},
         show: false,
         certPaymentStatusEnum: [
           {
@@ -283,56 +376,77 @@
           {
             id: 'wait_payment',
             label: 'Ожидает оплаты',
-            short: 'Ожидает оплаты',
-            style: statusStyles.default,
           },
           {
             id: 'paid',
             label: 'Оплачен',
-            short: 'Оплачен',
-            style: statusStyles.red,
           },
           {
             id: 'issued',
             label: 'Выпущен',
-            short: 'Выпущен',
-            style: statusStyles.yellow,
           },
           {
             id: 'used',
             label: 'Использован',
-            short: 'Использован',
-            style: statusStyles.lightGreen,
           },
           {
             id: 'deleted',
             label: 'Удален',
-            short: 'Удален',
-            style: statusStyles.black,
           },
         ],
       }
     },
     computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
       filterStore () {
-        return this.$store.getters['account/filter/filter']
+        return this.$store.getters['account/certificate/filter/filter']
       },
       filterDefault () {
-        return this.$store.getters['account/filter/filterDefault']
+        return this.$store.getters['account/certificate/filter/filterDefault']
+      },
+      buyers () {
+        return this.$store.getters['account/certificate/buyers/buyers']
+      },
+      programCertificates () {
+        return this.$store.getters['account/certificate/certificate/programCertificates']
+      },
+      emptyFastFilter () {
+        if (this.fastFilter.certPaymentStatus.length ||
+          this.fastFilter.certOrderStatus.length ||
+          this.fastFilter.certMerchantOrderStatus.length ||
+          this.fastFilter.buyers.length ||
+          this.fastFilter.certificates.length
+        ) {
+          return false
+        }
+        return true
       },
     },
     watch: {
       show (v) {
         if (v) {
-          // this.filter = Object.assign({}, this.filterStore)
           this.filter = JSON.parse(JSON.stringify(this.filterStore))
         } else {
           this.filter = Object.assign({}, this.filterDefault)
         }
       },
+      searchClient (v) {
+        v && v !== this.filter.client && this.querySearchClient(v)
+      },
+      program (v) {
+        // обнуление при смене программы
+        this.filter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+      },
     },
     created () {
       this.filter = this.filterDefault
+      this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+      console.log('PROGRAM ID: ' + this.program.id)
+      this.$store.dispatch('account/certificate/certificate/programCertificates', this.program.id)
+      this.$store.dispatch('account/certificate/buyers/buyers', this.program.id)
     },
     methods: {
       statusIcon (status) {
@@ -361,6 +475,15 @@
 
         return require('@/icons/svg/' + status + '.svg')
       },
+      issueDateRange (startDate, endDate) {
+        let dateRange = ''
+        if (startDate === null || endDate === null) {
+          dateRange = 'Выберите период выпуска сертификата'
+        } else {
+          dateRange = this.$moment(startDate).format('DD.MM.YYYY') + ' - ' + this.$moment(endDate).format('DD.MM.YYYY')
+        }
+        return dateRange
+      },
       formatRange (range) {
         const start = range.split(' - ')[0]
         const end = range.split(' - ')[1]
@@ -376,9 +499,10 @@
       },
       getFilterClass (field, item) {
         // const filter = Object.assign({}, this.filter)
-        console.log(item)
-        if (this.filter && this.filter[field].includes(item.id)) return 'app__popover-content-chip app__popover-content-chip-active'
-        return 'app__popover-content-chip'
+        if (this.filter && this.filter[field].includes(item.id)) {
+          return 'app__filter-content-chip app__filter-content-chip-active'
+        }
+        return 'app__filter-content-chip'
       },
       setFilter (field, item) {
         // const filter = Object.assign({}, this.filter)
@@ -387,125 +511,269 @@
           this.filter[field].push(item.id)
         } else {
           this.filter[field].splice(index, 1)
+          this.clearItemFastFilter(field, item)
+        }
+      },
+      setFastFilter (filter) {
+        filter.certificates.forEach(item => {
+          const certificate = this.programCertificates.find(objItem => objItem.id === item)
+          if (certificate) {
+            const obj = { id: item, label: `Сертификаты: ${certificate.name}` }
+            if (!this.fastFilter.certificates.find(objItem => objItem.id === item)) {
+              this.fastFilter.certificates.push(obj)
+            }
+          }
+        })
+        filter.buyers.forEach(item => {
+          const certPaymentStatus = this.certPaymentStatusEnum.find(objItem => objItem.id === item)
+          if (certPaymentStatus) {
+            const obj = { id: item, label: `Оплаты: ${certPaymentStatus.label}` }
+            if (!this.fastFilter.certPaymentStatus.find(objItem => objItem.id === item)) {
+              this.fastFilter.certPaymentStatus.push(obj)
+            }
+          }
+        })
+        filter.certPaymentStatus.forEach(item => {
+          const certPaymentStatus = this.certPaymentStatusEnum.find(objItem => objItem.id === item)
+          if (certPaymentStatus) {
+            const obj = { id: item, label: `Оплаты: ${certPaymentStatus.label}` }
+            if (!this.fastFilter.certPaymentStatus.find(objItem => objItem.id === item)) {
+              this.fastFilter.certPaymentStatus.push(obj)
+            }
+          }
+        })
+        filter.certOrderStatus.forEach(item => {
+          const certOrderStatus = this.certOrderStatusEnum.find(objItem => objItem.id === item)
+          if (certOrderStatus) {
+            const obj = { id: item, label: `Статусы: ${certOrderStatus.label}` }
+            if (!this.fastFilter.certOrderStatus.find(objItem => objItem.id === item)) {
+              this.fastFilter.certOrderStatus.push(obj)
+            }
+          }
+        })
+        filter.certMerchantOrderStatus.forEach(item => {
+          const certMerchantOrderStatus = this.certMerchantOrderStatusEnum.find(objItem => objItem.id === item)
+          if (certMerchantOrderStatus) {
+            const obj = { id: item, label: `Выплаты: ${certMerchantOrderStatus.label}` }
+            if (!this.fastFilter.certMerchantOrderStatus.find(objItem => objItem.id === item)) {
+              this.fastFilter.certMerchantOrderStatus.push(obj)
+            }
+          }
+        })
+        filter.buyers.forEach(item => {
+          const buyers = this.buyers.find(objItem => objItem.id === item)
+          if (buyers) {
+            const obj = { id: item, label: `Покупатели: ${buyers.userName}` }
+            if (!this.fastFilter.buyers.find(objItem => objItem.id === item)) {
+              this.fastFilter.buyers.push(obj)
+            }
+          }
+        })
+      },
+      clearItemFastFilter (field, item) {
+        const i = this.fastFilter[field].findIndex(objItem => objItem.id === item.id)
+        if (typeof i !== 'undefined') this.fastFilter[field].splice(i, 1)
+
+        const filter = JSON.parse(JSON.stringify(this.filterStore))
+        const j = filter[field].findIndex(objItem => objItem.id === item.id)
+        if (typeof j !== 'undefined') filter[field].splice(j, 1)
+        this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
+      },
+      clearFastFilter () {
+        this.filter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(this.filterDefault)))
+      },
+      async querySearchClient (search) {
+        if (search.length >= 3) {
+          this.loading = true
+          const item = {
+            program_id: this.program.id,
+            search,
+          }
+          await this.$store.dispatch('account/certificate/filter/foundClients', item)
+          this.loading = false
         }
       },
       close () {
         this.show = false
       },
       apply () {
-        this.$store.commit('account/filter/filter', this.filter)
+        this.$store.commit('account/certificate/filter/filter', this.filter)
+        this.setFastFilter(this.filter)
         this.show = false
       },
     },
   }
 </script>
 
-<style lang="sass" scoped>
-.app__popover
-  position: relative
+<style lang="scss" scoped>
+.app__filter {
+  position: relative;
 
-  .app__popover-block
-    position: absolute
-    top: 0
-    left: 0
-    width: 100%
-    background: #FFFFFF
-    border: 1px solid #E8E8ED
-    box-sizing: border-box
-    box-shadow: 0px 12px 24px rgba(88, 93, 106, 0.1)
-    border-radius: 10px
-    z-index: 1000
+  .app__filter-block {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: #FFFFFF;
+    border: 1px solid #E8E8ED;
+    box-sizing: border-box;
+    box-shadow: 0px 12px 24px rgba(88, 93, 106, 0.1);
+    border-radius: 10px;
+    z-index: 1000;
 
-    .app__popover-content
-      padding: 8px 20px
+    .app__filter-content {
+      padding: 8px 20px;
 
-      .app__popover-content-header
-        margin-bottom: 12px
-        font-style: normal
-        font-weight: 600
-        font-size: 15px
-        line-height: 21px
-        letter-spacing: 0.1px
-        color: #2A2A34
+      .app__filter-content-header {
+        margin-bottom: 4px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 15px;
+        line-height: 21px;
+        letter-spacing: 0.1px;
+        color: #2A2A34;
+      }
 
-      .app__popover-content-input
-        width: 100%
-        outline: none !important
-        padding: 11px 12px
-        font-style: normal
-        font-weight: 500
-        font-size: 13px
-        line-height: 17px
-        color: #9191A1
-        border: 1px solid #D7D7E0
-        box-sizing: border-box
-        border-radius: 10px
+      .app__filter-content-chip {
+        display: inline-block;
+        margin: 8px 8px 0 0;
+        padding: 10px 12px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 13px;
+        line-height: 17px;
+        color: #9191A1;
+        background: #F2F2F7;
+        border-radius: 8px;
+        cursor: pointer;
+        height: 37px;
+      }
 
-      .app__popover-content-chip
-        display: inline-block
-        margin-right: 8px
-        padding: 10px 12px
-        font-style: normal
-        font-weight: 600
-        font-size: 13px
-        line-height: 17px
-        color: #9191A1
-        background: #F2F2F7
-        border-radius: 8px
-        cursor: pointer
+      .app__filter-content-chip-active {
+        background: #EBF1FF;
+        color: #4776E6;
+      }
 
-      .app__popover-content-chip-active
-        background: #EBF1FF
-        color: #4776E6
+      .app__filter-content-checkbox {
+        display: inline-block;
+        margin-right: 20px;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 15px;
+        line-height: 21px;
+        color: #9191A1;
 
-      .app__popover-content-checkbox
-        display: inline-block
-        margin-right: 20px
-        font-style: normal
-        font-weight: 500
-        font-size: 15px
-        line-height: 21px
-        color: #9191A1
+        input {
+          display: inline-block;
+          margin-right: 11px;
+        }
 
-        input
-          display: inline-block
-          margin-right: 11px
+        div {
+          display: inline-block;
+          position: relative;
+          top: -1px;
+        }
+      }
+    }
+  }
+}
+.app__filter-block-input {
+  display: flex;
+  align-items: center;
+  min-height: 45px;
+  color: #9191A1;
+  border-bottom: 1px solid #D7D7E0;
+  box-sizing: border-box;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
 
-        div
-          display: inline-block
-          position: relative
-          top: -1px
+  .app__filter-block-input-icon-prepend {
+    margin: 6px 0 6px 12px;
+  }
 
-.app__popover-block-input
-  display: flex
-  align-items: center
-  padding: 11px 12px
-  color: #9191A1
-  border-bottom: 1px solid #D7D7E0
-  box-sizing: border-box
-  border-top-left-radius: 10px
-  border-top-right-radius: 10px
+  .app__filter-block-input-icon-append {
+    margin: 6px 12px 6px 0;
+  }
 
-  .app__popover-block-input-field
-    display: block
-    width: 100%
-    outline: none !important
-    padding: 0 10px
-    font-style: normal
-    font-weight: 500
-    font-size: 13px
-    line-height: 17px
+  .app__filter-block-input-field {
+    display: inline;
+    outline: none !important;
+    margin: 13px 0;
+    padding: 0 10px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 17px;
+  }
+}
 
-.app__popover-block-icon-close
-  color: #B5B5C4 !important
-  cursor: pointer
+.app__filter-block-icon-close {
+  color: #B5B5C4 !important;
+  cursor: pointer;
+}
 
-.app__popover-block-icon-check
-  width: 42px !important
-  height: 28px !important
-  position: relative
-  top: -1px
-  margin-left: 5px
-  color: #4776E6 !important
-  cursor: pointer
+.app__filter-block-icon-check {
+  width: 30px !important;
+  height: 28px !important;
+  position: relative;
+  top: -1px;
+  color: #4776E6 !important;
+  cursor: pointer;
+}
+
+.app__filter-chip {
+  display: inline-flex;
+  align-items: center;
+  background-color: #EBF1FF;
+  border-radius: 6px;
+  max-width: 100%;
+  margin: 3px;
+  padding: 0 6px 0 12px;
+  white-space: nowrap;
+
+  .app__filter-chip-content {
+    align-items: center;
+    display: inline-flex;
+    height: 37px;
+    max-width: 100%;
+    color: #4776E6;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .app__filter-chip-icon-append {
+    margin: 0 0 0 6px;
+    color: #4776E6;
+  }
+}
+
+.app__filter-content-chip-icon {
+  img {
+    height: 17px;
+    width: 17px;
+  }
+
+  span {
+    position: relative;
+    top: -4px;
+  }
+}
+
+.calendar-icon {
+  float: right;
+  padding-right: 14px;
+  svg {
+    color: #B5B5C4;
+    height: 17px;
+    width: 17px;
+  }
+}
+
+.date-range-value {
+  float: left;
+}
 </style>

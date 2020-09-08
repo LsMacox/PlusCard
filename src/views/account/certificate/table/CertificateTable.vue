@@ -365,7 +365,7 @@
         return this.$store.getters['auth/auth/merchant_id']
       },
       certificates () {
-        return this.$store.getters['account/certificate/certificates']
+        return this.$store.getters['account/certificate/certificate/certificates']
           .map(item => {
             // Vue.set(item, 'loadingRequest', false)
             return item
@@ -378,7 +378,7 @@
           ) // filter by program
       },
       totalCount () {
-        return this.$store.getters['account/certificate/totalCount']
+        return this.$store.getters['account/certificate/certificate/totalCount']
       },
       // storage_certificates_count () {
       //   return this.certificates.filter(this.GetStatusFilter('storage')).length
@@ -672,8 +672,8 @@
         this.loadingList = true
         console.log('page: ' + this.tableOptions.page + '  itemsPerPage: ' + this.tableOptions.itemsPerPage)
         this.$store
-          .dispatch('account/certificate/list', {
-            merchant_id: this.merchantId,
+          .dispatch('account/certificate/certificate/list', {
+            merchantId: this.merchantId,
             offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
             limit: this.tableOptions.itemsPerPage,
           })

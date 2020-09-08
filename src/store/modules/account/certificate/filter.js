@@ -6,8 +6,10 @@ const getDefaultState = () => {
             enable: false,
             certificates: [],
             issueDate: {
-                startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
-                endDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+                // startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+                // endDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+                startDate: null,
+                endDate: null,
             },
             certPaymentStatus: [],
             certMerchantOrderStatus: [],
