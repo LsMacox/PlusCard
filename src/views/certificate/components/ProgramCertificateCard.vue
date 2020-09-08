@@ -1,5 +1,5 @@
 <template lang="">
-  <div> {{program}} </div>
+  <div> {{ program }} </div>
 </template>
 
 <script>

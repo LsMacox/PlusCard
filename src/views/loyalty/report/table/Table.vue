@@ -16,7 +16,7 @@
           class="plus-table"
           hide-default-footer
         >
-          <template v-slot:expanded-item="{ headers, item }">
+          <template v-slot:expanded-item="{ Headers, item }">
             <td :colspan="headers.length">
               More info about {{ item.bsid }}
             </td>
@@ -90,7 +90,7 @@
             <div style="display: flex; align-items: center">
               <img
                 class="cell-avatar"
-                :style="`background-color: ${program.bgcolor2};`"
+                :style="`background-color: ${program.bgcolor1};`"
                 :src="(item.operator_avatar === 'system' || item.operator_avatar === 'external')
                   ? program.logo_short
                   : `https://storage.yandexcloud.net/plusstorage/${item.operator_avatar}`"

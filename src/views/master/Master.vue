@@ -1398,7 +1398,7 @@ line-height: 17px;"
         program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
         program.shops = this.shops
         program.merchant_id = this.merchant_id
-        const result = await ApiService.post(
+        await ApiService.post(
           '/api-cabinet/company/create',
           program,
         )
