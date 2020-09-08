@@ -90,6 +90,7 @@
             <div style="display: flex; align-items: center">
               <img
                 class="cell-avatar"
+                :style="`background-color: ${program.bgcolor2};`"
                 :src="(item.operator_avatar === 'system' || item.operator_avatar === 'external')
                   ? program.logo_short
                   : `https://storage.yandexcloud.net/plusstorage/${item.operator_avatar}`"
@@ -232,15 +233,19 @@
     },
     methods: {
       getDate (date) {
-        return this.$moment(date).format('L')
+        if (date) return this.$moment(date).format('L')
+        return '-'
       },
       getTime (date) {
-        // eslint-disable-next-line no-undef
-        const d = new Date(date).toISOString().split('T')[1]
-        return 'в ' + d.split(':')[0] + ':' + d.split(':')[1]
+        if (date) {
+          const d = new Date(date).toISOString().split('T')[1]
+          return 'в ' + d.split(':')[0] + ':' + d.split(':')[1]
+        }
+        return '-'
       },
       getLastActivity (date) {
-        return 'Был(а) в сети ' + this.getDate(date) + ' ' + this.getTime(date)
+        if (date) return 'Был(а) в сети ' + this.getDate(date) + ' ' + this.getTime(date)
+        return 'Был(а) в сети - '
       },
       getValue (value) {
         value = Number(value)
