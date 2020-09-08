@@ -374,8 +374,9 @@
       },
       clearFilterQuery () {
         this.fastFilter.query = null
-        this.filter.query = null
-        this.$store.commit('widget/filter/filter', this.filter)
+        const filter = JSON.parse(JSON.stringify(this.filterStore))
+        filter.query = null
+        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       close () {
         this.show = false
