@@ -327,7 +327,7 @@
         {
           icon: '<span class="iconify" data-icon="ion:chatbox-outline" data-inline="false"></span>',
           title: 'Чаты',
-          to: '######',
+          to: '/communications/chat',
         },
         {
           icon: '<span class="iconify" data-icon="feather:settings" data-inline="false"></span>',

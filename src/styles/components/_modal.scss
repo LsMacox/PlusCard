@@ -1,0 +1,61 @@
+.modal {
+    position: relative;
+    background-color: #ffffff;
+    margin-top: 10px;
+    word-break: normal !important;
+
+    .header {
+        position: absolute;
+        top: -50px;
+        left: 0;
+        font-size: 20px;
+    }
+
+    .content {
+        padding: 15px 0 30px 0
+    }
+
+    .label {
+        margin: 12px 0 3px 0;
+        font-size: 13px;
+        color: #8492a6;
+    }
+
+    .input {
+        width: 100%;
+    }
+
+    .select {
+        width: 100%;
+    }
+
+    .action {
+        display: flex;
+    }
+}
+
+/* MEDIA */
+/* EXTRA SMALL */
+@media (max-width: 767.98px) {
+
+}
+
+/* SMALL */
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+}
+
+/* MEDIUM */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+
+}
+
+/* LARGE */
+@media (min-width: 1200px) and (max-width: 1919.98px) {
+
+}
+
+/* X LARGE */
+@media (min-width: 1920px) {
+
+}

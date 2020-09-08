@@ -150,7 +150,8 @@ export default new Router({
         },
         {
           path: '/certificate',
-          component: () => import('@/views/certificate/ProgramCertificateView.vue'),
+          component: () =>
+            import('@/views/certificate/ProgramCertificateView.vue'),
           name: 'components',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
@@ -165,6 +166,29 @@ export default new Router({
           component: () => import('@/views/account/certificate/table/index'),
           name: 'certificates',
           meta: { title: 'Certificates', icon: 'certificates' },
+        },
+        {
+          path: '/communications/chat',
+          redirect: '/communications/chat/business',
+          meta: { auth: true, title: 'Чаты', icon: '' },
+        },
+        {
+          path: '/communications/chat/:conversation_type',
+          component: () => import('@/views/communications/Chat'),
+          props: route => ({
+            conversationType: route.params.conversation_type,
+            conversationId: null,
+          }),
+          meta: { auth: true, title: 'Чаты', icon: '' },
+        },
+        {
+          path: '/communications/chat/:conversation_type/:conversation_id',
+          component: () => import('@/views/communications/Chat'),
+          props: route => ({
+            conversationType: route.params.conversation_type,
+            conversationId: +route.params.conversation_id,
+          }),
+          meta: { auth: true, title: 'Чаты', icon: '' },
         },
       ],
     },
