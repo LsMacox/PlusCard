@@ -3,7 +3,7 @@ import ApiService from '@/api/api-client'
 const getDefaultState = () => {
     return {
         period: localStorage.getItem('filterPeriod') ? JSON.parse(localStorage.getItem('filterPeriod')) : { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
-        filter: localStorage.getItem('reportFilter') ? JSON.parse(localStorage.getItem('reportFilter')) : { enable: false, pbr: [], bu: [], client: [], operator: [] },
+        filter: localStorage.getItem('reportFilter') ? JSON.parse(localStorage.getItem('reportFilter')) : { enable: false, query: null, pbr: [], bu: [], client: [], operator: [] },
         foundClients: [],
     }
 }
