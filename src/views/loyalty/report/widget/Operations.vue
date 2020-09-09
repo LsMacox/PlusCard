@@ -48,6 +48,7 @@
     },
     computed: {
       widgetRequest () {
+        // this.fetchData()
         return {
           start_period: this.period.start,
           filter: this.filter,
@@ -71,8 +72,6 @@
         return this.$store.getters['widget/operations/widgetData']
       },
       diagramData () {
-        if (!this.loading) return
-
         var newArr = []
         this.widgetData.forEach(function (data, key) {
           newArr.push(data.operations_count)

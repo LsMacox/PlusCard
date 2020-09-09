@@ -91,11 +91,19 @@
         }"
         @update="updateDateRange"
       >
+<!--        <template-->
+<!--          v-slot:input="picker"-->
+<!--          style="min-width: 350px;"-->
+<!--        >-->
+<!--          {{ picker.startDate }} - {{ picker.endDate }}-->
+<!--        </template>-->
+
         <template
-          v-slot:input="picker"
-          style="min-width: 350px;"
+            #input="picker"
+            style="min-width: 350px;"
         >
-          {{ picker.startDate }} - {{ picker.endDate }}
+          <div class="custom">
+          </div>
         </template>
 
         <div
