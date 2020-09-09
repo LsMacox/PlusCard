@@ -1,88 +1,86 @@
 <template>
+  <v-dialog
+    v-model="dialog"
+    max-width="350"
+    persistent
+  >
+    <v-card class="modal-card">
+      <div class="modal-header">
+        Удалить тему?
+      </div>
 
-    <v-dialog
-            v-model="dialog"
-            max-width="350"
-            persistent
-    >
-        <v-card class="modal-card">
+      <v-card-text />
 
-            <div class="modal-header">Удалить тему?</div>
+      <v-card-actions>
+        <div>
+          <div
+            class="close"
+            @click="close()"
+          >
+            Отмена
+          </div>
+        </div>
 
-            <v-card-text>
-            </v-card-text>
+        <v-spacer />
 
-            <v-card-actions>
-
-                <div>
-                    <div
-                            class="close"
-                            @click="close()"
-                    >Отмена</div>
-                </div>
-
-                <v-spacer></v-spacer>
-
-                <div
-                        @click="remove()"
-                >
-                    <app-button
-                            class="box-button"
-                            label="Удалить тему"
-                            icon="clear"
-                            :color="colors.buttons.success"
-                            :loading="loadingRequest"
-                    ></app-button>
-                </div>
-
-            </v-card-actions>
-        </v-card>
-    </v-dialog>
-
+        <v-btn
+          class="box-button"
+          label=""
+          icon="clear"
+          :color="colors.buttons.success"
+          :loading="loadingRequest"
+          @click="remove()"
+        >
+          Удалить тему
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
-import AppButton from '../../../../template/form/Button'
 
-export default {
+  export default {
     components: {
-        AppButton
-    },
-    props: [
-        'dialog',
-        'deleteSuccess',
-        'topicId'
-    ],
-    data () {
-        return {
 
-        }
+    },
+    props: {
+      dialog: Boolean,
+      deleteSuccess: Boolean,
+      topicId: {
+        type: Number,
+        default: null,
+      },
+    },
+    data () {
+      return {
+
+      }
     },
     computed: {
-        loadingApp () {
-            return this.$store.getters['template/shared/loadingApp']
-        },
-        loadingRequest () {
-            return this.$store.getters['template/shared/loadingRequest']
-        },
-        colors () {
-            return this.$store.getters['template/colors/colors']
-        }
+      loadingApp () {
+        return this.$store.getters['template/shared/loadingApp']
+      },
+      loadingRequest () {
+        return this.$store.getters['template/shared/loadingRequest']
+      },
+      colors () {
+        return this.$store.getters['template/colors/colors']
+      },
     },
     methods: {
-        close () {
-            this.$emit('update:dialog', false)
-        },
-        async remove () {
-            // чат-пользователь
-
-            this.$store.dispatch('chat/topic/delete', this.topicId).then(() => {
-                this.$emit('update:dialog', false)
-                this.$emit('update:deleteSuccess', true)
-            })
-        }
-    }
-}
+      close () {
+        this.$emit('update:dialog', false)
+      },
+      async remove () {
+        // чат-пользователь
+        this.$store.dispatch('chat/topic/delete', this.topicId).then(() => {
+          this.$emit('update:dialog', false)
+          this.$emit('update:deleteSuccess', true)
+        })
+      },
+    },
+  }
 </script>
 
 <style scoped>

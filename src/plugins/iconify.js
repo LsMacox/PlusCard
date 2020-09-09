@@ -17,7 +17,7 @@ export const ICONIFY_ICONS = [
 
 ICONIFY_ICONS.forEach((icon) => {
   icon.component().then(component => {
-    console.log('addIcon', icon.id)
+    // console.log('addIcon', icon.id)
     IconifyIcon.addIcon(icon.id, component.default)
   })
 })

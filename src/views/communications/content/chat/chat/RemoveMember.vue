@@ -1,90 +1,95 @@
 <template>
-<el-dialog
-        :visible.sync="dialog"
-        :close-on-click-modal="false"
-        :before-close="close"
-        append-to-body
-        custom-class="app--modal"
->
-    <div
-            v-loading="loading"
-            class="modal"
+  <v-dialog
+    v-model="dialog"    
+    custom-class="app--modal"
+  >
+    <v-skeleton-loader
+      :loading="loading"
+      type="image"
     >
-
-        <div class="header">Удалить участника?</div>
+      <div
+        class="modal"
+      >
+        <div class="header">
+          Удалить участника?
+        </div>
 
         <div class="content">
-
-            <div>Участник: {{item.name}}</div>
-
+          <div>Участник: {{ item.name }}</div>
         </div>
 
         <div class="action">
-            <el-button
-                    size="medium"
-                    @click="close()"
-            >Отмена</el-button>
+          <el-button
+            size="medium"
+            @click="close()"
+          >
+            Отмена
+          </el-button>
 
-            <div class="app--spacer"></div>
+          <div class="app--spacer" />
 
-            <el-button
-                    type="danger"
-                    size="medium"
-                    :loading="loadingRequest"
-                    @click="remove()"
-            >Удалить</el-button>
+          <el-button
+            type="danger"
+            size="medium"
+            :loading="memberRemoveLoading"
+            @click="remove()"
+          >
+            Удалить
+          </el-button>
         </div>
-
-    </div>
-</el-dialog>
+      </div>
+    </v-skeleton-loader>
+  </v-dialog>
 </template>
 
 <script>
-export default {
+  export default {
     props: {
-        dialog: Boolean,
-        conversationId: Number,
-        item: Object
+      dialog: Boolean,
+      conversationId: Number,
+      item: Object,
     },
     data () {
-        return {
-            loading: false,
-        }
+      return {
+        loading: false,
+        memberRemoveLoading: false,
+
+      }
     },
     computed: {
-        loadingRequest () {
-            return this.$store.getters['template/shared/loadingRequest']
-        },
-        loadingSend () {
-            return this.$store.getters['chat/message/loading']
-        },
-        colors () {
-            return this.$store.getters['template/colors/colors']
-        }
+      loadingSend () {
+        return this.$store.getters['chat/message/loading']
+      },
+      colors () {
+        return this.$store.getters['template/colors/colors']
+      },
     },
     methods: {
-        close () {
-            this.$emit('update:dialog', false)
-        },
-        isEmptyObject (obj) {
-            return JSON.stringify(obj) === '{}'
-        },
-        remove () {
-            const conversation = {
-                conversation_id: this.conversationId,
-                members: [this.item.id]
-            }
-            ////console.log(conversation)
-            this.$store.dispatch("chat/member/remove", conversation).then(() => {
-                this.close()
-            })
+      close () {
+        this.$emit('update:dialog', false)
+      },
+      isEmptyObject (obj) {
+        return JSON.stringify(obj) === '{}'
+      },
+      remove () {
+        const conversation = {
+          conversation_id: this.conversationId,
+          members: [this.item.id],
         }
-    }
-}
+        /// /console.log(conversation)
+        this.memberRemoveLoading = true
+        this.$store.dispatch('chat/member/remove', conversation).then(() => {
+          this.close()
+        }).finally(() => {
+          this.memberRemoveLoading = false
+        })
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/components/_modal.scss"; 
+@import "@/styles/components/_modal.scss";
 
 .modal {
     min-width: 500px;

@@ -1,108 +1,107 @@
 <template>
+  <v-dialog
+    v-model="dialog"
+    max-width="350"
+    hide-overlay
+    persistent
+    @click:outside="close()"
+  >
+    <v-card class="modal-card">
+      <div class="modal-header">
+        Удалить сообщение?
+      </div>
 
-    <v-dialog
-            v-model="dialog"
-            max-width="350"
-            hide-overlay
-            persistent
-            @click:outside="close()"
-    >
-        <v-card class="modal-card">
+      <div class="modal-content">
+        <app-checkbox
+          v-if="showDeleteAll"
+          label="Удалить сообщение у всех"
+          :value.sync="deleteForAll"
+          hint=""
+        />
+      </div>
 
-            <div class="modal-header">Удалить сообщение?</div>
+      <div class="modal-action">
+        <div>
+          <div
+            class="close"
+            @click="close()"
+          >
+            Отмена
+          </div>
+        </div>
 
-            <div class="modal-content">
-                <app-checkbox
-                        v-if="showDeleteAll"
-                        label="Удалить сообщение у всех"
-                        :value.sync="deleteForAll"
-                        hint=""
-                ></app-checkbox>
-            </div>
+        <v-spacer />
 
-            <div class="modal-action">
-
-                <div>
-                    <div
-                            class="close"
-                            @click="close()"
-                    >Отмена
-                    </div>
-                </div>
-
-                <v-spacer></v-spacer>
-
-                <app-button
-                        class="box-button"
-                        label="Удалить"
-                        icon="clear"
-                        :color="colors.buttons.success"
-                        :loading="loadingRequest"
-                        @click.native="remove()"
-                ></app-button>
-
-            </div>
-        </v-card>
-    </v-dialog>
-
+        <v-btn
+          class="box-button"
+          icon="clear"
+          :color="colors.buttons.success"
+          :loading="loadingRequest"
+          @click="remove()"
+        >
+          Удалить
+        </v-btn>
+      </div>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
-    import AppButton from '../../../../template/form/Button'
-    import AppCheckbox from '../../../../template/form/Checkbox'
 
-    export default {
-        components: {
-            AppButton,
-            AppCheckbox
-        },
-        props: {
-            dialog: Boolean,
-            item: Object,
-            showDeleteAll: Boolean,
-        },
-        data() {
-            return {
-                deleteForAll: false
-            }
-        },
-        computed: {
-            loadingApp() {
-                return this.$store.getters['template/shared/loadingApp']
-            },
-            loadingRequest() {
-                return this.$store.getters['template/shared/loadingRequest']
-            },
-            colors() {
-                return this.$store.getters['template/colors/colors']
-            },
-        },
-        methods: {
-            close() {
-                this.$emit('update:dialog', false)
-            },
-            async remove() {
-                const message = {
-                    conversation_id: this.item.conversation_id,
-                    message_id: this.item.id,
-                }
-                //console.log(message)
-                if (!this.deleteForAll) {
-                    this.$store.dispatch('chat/message/delete', message).then(() => {
-                        this.$emit('update:dialog', false)
-                    })
-                }
-                if (this.deleteForAll) {
-                    this.$store.dispatch('chat/message/deleteAll', message).then(() => {
-                        this.$emit('update:dialog', false)
-                    })
-                }
-            }
-        },
-        created() {
+  export default {
+    components: {
 
+    },
+    props: {
+      dialog: Boolean,
+      item: {
+        type: Object,
+        default: null,
+      },
+      showDeleteAll: Boolean,
+    },
+    data () {
+      return {
+        deleteForAll: false,
+      }
+    },
+    computed: {
+      loadingApp () {
+        return this.$store.getters['template/shared/loadingApp']
+      },
+      loadingRequest () {
+        return this.$store.getters['template/shared/loadingRequest']
+      },
+      colors () {
+        return this.$store.getters['template/colors/colors']
+      },
+    },
+    created () {
+
+    },
+    methods: {
+      close () {
+        this.$emit('update:dialog', false)
+      },
+      async remove () {
+        const message = {
+          conversation_id: this.item.conversation_id,
+          message_id: this.item.id,
         }
-    }
+        // console.log(message)
+        if (!this.deleteForAll) {
+          this.$store.dispatch('chat/message/delete', message).then(() => {
+            this.$emit('update:dialog', false)
+          })
+        }
+        if (this.deleteForAll) {
+          this.$store.dispatch('chat/message/deleteAll', message).then(() => {
+            this.$emit('update:dialog', false)
+          })
+        }
+      },
+    },
+  }
 </script>
 
 <style scoped>

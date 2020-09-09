@@ -15,12 +15,12 @@ export default {
   },
   actions: {
     async read ({ commit }, id) {
-      const result = await ApiService.get(`/communication/chatuser?id=${id}`)
+      const result = await ApiService.get(`/api-cabinet/communication/chatuser?id=${id}`)
       commit('chatUser', result)
     },
 
     async update ({ commit, dispatch }, user) {
-      const result = await ApiService.put('/communication/chatuser', user)
+      const result = await ApiService.put('/api-cabinet/communication/chatuser', user)
       commit('chatUser', result)
     },
   },

@@ -1,243 +1,254 @@
 <template>
-<el-dialog
-        :visible.sync="dialog"
-        :close-on-click-modal="false"
-        :before-close="close"
-        append-to-body
-        custom-class="app--modal"
->
-    <div
-            v-loading="loading"
-            class="modal"
+  <v-dialog
+    v-model="dialog"    
+    custom-class="app--modal"
+  >
+    <v-skeleton-loader
+      :loading="loading"
+      type="image"
     >
+      <div
 
-        <div class="header">Редактирование чата</div>
+        class="modal"
+      >
+        <div class="header">
+          Редактирование чата
+        </div>
 
         <el-form
-                :model="form"
-                :rules="rules"
-                ref="form"
-                @submit.prevent.native="submit('form')"
+          ref="form"
+          :model="form"
+          :rules="rules"
+          @submit.prevent.native="submit('form')"
         >
-            <div class="content">
+          <div class="content">
+            <el-form-item prop="name">
+              <el-input
+                v-model="form.name"
+                placeholder="Введите название чата"
+              />
+            </el-form-item>
 
-                <el-form-item prop="name">
-                    <el-input
-                            v-model="form.name"
-                            placeholder="Введите название чата"
-                    ></el-input>
-                </el-form-item>
+            <!-- все получатели -->
+            <div style="display: flex;">
+              <div class="name-all">
+                Участники чата
+              </div>
+              <div class="app--spacer" />
+              <el-button
+                type="primary"
+                size="mini"
+                @click="openAdd()"
+              >
+                Добавить участника
+              </el-button>
+            </div>
 
-                <!-- все получатели -->
-                <div style="display: flex;">
-                    <div class="name-all">Участники чата</div>
-                    <div class="app--spacer"></div>
-                    <el-button
-                            type="primary"
-                            size="mini"
-                            @click="openAdd()"
-                    >Добавить участника</el-button>
-                </div>
-
-                <!-- список получателей -->
+            <!-- список получателей -->
+            <div
+              v-for="(item, i) in clients"
+              :key="i"
+            >
+              <div
+                v-if="item.active"
+                class="res-row"
+              >
                 <div
-                        v-for="(item, i) in clients"
-                        :key="i"
-                >
-                    <div
-                            v-if="item.active"
-                            class="res-row"
-                    >
-                        <div
-                                class="avatar"
-                                :style="'background: url(' + item.avatar + ');'"
-                        ></div>
-                        <div class="name">{{item.name}}</div>
-                        <div
-                                v-if="!isPrivateChat && chatUser.id !== item.id"
-                                class="remove-link"
-                                @click="openRemove(item)"
-                        >удалить</div>
-                    </div>
+                  class="avatar"
+                  :style="'background: url(' + item.avatar + ');'"
+                />
+                <div class="name">
+                  {{ item.name }}
                 </div>
-
+                <div
+                  v-if="!isPrivateChat && chatUser.id !== item.id"
+                  class="remove-link"
+                  @click="openRemove(item)"
+                >
+                  удалить
+                </div>
+              </div>
             </div>
+          </div>
 
-            <div class="action">
-                <el-button
-                        size="medium"
-                        @click="close()"
-                >Отмена</el-button>
+          <div class="action">
+            <el-button
+              size="medium"
+              @click="close()"
+            >
+              Отмена
+            </el-button>
 
-                <div class="app--spacer"></div>
+            <div class="app--spacer" />
 
-                <el-button
-                        type="primary"
-                        size="medium"
-                        :loading="loadingRequest"
-                        :disabled="!members.length"
-                        @click="submit('form')"
-                >Обновить</el-button>
-            </div>
-
+            <el-button
+              type="primary"
+              size="medium"
+              :loading="conversationUpdateLoading"
+              :disabled="!members.length"
+              @click="submit('form')"
+            >
+              Обновить
+            </el-button>
+          </div>
         </el-form>
-
-    </div>
+      </div>
+    </v-skeleton-loader>
 
     <add-member
-            v-if="dialogAdd"
-            :dialog.sync="dialogAdd"
-    ></add-member>
+      v-if="dialogAdd"
+      :dialog.sync="dialogAdd"
+    />
 
     <remove-member
-            v-if="dialogRemove"
-            :dialog.sync="dialogRemove"
-            :conversation-id="editedConversation.id"
-            :item="editedItem"
-    ></remove-member>
-
-</el-dialog>
+      v-if="dialogRemove"
+      :dialog.sync="dialogRemove"
+      :conversation-id="editedConversation.id"
+      :item="editedItem"
+    />
+  </v-dialog>
 </template>
 
 <script>
-import AddMember from "./AddMember";
-import RemoveMember from "./RemoveMember";
+  import AddMember from './AddMember'
+  import RemoveMember from './RemoveMember'
 
-export default {
+  export default {
     components: {
-        AddMember,
-        RemoveMember
+      AddMember,
+      RemoveMember,
     },
     props: {
-        dialog: Boolean,
-        item: Object
+      dialog: Boolean,
+      item: Object,
     },
     data () {
-        return {
-            dialogAdd: false,
-            dialogRemove: false,
-            editedItem: {},
-            form: {
-                id: null,
-                name: null
-            },
-            loading: false,
-            checkAll: false,
-            members: [],
-            rules: {
-                name: [
-                    { required: true, message: 'Название чата обязательно', trigger: 'blur' },
-                    { max: 100, message: 'Название чата не должен быть более 100 символов', trigger: 'blur' }
-                ]
-            }
-        }
-    },
-    watch: {
-        members (val) {
-            if (val && val.length === this.clients.length) this.checkAll = true
-            else this.checkAll = false
-        }
+      return {
+        dialogAdd: false,
+        dialogRemove: false,
+        editedItem: {},
+        form: {
+          id: null,
+          name: null,
+        },
+        loading: false,
+        checkAll: false,
+        members: [],
+        rules: {
+          name: [
+            { required: true, message: 'Название чата обязательно', trigger: 'blur' },
+            { max: 100, message: 'Название чата не должен быть более 100 символов', trigger: 'blur' },
+          ],
+        },
+      }
     },
     computed: {
-        loadingRequest () {
-            return this.$store.getters['template/shared/loadingRequest']
-        },
-        loadingSend () {
-            return this.$store.getters['chat/message/loading']
-        },
-        colors () {
-            return this.$store.getters['template/colors/colors']
-        },
-        programId () {
-            return this.$store.getters["brand/program/programId"]
-        },
-        chatUser () {
-            return this.$store.getters["chat/chatUser/chatUser"]
-        },
-        editedConversation () {
-            return this.$store.getters["chat/conversation/editedConversation"]
-        },
-        isPrivateChat () {
-            let activeMembers = this.editedConversation.members.filter(item => item.active)
-            if (activeMembers.length === 1 || activeMembers.length === 2) return true
-            return false
-        },
-        clients () {
-            return this.editedConversation.members
-        }
+      
+      loadingSend () {
+        return this.$store.getters['chat/message/loading']
+      },
+      colors () {
+        return this.$store.getters['template/colors/colors']
+      },
+      programId () {
+        return this.$store.getters['brand/program/programId']
+      },
+      chatUser () {
+        return this.$store.getters['chat/chatUser/chatUser']
+      },
+      editedConversation () {
+        return this.$store.getters['chat/conversation/editedConversation']
+      },
+      isPrivateChat () {
+        const activeMembers = this.editedConversation.members.filter(item => item.active)
+        if (activeMembers.length === 1 || activeMembers.length === 2) return true
+        return false
+      },
+      clients () {
+        return this.editedConversation.members
+      },
     },
-    methods: {
-        close () {
-            this.members = []
-            this.$emit('update:dialog', false)
-        },
-        isEmptyObject (obj) {
-            return JSON.stringify(obj) === '{}'
-        },
-
-        /*
-         * ПОЛУЧАТЕЛИ
-         */
-
-        setRecipientAll () {
-            if (this.members.length == this.clients.length) {
-                this.members = []
-            } else {
-                this.members = Object.assign([], this.clients)
-            }
-        },
-        setRecipient (item) {
-            let check = false
-            let index = null
-            this.members.forEach((recipient, i) => {
-                if (recipient.id === item.id) {
-                    check = true
-                    index = i
-                }
-            })
-            if (check) this.members.splice(index, 1)
-            else this.members.push(item)
-        },
-        isRecipient (item) {
-            let check = this.members.filter(recipient => recipient.id === item.id)
-            if (check.length) return true
-            return false
-        },
-        submit (formRef) {
-            this.$refs[formRef].validate((v) => {
-                if (v) this.update()
-                else return false
-            })
-        },
-        update () {
-            const conversation = {
-                conversation_id: this.form.id,
-                name: this.form.name,
-            }
-            ////console.log(conversation)
-            this.$store.dispatch("chat/conversation/update", conversation).then(() => {
-                this.close()
-            })
-        },
-        openAdd () {
-            this.dialogAdd = true
-        },
-        openRemove (item) {
-            this.editedItem = item
-            this.dialogRemove = true
-        }
+    watch: {
+      members (val) {
+        if (val && val.length === this.clients.length) this.checkAll = true
+        else this.checkAll = false
+      },
     },
     async created () {
-        this.$store.commit('chat/conversation/editedConversation', this.item)
-        this.form.id = this.editedConversation.id
-        this.form.name = this.editedConversation.name
-        this.members = Object.assign([], this.clients)
-    }
-}
+      this.$store.commit('chat/conversation/editedConversation', this.item)
+      this.form.id = this.editedConversation.id
+      this.form.name = this.editedConversation.name
+      this.members = Object.assign([], this.clients)
+    },
+    methods: {
+      close () {
+        this.members = []
+        this.$emit('update:dialog', false)
+      },
+      isEmptyObject (obj) {
+        return JSON.stringify(obj) === '{}'
+      },
+
+      /*
+       * ПОЛУЧАТЕЛИ
+       */
+
+      setRecipientAll () {
+        if (this.members.length == this.clients.length) {
+          this.members = []
+        } else {
+          this.members = Object.assign([], this.clients)
+        }
+      },
+      setRecipient (item) {
+        let check = false
+        let index = null
+        this.members.forEach((recipient, i) => {
+          if (recipient.id === item.id) {
+            check = true
+            index = i
+          }
+        })
+        if (check) this.members.splice(index, 1)
+        else this.members.push(item)
+      },
+      isRecipient (item) {
+        const check = this.members.filter(recipient => recipient.id === item.id)
+        if (check.length) return true
+        return false
+      },
+      submit (formRef) {
+        this.$refs[formRef].validate((v) => {
+          if (v) this.update()
+          else return false
+        })
+      },
+      update () {
+        const conversation = {
+          conversation_id: this.form.id,
+          name: this.form.name,
+        }
+        /// /console.log(conversation)
+        this.conversationUpdateLoading = true
+        this.$store.dispatch('chat/conversation/update', conversation).then(() => {
+          this.close()
+        }).finally(()=>{
+            this.conversationUpdateLoading = false
+        })
+      },
+      openAdd () {
+        this.dialogAdd = true
+      },
+      openRemove (item) {
+        this.editedItem = item
+        this.dialogRemove = true
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/components/_modal.scss"; 
+@import "@/styles/components/_modal.scss";
 
 .modal {
     min-width: 500px;

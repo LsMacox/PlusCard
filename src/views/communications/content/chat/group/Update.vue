@@ -1,226 +1,235 @@
 <template>
-<el-dialog
-        :visible.sync="dialog"
-        :close-on-click-modal="false"
-        :before-close="close"
-        append-to-body
-        custom-class="app--modal"
->
+  <v-dialog
+    v-model="dialog"
+    custom-class="app--modal"
+  >
     <div class="modal">
+      <div class="header">
+        Редактирование группы
+      </div>
 
-        <div class="header">Редактирование группы</div>
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="rules"
+        @submit.prevent.native="submit('form')"
+      >
+        <div class="content">
+          <el-form-item prop="name">
+            <el-input
+              v-model="form.name"
+              placeholder="Введите название группы"
+            />
+          </el-form-item>
 
-        <el-form
-                :model="form"
-                :rules="rules"
-                ref="form"
-                @submit.prevent.native="submit('form')"
-        >
-
-            <div class="content">
-
-                <el-form-item prop="name">
-                    <el-input
-                            v-model="form.name"
-                            placeholder="Введите название группы"
-                    ></el-input>
-                </el-form-item>
-
-                <!-- все получатели -->
-                <div style="display: flex;">
-                    <div
-                            class="check-all"
-                            @click="setRecipientAll()"
-                    >
-                        <div
-                                v-if="checkAll"
-                                class="check-all-back"
-                        ><v-icon color="white">check</v-icon></div>
-                    </div>
-                    <div class="name-all">Все участники чата</div>
-                </div>
-
-                <!-- список получателей -->
-                <div
-                        v-for="(item, i) in members"
-                        :key="i"
-                        class="res-row"
-                >
-                    <div class="line-h">
-                        <div class="line-v"></div>
-                    </div>
-                    <div
-                            class="check"
-                            @click="setRecipient(item)"
-                    >
-                        <div
-                                v-show="checkAll || isRecipient(item)"
-                                class="check-all-back"
-                        ><v-icon color="white">check</v-icon></div>
-                    </div>
-                    <div
-                            class="avatar"
-                            :style="'background: url(' + item.avatar + ');'"
-                    ></div>
-                    <div class="name">{{item.name}}</div>
-                </div>
-
+          <!-- все получатели -->
+          <div style="display: flex;">
+            <div
+              class="check-all"
+              @click="setRecipientAll()"
+            >
+              <div
+                v-if="checkAll"
+                class="check-all-back"
+              >
+                <v-icon color="white">
+                  check
+                </v-icon>
+              </div>
             </div>
-
-            <div class="action">
-                <el-button
-                        size="medium"
-                        @click="close()"
-                >Отмена</el-button>
-
-                <div class="app--spacer"></div>
-
-                <el-button
-                        type="primary"
-                        size="medium"
-                        :loading="loadingRequest"
-                        :disabled="!recipients.length"
-                        @click="submit('form')"
-                >Обновить</el-button>
+            <div class="name-all">
+              Все участники чата
             </div>
+          </div>
 
-        </el-form>
+          <!-- список получателей -->
+          <div
+            v-for="(item, i) in members"
+            :key="i"
+            class="res-row"
+          >
+            <div class="line-h">
+              <div class="line-v" />
+            </div>
+            <div
+              class="check"
+              @click="setRecipient(item)"
+            >
+              <div
+                v-show="checkAll || isRecipient(item)"
+                class="check-all-back"
+              >
+                <v-icon color="white">
+                  check
+                </v-icon>
+              </div>
+            </div>
+            <div
+              class="avatar"
+              :style="'background: url(' + item.avatar + ');'"
+            />
+            <div class="name">
+              {{ item.name }}
+            </div>
+          </div>
+        </div>
 
+        <div class="action">
+          <el-button
+            size="medium"
+            @click="close()"
+          >
+            Отмена
+          </el-button>
+
+          <div class="app--spacer" />
+
+          <el-button
+            type="primary"
+            size="medium"
+            :loading="loadingRequest"
+            :disabled="!recipients.length"
+            @click="submit('form')"
+          >
+            Обновить
+          </el-button>
+        </div>
+      </el-form>
     </div>
-</el-dialog>
+  </v-dialog>
 </template>
 
 <script>
-export default {
+  export default {
     props: [
-        'dialog',
-        'conversationId',
-        'item'
+      'dialog',
+      'conversationId',
+      'item',
     ],
     data () {
-        let validateName = (rule, value, callback) => {
-            let check = this.groups.filter(item => (item.name === value && item.id !== this.item.id))
-            if (check.length) {
-                callback(new Error('Группа с таким именем уже существует'))
-            } else {
-                callback()
-            }
+      const validateName = (rule, value, callback) => {
+        const check = this.groups.filter(item => (item.name === value && item.id !== this.item.id))
+        if (check.length) {
+          callback(new Error('Группа с таким именем уже существует'))
+        } else {
+          callback()
         }
-        return {
-            form: {
-                name: null
-            },
-            checkAll: false,
-            recipients: [],
-            rules: {
-                name: [
-                    { required: true, message: 'Название группы обязательно', trigger: 'blur' },
-                    { max: 100, message: 'Название группы не должен быть более 100 символов', trigger: 'blur' },
-                    { validator: validateName, trigger: 'blur' }
-                ]
-            }
-        }
-    },
-    watch: {
-        recipients (val) {
-            if (val && val.length === this.members.length) this.checkAll = true
-            else this.checkAll = false
-        }
+      }
+      return {
+        form: {
+          name: null,
+        },
+        checkAll: false,
+        recipients: [],
+        rules: {
+          name: [
+            { required: true, message: 'Название группы обязательно', trigger: 'blur' },
+            { max: 100, message: 'Название группы не должен быть более 100 символов', trigger: 'blur' },
+            { validator: validateName, trigger: 'blur' },
+          ],
+        },
+      }
     },
     computed: {
-        loadingRequest () {
-            return this.$store.getters['template/shared/loadingRequest']
-        },
-        loadingSend () {
-            return this.$store.getters['chat/message/loading']
-        },
-        colors () {
-            return this.$store.getters['template/colors/colors']
-        },
-        groups () {
-            return this.$store.getters['chat/group/groups']
-        },
-        conversation() {
-            let conversation = this.$store.getters["chat/conversation/conversations"].filter(item => item.id == this.conversationId)
-            if (conversation.length) return conversation[0]
-            return {}
-        },
-        members () {
-            let members = []
-            let chatUser = this.$store.getters['chat/chatUser/chatUser']
-            if (this.conversation && this.conversation.members) {
-                members = this.conversation.members.filter(item => {
-                    if (item.id != chatUser.id && item.active) return item
-                })
-            }
-            return members
-        },
-    },
-    methods: {
-        close () {
-            this.recipients = []
-            this.$emit('update:dialog', false)
-        },
-        isEmptyObject (obj) {
-            return JSON.stringify(obj) === '{}'
-        },
-
-        /*
-         * ПОЛУЧАТЕЛИ
-         */
-
-        setRecipientAll () {
-            if (this.recipients.length == this.members.length) {
-                this.recipients = []
-            } else {
-                this.recipients = Object.assign([], this.members)
-            }
-        },
-        setRecipient (item) {
-            let check = false
-            let index = null
-            this.recipients.forEach((recipient, i) => {
-                if (recipient.id === item.id) {
-                    check = true
-                    index = i
-                }
-            })
-            if (check) this.recipients.splice(index, 1)
-            else this.recipients.push(item)
-        },
-        isRecipient (item) {
-            let check = this.recipients.filter(recipient => recipient.id === item.id)
-            if (check.length) return true
-            return false
-        },
-        submit (formRef) {
-            this.$refs[formRef].validate((v) => {
-                if (v) this.update()
-                else return false
-            })
-        },
-        update () {
-            const group = {
-                id: this.item.id,
-                name: this.form.name,
-                parent_group_id: null,
-                members: this.recipients.map(item => item.id)
-            }
-            ////console.log(group)
-            this.$store.dispatch("chat/group/update", group).then(() => {
-                this.close()
-            })
+      loadingRequest () {
+        return this.$store.getters['template/shared/loadingRequest']
+      },
+      loadingSend () {
+        return this.$store.getters['chat/message/loading']
+      },
+      colors () {
+        return this.$store.getters['template/colors/colors']
+      },
+      groups () {
+        return this.$store.getters['chat/group/groups']
+      },
+      conversation () {
+        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id == this.conversationId)
+        if (conversation.length) return conversation[0]
+        return {}
+      },
+      members () {
+        let members = []
+        const chatUser = this.$store.getters['chat/chatUser/chatUser']
+        if (this.conversation && this.conversation.members) {
+          members = this.conversation.members.filter(item => {
+            if (item.id != chatUser.id && item.active) return item
+          })
         }
+        return members
+      },
+    },
+    watch: {
+      recipients (val) {
+        if (val && val.length === this.members.length) this.checkAll = true
+        else this.checkAll = false
+      },
     },
     created () {
-        this.form.name = this.item.name
-        this.recipients = Object.assign([], this.item.members)
-    }
-}
+      this.form.name = this.item.name
+      this.recipients = Object.assign([], this.item.members)
+    },
+    methods: {
+      close () {
+        this.recipients = []
+        this.$emit('update:dialog', false)
+      },
+      isEmptyObject (obj) {
+        return JSON.stringify(obj) === '{}'
+      },
+
+      /*
+       * ПОЛУЧАТЕЛИ
+       */
+
+      setRecipientAll () {
+        if (this.recipients.length == this.members.length) {
+          this.recipients = []
+        } else {
+          this.recipients = Object.assign([], this.members)
+        }
+      },
+      setRecipient (item) {
+        let check = false
+        let index = null
+        this.recipients.forEach((recipient, i) => {
+          if (recipient.id === item.id) {
+            check = true
+            index = i
+          }
+        })
+        if (check) this.recipients.splice(index, 1)
+        else this.recipients.push(item)
+      },
+      isRecipient (item) {
+        const check = this.recipients.filter(recipient => recipient.id === item.id)
+        if (check.length) return true
+        return false
+      },
+      submit (formRef) {
+        this.$refs[formRef].validate((v) => {
+          if (v) this.update()
+          else return false
+        })
+      },
+      update () {
+        const group = {
+          id: this.item.id,
+          name: this.form.name,
+          parent_group_id: null,
+          members: this.recipients.map(item => item.id),
+        }
+        /// /console.log(group)
+        this.$store.dispatch('chat/group/update', group).then(() => {
+          this.close()
+        })
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/components/_modal.scss"; 
+@import "@/styles/components/_modal.scss";
 
 .modal {
     min-width: 400px;

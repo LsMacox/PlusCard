@@ -1,262 +1,246 @@
 <template>
-    <!-- Диалог тем -->
-    <v-dialog
-            v-model="dialog"
-            max-width="550"
-            persistent
+  <!-- Диалог тем -->
+  <v-dialog
+    v-model="dialog"
+    max-width="550"
+    persistent
+  >
+    <v-card
+      class="modal-card"
+      style="min-height: 400px;"
     >
-        <v-card
-                class="modal-card"
-                style="min-height: 400px;"
+      <div
+        class="modal-header"
+        v-html="getTopicHeader()"
+      />
+
+      <!-- кнопка новая тема -->
+      <div
+        v-if="!dialogTopicCreate && !dialogTopicUpdate"
+        class="topics-btn-add"
+        @click="dialogTopicCreate = true"
+      >
+        <v-icon
+          color="white"
+          style="font-size: 36px;"
         >
+          add
+        </v-icon>
+      </div>
 
-            <div
-                    class="modal-header"
-                    v-html="getTopicHeader()"
-            ></div>
+      <!-- кнопка назад -->
+      <div
+        v-else
+        class="topics-btn-add"
+        @click="back()"
+      >
+        <v-icon
+          color="white"
+          style="font-size: 36px;"
+        >
+          arrow_back
+        </v-icon>
+      </div>
 
-            <!-- кнопка новая тема -->
+      <!-- новая тема -->
+      <app-topic-bar-topic-create
+        v-if="dialogTopicCreate"
+        :dialog.sync="dialogTopicCreate"
+        :conversation-id="conversationId"
+      />
+
+      <app-topic-bar-topic-update
+        v-if="dialogTopicUpdate"
+        :dialog.sync="dialogTopicUpdate"
+        :conversation-id="conversationId"
+        :topic-id="updatedTopicId"
+      />
+
+      <div
+        v-if="!dialogTopicCreate && !dialogTopicUpdate"
+      >
+        <div class="modal-content">
+          <!-- список пуст -->
+          <div
+            v-if="!topics.length"
+            class="topic-empty"
+          >
+            Добавьте тему для беседы
+          </div>
+
+          <!-- список тем -->
+          <div
+            v-else
+          >
             <div
-                    v-if="!dialogTopicCreate && !dialogTopicUpdate"
-                    class="topics-btn-add"
-                    @click="dialogTopicCreate = true"
+              v-for="(item, i) in topics"
+              :key="i"
+              class="topic-row"
             >
-                <v-icon
-                        color="white"
-                        style="font-size: 36px;"
-                >add
-                </v-icon>
-            </div>
+              <div
+                :class="getSelectTopicClass(item.id)"
+                @click="selectTopic(item.id)"
+              />
 
-            <!-- кнопка назад -->
-            <div
-                    v-else
-                    class="topics-btn-add"
-                    @click="back()"
-            >
-                <v-icon
-                        color="white"
-                        style="font-size: 36px;"
-                >arrow_back
-                </v-icon>
-            </div>
-
-            <!-- новая тема -->
-            <app-topic-bar-topic-create
-                    v-if="dialogTopicCreate"
-                    :dialog.sync="dialogTopicCreate"
-                    :conversation-id="conversationId"
-            ></app-topic-bar-topic-create>
-
-            <app-topic-bar-topic-update
-                    v-if="dialogTopicUpdate"
-                    :dialog.sync="dialogTopicUpdate"
-                    :conversation-id="conversationId"
-                    :topic-id="updatedTopicId"
-            ></app-topic-bar-topic-update>
-
-            <div
-                    v-if="!dialogTopicCreate && !dialogTopicUpdate"
-            >
-                <div class="modal-content">
-
-                    <!-- список пуст -->
-                    <div
-                            v-if="!topics.length"
-                            class="topic-empty"
-                    >Добавьте тему для беседы
-                    </div>
-
-                    <!-- список тем -->
-                    <div
-                            v-else
-                    >
-                        <div
-                                v-for="(item, i) in topics"
-                                :key="i"
-                                class="topic-row"
-                        >
-                            <div
-                                    :class="getSelectTopicClass(item.id)"
-                                    @click="selectTopic(item.id)"
-                            ></div>
-
-                            <div class="topic-row-line">
-                                <div
-                                        class="topic-name"
-                                >{{item.name}}
-                                </div>
-
-                                <v-spacer></v-spacer>
-
-                                <div
-                                        v-if="item.owner_id == chatUser.id"
-                                        class="topic-admin"
-                                >(ред.)
-                                </div>
-
-                                <div
-                                        class="topic-members"
-                                >{{item.members.length}} участников
-                                </div>
-                                <div class="topic-icon-box">
-                                    <v-icon
-                                            class="topic-icon"
-                                            @click="openTopicUpdate(item.id)"
-                                    >error
-                                    </v-icon>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
+              <div class="topic-row-line">
+                <div
+                  class="topic-name"
+                >
+                  {{ item.name }}
                 </div>
 
-                <div class="modal-action">
+                <v-spacer />
 
-                    <div>
-                        <div
-                                class="close"
-                                @click="close()"
-                        >Отмена
-                        </div>
-                    </div>
-
-                    <v-spacer></v-spacer>
-
-                    <!-- кнопка выбор темы -->
-                    <div
-                            v-if="topics.length && validateTopics"
-                            @click="save()"
-                    >
-                        <app-button
-                                class="box-button"
-                                label="Выбрать"
-                                icon="check"
-                                :color="colors.buttons.success"
-                                :loading="loadingRequest"
-                        ></app-button>
-                    </div>
-                    <div
-                            v-else
-                    >
-                        <app-button
-                                class="box-button"
-                                label="Выбрать"
-                                icon="check"
-                                :color="colors.buttons.disable"
-                        ></app-button>
-                    </div>
-
+                <div
+                  v-if="item.owner_id == chatUser.id"
+                  class="topic-admin"
+                >
+                  (ред.)
                 </div>
+
+                <div
+                  class="topic-members"
+                >
+                  {{ item.members.length }} участников
+                </div>
+                <div class="topic-icon-box">
+                  <v-icon
+                    class="topic-icon"
+                    @click="openTopicUpdate(item.id)"
+                  >
+                    error
+                  </v-icon>
+                </div>
+              </div>
             </div>
-        </v-card>
-    </v-dialog>
+          </div>
+        </div>
+
+        <div class="modal-action">
+          <div>
+            <div
+              class="close"
+              @click="close()"
+            >
+              Отмена
+            </div>
+          </div>
+
+          <v-spacer />
+
+          <!-- кнопка выбор темы -->
+          <v-btn
+            class="box-button"
+            icon="check"
+            :disabled="!(topics.length && validateTopics)"
+            @click="save()"
+          >
+            Выбрать
+          </v-btn>
+        </div>
+      </div>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
-    import AppButton from '../../../../template/form/Button'
-    //
-    import AppTopicBarTopicCreate from './TopicBarTopicCreate'
-    import AppTopicBarTopicUpdate from './TopicBarTopicUpdate'
+  //
+  import AppTopicBarTopicCreate from './TopicBarTopicCreate'
+  import AppTopicBarTopicUpdate from './TopicBarTopicUpdate'
 
-    export default {
-        components: {
-            AppButton,
-            AppTopicBarTopicCreate,
-            AppTopicBarTopicUpdate
-        },
-        props: [
-            'dialog',
-            'conversationId'
-        ],
-        data() {
-            return {
-                dialogTopicCreate: false,
-                dialogTopicUpdate: false,
-                updatedTopicId: null
-            }
-        },
-        computed: {
-            loadingRequest() {
-                return this.$store.getters['template/shared/loadingRequest']
-            },
-            loadingSend() {
-                return this.$store.getters['chat/message/loading']
-            },
-            colors() {
-                return this.$store.getters['template/colors/colors']
-            },
-            chatUser() {
-                return this.$store.getters['chat/chatUser/chatUser']
-            },
-            conversation() {
-                let conversation = this.$store.getters["chat/conversation/conversations"].filter(item => item.id == this.conversationId)
-                if (conversation.length) return conversation[0]
-                return {}
-            },
-            members () {
-                let members = []
-                let chatUser = this.$store.getters['chat/chatUser/chatUser']
-                if (this.conversation && this.conversation.members) {
-                    members = this.conversation.members.filter(item => {
-                        if (item.id != chatUser.id && item.active) return item
-                    })
-                }
-                return members
-            },
-            topics() {
-                return this.$store.getters['chat/topic/topics']
-            },
-            selectedTopicId: {
-                get() {
-                    return this.$store.getters['chat/topic/selectedTopicId']
-                },
-                set(val) {
-                    this.$store.commit('chat/topic/selectedTopicId', val)
-                }
-            },
-            validateTopics() {
-                if (this.selectedTopicId) return true
-                return false
-            }
-        },
-        methods: {
-            isEmptyObject(obj) {
-                return JSON.stringify(obj) === '{}'
-            },
-            getTopicHeader() {
-                if (this.dialogTopicCreate) return 'Новая тема'
-                if (this.dialogTopicUpdate) return 'Просмотр темы'
-                return 'Список тем'
-            },
-            back() {
-                this.dialogTopicCreate = false
-                this.dialogTopicUpdate = false
-                this.$store.commit('chat/topic/nameExist', false)
-            },
-            close() {
-                this.dialogTopicCreate = false
-                this.selectedTopicId = null
-                this.$emit('update:dialog', false)
-            },
-            save() {
-                this.dialogTopicCreate = false
-                this.$emit('update:dialog', false)
-            },
-            openTopicUpdate(id) {
-                this.updatedTopicId = id
-                this.dialogTopicUpdate = true
-            },
-            getSelectTopicClass(id) {
-                if (this.selectedTopicId == id) return 'topic-select topic-select-active'
-                return 'topic-select'
-            },
-            selectTopic(id) {
-                this.selectedTopicId = id
-            }
+  export default {
+    components: {
+      AppTopicBarTopicCreate,
+      AppTopicBarTopicUpdate,
+    },
+    props: {
+      dialog: Boolean,
+      conversationId: {
+        required: true,
+        type: [Number, String],
+      },
+    },
+    data () {
+      return {
+        dialogTopicCreate: false,
+        dialogTopicUpdate: false,
+        updatedTopicId: null,
+      }
+    },
+    computed: {
+      loadingSend () {
+        return this.$store.getters['chat/message/loading']
+      },
+      chatUser () {
+        return this.$store.getters['chat/chatUser/chatUser']
+      },
+      conversation () {
+        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
+        if (conversation.length) return conversation[0]
+        return {}
+      },
+      members () {
+        let members = []
+        const chatUser = this.$store.getters['chat/chatUser/chatUser']
+        if (this.conversation && this.conversation.members) {
+          members = this.conversation.members.filter(item => {
+            if (item.id !== chatUser.id && item.active) return item
+          })
         }
-    }
+        return members
+      },
+      topics () {
+        return this.$store.getters['chat/topic/topics']
+      },
+      selectedTopicId: {
+        get () {
+          return this.$store.getters['chat/topic/selectedTopicId']
+        },
+        set (val) {
+          this.$store.commit('chat/topic/selectedTopicId', val)
+        },
+      },
+      validateTopics () {
+        if (this.selectedTopicId) return true
+        return false
+      },
+    },
+    methods: {
+      isEmptyObject (obj) {
+        return JSON.stringify(obj) === '{}'
+      },
+      getTopicHeader () {
+        if (this.dialogTopicCreate) return 'Новая тема'
+        if (this.dialogTopicUpdate) return 'Просмотр темы'
+        return 'Список тем'
+      },
+      back () {
+        this.dialogTopicCreate = false
+        this.dialogTopicUpdate = false
+        this.$store.commit('chat/topic/nameExist', false)
+      },
+      close () {
+        this.dialogTopicCreate = false
+        this.selectedTopicId = null
+        this.$emit('update:dialog', false)
+      },
+      save () {
+        this.dialogTopicCreate = false
+        this.$emit('update:dialog', false)
+      },
+      openTopicUpdate (id) {
+        this.updatedTopicId = id
+        this.dialogTopicUpdate = true
+      },
+      getSelectTopicClass (id) {
+        if (this.selectedTopicId === id) return 'topic-select topic-select-active'
+        return 'topic-select'
+      },
+      selectTopic (id) {
+        this.selectedTopicId = id
+      },
+    },
+  }
 </script>
 
 <style scoped>

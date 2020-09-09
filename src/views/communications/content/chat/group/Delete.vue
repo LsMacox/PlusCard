@@ -1,9 +1,6 @@
 <template>
-<el-dialog
-        :visible.sync="dialog"
-        :close-on-click-modal="false"
-        :before-close="close"
-        append-to-body
+<v-dialog
+        v-model="dialog"        
         custom-class="app--modal"
 >
     <div class="modal">
@@ -33,7 +30,7 @@
         </div>
 
     </div>
-</el-dialog>
+</v-dialog>
 </template>
 
 <script>

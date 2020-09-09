@@ -29,9 +29,8 @@
         required: true,
       },
       conversationId: {
-        type: [Number, String],
+        type: [Number, String, null],
         default: null,
-        required: true,
       },
     },
     data () {

@@ -1,449 +1,439 @@
 <template>
-    <div style="display: flex; width: 100%;">
-        <div class="app--conversation--list--card">
-            <div class="app--conversationn--list--avatar--wrapper">
-                
-            <v-menu open-on-hover top offset-y>
-                <div>
-                    <div style="display: flex; padding-bottom: 10px;">
-                        <div>Участники чата</div>
-                    </div>
-                    <div
-                            v-loading="loadingRequest"
-                    >
-                        <div
-                                v-for="(member, i) in conversation.members"
-                                :key="i"
-                        >
-                            <div
-                                    v-if="member.active"
-                            >
-                                <div
-                                        v-if="member.id !== chatUser.id"
-                                        style="display: inline; padding-top: 5px; color: #409EFF; border-bottom: 1px dotted #409EFF; cursor:pointer;"
-                                        @click="toAccount(member.id)"
-                                >{{member.name}}
-                                </div>
-                                <div
-                                        v-else
-                                >{{member.name}}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                 <template v-slot:activator="{ on, attrs }">
-                      <div
-                        class="list-avatar"
+  <div style="display: flex; width: 100%;">
+    <div class="app--conversation--list--card">
+      <div class="app--conversationn--list--avatar--wrapper">
+        <v-menu
+          open-on-hover
+          top
+          offset-y
+        >
+          <div>
+            <div style="display: flex; padding-bottom: 10px;">
+              <div>Участники чата</div>
+            </div>
+            <div>
+              <div
+                v-for="(member, i) in conversation.members"
+                :key="i"
+              >
+                <div
+                  v-if="member.active"
                 >
-                    <img
-                            v-for="(avatar, i) in getAvatars(conversation)"
-                            :key="i"
-                            :src="avatar"
-                            class="list-avatar-img"
-                            :style="
-      'position: absolute;' +
-        'left: ' +
-        14 * i +
-        'px;' +
-        'z-index: ' +
-        (0 + i) +
-        ';'
-        ">
+                  <div
+                    v-if="member.id !== chatUser.id"
+                    style="display: inline; padding-top: 5px; color: #409EFF; border-bottom: 1px dotted #409EFF; cursor:pointer;"
+                    @click="toAccount(member.id)"
+                  >
+                    {{ member.name }}
+                  </div>
+                  <div
+                    v-else
+                  >
+                    {{ member.name }}
+                  </div>
                 </div>
-                 </template>               
-            </v-menu>
+              </div>
             </div>
-        <div class="app--conversation--list--card--content--wrapper">
-            <div class="app--conversation--list--card--content">
-                <div class="app--conversation--list--card--top--line">
-                    <div class="app--conversation--list--card--favorite" v-if="conversation.chosen">
-                        <i class="fas fa-star"></i>
-                    </div>
-
-
-                    <div class="app--conversation--list--card-name">
-                        {{ conversation.display_name ? conversation.display_name : getName(conversation) }}
-                    </div>
-                    <div class="app--conversation--list--card--mute" v-if="conversation.muted">
-                        <img src="/icons/list_volume_off.svg" />
-                    </div>
-                </div>
-
-                <div style="margin-top:2px;" v-if="typing && typing.conversation_id == conversationId">
-                    <app-typing
-                            :conversation-id="conversationId"
-                    ></app-typing>
-                </div>
-                <div
-                        v-else
-                        class="app--conversation--list--card--bottom--line"
-                        :class="[getAuthorName(conversation) != 'Вы' ? 'blueAuthor' : '']"
-                >
-                    {{ getAuthorName(conversation) }}:<br>
-                    {{ getLastMessage(conversation) }}
-                </div>
-
+          </div>
+          <template v-slot:activator="{on}">
+            <div
+              class="list-avatar"
+              v-on="on"
+            >
+              <img
+                v-for="(avatar, i) in getAvatars(conversation)"
+                :key="i"
+                :src="avatar"
+                class="list-avatar-img"
+                :style="
+                  'position: absolute;' +
+                    'left: ' +
+                    14 * i +
+                    'px;' +
+                    'z-index: ' +
+                    (0 + i) +
+                    ';'
+                "
+              >
             </div>
-
-            <div class="app--conversation--list--card--info">
-                <div class="app--conversation--list--card--date">
-                    {{ getLastTime(conversation) }}
-                </div>
-                <div
-                        v-if="conversation && conversation.unread_count"
-                        class="app--conversation--list--card--unread"
-                >{{conversation.unread_count}}</div>
-                <div
-                        v-else
-                        style="height: 22px;"
-                ></div>
+          </template>
+        </v-menu>
+      </div>
+      <div class="app--conversation--list--card--content--wrapper">
+        <div class="app--conversation--list--card--content">
+          <div class="app--conversation--list--card--top--line">
+            <div
+              v-if="conversation.chosen"
+              class="app--conversation--list--card--favorite"
+            >
+              <i class="fas fa-star" />
             </div>
 
+            <div class="app--conversation--list--card-name">
+              {{ conversation.display_name ? conversation.display_name : getName(conversation) }}
+            </div>
+            <div
+              v-if="conversation.muted"
+              class="app--conversation--list--card--mute"
+            >
+              <img src="@/assets/chat/list_volume_off.svg">
+            </div>
+          </div>
+
+          <div
+            v-if="typing && typing.conversation_id == conversationId"
+            style="margin-top:2px;"
+          >
+            <app-typing
+              :conversation-id="conversationId"
+            />
+          </div>
+          <div
+            v-else
+            class="app--conversation--list--card--bottom--line"
+            :class="[getAuthorName(conversation) != 'Вы' ? 'blueAuthor' : '']"
+          >
+            {{ getAuthorName(conversation) }}:<br>
+            {{ getLastMessage(conversation) }}
+          </div>
         </div>
+
+        <div class="app--conversation--list--card--info">
+          <div class="app--conversation--list--card--date">
+            {{ getLastTime(conversation) }}
+          </div>
+          <div
+            v-if="conversation && conversation.unread_count"
+            class="app--conversation--list--card--unread"
+          >
+            {{ conversation.unread_count }}
+          </div>
+          <div
+            v-else
+            style="height: 22px;"
+          />
         </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
-    import AppTyping from "./TypingConversationList";
-    import Input from "@components/template/form/Input";
+  import AppTyping from './TypingConversationList'
 
-    export default {
-        components: {
-            AppTyping,
-            Input,
-        },
-        props: {
-            conversationType: String | Number,
-            conversationId: String | Number,
-        },
-        data() {
-            return {
+  export default {
+    components: {
+      AppTyping,
+    },
+    props: {
+      conversationType: {
+        type: [Number, String],
+        default: 'business',
+        required: true,
+      },
+      conversationId: {
+        type: [Number, String, null],
+        default: null,
+      },
+    },
+    data () {
+      return {
 
-            };
-        },
-        computed: {
-            loadingRequest() {
-                return this.$store.getters["template/shared/loadingRequest"];
-            },
-            colors() {
-                return this.$store.getters["template/colors/colors"];
-            },
-            programId() {
-                return this.$store.getters["brand/program/programId"]
-            },
-            program() {
-                return this.$store.getters["brand/program/program"];
-            },
-            profile() {
-                return this.$store.getters.getProfile;
-            },
-            chatUser() {
-                return this.$store.getters['chat/chatUser/chatUser']
-            },
-            conversation() {
-                let conversation = this.$store.getters["chat/conversation/conversations"].filter(item => item.id == this.conversationId)
-                if (conversation.length) return conversation[0]
-                return {}
-            },
-            members() {
-                if (!this.isEmptyObject(this.conversation)) return this.conversation.members
-                return []
-            },
-            conversationProgram() {
-                if (!this.isEmptyObject(this.conversation)) return this.conversation.program
-                return {}
-            },
-            employees() {
-                if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.chat_members
-                return []
-            },
-            realChatName() {
-                if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.real_chat_name
-                return false
-            },
-            messages() {
-                return this.$store.getters["chat/message/messages"][this.conversationId]; // id чата
-            },
-            typing() {
-                return this.$store.getters['chat/message/typing']
-            },
-        },
-        methods: {
-            isEmptyObject(obj) {
-                return JSON.stringify(obj) === "{}";
-            },
-            toRoute(path) {
-                if (this.$route.path !== path) this.$router.push(path)
-            },
-            // TEMPLATE
-            getClass(id) {
-                if (id == this.conversationId) return "list-item list-item-active";
-                return "list-item";
-            },
-            getAvatars(item) {
+      }
+    },
+    computed: {
 
-                let avatars = []
+      program () {
+        return this.$store.getters['brand/program/program']
+      },
+      profile () {
+        return this.$store.getters.user
+      },
+      chatUser () {
+        return this.$store.getters['chat/chatUser/chatUser']
+      },
+      conversation () {
+        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
+        if (conversation.length) return conversation[0]
+        return {}
+      },
+      members () {
+        if (!this.isEmptyObject(this.conversation)) return this.conversation.members
+        return []
+      },
+      conversationProgram () {
+        if (!this.isEmptyObject(this.conversation)) return this.conversation.program
+        return {}
+      },
+      employees () {
+        if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.chat_members
+        return []
+      },
+      realChatName () {
+        if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.real_chat_name
+        return false
+      },
+      messages () {
+        return this.$store.getters['chat/message/messages'][this.conversationId] // id чата
+      },
+      typing () {
+        return this.$store.getters['chat/message/typing']
+      },
+    },
+    methods: {
+      isEmptyObject (obj) {
+        return JSON.stringify(obj) === '{}'
+      },
+      toRoute (path) {
+        if (this.$route.path !== path) this.$router.push(path)
+      },
+      // TEMPLATE
+      getClass (id) {
+        if (id === this.conversationId) return 'list-item list-item-active'
+        return 'list-item'
+      },
+      getAvatars (item) {
+        let avatars = []
 
-                // есть чат пользователь
-                if (this.chatUser && this.chatUser.id) {
+        // есть чат пользователь
+        if (this.chatUser && this.chatUser.id) {
+          const chatUserId = this.chatUser.id
+          let count = 0
 
-                    let chatUserId = this.chatUser.id
-                    let count = 0
+          // количество активных участников чата
+          item.members.forEach(item => {
+            if (item.active) count++
+          })
 
-                    // количество активных участников чата
-                    item.members.forEach(item => {
-                        if (item.active) count++
-                    })
+          if (count === 1) {
+            avatars = [item.members[0].avatar]
+          }
 
-                    if (count === 1) {
-                        avatars = [item.members[0].avatar]
-                    }
+          if (count === 2) {
+            const member = item.members.filter(item => item.id !== chatUserId)
+            if (member.length) {
+              avatars = [member[0].avatar]
+            }
+          }
 
-                    if (count === 2) {
-                        let member = item.members.filter(item => item.id !== chatUserId)
-                        if (member.length) {
-                            avatars = [member[0].avatar]
-                        }
-                    }
+          if (count > 2) {
+            // console.log('count > 2')
 
-                    if (count > 2) {
+            // нет последнего сообщения
+            if (!item.last_message) {
+              // console.log('my last message')
 
-                        //console.log('count > 2')
-
-                        // нет последнего сообщения
-                        if (!item.last_message) {
-
-                            //console.log('my last message')
-
-                            item.members.forEach(item => {
-                                if (avatars.length < 3) {
-                                    avatars.unshift(item.avatar)
-                                }
-                            })
-
-                            // есть последнее сообщение
-                        } else {
-
-                            let lastSender = item.last_message.sender_id
-
-                            // аватар последнего написавшего и первый в массиве
-                            let firstAvatar = item.members.filter(
-                                item => item.id == lastSender
-                            )
-                            if (firstAvatar.length) avatars.unshift(firstAvatar[0].avatar)
-
-                            // не более 3-х аватаров
-                            item.members.forEach(item => {
-                                if (avatars.length < 3 && item.id != lastSender) {
-                                    //console.log('avatars now', avatars);
-                                    avatars.unshift(item.avatar)
-                                }
-                            })
-                        }
-                    }
+              item.members.forEach(item => {
+                if (avatars.length < 3) {
+                  avatars.unshift(item.avatar)
                 }
+              })
 
-                return avatars
-            },
-            getName(item) {
-                let name = ""
-                if (this.chatUser && !this.isEmptyObject(this.chatUser)) {
-                    let chatUserId = this.chatUser.id
+              // есть последнее сообщение
+            } else {
+              const lastSender = item.last_message.sender_id
 
-                    // чат пользователь - создатель чата
-                    if (item.name && chatUserId === item.creator_id) return item.name
+              // аватар последнего написавшего и первый в массиве
+              const firstAvatar = item.members.filter(
+                item => item.id === lastSender,
+              )
+              if (firstAvatar.length) avatars.unshift(firstAvatar[0].avatar)
 
-                    // количество активных участников чата
-                    let count = 0
-                    item.members.forEach(item => {
-                        if (item.active) count++
-                    })
-                    if (count == 1) {
-                        name = item.members[0].name
-                    }
-                    if (count == 2) {
-                        let member = item.members.filter(item => item.id != chatUserId)
-                        if (member.length) {
-                            name = member[0].name
-                        }
-                    }
-                    if (count > 2) {
-                        if (item.name) return item.name
-                        item.members.forEach(item => {
-                            if (item.id != chatUserId && item.active) {
-                                if (!name) name = item.name
-                                else name = name + ", " + item.name
-                            }
-                        })
-                    }
+              // не более 3-х аватаров
+              item.members.forEach(item => {
+                if (avatars.length < 3 && item.id !== lastSender) {
+                  // console.log('avatars now', avatars);
+                  avatars.unshift(item.avatar)
                 }
-                return name
-            },
-            getLastTime(item) {
-                let time = "";
-                if (item.last_message) {
-                    time = item.last_message.created_at;
-                    if (time) return this.getDate(time);
-                }
-                return time;
-            },
-            getAuthorName(conversation) {
-
-                if (conversation && conversation.last_message) {
-
-                    let item = conversation.last_message
-
-                    let author = {}
-                    let isEmployee = false
-
-                    if (item.sender_id == this.chatUser.id) isEmployee = true
-
-                    if (isEmployee) {
-
-                        if (this.realChatName) {
-
-                            author = this.getAuthor(item)
-                            if (author.id) {
-                                if (author.id == this.profile.id) return 'Вы'
-                                else return `${author.name} (${this.conversationProgram.name})`
-                            }
-                            // реальный отправитель чат-бот
-                            else if (item.real_sender_id == this.chatUser.id) {
-                                return this.chatUser.name
-                            }
-
-                        } else {
-
-                            author = this.getAuthor(item)
-                            if (author.id) {
-                                if (author.id == this.profile.id) return 'Вы'
-                                else return `${this.conversationProgram.name} (${author.name})`
-                            }
-                            // реальный отправитель чат-бот
-                            else if (item.real_sender_id == this.chatUser.id) {
-                                return this.chatUser.name
-                            }
-                        }
-
-                    } else {
-
-                        author = this.getAuthor(item)
-                        if (author.id) return `${author.name}`
-                    }
-                }
-
-                return 'Пользователь'
-            },
-            getAuthor(item) {
-                let authorId = null
-                let author = []
-                let isEmployee = false
-
-                if (item.sender_id == this.chatUser.id) isEmployee = true
-
-                if (isEmployee) {
-
-                    authorId = item.real_sender_id
-                    author = this.employees.filter(item => item.id == authorId)
-                    if (author.length) return author[0]
-
-                } else {
-
-                    authorId = item.sender_id
-                    author = this.members.filter(item => item.id == authorId)
-                    if (author.length) return author[0]
-                }
-
-                return {}
-            },
-            getLastMessage(item) {
-                let message = item.last_message;
-                if (message) {
-                    //console.log(message)
-                    if (message && message.attachments.length) {
-                        if (message.attachments[0].type == "message/text")
-                            return message.attachments[0].content;
-                        if (message.attachments[0].type == "plus/account") return "карта";
-                        if (message.attachments[0].type == "media/image")
-                            return "изображение";
-                        if (message.attachments[0].type == "media/audio")
-                            return "аудиосообщение";
-                        if (message.attachments[0].type == "media/video") return "видео";
-                        if (message.attachments[0].type == "media/file") return "файл";
-                    }
-                    return message.message;
-                }
-                return "";
-            },
-            formatMessage(message) {
-                let str = JSON.parse(message);
-                let pos = 0;
-                while (true) {
-                    let foundPos = str.indexOf("\n", pos);
-                    if (foundPos != -1) str = str.replace("\n", "<br>");
-                    if (foundPos == -1) break;
-                    pos = foundPos;
-                }
-                return str;
-            },
-            getDate(date) {
-                if (!date) return "-";
-                let time = Date.parse(date);
-                //let time = new Date(date).getTime()
-                let offset = new Date().getTimezoneOffset();
-                // offset 0
-                let messageDate = new Date(time + offset * 0 * 60 * 1000);
-                let currentDate = new Date();
-                let options = {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric"
-                    //hour: 'numeric',
-                    //minute: 'numeric'
-                };
-                if (
-                    currentDate.getDate() == messageDate.getDate() &&
-                    currentDate.getMonth() == messageDate.getMonth() &&
-                    currentDate.getFullYear() == messageDate.getFullYear()
-                ) {
-                    options = {
-                        hour: "numeric",
-                        minute: "numeric"
-                    };
-                }
-                if (
-                    currentDate.getDate() - messageDate.getDate() == 1 &&
-                    currentDate.getMonth() == messageDate.getMonth() &&
-                    currentDate.getFullYear() == messageDate.getFullYear()
-                ) {
-                    options = {
-                        hour: "numeric",
-                        minute: "numeric"
-                    };
-                    return "Вчера в " + messageDate.toLocaleString("ru", options);
-                } else {
-                    return messageDate.toLocaleString("ru", options);
-                }
-            },
-            formatStatus(status) {
-                if (status === "sending") return "Отправлено";
-                if (status === "delivered") return "Доставлено";
-                if (status === "seen") return "Просмотрено";
-                return status;
-            },
-            async toAccount(id) {
-                const item = {
-                    program_id: this.programId,
-                    user_id: id,
-                }
-                const success = await axios.post('/api/account/client/id', item)
-                let href = '/accounts/client/' + success.data.data.id
-                window.open(href, '_blank')
-            },
+              })
+            }
+          }
         }
-    }
+
+        return avatars
+      },
+      getName (item) {
+        let name = ''
+        if (this.chatUser && !this.isEmptyObject(this.chatUser)) {
+          const chatUserId = this.chatUser.id
+
+          // чат пользователь - создатель чата
+          if (item.name && chatUserId === item.creator_id) return item.name
+
+          // количество активных участников чата
+          let count = 0
+          item.members.forEach(item => {
+            if (item.active) count++
+          })
+          if (count === 1) {
+            name = item.members[0].name
+          }
+          if (count === 2) {
+            const member = item.members.filter(item => item.id !== chatUserId)
+            if (member.length) {
+              name = member[0].name
+            }
+          }
+          if (count > 2) {
+            if (item.name) return item.name
+            item.members.forEach(item => {
+              if (item.id !== chatUserId && item.active) {
+                if (!name) name = item.name
+                else name = name + ', ' + item.name
+              }
+            })
+          }
+        }
+        return name
+      },
+      getLastTime (item) {
+        let time = ''
+        if (item.last_message) {
+          time = item.last_message.created_at
+          if (time) return this.getDate(time)
+        }
+        return time
+      },
+      getAuthorName (conversation) {
+        if (conversation && conversation.last_message) {
+          const item = conversation.last_message
+
+          let author = {}
+          let isEmployee = false
+
+          if (item.sender_id === this.chatUser.id) isEmployee = true
+
+          if (isEmployee) {
+            if (this.realChatName) {
+              author = this.getAuthor(item)
+              if (author.id) {
+                if (author.id === this.profile.id) return 'Вы'
+                else return `${author.name} (${this.conversationProgram.name})`
+              } else if (item.real_sender_id === this.chatUser.id) {
+                // реальный отправитель чат-бот
+                return this.chatUser.name
+              }
+            } else {
+              author = this.getAuthor(item)
+              if (author.id) {
+                if (author.id === this.profile.id) return 'Вы'
+                else return `${this.conversationProgram.name} (${author.name})`
+              } else if (item.real_sender_id === this.chatUser.id) {
+                // реальный отправитель чат-бот
+                return this.chatUser.name
+              }
+            }
+          } else {
+            author = this.getAuthor(item)
+            if (author.id) return `${author.name}`
+          }
+        }
+
+        return 'Пользователь'
+      },
+      getAuthor (item) {
+        let authorId = null
+        let author = []
+        let isEmployee = false
+
+        if (item.sender_id === this.chatUser.id) isEmployee = true
+
+        if (isEmployee) {
+          authorId = item.real_sender_id
+          author = this.employees.filter(item => item.id === authorId)
+          if (author.length) return author[0]
+        } else {
+          authorId = item.sender_id
+          author = this.members.filter(item => item.id === authorId)
+          if (author.length) return author[0]
+        }
+
+        return {}
+      },
+      getLastMessage (item) {
+        const message = item.last_message
+        if (message) {
+          // console.log(message)
+          if (message && message.attachments.length) {
+            if (message.attachments[0].type === 'message/text') { return message.attachments[0].content }
+            if (message.attachments[0].type === 'plus/account') return 'карта'
+            if (message.attachments[0].type === 'media/image') { return 'изображение' }
+            if (message.attachments[0].type === 'media/audio') { return 'аудиосообщение' }
+            if (message.attachments[0].type === 'media/video') return 'видео'
+            if (message.attachments[0].type === 'media/file') return 'файл'
+          }
+          return message.message
+        }
+        return ''
+      },
+      formatMessage (message) {
+        let str = JSON.parse(message)
+        let pos = 0
+        while (true) {
+          const foundPos = str.indexOf('\n', pos)
+          if (foundPos !== -1) str = str.replace('\n', '<br>')
+          if (foundPos === -1) break
+          pos = foundPos
+        }
+        return str
+      },
+      getDate (date) {
+        if (!date) return '-'
+        const time = Date.parse(date)
+        // let time = new Date(date).getTime()
+        const offset = new Date().getTimezoneOffset()
+        // offset 0
+        const messageDate = new Date(time + offset * 0 * 60 * 1000)
+        const currentDate = new Date()
+        let options = {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          // hour: 'numeric',
+          // minute: 'numeric'
+        }
+        if (
+          currentDate.getDate() === messageDate.getDate() &&
+          currentDate.getMonth() === messageDate.getMonth() &&
+          currentDate.getFullYear() === messageDate.getFullYear()
+        ) {
+          options = {
+            hour: 'numeric',
+            minute: 'numeric',
+          }
+        }
+        if (
+          currentDate.getDate() - messageDate.getDate() === 1 &&
+          currentDate.getMonth() === messageDate.getMonth() &&
+          currentDate.getFullYear() === messageDate.getFullYear()
+        ) {
+          options = {
+            hour: 'numeric',
+            minute: 'numeric',
+          }
+          return 'Вчера в ' + messageDate.toLocaleString('ru', options)
+        } else {
+          return messageDate.toLocaleString('ru', options)
+        }
+      },
+      formatStatus (status) {
+        if (status === 'sending') return 'Отправлено'
+        if (status === 'delivered') return 'Доставлено'
+        if (status === 'seen') return 'Просмотрено'
+        return status
+      },
+      async toAccount (id) {
+        this.$store.dispatch('account/account/getUserAccount', { programId: this.program.id, userId: id }).then((accountId) => {
+          // TODO
+          console.log('accountId', accountId)
+          if (accountId) {
+            const href = '/accounts/client/' + accountId
+            window.open(href, '_blank')
+          }
+        })
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
@@ -554,7 +544,7 @@
                 }
             }
         }
-        
+
         .app--conversation--list--card--info {
             font-size: 10px;
             line-height: 12px;
@@ -576,7 +566,6 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-
 
             .app--conversation--list--card--unread {
                 background: #169AC7;
@@ -613,6 +602,5 @@
         padding: 20px;
         text-align: center;
     }
-
 
 </style>

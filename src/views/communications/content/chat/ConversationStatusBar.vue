@@ -36,10 +36,10 @@
                 >
                     <img
                             v-if="conversation.muted"
-                            src="/icons/volume_off.svg" />
+                            src="@/assets/chat/volume_off.svg" />
                     <img
                             v-else
-                            src="/icons/volume.svg"/>
+                            src="@/assets/chat/volume.svg"/>
                 </div>
             </div>
             <div

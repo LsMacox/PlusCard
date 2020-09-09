@@ -1,312 +1,332 @@
 <template>
-    <div>
-        <div class="modal-content">
-            <!-- новая тема -->
-            <!-- настройки темы -->
-            <app-input
-                    class="input-field"
-                    label="Название темы"
-                    :value.sync="name"
-                    type="text"
-                    max-length="100"
-                    hint=""
-                    :error="nameErrors"
-                    :validate.sync="$v.name"
-            ></app-input>
+  <div>
+    <div class="modal-content">
+      <!-- новая тема -->
+      <!-- настройки темы -->
+      <v-input
+        class="input-field"
+        label="Название темы"
+        :value.sync="name"
+        type="text"
+        max-length="100"
+        hint=""
+        :error="nameErrors"
+        :validate.sync="$v.name"
+      />
 
-            <!-- получатели темы -->
-            <div style="display: flex;">
-                <div class="check-all" @click="setRecipientAll()">
-                    <div v-if="checkAll" class="check-all-back">
-                        <v-icon color="white">check</v-icon>
-                    </div>
-                </div>
-                <div class="name-all">Все участники чата</div>
-            </div>
+      <!-- получатели темы -->
+      <div style="display: flex;">
+        <div
+          class="check-all"
+          @click="setRecipientAll()"
+        >
+          <div
+            v-if="checkAll"
+            class="check-all-back"
+          >
+            <v-icon color="white">
+              check
+            </v-icon>
+          </div>
+        </div>
+        <div class="name-all">
+          Все участники чата
+        </div>
+      </div>
 
-            <!-- список получателей -->
-            <div v-for="(item, i) in members" :key="i" class="res-row">
-                <div class="line-h">
-                    <div class="line-v"></div>
-                </div>
-
-                <!-- выбор участника -->
-                <div
-                        v-if="item.id != chatUser.id"
-                        class="check"
-                        @click="setRecipient(item.id)"
-                >
-                    <div v-show="checkAll || isRecipient(item.id)" class="check-all-back">
-                        <v-icon color="white">check</v-icon>
-                    </div>
-                </div>
-                <div v-else class="check">
-                    <div class="check-all-back">
-                        <v-icon color="white">check</v-icon>
-                    </div>
-                </div>
-
-                <!-- аватар и имя -->
-                <div
-                        class="avatar"
-                        :style="'background: url(' + item.avatar + ');'"
-                ></div>
-                <div class="name">{{ item.name }}</div>
-
-                <v-spacer></v-spacer>
-
-                <!-- выбор прав -->
-                <div v-if="item.id != chatUser.id" class="topic-rights">
-                    <div
-                            v-if="isRecipient(item.id)"
-                            :class="getCanWriteClass(item.id)"
-                            @click="setCanWrite(item.id)"
-                    ></div>
-
-                    <div
-                            v-if="isRecipient(item.id)"
-                            :class="getCanWriteLabelClass(item.id)"
-                            @click="setCanWrite(item.id)"
-                    >
-                        Написание
-                    </div>
-                </div>
-                <div v-else class="topic-rights">
-                    <div class="topic-admin">администратор</div>
-                </div>
-            </div>
+      <!-- список получателей -->
+      <div
+        v-for="(item, i) in members"
+        :key="i"
+        class="res-row"
+      >
+        <div class="line-h">
+          <div class="line-v" />
         </div>
 
-        <div class="modal-action">
-            <v-spacer></v-spacer>
-
-            <!-- кнопка добавить тему -->
-            <div v-if="validateTopic" @click="create()">
-                <app-button
-                        class="box-button"
-                        label="Добавить"
-                        icon="add"
-                        :color="colors.buttons.success"
-                        :loading="loadingRequest"
-                ></app-button>
-            </div>
-            <div v-else>
-                <app-button
-                        class="box-button"
-                        label="Добавить"
-                        icon="add"
-                        :color="colors.buttons.disable"
-                ></app-button>
-            </div>
+        <!-- выбор участника -->
+        <div
+          v-if="item.id != chatUser.id"
+          class="check"
+          @click="setRecipient(item.id)"
+        >
+          <div
+            v-show="checkAll || isRecipient(item.id)"
+            class="check-all-back"
+          >
+            <v-icon color="white">
+              check
+            </v-icon>
+          </div>
         </div>
+        <div
+          v-else
+          class="check"
+        >
+          <div class="check-all-back">
+            <v-icon color="white">
+              check
+            </v-icon>
+          </div>
+        </div>
+
+        <!-- аватар и имя -->
+        <div
+          class="avatar"
+          :style="'background: url(' + item.avatar + ');'"
+        />
+        <div class="name">
+          {{ item.name }}
+        </div>
+
+        <v-spacer />
+
+        <!-- выбор прав -->
+        <div
+          v-if="item.id != chatUser.id"
+          class="topic-rights"
+        >
+          <div
+            v-if="isRecipient(item.id)"
+            :class="getCanWriteClass(item.id)"
+            @click="setCanWrite(item.id)"
+          />
+
+          <div
+            v-if="isRecipient(item.id)"
+            :class="getCanWriteLabelClass(item.id)"
+            @click="setCanWrite(item.id)"
+          >
+            Написание
+          </div>
+        </div>
+        <div
+          v-else
+          class="topic-rights"
+        >
+          <div class="topic-admin">
+            администратор
+          </div>
+        </div>
+      </div>
     </div>
+
+    <div class="modal-action">
+      <v-spacer />
+
+      <!-- кнопка добавить тему -->
+      <v-btn
+          class="box-button"          
+          icon="add"
+          :color="colors.buttons.success"
+          :loading="loadingRequest"
+          :disabled="!validateTopic"
+          @click="create()"
+        >Добавить</v-btn>
+      
+    </div>
+  </div>
 </template>
 
 <script>
-   
-    import AppInput from "@components/template/form/Input";
-    import AppButton from "@components/template/form/Button";
-
-    export default {
-        components: {
-            AppInput,
-            AppButton
-        },
-        props: ["dialog", "conversationId"],
-        data() {
-            return {
-                checkAll: false,
-                name: "",
-                recipients: []
-            };
-        },
-        validations: {
-            name: {
-                // required,
-                // maxLength: maxLength(100)
-            }
-        },
-        watch: {
-            name(v) {
-                if (v) this.getValidate();
-            },
-            recipients(val) {
-                if (val.length == this.members.length && val.length > 0) this.checkAll = true;
-                else this.checkAll = false;
-            }
-        },
-        computed: {
-            loadingRequest() {
-                return this.$store.getters["template/shared/loadingRequest"];
-            },
-            loadingSend() {
-                return this.$store.getters["chat/message/loading"];
-            },
-            colors() {
-                return this.$store.getters["template/colors/colors"];
-            },
-            chatUser() {
-                return this.$store.getters["chat/chatUser/chatUser"];
-            },
-            conversation() {
-                let conversation = this.$store.getters["chat/conversation/conversations"].filter(item => item.id == this.conversationId)
-                if (conversation.length) return conversation[0]
-                return {}
-            },
-            members() {
-                let members = []
-                let chatUser = this.$store.getters['chat/chatUser/chatUser']
-                if (this.conversation && this.conversation.members) {
-                    members = this.conversation.members.filter(item => {
-                        if (item.id != chatUser.id && item.active) return item                        
-                    })
-                }
-                return members
-            },
-            nameExist() {
-                return this.$store.getters["chat/topic/nameExist"];
-            },
-            nameErrors() {
-                const errors = [];
-                if (!this.$v.name.$dirty) return errors;
-                !this.$v.name.required && errors.push('Поле "Название темы" обязательно');
-                !this.$v.name.maxLength &&
-                errors.push('Поле "Название темы" не может быть более 100 символов');
-                this.nameExist && errors.push("Тема с таким названием уже существует");
-                return errors;
-            },
-            validateTopic() {
-                if (
-                    this.$v.name.required &&
-                    this.$v.name.maxLength &&
-                    this.checkRecipients() &&
-                    !this.nameExist
-                )
-                    return true;
-                return false;
-            }
-        },
-        methods: {
-            isEmptyObject(obj) {
-                return JSON.stringify(obj) === "{}";
-            },
-
-            /*
-             * ТЕМЫ
-             */
-
-            back() {
-                this.name = "";
-                this.recipients = [];
-                this.$v.$reset();
-                this.$store.commit("chat/topic/nameExist", true);
-                this.$emit("update:dialog", false);
-            },
-            checkRecipients() {
-                let recipients = this.recipients.filter(
-                    item => item.id != this.chatUser.id
-                );
-                if (recipients.length) return true;
-                return false;
-            },
-            setRecipientAll() {
-                if (this.recipients.length == this.members.length) {
-                    this.recipients = [];
-                } else {
-                    this.recipients = this.members.map(item => {
-                        return {
-                            id: item.id,
-                            can_write: false
-                        };
-                    });
-                }
-            },
-            setRecipient(id) {
-                let index = null;
-                this.recipients.forEach((item, i) => {
-                    if (item.id == id) {
-                        return (index = i);
-                    }
-                });
-                if (index !== null) this.recipients.splice(index, 1);
-                else
-                    this.recipients.push({
-                        id,
-                        can_write: false
-                    });
-            },
-            isRecipient(id) {
-                let check = this.recipients.filter(item => item.id == id);
-                if (check.length) return true;
-                return false;
-            },
-            getCanWriteClass(id) {
-                let recipient = this.recipients.filter(item => item.id == id);
-                if (recipient.length) {
-                    if (recipient[0].can_write) return "can-write can-write-active";
-                }
-                return "can-write";
-            },
-            getCanWriteLabelClass(id) {
-                let recipient = this.recipients.filter(item => item.id == id);
-                if (recipient.length) {
-                    if (recipient[0].can_write) return "can-write-label-active";
-                }
-                return "can-write-label";
-            },
-            setCanWrite(id) {
-                let index = null;
-                this.recipients.forEach((item, i) => {
-                    if (item.id == id) index = i;
-                });
-                if (index !== null) {
-                    if (this.recipients[index]) {
-                        this.recipients[index].can_write = !this.recipients[index].can_write;
-                    }
-                } else {
-                    this.recipients.push({
-                        id,
-                        can_write: true
-                    });
-                }
-            },
-            async getValidate() {
-                // чат-пользователь
-
-                const topic = {
-                    conversation_id: this.conversationId,
-                    name: this.name
-                };
-                //////console.log(topic)
-                this.$store.dispatch("chat/topic/nameValidation", topic);
-            },
-            async create() {
-                // чат-пользователь
-
-                let  topic = {
-                    conversation_id: this.conversationId,
-                    name: this.name,
-                    is_private: false,
-                    members: this.recipients
-                };
-
-                topic.members.push({
-                    id: this.chatUser.id,
-                    can_write: true
-                });
-                ////console.log(topic)
-                this.$store.dispatch("chat/topic/create", topic).then(() => {
-                    this.back();
-                });
-            }
-        },
-        mounted() {
-            // this.recipients.push({
-            //     id: this.chatUser.id,
-            //     can_write: true
-            // });
+  export default {
+    components: {      
+    },
+    props: ['dialog', 'conversationId'],
+    data () {
+      return {
+        checkAll: false,
+        name: '',
+        recipients: [],
+      }
+    },
+    validations: {
+      name: {
+        // required,
+        // maxLength: maxLength(100)
+      },
+    },
+    computed: {
+      loadingRequest () {
+        return this.$store.getters['template/shared/loadingRequest']
+      },
+      loadingSend () {
+        return this.$store.getters['chat/message/loading']
+      },
+      colors () {
+        return this.$store.getters['template/colors/colors']
+      },
+      chatUser () {
+        return this.$store.getters['chat/chatUser/chatUser']
+      },
+      conversation () {
+        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id == this.conversationId)
+        if (conversation.length) return conversation[0]
+        return {}
+      },
+      members () {
+        let members = []
+        const chatUser = this.$store.getters['chat/chatUser/chatUser']
+        if (this.conversation && this.conversation.members) {
+          members = this.conversation.members.filter(item => {
+            if (item.id != chatUser.id && item.active) return item
+          })
         }
-    };
+        return members
+      },
+      nameExist () {
+        return this.$store.getters['chat/topic/nameExist']
+      },
+      nameErrors () {
+        const errors = []
+        if (!this.$v.name.$dirty) return errors
+        !this.$v.name.required && errors.push('Поле "Название темы" обязательно')
+        !this.$v.name.maxLength &&
+          errors.push('Поле "Название темы" не может быть более 100 символов')
+        this.nameExist && errors.push('Тема с таким названием уже существует')
+        return errors
+      },
+      validateTopic () {
+        if (
+          this.$v.name.required &&
+          this.$v.name.maxLength &&
+          this.checkRecipients() &&
+          !this.nameExist
+        ) { return true }
+        return false
+      },
+    },
+    watch: {
+      name (v) {
+        if (v) this.getValidate()
+      },
+      recipients (val) {
+        if (val.length == this.members.length && val.length > 0) this.checkAll = true
+        else this.checkAll = false
+      },
+    },
+    mounted () {
+      // this.recipients.push({
+      //     id: this.chatUser.id,
+      //     can_write: true
+      // });
+    },
+    methods: {
+      isEmptyObject (obj) {
+        return JSON.stringify(obj) === '{}'
+      },
+
+      /*
+       * ТЕМЫ
+       */
+
+      back () {
+        this.name = ''
+        this.recipients = []
+        this.$v.$reset()
+        this.$store.commit('chat/topic/nameExist', true)
+        this.$emit('update:dialog', false)
+      },
+      checkRecipients () {
+        const recipients = this.recipients.filter(
+          item => item.id != this.chatUser.id,
+        )
+        if (recipients.length) return true
+        return false
+      },
+      setRecipientAll () {
+        if (this.recipients.length == this.members.length) {
+          this.recipients = []
+        } else {
+          this.recipients = this.members.map(item => {
+            return {
+              id: item.id,
+              can_write: false,
+            }
+          })
+        }
+      },
+      setRecipient (id) {
+        let index = null
+        this.recipients.forEach((item, i) => {
+          if (item.id == id) {
+            return (index = i)
+          }
+        })
+        if (index !== null) this.recipients.splice(index, 1)
+        else {
+          this.recipients.push({
+            id,
+            can_write: false,
+          })
+        }
+      },
+      isRecipient (id) {
+        const check = this.recipients.filter(item => item.id == id)
+        if (check.length) return true
+        return false
+      },
+      getCanWriteClass (id) {
+        const recipient = this.recipients.filter(item => item.id == id)
+        if (recipient.length) {
+          if (recipient[0].can_write) return 'can-write can-write-active'
+        }
+        return 'can-write'
+      },
+      getCanWriteLabelClass (id) {
+        const recipient = this.recipients.filter(item => item.id == id)
+        if (recipient.length) {
+          if (recipient[0].can_write) return 'can-write-label-active'
+        }
+        return 'can-write-label'
+      },
+      setCanWrite (id) {
+        let index = null
+        this.recipients.forEach((item, i) => {
+          if (item.id == id) index = i
+        })
+        if (index !== null) {
+          if (this.recipients[index]) {
+            this.recipients[index].can_write = !this.recipients[index].can_write
+          }
+        } else {
+          this.recipients.push({
+            id,
+            can_write: true,
+          })
+        }
+      },
+      async getValidate () {
+        // чат-пользователь
+
+        const topic = {
+          conversation_id: this.conversationId,
+          name: this.name,
+        }
+        /// ///console.log(topic)
+        this.$store.dispatch('chat/topic/nameValidation', topic)
+      },
+      async create () {
+        // чат-пользователь
+
+        const topic = {
+          conversation_id: this.conversationId,
+          name: this.name,
+          is_private: false,
+          members: this.recipients,
+        }
+
+        topic.members.push({
+          id: this.chatUser.id,
+          can_write: true,
+        })
+        /// /console.log(topic)
+        this.$store.dispatch('chat/topic/create', topic).then(() => {
+          this.back()
+        })
+      },
+    },
+  }
 </script>
 
 <style scoped>

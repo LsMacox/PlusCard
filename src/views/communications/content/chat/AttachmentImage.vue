@@ -1,41 +1,59 @@
 <template>
-<div>
-
-    <div class="image-thumb"  @click="show = true">
-        <img  :src="content.thumb" alt="">
+  <div>
+    <div
+      class="image-thumb"
+      @click="show = true"
+    >
+      <img
+        :src="content.thumb"
+        alt=""
+      >
     </div>
 
-
-    <v-dialog v-if="show" v-model="show"  top="10vh" class="previewDialog">
-        <div class="attachment--preview--toolbar">
-            <a style="color:#fff" :href="content.url" target="_blank" download><i class="fas fa-download"></i></a>
-            <i class="fas fa-times" style="font-size: 24px;position: relative;top: 1px;left: 25px;" @click="show = false"></i>
-        </div>
-        <img :src="content.url"
-             class="image-full"
-             />
+    <v-dialog
+      v-if="show"
+      v-model="show"
+      top="10vh"
+      class="previewDialog"
+    >
+      <div class="attachment--preview--toolbar">
+        <a
+          style="color:#fff"
+          :href="content.url"
+          target="_blank"
+          download
+        ><i class="fas fa-download" /></a>
+        <i
+          class="fas fa-times"
+          style="font-size: 24px;position: relative;top: 1px;left: 25px;"
+          @click="show = false"
+        />
+      </div>
+      <img
+        :src="content.url"
+        class="image-full"
+      >
     </v-dialog>
-
-</div>
+  </div>
 </template>
 
 <script>
-export default {
-    props: [
-        'content'
-    ],
+  export default {
+    props: {
+      content: {
+        required: true,
+        type: Object,
+      },
+    },
     data () {
-        return {
-            show: false,
-            download: false
-        }
+      return {
+        show: false,
+        download: false,
+      }
     },
     computed: {
-        colors () {
-            return this.$store.getters['template/colors/colors']
-        }
     },
-}
+  }
 </script>
 
 <style lang="scss" scoped>

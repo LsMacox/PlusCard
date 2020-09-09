@@ -33,14 +33,13 @@
 
                 <v-spacer></v-spacer>
 
-                <app-button
-                        class="box-button"
-                        label="Сохранить"
+                <v-btn
+                        class="box-button"                        
                         icon="create"
                         :color="validate ? colors.buttons.success : colors.buttons.disable"
                         :loading="loadingRequest"
                         @click.native="update(validate)"
-                ></app-button>
+                >Сохранить</v-btn>
 
             </div>
         </v-card>
@@ -49,13 +48,13 @@
 </template>
 
 <script>
-import AppButton from '../../../../template/form/Button'
-import AppTextarea from '../../../../template/form/Textarea'
+
+// import AppTextarea from '../../../../template/form/Textarea'
 
 export default {
     components: {
-        AppButton,
-        AppTextarea
+        
+        // AppTextarea
     },
     props: {
         dialog: Boolean,
