@@ -81,10 +81,10 @@
       },
       period: {
         get () {
-          return this.$store.getters['widget/filter/period']
+          return this.$store.getters['account/certificate/filter/period']
         },
         set (v) {
-          this.$store.commit('widget/filter/period', v)
+          this.$store.commit('account/certificate/filter/period', v)
         },
       },
     },

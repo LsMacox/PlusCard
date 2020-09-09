@@ -1,13 +1,9 @@
 const getDefaultState = () => {
     return {
-        // issueStart: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
-        // issueEnd: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
         filter: {
             enable: false,
             certificates: [],
             issueDate: {
-                // startDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
-                // endDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
                 startDate: null,
                 endDate: null,
             },
@@ -15,9 +11,8 @@ const getDefaultState = () => {
             certMerchantOrderStatus: [],
             certOrderStatus: [],
             buyers: [],
+            archived_at: null,
         },
-        // startPeriodFilter: localStorage.getItem('startPeriodFilter') ? localStorage.getItem('startPeriodFilter') : new Date(Date.now() - 7776000000 - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
-        // endPeriodFilter: localStorage.getItem('endPeriodFilter') ? localStorage.getItem('endPeriodFilter') : new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
     }
 }
 
@@ -29,24 +24,14 @@ const mutations = {
         Object.assign(state, defaultState)
         localStorage.setItem('certificateTableFilter', JSON.stringify(defaultState.filter))
     },
-    // startPeriod (state, payload) {
-    //     state.startPeriod = payload
-    // },
-    // endPeriod (state, payload) {
-    //     state.endPeriod = payload
-    // },
+    period (state, payload) {
+        state.period = payload
+        localStorage.setItem('certificateTableFilterPeriod', JSON.stringify(payload))
+    },
     filter (state, payload) {
         state.filter = payload
         localStorage.setItem('certificateTableFilter', JSON.stringify(state.filter))
     },
-    // startPeriodFilter (state, payload) {
-    //     state.startPeriodFilter = payload
-    //     localStorage.setItem('startPeriodFilter', payload)
-    // },
-    // endPeriodFilter (state, payload) {
-    //     state.endPeriodFilter = payload
-    //     localStorage.setItem('endPeriodFilter', payload)
-    // },
 }
 
 const actions = {

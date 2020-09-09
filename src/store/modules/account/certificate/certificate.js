@@ -64,18 +64,11 @@ const mutations = {
 
 const actions = {
 
-    async list ({ commit }, { merchantId, offset, limit }) {
-        // eslint-disable-next-line no-useless-catch
+    async list ({ commit }, item) {
+            // eslint-disable-next-line no-useless-catch
         try {
             // console.log('merchant_id', merchant_id)
-            console.log(offset, limit)
-            const success = await ApiService.get('api-cabinet/client/certificate/list2', {
-                params: {
-                    merchant_id: merchantId,
-                    offset: offset,
-                    limit: limit,
-                },
-            })
+            const success = await ApiService.post('api-cabinet/client/certificate/list2', item)
             commit('certificates', success.certificates)
             commit('totalCount', success.totalCount)
         } catch (error) {

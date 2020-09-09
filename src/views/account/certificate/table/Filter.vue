@@ -1,7 +1,5 @@
 <template>
-  <v-row
-    no-gutters
-  >
+  <div>
     <v-col>
       <div class="app__filter">
         <div
@@ -96,6 +94,21 @@
               </div>
             </div>
 
+            <div
+                class="app__filter-chip"
+                v-if="fastFilter.issueDate.label"
+            >
+              <div class="app__filter-chip-content">
+                {{ fastFilter.issueDate.label }}
+                <v-icon
+                    class="app__filter-chip-icon-append"
+                    @click="clearItemFastFilter('issueDate', 'issueDate')"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
             <!--поле ввода-->
             <input
               class="app__filter-block-input-field"
@@ -151,7 +164,7 @@
             <v-row>
               <v-col>
                 <div class="app__filter-content-header">
-                  Сертификаты {{ filter }}<br>
+                  Сертификаты<br>
                 </div>
                 <div
                   v-for="(item, i) in programCertificates"
@@ -316,7 +329,7 @@
         </div>
       </div>
     </v-col>
-  </v-row>
+  </div>
 </template>
 
 <script>
@@ -417,7 +430,8 @@
           this.fastFilter.certOrderStatus.length ||
           this.fastFilter.certMerchantOrderStatus.length ||
           this.fastFilter.buyers.length ||
-          this.fastFilter.certificates.length
+          this.fastFilter.certificates.length ||
+          this.fastFilter.issueDate
         ) {
           return false
         }
@@ -439,6 +453,7 @@
         // обнуление при смене программы
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.setFastFilter(this.filter)
       },
     },
     created () {
@@ -456,6 +471,7 @@
         return require('@/icons/svg/' + status + '.svg')
       },
       merchantOrderStatusIcon (status) {
+        console.log('ICON: ' + status)
         return require('@/icons/svg/payments/' + status + '.svg')
       },
       paymentStatusIcon (status) {
@@ -524,15 +540,6 @@
             }
           }
         })
-        filter.buyers.forEach(item => {
-          const certPaymentStatus = this.certPaymentStatusEnum.find(objItem => objItem.id === item)
-          if (certPaymentStatus) {
-            const obj = { id: item, label: `Оплаты: ${certPaymentStatus.label}` }
-            if (!this.fastFilter.certPaymentStatus.find(objItem => objItem.id === item)) {
-              this.fastFilter.certPaymentStatus.push(obj)
-            }
-          }
-        })
         filter.certPaymentStatus.forEach(item => {
           const certPaymentStatus = this.certPaymentStatusEnum.find(objItem => objItem.id === item)
           if (certPaymentStatus) {
@@ -569,15 +576,42 @@
             }
           }
         })
+
+        console.log('<FILTER>')
+        console.log(filter)
+        console.log('</FILTER>')
+
+        if (filter.issueDate.startDate !== null && filter.issueDate.endDate !== null) {
+          const obj = { id: 'issueDate', label: `Выпущен: ${this.$moment(filter.issueDate.startDate).format('DD.MM.YYYY')} - ${this.$moment(filter.issueDate.endDate).format('DD.MM.YYYY')}` }
+          this.fastFilter.issueDate = obj
+          // if (!this.fastFilter.issueDate.startDate && !this.fastFilter.issueDate.endDate) {
+          //   this.fastFilter.issueDate = obj
+          // }
+        }
       },
       clearItemFastFilter (field, item) {
+        if (field === 'issueDate' && item === 'issueDate') {
+          this.fastFilter.issueDate = {
+            startDate: null,
+            endDate: null,
+          }
+          this.filter.issueDate = {
+            startDate: null,
+            endDate: null,
+          }
+          // this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(this.filter)))
+          console.log('<FAST_FILTER>')
+          console.log(this.fastFilter)
+          console.log('</FAST_FILTER>')
+          return
+        }
         const i = this.fastFilter[field].findIndex(objItem => objItem.id === item.id)
         if (typeof i !== 'undefined') this.fastFilter[field].splice(i, 1)
 
         const filter = JSON.parse(JSON.stringify(this.filterStore))
         const j = filter[field].findIndex(objItem => objItem.id === item.id)
         if (typeof j !== 'undefined') filter[field].splice(j, 1)
-        this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
+        // this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       clearFastFilter () {
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
