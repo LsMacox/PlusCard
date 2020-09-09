@@ -39,7 +39,7 @@ const options = {
     },
   },
   theme: {
-    themes: {      
+    themes: {
       light: {
         primary: '#4776E6',
         secondary: '#4776E6',
@@ -48,7 +48,7 @@ const options = {
         warning: '',
         success: '#00D15D',
         error: '#EA4C2A',
-      }      
+      },
     },
   },
 }

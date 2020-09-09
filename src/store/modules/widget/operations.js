@@ -21,10 +21,11 @@ export default {
     actions: {
 
         async widget ({ commit }, widget) {
-            commit('loading', true)
             const success = await ApiService.post('/api-cabinet/widget/operations', widget)
+            // console.log('/widget/operations')
+            // console.log(success)
             commit('widgetData', success)
-            commit('loading', false)
+            commit('loading', true)
         },
 
     },
@@ -34,6 +35,9 @@ export default {
         },
         widgetData (state) {
             return state.widgetData
+        },
+        currentAllCount (state) {
+            return state.widgetData[state.widgetData.length - 1].all_count
         },
     },
 }

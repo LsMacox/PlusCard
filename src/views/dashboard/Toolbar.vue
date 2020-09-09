@@ -16,26 +16,12 @@
     <div class="app__spacer" />
 
     <div
-      style="display: inline-grid; margin-right: 12px;"
-    >
-      <div
-        class="loyalty-toolbar-text-btn"
-      >
-        <span
-          class="iconify loyalty-toolbar-text-btn-icon"
-          style="margin-right: 2px;"
-          data-icon="ion:document-outline"
-          data-inline="false"
-        />
-        Экспорт в XLS
-      </div>
-    </div>
-    <div
       style="display: inline-grid;"
     >
       <v-btn
         color="secondary"
         small
+        @click="toRoute(`/company/${program.id}/info`)"
       >
         <span
           class="iconify"
@@ -43,7 +29,7 @@
           data-icon="feather:settings"
           data-inline="false"
         />
-        Настроить программу лояльности
+        Настроить компанию
       </v-btn>
     </div>
   </div>
@@ -97,6 +83,11 @@
     },
     created () {
       if (this.period) this.periodId = this.period.id
+    },
+    methods: {
+      toRoute (path) {
+        if (this.$route.path !== path) this.$router.push(path)
+      },
     },
   }
 </script>

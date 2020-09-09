@@ -1,0 +1,9 @@
+.stepper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    max-width: 530px;
+    & __icon {
+        color: #D7D7E0
+    }
+}

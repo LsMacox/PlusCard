@@ -42,8 +42,8 @@
           outlined
           required
           :rules="emailRules"
-          @blur="form.email = form.email ? form.email.trim() : null"
           validate-on-blur
+          @blur="form.email = form.email ? form.email.trim() : null"
         >
           <template slot="prepend-inner">
             <span
@@ -166,7 +166,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import BackButton from '@/views/auth/components/BackButton'
-  import {validEmail} from '@/utils/validate.js'
+  import { validEmail } from '@/utils/validate.js'
 
   export default {
     components: {

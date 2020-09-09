@@ -112,8 +112,11 @@
           <v-btn
             color="primary"
           >
-           <v-icon>$iconify_plus-circle-outlined</v-icon>   
-             <iconify-icon icon="plus-circle-outlined" height="24" />        
+            <v-icon>$iconify_plus-circle-outlined</v-icon>
+            <iconify-icon
+              icon="plus-circle-outlined"
+              height="24"
+            />
             <span
               class="iconify"
               data-icon="ant-design:plus-circle-outlined"
@@ -424,39 +427,43 @@
           placeholder="multiple select"
           outlined
           multiple
-        >        
-        </v-select>
-         <v-autocomplete  
-            v-model="selectedFruits"           
-              :items="fruits"              
-              placeholder="Выберите категории"              
-              outlined
-              multiple
-              chips
-              deletable-chips            
-            />
+        />
+        <v-autocomplete
+          v-model="selectedFruits"
+          :items="fruits"
+          placeholder="Выберите категории"
+          outlined
+          multiple
+          chips
+          deletable-chips
+        />
       </v-col>
     </v-row>
     <v-row>
       <v-col>
         SMALL
-           <v-autocomplete  
-            v-model="selectedFruits"           
-              :items="fruits"              
-              placeholder="Выберите категории"              
-              outlined
-              multiple
-              chips
-              deletable-chips    
-              dense        
-            />
+        <v-autocomplete
+          v-model="selectedFruits"
+          :items="fruits"
+          placeholder="Выберите категории"
+          outlined
+          multiple
+          chips
+          deletable-chips
+          dense
+        />
       </v-col>
     </v-row>
-    
-    <v-row><v-col>
-       <v-icon>$iconify_plus-circle</v-icon>
-       <iconify-icon icon="plus-circle" height="14" />
-      </v-col></v-row>
+
+    <v-row>
+      <v-col>
+        <v-icon>$iconify_plus-circle</v-icon>
+        <iconify-icon
+          icon="plus-circle"
+          height="14"
+        />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

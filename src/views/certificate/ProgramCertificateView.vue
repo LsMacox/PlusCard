@@ -1,7 +1,13 @@
 <template lang="">
-  <div> {{program}} <v-btn  color="primary" dark @click="onMasterCreateCert" >Выпустить сертификат</v-btn> </div>
-
-
+  <div>
+    {{ program }} <v-btn
+      color="primary"
+      dark
+      @click="onMasterCreateCert"
+    >
+      Выпустить сертификат
+    </v-btn>
+  </div>
 </template>
 
 <script>
@@ -16,22 +22,21 @@
         return { id: 1 }
       },
     },
+    mounted () {
+
+    },
     methods: {
-      onMasterCreateCert(){
-        this.$router.push({name:'ProgramCertificateMaster'})
+      onMasterCreateCert () {
+        this.$router.push({ name: 'ProgramCertificateMaster' })
       },
-      loadData(){
-         this.GetCategoryListLoading = true
+      loadData () {
+        this.GetCategoryListLoading = true
         this.$store
           .dispatch('certificates/certificate/GetCertList')
           .finally(() => {
             this.GetCategoryListLoading = false
           })
-          
-      }
-    },
-    mounted() {
-      
+      },
     },
   }
 </script>

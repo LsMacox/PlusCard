@@ -5,7 +5,7 @@ export default {
         startPeriod: 6,
         endPeriod: 1,
         countsByPeriod: [],
-        sumByPeriod: []
+        sumByPeriod: [],
     },
     mutations: {
         clearState (state) {
@@ -29,34 +29,27 @@ export default {
         },
         sumByPeriod (state, payload) {
             state.sumByPeriod = payload
-        }
+        },
     },
     actions: {
 
-        async widget ({commit}, widget) {
+        async widget ({ commit }, widget) {
             try {
-
-
-
                 commit('loading', true)
 
                 const success = await axios.post('/api/widget/makepurchases', widget)
-                //////console.log(success)
+                /// ///console.log(success)
 
                 commit('countsByPeriod', success.data.counts)
                 commit('sumByPeriod', success.data.sum)
 
-
                 commit('loading', false)
-
             } catch (error) {
-
-
                 commit('loading', false)
 
                 throw error
             }
-        }
+        },
 
     },
     getters: {
@@ -74,6 +67,6 @@ export default {
         },
         sumByPeriod (state) {
             return state.sumByPeriod
-        }
-    }
+        },
+    },
 }
