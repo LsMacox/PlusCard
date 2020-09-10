@@ -34,8 +34,6 @@
       Operators,
       Volume,
     },
-    props: {
-    },
     data () {
       return {
       }
@@ -55,45 +53,6 @@
       },
       widgetVolumeData () {
         return this.$store.getters['widget/bonuses/widgetData']
-      },
-      widgetRequest () {
-        return {
-          start_period: this.period.start,
-          filter: this.filter,
-          program_id: this.program.id,
-          end_period: this.period.end,
-        }
-      },
-      filter () {
-        return this.$store.getters['widget/filter/filter'] ?? this.$store.getters['widget/filter/filterDefault']
-      },
-      program () {
-        return this.$store.getters['company/program/program']
-      },
-      period () {
-        return this.$store.getters['widget/filter/period']
-      },
-    },
-    watch: {
-      filter () {
-        this.fetchData()
-      },
-      program () {
-        this.fetchData()
-      },
-    },
-    created () {
-      this.fetchData()
-    },
-    mounted () {
-
-    },
-    methods: {
-      fetchData () {
-        this.$store.dispatch('widget/bonusClients/widget', this.widgetRequest)
-        this.$store.dispatch('widget/operations/widget', this.widgetRequest)
-        this.$store.dispatch('widget/operators/widget', this.widgetRequest)
-        this.$store.dispatch('widget/operators/operators', this.program.id)
       },
     },
   }
