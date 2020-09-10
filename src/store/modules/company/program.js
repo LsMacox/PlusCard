@@ -65,6 +65,7 @@ const actions = {
 const getters = {
   programs: state => state.programs,
   program: state => state.program,
+  programModel: state => state.programModel,
 }
 
 export default {
