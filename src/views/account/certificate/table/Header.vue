@@ -18,7 +18,6 @@
     >
       <div
         class="loyalty-toolbar-text-btn"
-        @click=""
       >
         <span
           class="iconify loyalty-toolbar-text-btn-icon"
@@ -32,21 +31,24 @@
     <div
       style="display: inline-grid; margin-left: 16px;"
     >
-    <v-btn
-        color="secondary"        
+      <v-btn
+        color="secondary"
         @click="onMasterCreateCert"
       >
-       <v-icon left>$iconify_feather-settings</v-icon> Настроить сертификаты
-      </v-btn>      
+        <v-icon left>
+          $iconify_feather-settings
+        </v-icon> Настроить сертификаты
+      </v-btn>
     </div>
     <div
       style="display: inline-grid; margin-left: 16px;"
     >
       <v-btn
-        color="primary"        
-        @click=""
+        color="primary"
       >
-       <v-icon left>$iconify_plus-circle-outlined</v-icon> Создать новый сертификат
+        <v-icon left>
+          $iconify_plus-circle-outlined
+        </v-icon> Создать новый сертификат
       </v-btn>
     </div>
   </div>
@@ -110,8 +112,8 @@
         }
         return ' - '
       },
-      onMasterCreateCert(){
-        this.$router.push({name:'ProgramCertificateMaster'})
+      onMasterCreateCert () {
+        this.$router.push({ name: 'ProgramCertificateMaster' })
       },
     },
   }

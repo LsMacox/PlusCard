@@ -1,10 +1,9 @@
 <template>
   <div>
-    <certificate-header  />
+    <certificate-header />
     <certificate-filter />
     <certificate-table />
   </div>
-
 </template>
 
 <script>
