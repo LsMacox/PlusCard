@@ -36,8 +36,5 @@ export default {
         widgetData (state) {
             return state.widgetData
         },
-        currentAllCount (state) {
-            return state.widgetData[state.widgetData.length - 1].all_count
-        },
     },
 }
