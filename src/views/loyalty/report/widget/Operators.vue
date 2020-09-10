@@ -2,6 +2,7 @@
   <div class="widget-box">
     <div
       class="widget-box-header"
+      @click="toggleSidePanel"
     >
       <div class="widget-box-header-left">
         Операторы
@@ -42,7 +43,9 @@
         </li>
       </ul>
     </div>
-    <side-panel />
+    <side-panel
+      v-model="sidePanelActive"
+    />
   </div>
 </template>
 
@@ -55,6 +58,7 @@
     },
     data () {
       return {
+        sidePanelActive: false,
       }
     },
     computed: {
@@ -81,8 +85,10 @@
       fetchData () {
         this.$store.dispatch('widget/operators/operators', this.program.id)
       },
-      openSidePanel () {
-
+      toggleSidePanel () {
+        console.log('=======operators panelactive========')
+        this.sidePanelActive = !this.sidePanelActive
+        console.log(this.sidePanelActive)
       },
     },
   }
