@@ -14,7 +14,9 @@
       <operators />
     </div>
     <div class="widget-line-block">
-      <volume />
+      <volume
+        :widgetdata="widgetVolumeData"
+      />
     </div>
   </div>
 </template>
@@ -50,6 +52,9 @@
       },
       operatorsData () {
         return this.$store.getters['widget/operators/operators']
+      },
+      widgetVolumeData () {
+        return this.$store.getters['widget/bonuses/widgetData']
       },
       widgetRequest () {
         return {

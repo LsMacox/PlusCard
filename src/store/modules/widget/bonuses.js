@@ -36,8 +36,8 @@ export default {
             const result = await ApiService.post('/api-cabinet/widget/units', widget)
             const bonusResources = await ApiService.post('/api-cabinet/widget/resources', widget)
 
-            console.log('/api-cabinet/widget/bonuses')
-            console.log(success)
+            // console.log('/api-cabinet/widget/bonuses')
+            // console.log(success)
 
             commit('widgetData', success)
             commit('units', result)
