@@ -6,7 +6,7 @@
       </div>
       <div class="app__spacer" />
       <div class="widget-box-header-right">
-        386 045
+        {{ volume }}
       </div>
     </div>
     <div class="widget-box-body">
@@ -20,11 +20,11 @@
             <p class="volume-name">
               Баланс
             </p>
-            <span class="volume-data balance">155 107</span>
+            <span class="volume-data balance">{{ balance }}</span>
           </div>
           <div class="volume__item-bottom">
             <v-progress-linear
-              :value="58"
+              :value="getProgress('balance')"
               style="height: 4px"
               rounded="rounded"
               class="volume-progress"
@@ -40,11 +40,11 @@
             <p class="volume-name">
               Начислено
             </p>
-            <span class="volume-data accrued">270 576</span>
+            <span class="volume-data accrued">{{ credit }}</span>
           </div>
           <div class="volume__item-bottom">
             <v-progress-linear
-              :value="80"
+              :value="getProgress('credit')"
               style="height: 4px"
               rounded="rounded"
               class="volume-progress"
@@ -60,11 +60,11 @@
             <p class="volume-name">
               Списано
             </p>
-            <span class="volume-data debited">115 469</span>
+            <span class="volume-data debited">{{ debit }}</span>
           </div>
           <div class="volume__item-bottom">
             <v-progress-linear
-              :value="48"
+              :value="getProgress('debit')"
               style="height: 4px"
               rounded="rounded"
               class="volume-progress"
@@ -81,18 +81,61 @@
 <script>
   export default {
     props: {
+      widgetdata: {
+        type: Array,
+        default () {
+          return [{
+            name: null,
+            is_main: false,
+            debit: {
+              count: null,
+              sum: null,
+            },
+            credit: {
+              count: null,
+              sum: null,
+            },
+          }]
+        },
+      },
     },
     data () {
       return {}
     },
     computed: {
-
-    },
-    mounted () {
-
+      mainUnit () {
+        const unit = this.widgetdata.find(item => item.is_main)
+        if (unit) return unit
+        return {}
+      },
+      credit () {
+        if (this.mainUnit && this.mainUnit.credit) return Number(this.mainUnit.credit.sum)
+        return 0
+      },
+      debit () {
+        if (this.mainUnit && this.mainUnit.debit) return Number(this.mainUnit.debit.sum)
+        return 0
+      },
+      volume () {
+        return this.credit + this.debit
+      },
+      balance () {
+        return this.credit + (-1 * this.debit)
+      },
     },
     methods: {
-
+      getProgress (indicator) {
+        const max = this.volume
+        if (indicator === 'balance') {
+          return Math.round(this.balance / max * 100)
+        }
+        if (indicator === 'credit') {
+          return Math.round(this.credit / max * 100)
+        }
+        if (indicator === 'debit') {
+          return Math.round(this.debit / max * 100)
+        }
+      },
     },
   }
 </script>
