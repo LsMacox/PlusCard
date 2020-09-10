@@ -13,9 +13,13 @@ export const ICONIFY_ICONS = [
   { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
   { id: 'search-outlined', component: () => import('@iconify/icons-ant-design/search-outlined') },
   { id: 'jam-close', component: () => import('@iconify/icons-jam/close') },
+<<<<<<< HEAD
+  { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
+=======
   { id: 'arrow-back', component: () => import('@iconify/icons-bx/bx-arrow-back') },
   { id: 'ion-color-fill-outline', component: () => import('@iconify/icons-ion/color-fill-outline') },
   { id: 'feather-download', component: () => import('@iconify/icons-feather/download') },
+>>>>>>> 378914ab6cd97e90db0f9be43c635c82ddcec12d
 ]
 
 ICONIFY_ICONS.forEach((icon) => {
