@@ -106,13 +106,17 @@
   line-height: 21px
   color: #000000
 
-.body-s-semibold
+@mixin body-s-semibold 
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: 600
   font-size: 13px
   line-height: 17px
   color: #000000
+ 
+
+.body-s-semibold
+  @include body-s-semibold 
 
 .body-s-regular
   font-family: Gilroy, sans-serif

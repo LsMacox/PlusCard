@@ -24,7 +24,7 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
+    console.error(error) // for debug
     return Promise.reject(error)
   },
 )
@@ -38,12 +38,12 @@ service.interceptors.response.use(
     return resData.data ? resData.data : resData
   },
   error => {
-    console.log('err', error) // for debug
+    console.error('err', error) // for debug
     store._vm.$Progress.fail()
     store.commit('app/LOADING_REQUEST', false)
 
     if (error.response) {
-      console.log(' error.response.status ', error.response.status)
+      console.error(' error.response.status ', error.response.status)
       if (
         error.config &&
         (!Object.prototype.hasOwnProperty.call(error.config, 'errorHandle') ||

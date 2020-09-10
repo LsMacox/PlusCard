@@ -196,6 +196,12 @@ export default new Router({
           name: 'certificates',
           meta: { title: 'Certificates', icon: 'certificates' },
         },
+        {
+          path: 'help',
+          component: () => import('@/views/Help'),
+          name: 'Help',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
         // 404 page
         {
           path: '*',
@@ -203,6 +209,7 @@ export default new Router({
           name: '404',
           meta: { auth: false },
         },
+        
       ],
     },
   ],

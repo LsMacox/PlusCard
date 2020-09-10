@@ -2,7 +2,7 @@
   <v-app
     v-if="!loadingApp"
   >
-    <app-drawer />
+    <app-menu-drawer />
     <app-view />
   </v-app>
 </template>
@@ -10,7 +10,7 @@
 <script>
   export default {
     components: {
-      AppDrawer: () => import('./components/AppDrawer'),
+      AppMenuDrawer: () => import('./components/AppMenuDrawer'),
       AppView: () => import('./components/AppView'),
     },
     data: () => ({

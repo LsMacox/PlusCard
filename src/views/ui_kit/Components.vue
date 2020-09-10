@@ -87,10 +87,10 @@
             Body M 15-20/Regular
           </div>
           <div class="body-s-semibold">
-            Body S 13-18/SemiBold
+            Body S 13-17/SemiBold
           </div>
           <div class="body-s-regular">
-            Body S 13-18/Regular
+            Body S 13-17/Regular
           </div>
           <div class="body-xs-semibold">
             Body XS 11-14/Semibold
@@ -174,6 +174,13 @@
             :small="true"
           >
             small btn
+          </v-btn>
+          <v-btn
+            color="secondary"
+            x-small
+            rounded
+          >
+            x-small btn
           </v-btn>
         </div>
         <div class="mt-1">

@@ -8,7 +8,7 @@
     app
   >
     <!--    header-->
-    <v-container style="padding:0">
+    <v-container style="padding:0">     
       <v-row align="center">
         <v-col
           v-if="!drawer"
@@ -19,7 +19,7 @@
             small
             text
             class="logoBtn"
-            @click="drawer = !drawer"
+            to="/dashboard"
           >
             <v-img
               src="@/assets/svg/logo_77x32.svg"
@@ -50,7 +50,7 @@
                   min-width: 32px;
                   height: 32px;
               "
-              @click="drawer = !drawer"
+              to="/dashboard"
             >
               <v-img
                 src="@/assets/svg/logo_32x32.svg"
@@ -147,7 +147,7 @@
       class="miniCompany"
       :style="'background: linear-gradient(140deg,'+ bgcolor1 + ' 0% ,' + bgcolor2 + ' 99.35%); color:'+ program.font_color"
     >
-      {{ selectedCompanyMini }}
+      {{ program.name && program.name.slice(0,1) || 'M' }}
     </div>
     <v-divider style="border-color: #F2F2F7;" />
     <div class="app__drawer-scrollable-block">
@@ -178,7 +178,8 @@
         <!-- https://github.com/vuetifyjs/vuetify/pull/8574 -->
         <div />
       </v-list>
-
+    </div>
+    <template v-slot:append>
       <v-list-item style="margin: 0">
         <v-list-item-avatar
           height="24px"
@@ -192,7 +193,7 @@
           />
         </v-list-item-avatar>
         <v-list-item-title style="color: #70707D;margin:0; padding:0;">
-          {{ profile.name }}
+          {{ profile.UserName }}
         </v-list-item-title>
         <v-list-item-action
           style="color: rgb(0, 209, 93);margin: 0px;padding: 0px;min-width: 45px;width: 45px;font-size: 13px;font-weight: 600;"
@@ -244,7 +245,7 @@
         </v-list-item-icon>
         <v-list-item-title>{{ $t("exit") }}</v-list-item-title>
         <v-list-item-action
-          style="color: rgb(0, 209, 93);margin: 0px;padding: 0px;min-width: 45px;width: 45px;font-size: 13px;font-weight: 600; position: relative; z-index:10000"
+          @click.stop.prevent="goToHelp()"
         >
           <v-icon color="#B5B5C4">
             mdi-help-circle-outline
@@ -268,7 +269,7 @@
           </v-icon>
         </v-list-item-icon>
       </v-list-item>
-    </div>
+    </template>
   </v-navigation-drawer>
 </template>
 
@@ -377,6 +378,9 @@
 
     },
     methods: {
+      goToHelp () {
+        this.$router.push({ name: 'Help' })
+      },
       setExpandProgramList () {
         this.expandProgramList = !this.expandProgramList
       },
@@ -406,7 +410,98 @@
 </script>
 
 <style lang="sass">
+
+@import '@/styles/vuetify-preset-plus/overrides'
+
 @import '~vuetify/src/styles/tools/_rtl.sass'
+
+.sidebarMenu.v-list
+  padding: 0 !important
+  margin: 0 !important
+  .v-item-group
+    margin-top: 10px
+    .v-list-item.v-list-item--link.theme--light
+      margin: 0 !important
+      padding: 0 0 0 5px !important
+      min-height: 10px
+      height: 45px
+      &:hover, &:active, &:focus, &:visited, &.v-list-item--active > &::before, &
+        background-color: transparent !important
+        color: transparent !important
+      .v-list-item__title
+        font-weight: 500
+        font-size: 15px
+        line-height: 21px
+        color: #B5B5C4
+      &.v-list-item--active
+        color: transparent
+        border-right: 2px solid #4776E6
+        border-radius: 0
+
+        .v-list-item__title
+          color: #4776E6 !important
+        .v-list-item__icon .iconify
+          color: #4776E6 !important
+        .v-list-item
+          &__icon:first-child
+            .iconify.stats
+              color: #8E54E9 !important
+
+      .v-list-item__icon
+        width: 21px
+        height: 21px
+        padding: 0
+        margin: 0
+        margin-left: 20px !important
+        margin-top: 10px !important
+        .iconify
+          width: 21px
+          height: 21px
+          margin-right: 20px
+          color: #B5B5C4
+
+.miniCompany
+  width: 36px
+  height: 36px
+  margin: 17px 12px
+  border-radius: 50%
+  font-style: normal
+  font-weight: 600
+  font-size: 17px
+  line-height: 35px
+  text-align: center
+  letter-spacing: 0.4px
+.v-list.companySelect.v-sheet.theme--light
+  padding: 0 !important
+  margin: 0 !important
+  #company_group_select
+    .v-list-item.v-list-item--link.theme--light
+      color: transparent !important
+      .v-list-item__content, .v-list-item__title
+        color: $neutral-900 !important
+        font-weight: 600
+        font-size: 17px
+        line-height: 22px
+        letter-spacing: 0.4px
+      .v-list-item__icon.v-list-group__header__append-icon
+        min-width: 0
+        color: $primary-base
+
+.companySelectWrapper
+  padding: 20px 0 15px 0
+
+#core-navigation-drawer.v-navigation-drawer--mini-variant
+  width: 60px
+  .v-list-item.v-list-item--link.theme--light
+    padding: 0 0 0 8px !important
+
+  .companySelectWrapper
+    width: 5px
+    padding: 0 0 0 10px
+
+  .companySelect
+    .v-select__selections
+      display: none
 
 #core-navigation-drawer
   .v-navigation-drawer__content
