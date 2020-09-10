@@ -3,15 +3,34 @@
     <div class="loyalty-toolbar-name">
       {{ program.name }}
     </div>
-    <div class="loyalty-toolbar-period">
-      <date-range-select
-        min-width="250px"
-        :items="periods"
-        :model.sync="periodId"
-        item-value="id"
-        item-label="name"
-      />
-    </div>
+    <v-menu
+      class="certificate-toolbar-select"
+      offset-y
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          text
+          color="primary"
+          dark
+          v-bind="attrs"
+          class="archive-status-btn"
+          v-on="on"
+        >
+          {{ archiveStatus.text }}
+        </v-btn>
+      </template>
+      <v-list
+        class="my-class"
+      >
+        <v-list-item
+          v-for="(item, index) in archiveStatuses"
+          :key="index"
+          @click="archiveStatusHandler(item)"
+        >
+          <v-list-item-title>{{ item.text }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     <div class="app__spacer" />
     <div
       style="display: inline-grid;"
@@ -32,46 +51,39 @@
     <div
       style="display: inline-grid; margin-left: 16px;"
     >
-    <v-btn
-        color="secondary"        
+      <v-btn
+        color="secondary"
         @click="onMasterCreateCert"
       >
-       <v-icon left>$iconify_feather-settings</v-icon> Настроить сертификаты
-      </v-btn>      
+        <v-icon left>
+          $iconify_feather-settings
+        </v-icon> Настроить сертификаты
+      </v-btn>
     </div>
     <div
       style="display: inline-grid; margin-left: 16px;"
     >
       <v-btn
-        color="primary"        
-        @click=""
+        color="primary"
       >
-       <v-icon left>$iconify_plus-circle-outlined</v-icon> Создать новый сертификат
+        <v-icon left>
+          $iconify_plus-circle-outlined
+        </v-icon> Создать новый сертификат
       </v-btn>
     </div>
   </div>
 </template>
 
 <script>
-  import DateRangeSelect from '@/components/dialogs/DateRangeSelect'
-
   export default {
-    components: {
-      DateRangeSelect,
-    },
     props: {
     },
     data () {
       return {
-        periodId: null,
-        periods: [
-          { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 2, name: 'за последние 7 дней', start: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 3, name: 'за последние 30 дней', start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 4, name: 'за последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 5, name: 'за последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 6, name: 'за последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          // { id: 7, name: 'собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+        archiveStatusId: null,
+        archiveStatuses: [
+          { id: 'work', text: 'в работе' },
+          { id: 'archive', text: 'в архиве' },
         ],
       }
     },
@@ -79,39 +91,35 @@
       program () {
         return this.$store.getters['company/program/program']
       },
-      period: {
+      archiveStatus: {
         get () {
-          return this.$store.getters['account/certificate/filter/period']
+          return this.$store.getters['account/certificate/filter/archiveStatus']
         },
         set (v) {
-          this.$store.commit('account/certificate/filter/period', v)
+          this.$store.commit('account/certificate/filter/archiveStatus', v)
         },
       },
     },
     watch: {
-      periodId (v) {
+      archiveStatusId (v) {
         if (v) {
-          const period = this.periods.find(item => item.id === v)
-          if (period) {
-            this.period = period
+          const archiveStatus = this.archiveStatuses.find(item => item.id === v)
+          if (archiveStatus) {
+            this.archiveStatus = archiveStatus
           }
         }
       },
     },
     created () {
-      if (this.period) this.periodId = this.period.id
+      console.log('st...')
+      console.log(this.archiveStatus)
     },
     methods: {
-      formatRange (range) {
-        const start = range.split(' - ')[0]
-        const end = range.split(' - ')[1]
-        if (start !== undefined && start !== null && end !== undefined && end !== null) {
-          return this.$moment(start).format('ll') + ' - ' + this.$moment(end).format('ll')
-        }
-        return ' - '
+      onMasterCreateCert () {
+        this.$router.push({ name: 'ProgramCertificateMaster' })
       },
-      onMasterCreateCert(){
-        this.$router.push({name:'ProgramCertificateMaster'})
+      archiveStatusHandler (item) {
+        this.$store.commit('account/certificate/filter/archiveStatus', item)
       },
     },
   }
@@ -172,4 +180,12 @@
     }
   }
 }
+
+.archive-status-btn {
+  text-transform: lowercase;
+  &::before {
+    background-color: transparent!important;
+  }
+}
+
 </style>

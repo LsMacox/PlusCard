@@ -23,7 +23,7 @@
                   data-icon="bi:chevron-right"
                   data-inline="false"
                   @click="expand(!isExpanded)"
-                />
+                 />
               </template>
 
               <template v-slot:item.certificate.name="{ item }">
@@ -34,6 +34,7 @@
                   <div
                     class="hint"
                     style="color: #4776E6;"
+                    v-if="!item.order"
                   >
                     {{ item.order.num }}
                   </div>
@@ -251,28 +252,10 @@
         console.log(this.tableOptions)
         if (v) this.fetchData()
       },
-      // page (newPage) {
-      //   this.page = newPage
-      //   this.loadData()
-      // },
-      // perPage (val) {
-      //   this.perPage = val
-      //   console.log(this.perPage)
-      //   this.loadData()
-      // },
-      filterForm: {
-        handler (val) {
-          console.log(val)
-        },
-        deep: true,
-      },
-      toolbarFilter: {
-        handler (val) {
-          console.log(val)
-        },
-        deep: true,
-      },
       filter (v) {
+        if (v) this.fetchData()
+      },
+      program (v) {
         if (v) this.fetchData()
       },
     },
