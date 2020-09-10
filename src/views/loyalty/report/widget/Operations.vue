@@ -8,7 +8,7 @@
       </div>
       <div class="app__spacer" />
       <div class="widget-box-header-right">
-        <span :class="true ? 'growth' : 'decline'">20%</span>
+        <span :class="relativeChange >= 0 ? 'growth' : 'decline'">{{ relativeChange > 0 ? `+${relativeChange}%` : `${relativeChange}%` }}</span>
       </div>
     </div>
     <div
@@ -87,10 +87,18 @@
     },
     computed: {
       currentClientsCount () {
-        return this.widgetdata.length ? this.widgetdata[this.widgetdata.length - 1].operations_count : 0
+        return this.widgetdata.length ? this.widgetdata[0].operations_count : 0
+      },
+      relativeChange () {
+        if (this.widgetdata && this.widgetdata.length >= 2) {
+          if (this.widgetdata[1].operations_count > 0) {
+            return Math.round((this.widgetdata[0].operations_count - this.widgetdata[1].operations_count) / this.widgetdata[1].operations_count * 100)
+          }
+        }
+        return 0
       },
       diagramData () {
-        return this.$_.map(this.widgetdata, 'all_count')
+        return this.$_.map(this.widgetdata, 'operations_count')
       },
       diagramLabels () {
         var clientsCount = this.$_.map(this.widgetdata, 'operations_count')

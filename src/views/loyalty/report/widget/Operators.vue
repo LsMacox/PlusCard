@@ -86,9 +86,7 @@
         this.$store.dispatch('widget/operators/operators', this.program.id)
       },
       toggleSidePanel () {
-        console.log('=======operators panelactive========')
         this.sidePanelActive = !this.sidePanelActive
-        console.log(this.sidePanelActive)
       },
     },
   }

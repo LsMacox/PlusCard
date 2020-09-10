@@ -26,6 +26,7 @@ export default {
         async widget ({ commit }, widget) {
             commit('loading', true)
             const success = await ApiService.post('/api-cabinet/widget/operators', widget)
+            // console.log('/api-cabinet/widget/operators')
             // console.log(success)
             commit('widgetData', success)
             commit('loading', false)

@@ -353,7 +353,6 @@
         const filter = JSON.parse(JSON.stringify(this.filterStore))
         const j = filter[field].findIndex(objItem => objItem.id === item.id)
         if (typeof j !== 'undefined') filter[field].splice(j, 1)
-        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       clearFastFilter () {
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
