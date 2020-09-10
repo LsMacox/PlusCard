@@ -1,6 +1,8 @@
 <template>
   <div class="widget-box">
-    <div class="widget-box-header">
+    <div
+      class="widget-box-header"
+    >
       <div class="widget-box-header-left">
         Операторы
       </div>
@@ -40,11 +42,15 @@
         </li>
       </ul>
     </div>
+    <side-panel />
   </div>
 </template>
 
 <script>
+  import SidePanel from '@/components/base/SidePanel.vue'
+
   export default {
+    components: { SidePanel },
     props: {
     },
     data () {
@@ -74,6 +80,9 @@
     methods: {
       fetchData () {
         this.$store.dispatch('widget/operators/operators', this.program.id)
+      },
+      openSidePanel () {
+
       },
     },
   }
@@ -141,9 +150,6 @@
             color: $primary-base;
           }
         }
-        // .operator__item-bottom {
-          // .operator-progress {}
-        // }
       }
     }
   }

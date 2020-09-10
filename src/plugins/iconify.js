@@ -14,6 +14,8 @@ export const ICONIFY_ICONS = [
   { id: 'search-outlined', component: () => import('@iconify/icons-ant-design/search-outlined') },
   { id: 'jam-close', component: () => import('@iconify/icons-jam/close') },
   { id: 'arrow-back', component: () => import('@iconify/icons-bx/bx-arrow-back') },
+  { id: 'ion-color-fill-outline', component: () => import('@iconify/icons-ion/color-fill-outline') },
+  { id: 'feather-download', component: () => import('@iconify/icons-feather/download') },
 ]
 
 ICONIFY_ICONS.forEach((icon) => {

@@ -4,7 +4,7 @@
       <div
         class="stepper-block first-step body-l-semibold"
         :style="'color: ' + getCurrentColor('first')+ ';cursor: pointer;'"
-        @click="toRoute(`/company/${program.id}/info`)"
+        @click="toRoute(`/company/${programId}/info`)"
       >
         Общая информация
       </div>
@@ -14,7 +14,7 @@
       <div
         class="stepper-block second-step body-l-semibold"
         :style="'color: ' + getCurrentColor('second')+ ';cursor: pointer;'"
-        @click="toRoute(`/company/${program.id}/shop`)"
+        @click="toRoute(`/company/${programId}/shop`)"
       >
         Точки продаж
       </div>
@@ -24,12 +24,16 @@
       <div
         class="stepper-block third-step body-l-semibold"
         :style="'color: ' + getCurrentColor('third')+ ';cursor: pointer;'"
-        @click="toRoute(`/company/${program.id}/contact`)"
+        @click="toRoute(`/company/${programId}/contact`)"
       >
         Контактные данные
       </div>
     </div>
-    <router-view />
+    <div
+      v-if="!loading"
+    >
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -37,6 +41,7 @@
   export default {
     data () {
       return {
+        loading: false,
         programId: null,
       }
     },
@@ -79,7 +84,13 @@
         }
       },
       async fetchData () {
-        await this.$store.dispatch('company/program/read', { id: this.programId })
+        try {
+          console.log('fetchData')
+          this.loading = true
+          await this.$store.dispatch('company/program/read', { id: this.programId })
+        } finally {
+          this.loading = false
+        }
       },
     },
   }
