@@ -13,6 +13,19 @@ const getDefaultState = () => {
             buyers: [],
             archiveStatus: { id: 'work', text: 'в работе' },
         },
+        filterDefault: {
+            enable: false,
+            certificates: [],
+            issueDate: {
+                startDate: null,
+                endDate: null,
+            },
+            certPaymentStatus: [],
+            certMerchantOrderStatus: [],
+            certOrderStatus: [],
+            buyers: [],
+            archiveStatus: { id: 'work', text: 'в работе' },
+        },
     }
 }
 
@@ -57,7 +70,7 @@ const getters = {
     filter: (state) => state.filter,
     filterDefault: () => {
         const defaultState = Object.assign({}, getDefaultState())
-        return defaultState.filter
+        return defaultState.filterDefault
     },
     archiveStatus: (state) => state.filter.archiveStatus,
 }
