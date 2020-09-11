@@ -45,7 +45,45 @@
     </div>
     <side-panel
       v-model="sidePanelActive"
-    />
+      :width="483"
+      class="side-panel__operators"
+    >
+      <div class="operators__header">
+        <h1 class="operators__title">
+          Операторы
+        </h1>
+        <p class="operators__sub-title">
+          96 операций за сегодня
+        </p>
+      </div>
+      <div class="operators__body">
+        <ul
+          class="operators__list"
+        >
+          <li
+            v-for="operator in operators"
+            :key="operator.id"
+            class="operator__item"
+          >
+            <div class="operator__item-top">
+              <p class="operator-name">
+                {{ operator.label }}
+              </p>
+              <span class="operator-percent">44 операций / 10%</span>
+            </div>
+            <div class="operator__item-bottom">
+              <v-progress-linear
+                :value="25"
+                style="height: 4px"
+                color="primary"
+                rounded="rounded"
+                class="operator-progress"
+              />
+            </div>
+          </li>
+        </ul>
+      </div>
+    </side-panel>
   </div>
 </template>
 
@@ -55,6 +93,18 @@
   export default {
     components: { SidePanel },
     props: {
+      widgetdata: {
+        type: Array,
+        default () {
+          return []
+        },
+      },
+      operators: {
+        type: Array,
+        default () {
+          return []
+        },
+      },
     },
     data () {
       return {
@@ -62,29 +112,12 @@
       }
     },
     computed: {
-      program () {
-        return this.$store.getters['company/program/program']
-      },
-      operators () {
-        return this.$store.getters['widget/operators/operators']
-      },
-      widgetData () {
-        return this.$store.getters['widget/operators/widgetData']
-      },
       someOperators () {
         return this.$_.take(this.operators, 3)
       },
     },
-    created () {
-      this.fetchData()
-    },
-    mounted () {
-      console.log(this.operators)
-    },
+    mounted () {},
     methods: {
-      fetchData () {
-        this.$store.dispatch('widget/operators/operators', this.program.id)
-      },
       toggleSidePanel () {
         this.sidePanelActive = !this.sidePanelActive
       },
@@ -128,34 +161,80 @@
       }
     }
   }
-  .widget-box-body {
-    .operators__list {
-      list-style: none;
-      padding-left: 0;
-      margin-top: 10px;
-      .operator__item {
-        display: flex;
-        flex-direction: column;
-        margin-top: 11px;
-        .operator__item-top {
-          margin-bottom: -2px;
-          .operator-name {
-            float: left;
-            margin-bottom: 0;
-            font-style: normal;
-            font-weight: 500;
-            font-size: 13px;
-            color: $neutral-600;
+  .operators__list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 10px;
+    .operator__item {
+      display: flex;
+      flex-direction: column;
+      margin-top: 11px;
+      .operator__item-top {
+        margin-bottom: -2px;
+        .operator-name {
+          float: left;
+          margin-bottom: 0;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 13px;
+          color: $neutral-600;
+        }
+        .operator-percent {
+          float: right;
+          font-style: 13px;
+          font-weight: 600;
+          color: $primary-base;
+        }
+      }
+    }
+  }
+  .side-panel__operators {
+    .operators__header {
+      margin-top: 45px;
+      margin-left: 35px;
+      .operators__title {
+        font-family: Gilroy;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 22px;
+        color: $neutral-900;
+      }
+      .operators__sub-title {
+        font-family: Gilroy;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 15px;
+        color: $neutral-700;
+        margin-top: 10px;
+        margin-bottom: 0;
+      }
+    }
+    .operators__body {
+      width: 415px;
+      margin-left: 34px;
+      margin-right: 34px;
+      margin-top: 25px;
+      .operators__list {
+        .operator__item {
+          margin-top: 24px;
+          .operator__item-top {
+            .operator-name {
+              font-size: 15px;
+              color: $neutral-900;
+            }
+            .operator-percent {
+              font-weight: 600;
+              font-size: 15px;
+              color: $neutral-900;
+            }
           }
-          .operator-percent {
-            float: right;
-            font-style: 13px;
-            font-weight: 600;
-            color: $primary-base;
+          .operator__item-bottom {
+            margin-top: 7px;
           }
         }
       }
     }
   }
+
 }
 </style>
