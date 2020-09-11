@@ -102,14 +102,12 @@
               </div>
             </div>
             <!--поле ввода-->
-            <div style="display: inline-flex;">
-              <div style="display: flex; flex-direction: column; flex: 1;">
-                <input
-                  class="app__filter-block-input-field"
-                  placeholder="Поиск и фильтр"
-                  @focus="switchShow"
-                >
-              </div>
+            <div style="display: flex; flex-direction: column; flex: 1;">
+              <input
+                class="app__filter-block-input-field"
+                placeholder="Поиск и фильтр"
+                @focus="switchShow"
+              >
             </div>
           </div>
 
