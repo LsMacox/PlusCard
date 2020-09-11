@@ -261,7 +261,7 @@
       },
       'filter.archiveStatus.id' (v) {
         if (v) {
-          // this.fetchData()
+          this.fetchData()
         }
       },
     },
