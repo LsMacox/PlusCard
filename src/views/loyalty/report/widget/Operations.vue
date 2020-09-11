@@ -8,7 +8,14 @@
       </div>
       <div class="app__spacer" />
       <div class="widget-box-header-right">
-        <span :class="relativeChange >= 0 ? 'growth' : 'decline'">{{ relativeChange > 0 ? `+${relativeChange}%` : `${relativeChange}%` }}</span>
+        <span
+          v-if="relativeChange !== 0"
+          :class="relativeChange > 0 ? 'growth' : 'decline'"
+        >{{ relativeChange > 0 ? `+${relativeChange}%` : `${relativeChange}%` }}</span>
+        <span
+          v-else
+          class="neutral"
+        >{{ `${relativeChange}%` }}</span>
       </div>
     </div>
     <div
@@ -69,7 +76,7 @@
             enabled: false,
             callbacks: {
               title: function (tooltipItem, data) {
-                return tooltipItem[0].xLabel.operations_count + ' клиента'
+                return tooltipItem[0].xLabel.operations_count + ' операций'
               },
               label: function (tooltipItem, data) {
                 var startDate = tooltipItem.xLabel.start_period
@@ -119,6 +126,7 @@
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 
 .widget-box {
+  height: 100%;
   padding: 20px;
   border: 1px solid $neutral-250;
   box-sizing: border-box;
@@ -151,6 +159,9 @@
         }
         span.decline {
           color: $error-500;
+        }
+        span.neutral {
+          color: $neutral-500;
         }
       }
     }

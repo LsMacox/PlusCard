@@ -205,7 +205,7 @@
 
         if (this.options.status && this.options.status.display) {
           if (firstNumber < secondNumber) pointColors.push(this.growthColor)
-          else if (firstNumber === secondNumber) pointColors.push('#ffdd00')
+          else if (firstNumber === secondNumber) pointColors.push('#B5B5C4')
           else pointColors.push(this.declineColor)
         } else {
           pointColors.push('#4776E6')
@@ -247,8 +247,6 @@
         return this.chartOptionsRaw
       },
     },
-    mounted () {},
-    methods: {},
   }
 </script>
 <style lang="scss" scoped>

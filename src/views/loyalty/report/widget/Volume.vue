@@ -157,6 +157,7 @@
 }
 
 .widget-box {
+  height: 100%;
   padding: 20px;
   border: 1px solid $neutral-250;
   box-sizing: border-box;

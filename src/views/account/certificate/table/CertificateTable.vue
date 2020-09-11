@@ -94,20 +94,20 @@
                 </div>
               </template>
 
-              <template v-slot:item.used_at="{ item }">
-                <div
-                  v-if="item.used_at"
-                  class="td-content-wrapper"
-                >
-                  <div class="td-content-main">
-                    {{ $moment(item.used_at).format('DD.MM.YYYY') }}
-                  </div>
-                  <div class="hint">
-                    в {{ $moment(item.used_at).format('HH:mm') }}
-                  </div>
-                </div>
-              </template>
-            </v-data-table>
+      <template v-slot:item.used_at="{ item }">
+        <div
+          v-if="item.used_at"
+          class="td-content-wrapper"
+        >
+          <div class="td-content-main">
+            {{ $moment(item.used_at).format('DD.MM.YYYY') }}
+          </div>
+          <div class="hint">
+            в {{ $moment(item.used_at).format('HH:mm') }}
+          </div>
+        </div>
+      </template>
+    </v-data-table>
 
         <v-row
           align="center"

@@ -1,52 +1,56 @@
 <template>
-  <div class="loyalty-toolbar">
-    <div class="loyalty-toolbar-name">
-      {{ program.name }}
-    </div>
-    <div class="loyalty-toolbar-period">
-      <date-range-select
-        min-width="250px"
-        :items="periods"
-        :model.sync="periodId"
-        item-value="id"
-        item-label="name"
-      />
-    </div>
-
-    <div class="app__spacer" />
-
-    <div
-      style="display: inline-grid; margin-right: 12px;"
+  <v-row>
+    <v-col
+      :xs="12"
+      :sm="12"
+      :md="12"
+      :lg="6"
     >
-      <div
-        class="loyalty-toolbar-text-btn"
-      >
-        <span
-          class="iconify loyalty-toolbar-text-btn-icon"
-          style="margin-right: 2px;"
-          data-icon="ion:document-outline"
-          data-inline="false"
-        />
-        Экспорт в XLS
+      <div class="toolbar-col toolbar-col-left">
+        <div class="toolbar-name">
+          {{ program.name }}
+        </div>
+        <div class="toolbar-period">
+          <date-range-select
+            min-width="250px"
+            :items="periods"
+            :model.sync="periodId"
+            item-value="id"
+            item-label="name"
+          />
+        </div>
       </div>
-    </div>
-    <div
-      style="display: inline-grid;"
+    </v-col>
+    <v-col
+      :xs="12"
+      :sm="12"
+      :md="12"
+      :lg="6"
     >
-      <v-btn
-        color="secondary"
-        small
-      >
-        <span
-          class="iconify"
-          style="margin-right: 8px;"
-          data-icon="feather:settings"
-          data-inline="false"
-        />
-        Настроить программу лояльности
-      </v-btn>
-    </div>
-  </div>
+      <div class="toolbar-col toolbar-col-right">
+        <v-btn
+          color="secondary"
+          :text="true"
+          :ripple="false"
+          style="margin-right: 16px;"
+        >
+          <v-icon style="position: relative; top: -2px; width: 18px; height: 18px; margin-right: 8px;">
+            $iconify_ion-document-outline
+          </v-icon>
+          Экспорт в XLS
+        </v-btn>
+        <v-btn
+          color="secondary"
+          small
+        >
+          <v-icon style="width: 15px; height: 15px; margin-right: 8px;">
+            $iconify_feather-settings
+          </v-icon>
+          Настроить программу лояльности
+        </v-btn>
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -63,11 +67,12 @@
         periodId: null,
         periods: [
           { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 2, name: 'за последние 7 дней', start: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 3, name: 'за последние 30 дней', start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 4, name: 'за последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 5, name: 'за последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-          { id: 6, name: 'за последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 2, name: 'за вчера', start: new Date(Date.now() - 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 3, name: 'за последние 7 дней', start: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 4, name: 'за последние 30 дней', start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 5, name: 'за последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 6, name: 'за последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
+          { id: 7, name: 'за последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
           // { id: 7, name: 'собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
         ],
       }
@@ -102,30 +107,29 @@
 </script>
 
 <style lang="scss" scoped>
-.loyalty-toolbar {
+.toolbar-col {
   display: flex;
+  flex-direction: row;
   align-items: center;
+  width: 100%;
   margin: 0;
-  @media (max-width: 1120px) {
-    display: block;
-  }
 
-  .loyalty-toolbar-name {
-    display: inline-grid;
+  .toolbar-name {
+    max-width: calc(100% - 232px);
+    padding-right: 12px;
     font-style: normal;
     font-weight: bold;
     font-size: 22px;
     line-height: 26px;
     letter-spacing: -0.2px;
     color: #2A2A34;
-    max-width: 35%;
-    overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
+    overflow: hidden;
   }
 
-  .loyalty-toolbar-period {
-    display: inline-grid;
-    margin-left: 12px;
+  .toolbar-period {
+    width: 220px;
     font-style: normal;
     font-weight: 600;
     font-size: 17px;
@@ -140,23 +144,16 @@
       top: 4px;
     }
   }
+}
 
-  .loyalty-toolbar-text-btn {
-    position: relative;
-    top: -2px;
-    margin-right: 2px;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 13px;
-    line-height: 17px;
-    color: #4776E6;
-    cursor: pointer;
+.toolbar-col-left {
+  justify-content: flex-start;
+}
 
-    .loyalty-toolbar-text-btn-icon {
-      position: relative;
-      top: 4px;
-      font-size: 18px;
-    }
+.toolbar-col-right {
+  justify-content: flex-end;
+  @media (max-width: 1263.98px) {
+    justify-content: flex-start;
   }
 }
 </style>

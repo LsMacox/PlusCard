@@ -55,6 +55,7 @@
     "@iconify/icons-feather": "^1.0.9",
     "@iconify/icons-ion": "^1.0.13",
     "@iconify/icons-jam": "^1.0.5",
+    "@iconify/icons-octicon": "^1.0.8",
     "@iconify/icons-uil": "^1.0.14",
     "@iconify/vue": "^1.0.5",
     "@vue/cli-plugin-babel": "^4.5.4",

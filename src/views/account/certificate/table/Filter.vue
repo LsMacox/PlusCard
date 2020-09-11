@@ -95,14 +95,14 @@
             </div>
 
             <div
-                class="app__filter-chip"
-                v-if="fastFilter.issueDate.label"
+              v-if="fastFilter.issueDate.label"
+              class="app__filter-chip"
             >
               <div class="app__filter-chip-content">
                 {{ fastFilter.issueDate.label }}
                 <v-icon
-                    class="app__filter-chip-icon-append"
-                    @click="clearItemFastFilter('issueDate', 'issueDate')"
+                  class="app__filter-chip-icon-append"
+                  @click="clearItemFastFilter('issueDate', 'issueDate')"
                 >
                   $iconify_jam-close
                 </v-icon>
@@ -268,7 +268,11 @@
                         {{ issueDateRange(picker.startDate, picker.endDate) }}
                       </div>
                       <div class="calendar-icon">
-                        <span class="iconify" data-icon="feather:calendar" data-inline="false"></span>
+                        <span
+                          class="iconify"
+                          data-icon="feather:calendar"
+                          data-inline="false"
+                        />
                       </div>
                     </template>
 

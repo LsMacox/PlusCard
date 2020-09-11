@@ -1,5 +1,8 @@
 <template>
-  <div class="side-panel">
+  <div
+    class="side-panel"
+    v-bind="$attrs"
+  >
     <div class="side-panel__menu">
       <v-overlay
         :absolute="true"
@@ -17,6 +20,7 @@
         v-model="active"
         color="#fff"
         :right="true"
+        :width="width"
         absolute
         class="side-panel__navigation"
       >
@@ -24,11 +28,16 @@
           class="side-panel__back"
           @click="toggleSidePanel"
         >
+          <iconify-icon
+            class="back__icon"
+            icon="arrow-left"
+            height="21"
+          />
           <a href="#back">Назад</a>
         </div>
+        <slot />
       </v-navigation-drawer>
     </div>
-    <slot />
   </div>
 </template>
 
@@ -43,6 +52,10 @@
       active: {
         type: Boolean,
         default: false,
+      },
+      width: {
+        type: Number,
+        default: 400,
       },
     },
     data () {
@@ -68,6 +81,7 @@
 
 .side-panel {
     .side-panel__back {
+        display: inline-block;
         position: relative;
         margin-top: 36px;
         margin-left: 59px;
@@ -78,23 +92,12 @@
             font-weight: 600;
             font-size: 13px;
         }
-        &:before {
-            content: '';
-            position: absolute;
-            background-color: $primary-base;
-            width: 12px;
-            height: 1.5px;
-            top: 9px;
-            left: -20px;
-        }
-        &:after {
-            content: '';
-            position: absolute;
-            background-color: $primary-base;
-            width: 12px;
-            height: 1.5px;
-            top: 9px;
-            left: -20px;
+        .back__icon {
+          position: absolute;
+          left: -25px;
+          top: -1px;
+          color: $primary-base;
+          cursor: pointer;
         }
     }
     .side-panel__overlay {
