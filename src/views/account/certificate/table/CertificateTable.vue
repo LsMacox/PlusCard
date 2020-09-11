@@ -253,10 +253,16 @@
         if (v) this.fetchData()
       },
       filter (v) {
+        console.log('asdfsdafhjsdjkfhdkj')
         if (v) this.fetchData()
       },
       program (v) {
         if (v) this.fetchData()
+      },
+      'filter.archiveStatus.id' (v) {
+        if (v) {
+          // this.fetchData()
+        }
       },
     },
     created () {

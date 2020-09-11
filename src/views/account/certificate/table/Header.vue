@@ -5,6 +5,8 @@
     </div>
     <v-menu
       class="certificate-toolbar-select"
+      v-model="chevronUp"
+      :rounded="false"
       offset-y
     >
       <template v-slot:activator="{ on, attrs }">
@@ -17,6 +19,7 @@
           v-on="on"
         >
           {{ archiveStatus.text }}
+          <v-icon class="archive-status-chevron">{{ !chevronUp ? 'fas fa-chevron-down' : 'fas fa-chevron-up' }}</v-icon>
         </v-btn>
       </template>
       <v-list
@@ -32,45 +35,45 @@
       </v-list>
     </v-menu>
     <div class="app__spacer" />
-    <div
-      style="display: inline-grid;"
-    >
       <div
-        class="loyalty-toolbar-text-btn"
-        @click=""
+        style="display: flex;"
       >
-        <span
-          class="iconify loyalty-toolbar-text-btn-icon"
-          style="margin-right: 2px;"
-          data-icon="ion:document-outline"
-          data-inline="false"
-        />
-        Экспорт в XLS
+        <div
+          class="loyalty-toolbar-text-btn"
+          @click=""
+        >
+          <span
+            class="iconify loyalty-toolbar-text-btn-icon"
+            style="margin-right: 2px;"
+            data-icon="ion:document-outline"
+            data-inline="false"
+          />
+          Экспорт в XLS
+        </div>
       </div>
-    </div>
-    <div
-      style="display: inline-grid; margin-left: 16px;"
-    >
-      <v-btn
-        color="secondary"
-        @click="onMasterCreateCert"
+      <div
+        style="display: flex; margin-left: 16px;"
       >
-        <v-icon left>
-          $iconify_feather-settings
-        </v-icon> Настроить сертификаты
-      </v-btn>
-    </div>
-    <div
-      style="display: inline-grid; margin-left: 16px;"
-    >
-      <v-btn
-        color="primary"
+        <v-btn
+          color="secondary"
+          @click="onMasterCreateCert"
+        >
+          <v-icon left>
+            $iconify_feather-settings
+          </v-icon> Настроить сертификаты
+        </v-btn>
+      </div>
+      <div
+        style="display: flex; margin-left: 16px;"
       >
-        <v-icon left>
-          $iconify_plus-circle-outlined
-        </v-icon> Создать новый сертификат
-      </v-btn>
-    </div>
+        <v-btn
+          color="primary"
+        >
+          <v-icon left>
+            $iconify_plus-circle-outlined
+          </v-icon> Создать новый сертификат
+        </v-btn>
+      </div>
   </div>
 </template>
 
@@ -80,7 +83,8 @@
     },
     data () {
       return {
-        archiveStatusId: null,
+        chevronUp: false,
+        filter: null,
         archiveStatuses: [
           { id: 'work', text: 'в работе' },
           { id: 'archive', text: 'в архиве' },
@@ -88,6 +92,9 @@
       }
     },
     computed: {
+      filterStore () {
+        return this.$store.getters['account/certificate/filter/filter']
+      },
       program () {
         return this.$store.getters['company/program/program']
       },
@@ -100,32 +107,31 @@
         },
       },
     },
-    watch: {
-      archiveStatusId (v) {
-        if (v) {
-          const archiveStatus = this.archiveStatuses.find(item => item.id === v)
-          if (archiveStatus) {
-            this.archiveStatus = archiveStatus
-          }
-        }
-      },
-    },
-    created () {
-      console.log('st...')
-      console.log(this.archiveStatus)
-    },
     methods: {
       onMasterCreateCert () {
         this.$router.push({ name: 'ProgramCertificateMaster' })
       },
       archiveStatusHandler (item) {
+        this.chevronUp = !this.chevronUp
         this.$store.commit('account/certificate/filter/archiveStatus', item)
+      },
+      statusSelectIcon () {
+        if (this.chevronUp) {
+          return 'fas fa-chevron-down'
+        } else {
+          return 'fas fa-chevron-down'
+        }
       },
     },
   }
 </script>
 
 <style lang="scss" scoped>
+.archive-status-chevron {
+  font-size: 14px;
+  padding-left: 7px;
+}
+
 .loyalty-toolbar {
   display: flex;
   align-items: center;
@@ -185,6 +191,12 @@
   text-transform: lowercase;
   &::before {
     background-color: transparent!important;
+  }
+}
+
+@media (max-width: 1415px) {
+  .loyalty-toolbar {
+    flex-wrap: wrap;
   }
 }
 

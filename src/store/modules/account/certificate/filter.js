@@ -11,8 +11,8 @@ const getDefaultState = () => {
             certMerchantOrderStatus: [],
             certOrderStatus: [],
             buyers: [],
+            archiveStatus: { id: 'work', text: 'в работе' },
         },
-        archiveStatus: { id: 'work', text: 'в работе' },
     }
 }
 
@@ -30,7 +30,7 @@ const mutations = {
     },
     archiveStatus (state, payload) {
         console.log(payload)
-        state.archiveStatus = payload
+        state.filter.archiveStatus = payload
     },
 }
 
@@ -59,7 +59,7 @@ const getters = {
         const defaultState = Object.assign({}, getDefaultState())
         return defaultState.filter
     },
-    archiveStatus: (state) => state.archiveStatus,
+    archiveStatus: (state) => state.filter.archiveStatus,
 }
 
 export default {
