@@ -13,7 +13,7 @@ export const ICONIFY_ICONS = [
   { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
   { id: 'search-outlined', component: () => import('@iconify/icons-ant-design/search-outlined') },
   { id: 'jam-close', component: () => import('@iconify/icons-jam/close') },
-  { id: 'arrow-back', component: () => import('@iconify/icons-bx/bx-arrow-back') },
+  { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
   { id: 'ion-color-fill-outline', component: () => import('@iconify/icons-ion/color-fill-outline') },
   { id: 'feather-download', component: () => import('@iconify/icons-feather/download') },
 ]
