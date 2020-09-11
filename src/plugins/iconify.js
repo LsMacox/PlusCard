@@ -4,6 +4,8 @@ import IconifyIcon from '@iconify/vue'
 // https://iconify.design/icon-sets/?query=plus-circle
 // npm i @iconify/icons-bx -D
 // npm i @iconify/icons-codicon -D
+// npm i @iconify/icons-ant-design -D
+// npm i @iconify/icons-entypo -D
 export const ICONIFY_ICONS = [
   { id: 'plus-circle', component: () => import('@iconify/icons-uil/plus-circle') },
   { id: 'plus-circle-outlined', component: () => import('@iconify/icons-ant-design/plus-circle-outlined') },
@@ -16,6 +18,8 @@ export const ICONIFY_ICONS = [
   { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
   { id: 'ion-color-fill-outline', component: () => import('@iconify/icons-ion/color-fill-outline') },
   { id: 'feather-download', component: () => import('@iconify/icons-feather/download') },
+  { id: 'question-circle-outlined', component: () => import('@iconify/icons-ant-design/question-circle-outlined') },
+  { id: 'chevron-right', component: () => import('@iconify/icons-entypo/chevron-right') },
 ]
 
 ICONIFY_ICONS.forEach((icon) => {

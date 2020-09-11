@@ -1,29 +1,31 @@
 <template>
   <div
-    class="widget-box"
+    class="widget-box w-client"
   >
-    <div class="widget-box-header">
-      <div class="widget-box-header-left">
-        <span>{{ currentClientsCount }}</span> клиентов
+    <div class="widget-box-header w-client__header">
+      <div class="widget-box-header-left w-client__header-left body-m-semibold">
+        <span class="header-left__number">{{ currentClientsCount }}</span> клиентов
       </div>
-      <div class="app__spacer" />
-      <div class="widget-box-header-right">
-        <span :class="relativeChange >= 0 ? 'growth' : 'decline'">{{ relativeChange > 0 ? `+${relativeChange}%` : `${relativeChange}%` }}</span>
+      <div class="widget-box-header-right w-client__header-right">
+        <span
+          :class="relativeChange >= 0 ? 'wc-success' : 'wc-error'"
+          class="body-m-semibold"
+        >{{ relativeChange > 0 ? `+${relativeChange}%` : `${relativeChange}%` }}</span>
       </div>
     </div>
     <div
       ref="widget-box-body"
-      class="widget-box-body"
+      class="widget-box-body w-client__body"
     >
       <v-progress-circular
         v-show="!_isMounted"
         indeterminate
         color="primary"
-        class="widget-box-body__progress"
+        class="widget-box-body__progress w-client__progress"
       />
       <div
         v-if="_isMounted"
-        class="widget-box-body__diagram"
+        class="widget-box-body__diagram w-client__diagram"
       >
         <diagram-line
           :diagramlabels="diagramLabels.reverse()"
@@ -116,56 +118,6 @@
 
 <style lang="scss" scoped>
 
-@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/vuetify-preset-plus/light_theme/widgets/_clients.scss";
 
-.widget-box {
-  padding: 20px;
-  border: 1px solid $neutral-250;
-  box-sizing: border-box;
-  border-radius: 12px;
-
-  .widget-box-header {
-      display: flex;
-      align-items: center;
-
-      .widget-box-header-left {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 15px;
-        line-height: 21px;
-        letter-spacing: 0.1px;
-        color: $neutral-900;
-        span {
-          color: $primary-base;
-        }
-      }
-      .widget-box-header-right {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 15px;
-        line-height: 21px;
-        letter-spacing: 0.1px;
-        color: $success-500;
-        span.growth {
-          color: $success-500;
-        }
-        span.decline {
-          color: $error-500;
-        }
-      }
-    }
-    .widget-box-body {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        .widget-box-body__diagram {
-          width: 100%;
-          margin-top: 12px;
-        }
-        .widget-box-body__progress {
-          margin-top: 35px;
-          margin-bottom: 12px;
-        }
-      }
-  }
 </style>

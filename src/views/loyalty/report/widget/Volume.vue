@@ -1,73 +1,72 @@
 <template>
-  <div class="widget-box">
-    <div class="widget-box-header">
-      <div class="widget-box-header-left">
+  <div class="widget-box w-volume">
+    <div class="widget-box-header w-volume__header">
+      <div class="widget-box-header-left w-volume__header-left body-m-semibold">
         Общий оборот
       </div>
-      <div class="app__spacer" />
-      <div class="widget-box-header-right">
+      <div class="widget-box-header-right w-volume__header-right body-s-semibold">
         {{ volume }}
       </div>
     </div>
-    <div class="widget-box-body">
+    <div class="widget-box-body w-volume__body">
       <ul
-        class="volume__list"
+        class="w-volume__list"
       >
         <li
-          class="volume__item"
+          class="w-volume__item"
         >
-          <div class="volume__item-top">
-            <p class="volume-name">
+          <div class="w-volume__item-top">
+            <p class="w-volume__name body-s-medium">
               Баланс
             </p>
-            <span class="volume-data balance">{{ balance }}</span>
+            <span class="w-volume__number body-s-semibold wc-base">{{ balance }}</span>
           </div>
-          <div class="volume__item-bottom">
+          <div class="w-volume__item-bottom">
             <v-progress-linear
               :value="getProgress('balance')"
               style="height: 4px"
               rounded="rounded"
-              class="volume-progress"
+              class="w-volume__progress"
               background-color="#EBF1FF"
               color="primary"
             />
           </div>
         </li>
         <li
-          class="volume__item"
+          class="w-volume__item"
         >
-          <div class="volume__item-top">
-            <p class="volume-name">
+          <div class="w-volume__item-top">
+            <p class="w-volume__name body-s-medium">
               Начислено
             </p>
-            <span class="volume-data accrued">{{ credit }}</span>
+            <span class="w-volume__number body-s-semibold wc-success">{{ credit }}</span>
           </div>
-          <div class="volume__item-bottom">
+          <div class="w-volume__item-bottom">
             <v-progress-linear
               :value="getProgress('credit')"
               style="height: 4px"
               rounded="rounded"
-              class="volume-progress"
+              class="w-volume__progress"
               background-color="#EBF1FF"
               color="success"
             />
           </div>
         </li>
         <li
-          class="volume__item"
+          class="w-volume__item"
         >
-          <div class="volume__item-top">
-            <p class="volume-name">
+          <div class="w-volume__item-top">
+            <p class="w-volume__name body-s-medium">
               Списано
             </p>
-            <span class="volume-data debited">{{ debit }}</span>
+            <span class="w-volume__number body-s-semibold wc-error">{{ debit }}</span>
           </div>
-          <div class="volume__item-bottom">
+          <div class="w-volume__item-bottom">
             <v-progress-linear
               :value="getProgress('debit')"
               style="height: 4px"
               rounded="rounded"
-              class="volume-progress"
+              class="w-volume__progress"
               background-color="#EBF1FF"
               color="error"
             />
@@ -142,79 +141,6 @@
 
 <style lang="scss" scoped>
 
-@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/vuetify-preset-plus/light_theme/widgets/_volume.scss";
 
-.balance {
-  color: $primary-base;
-}
-
-.accrued {
-  color: $success-500;
-}
-
-.debited {
-  color: $error-500;
-}
-
-.widget-box {
-  padding: 20px;
-  border: 1px solid $neutral-250;
-  box-sizing: border-box;
-  border-radius: 12px;
-
-  .widget-box-header {
-      display: flex;
-      align-items: center;
-
-      .widget-box-header-left {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 15px;
-        line-height: 21px;
-        letter-spacing: 0.1px;
-        color: $neutral-900;
-      }
-      .widget-box-header-right {
-        font-style: normal;
-        font-weight: 600;
-        font-size: 15px;
-        line-height: 21px;
-        letter-spacing: 0.1px;
-        color: $neutral-500;
-      }
-    }
-
-    .widget-box-body {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        .volume__list {
-          list-style: none;
-          width: 100%;
-          padding: 0;
-          .volume__item {
-            margin-top: 11px;
-            .volume__item-top {
-              margin-bottom: -2px;
-              .volume-name {
-                float: left;
-                font-family: Gilroy;
-                font-style: normal;
-                font-weight: 500;
-                font-size: 13px;
-                margin-bottom: 0;
-                color: $neutral-600;
-              }
-              .volume-data {
-                float: right;
-                font-family: Gilroy;
-                font-style: normal;
-                font-weight: 600;
-                font-size: 13px;
-              }
-            }
-          }
-        }
-      }
-  }
 </style>

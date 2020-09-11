@@ -1,43 +1,44 @@
 <template>
-  <div class="widget-box">
+  <div class="widget-box w-operator">
     <div
-      class="widget-box-header"
+      class="widget-box-header w-operator__header"
       @click="toggleSidePanel"
     >
-      <div class="widget-box-header-left">
-        Операторы
+      <div class="widget-box-header-left w-operator__header-left">
+        <p class="body-m-semibold mb-0">
+          Операторы
+        </p>
       </div>
-      <div class="app__spacer" />
-      <div class="widget-box-header-right">
-        <span
-          class="iconify"
-          data-icon="entypo:chevron-right"
-          data-inline="false"
+      <div class="widget-box-header-right w-operator__header-right">
+        <iconify-icon
+          class="w-operator__header-icon"
+          icon="chevron-right"
+          height="17"
         />
       </div>
     </div>
-    <div class="widget-box-body">
+    <div class="widget-box-body w-operator__body">
       <ul
-        class="operators__list"
+        class="w-operator__list"
       >
         <li
           v-for="operator in someOperators"
           :key="operator.id"
-          class="operator__item"
+          class="w-operator__item"
         >
-          <div class="operator__item-top">
-            <p class="operator-name">
+          <div class="w-operator__item-top">
+            <p class="w-operator__name body-s-medium">
               {{ operator.label }}
             </p>
-            <span class="operator-percent">10%</span>
+            <span class="w-operator__percent body-s-semibold">10%</span>
           </div>
-          <div class="operator__item-bottom">
+          <div class="w-operator__item-bottom">
             <v-progress-linear
               :value="25"
               style="height: 4px"
               color="primary"
               rounded="rounded"
-              class="operator-progress"
+              class="w-operator__progress"
             />
           </div>
         </li>
@@ -46,38 +47,38 @@
     <side-panel
       v-model="sidePanelActive"
       :width="483"
-      class="side-panel__operators"
+      class="panel-operator"
     >
-      <div class="operators__header">
-        <h1 class="operators__title">
+      <div class="panel-operator__header">
+        <h1 class="panel-operator__title title-m-bold">
           Операторы
         </h1>
-        <p class="operators__sub-title">
+        <p class="panel-operator__sub-title body-m-regular">
           96 операций за сегодня
         </p>
       </div>
-      <div class="operators__body">
+      <div class="panel-operator__body">
         <ul
-          class="operators__list"
+          class="panel-operator__list"
         >
           <li
             v-for="operator in operators"
             :key="operator.id"
-            class="operator__item"
+            class="panel-operator__item"
           >
-            <div class="operator__item-top">
-              <p class="operator-name">
+            <div class="panel-operator__item-top">
+              <p class="panel-operator__name body-m-medium">
                 {{ operator.label }}
               </p>
-              <span class="operator-percent">44 операций / 10%</span>
+              <span class="panel-operator__percent body-m-semibold">44 операций / 10%</span>
             </div>
-            <div class="operator__item-bottom">
+            <div class="panel-operator__item-bottom">
               <v-progress-linear
                 :value="25"
                 style="height: 4px"
                 color="primary"
                 rounded="rounded"
-                class="operator-progress"
+                class="panel-operator__progress"
               />
             </div>
           </li>
@@ -127,114 +128,6 @@
 
 <style lang="scss" scoped>
 
-@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/vuetify-preset-plus/light_theme/widgets/_operators.scss";
 
-.widget-box {
-  padding: 20px;
-  border: 1px solid $neutral-250;
-  box-sizing: border-box;
-  border-radius: 12px;
-  .widget-box-header {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    .widget-box-header-left {
-      font-style: normal;
-      font-weight: 600;
-      font-size: 15px;
-      line-height: 21px;
-      letter-spacing: 0.1px;
-      color: $neutral-900;
-      span {
-        color: $primary-base;
-      }
-    }
-    .widget-box-header-right {
-      font-style: normal;
-      font-weight: 600;
-      font-size: 15px;
-      line-height: 21px;
-      letter-spacing: 0.1px;
-      // color: #00D15D;
-      span {
-        color: $neutral-500;
-      }
-    }
-  }
-  .operators__list {
-    list-style: none;
-    padding-left: 0;
-    margin-top: 10px;
-    .operator__item {
-      display: flex;
-      flex-direction: column;
-      margin-top: 11px;
-      .operator__item-top {
-        margin-bottom: -2px;
-        .operator-name {
-          float: left;
-          margin-bottom: 0;
-          font-style: normal;
-          font-weight: 500;
-          font-size: 13px;
-          color: $neutral-600;
-        }
-        .operator-percent {
-          float: right;
-          font-style: 13px;
-          font-weight: 600;
-          color: $primary-base;
-        }
-      }
-    }
-  }
-  .side-panel__operators {
-    .operators__header {
-      margin-top: 45px;
-      margin-left: 35px;
-      .operators__title {
-        font-family: Gilroy;
-        font-style: normal;
-        font-weight: bold;
-        font-size: 22px;
-        color: $neutral-900;
-      }
-      .operators__sub-title {
-        font-family: Gilroy;
-        font-style: normal;
-        font-weight: normal;
-        font-size: 15px;
-        color: $neutral-700;
-        margin-top: 10px;
-        margin-bottom: 0;
-      }
-    }
-    .operators__body {
-      width: 415px;
-      margin-left: 34px;
-      margin-right: 34px;
-      margin-top: 25px;
-      .operators__list {
-        .operator__item {
-          margin-top: 24px;
-          .operator__item-top {
-            .operator-name {
-              font-size: 15px;
-              color: $neutral-900;
-            }
-            .operator-percent {
-              font-weight: 600;
-              font-size: 15px;
-              color: $neutral-900;
-            }
-          }
-          .operator__item-bottom {
-            margin-top: 7px;
-          }
-        }
-      }
-    }
-  }
-
-}
 </style>

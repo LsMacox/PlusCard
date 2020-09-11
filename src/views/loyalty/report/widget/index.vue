@@ -89,9 +89,7 @@
     created () {
       this.fetchData()
     },
-    mounted () {
-      console.log(this.widgetRequest)
-    },
+    mounted () {},
     methods: {
       fetchData () {
         this.$store.dispatch('widget/bonusClients/widget', this.widgetRequest)

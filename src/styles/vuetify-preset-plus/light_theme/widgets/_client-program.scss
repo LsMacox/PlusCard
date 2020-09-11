@@ -1,0 +1,20 @@
+@import './standart';
+
+.w-client-program {
+    border-radius: 12px;
+
+    .w-client-program__header {
+
+        .w-client-program__header-right {
+            .question__icon {
+                color: $neutral-500;
+            }
+        }
+    }
+
+    .w-client-program__body {
+        .w-client-program__diagram {
+            margin-top: 12px;
+        }
+    }
+}

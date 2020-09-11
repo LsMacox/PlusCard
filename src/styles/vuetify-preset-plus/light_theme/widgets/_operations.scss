@@ -1,0 +1,14 @@
+@import './standart';
+
+.w-operation {
+    .w-operation__body {
+        .w-operation__diagram {
+            margin-top: 12px;
+        }
+
+        .w-operation__progress {
+            margin-top: 35px;
+            margin-bottom: 12px;
+        }
+    }
+}

@@ -1,0 +1,14 @@
+@import './standart';
+
+.w-client {
+    .w-client__body {
+        .w-client__diagram {
+            margin-top: 12px;
+        }
+
+        .w-client__progress {
+            margin-top: 35px;
+            margin-bottom: 12px;
+        }
+    }
+}
