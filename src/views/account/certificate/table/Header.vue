@@ -43,22 +43,22 @@
       </v-list>
     </v-menu>
     <div class="app__spacer" />
-      <div
-        style="display: flex;"
-      >
-        <div
-          class="loyalty-toolbar-text-btn"
-          @click=""
-        >
-          <span
-            class="iconify loyalty-toolbar-text-btn-icon"
-            style="margin-right: 2px;"
-            data-icon="ion:document-outline"
-            data-inline="false"
-          />
-          Экспорт в XLS
-        </div>
-      </div>
+<!--      <div-->
+<!--        style="display: flex;"-->
+<!--      >-->
+<!--        <div-->
+<!--          class="loyalty-toolbar-text-btn"-->
+<!--          @click=""-->
+<!--        >-->
+<!--          <span-->
+<!--            class="iconify loyalty-toolbar-text-btn-icon"-->
+<!--            style="margin-right: 2px;"-->
+<!--            data-icon="ion:document-outline"-->
+<!--            data-inline="false"-->
+<!--          />-->
+<!--          Экспорт в XLS-->
+<!--        </div>-->
+<!--      </div>-->
       <div
         style="display: flex; margin-left: 16px;"
       >
