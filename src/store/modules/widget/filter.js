@@ -4,6 +4,7 @@ const getDefaultState = () => {
     return {
         period: localStorage.getItem('filterPeriod') ? JSON.parse(localStorage.getItem('filterPeriod')) : { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
         filter: localStorage.getItem('reportFilter') ? JSON.parse(localStorage.getItem('reportFilter')) : { enable: false, query: null, pbr: [], bu: [], client: [], operator: [] },
+        filterDefault: { enable: false, query: null, pbr: [], bu: [], client: [], operator: [] },
         foundClients: [],
     }
 }
@@ -54,7 +55,7 @@ const getters = {
     filter: (state) => state.filter,
     filterDefault: () => {
         const defaultState = getDefaultState()
-        return defaultState.filter
+        return defaultState.filterDefault
     },
     period: (state) => state.period,
     foundClients: (state) => state.foundClients,

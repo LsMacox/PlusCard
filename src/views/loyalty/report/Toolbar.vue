@@ -92,7 +92,7 @@
     },
     watch: {
       periodId (v) {
-        if (v) {
+        if (v !== this.period.id) {
           const period = this.periods.find(item => item.id === v)
           if (period) {
             this.period = period

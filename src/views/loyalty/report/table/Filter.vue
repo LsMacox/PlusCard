@@ -102,11 +102,15 @@
               </div>
             </div>
             <!--поле ввода-->
-            <input
-              class="app__filter-block-input-field"
-              placeholder="Поиск и фильтр"
-              @focus="switchShow"
-            >
+            <div style="display: inline-flex;">
+              <div style="display: flex; flex-direction: column; flex: 1;">
+                <input
+                  class="app__filter-block-input-field"
+                  placeholder="Поиск и фильтр"
+                  @focus="switchShow"
+                >
+              </div>
+            </div>
           </div>
 
           <v-icon
@@ -286,13 +290,35 @@
       },
       program (v) {
         // обнуление при смене программы
-        this.filter = JSON.parse(JSON.stringify(this.filterDefault))
-        this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
-        this.setFastFilter(this.filter)
+        if (v) {
+          this.filter = JSON.parse(JSON.stringify(this.filterStore))
+          this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+          this.setFastFilter(this.filter)
+        }
+      },
+      foundClients (v) {
+        if (v) {
+          this.setFastFilter(this.filter)
+        }
+      },
+      operators (v) {
+        if (v) {
+          this.setFastFilter(this.filter)
+        }
+      },
+      operations (v) {
+        if (v) {
+          this.setFastFilter(this.filter)
+        }
+      },
+      units (v) {
+        if (v) {
+          this.setFastFilter(this.filter)
+        }
       },
     },
     created () {
-      this.filter = JSON.parse(JSON.stringify(this.filterDefault))
+      this.filter = JSON.parse(JSON.stringify(this.filterStore))
       this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
       this.setFastFilter(this.filter)
     },
@@ -357,8 +383,7 @@
       clearFastFilter () {
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
-        this.setFastFilter(this.filter)
-        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(this.filterDefault)))
+        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(this.filter)))
       },
       async querySearchClient (search) {
         if (search.length >= 3) {
@@ -479,7 +504,7 @@
   }
 
   .app__filter-block-input-field {
-    display: inline;
+    width: 100%;
     outline: none !important;
     margin: 13px 0;
     padding: 0 10px;

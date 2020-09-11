@@ -4,7 +4,7 @@
   >
     <div class="widget-box-header">
       <div class="widget-box-header-left">
-        <span>{{ currentClientsCount }}</span> клиентов
+        <span>{{ currentClientsCount }}</span> {{ declOfNum(currentClientsCount, titles) }}
       </div>
       <div class="app__spacer" />
       <div class="widget-box-header-right">
@@ -90,6 +90,7 @@
             },
           },
         },
+        titles: ['клиент', 'клиента', 'клиентов'],
       }
     },
     computed: {
@@ -116,8 +117,13 @@
         return diagramLabels
       },
     },
-    mounted () {},
-    methods: {},
+    methods: {
+      declOfNum (number, titles) {
+        number = Number(number)
+        const cases = [2, 0, 1, 1, 1, 2]
+        return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
+      },
+    },
   }
 </script>
 

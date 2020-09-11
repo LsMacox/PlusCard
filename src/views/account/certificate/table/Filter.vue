@@ -344,6 +344,9 @@
     components: {
       DateRangePicker,
     },
+    props: {
+      archiveStatus: {},
+    },
     data () {
       return {
         filter: null,
