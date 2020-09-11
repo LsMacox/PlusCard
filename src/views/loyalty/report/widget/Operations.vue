@@ -69,7 +69,7 @@
             enabled: false,
             callbacks: {
               title: function (tooltipItem, data) {
-                return tooltipItem[0].xLabel.operations_count + ' клиента'
+                return tooltipItem[0].xLabel.operations_count + ' операций'
               },
               label: function (tooltipItem, data) {
                 var startDate = tooltipItem.xLabel.start_period

@@ -1,147 +1,154 @@
 <template>
-      <div>
-            <v-data-table
-              :headers="headers"
-              :items="certificates"
-              :single-expand="true"
-              :options="tableOptions"
-              :expanded.sync="expanded"
-              item-key="id"
-              show-expand
-              class="plus-table"
-              hide-default-footer
-            >
-              <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length">
-                  More info about {{ item.id }}
-                </td>
-              </template>
+  <div>
+    <v-data-table
+      :headers="headers"
+      :items="certificates"
+      :single-expand="true"
+      :options="tableOptions"
+      :expanded.sync="expanded"
+      item-key="id"
+      show-expand
+      class="plus-table"
+      hide-default-footer
+    >
+      <template v-slot:expanded-item="{ Headers, item }">
+        <td :colspan="headers.length">
+          More info about {{ item.id }}
+        </td>
+      </template>
 
-              <template v-slot:item.data-table-expand="{ expand, isExpanded }">
-                <span
-                  class="iconify"
-                  data-icon="bi:chevron-right"
-                  data-inline="false"
-                  @click="expand(!isExpanded)"
-                />
-              </template>
+      <template v-slot:item.data-table-expand="{ expand, isExpanded }">
+        <span
+          class="iconify"
+          data-icon="bi:chevron-right"
+          data-inline="false"
+          @click="expand(!isExpanded)"
+        />
+      </template>
 
-              <template v-slot:item.certificate.name="{ item }">
-                <div class="td-padding-wrapper">
-                  <div class="td-content-main">
-                    {{ item.certificate.name }}
-                  </div>
-                  <div
-                    class="hint"
-                    style="color: #4776E6;"
-                  >
-                    {{ item.order.num }}
-                  </div>
-                </div>
-              </template>
+      <template v-slot:item.certificate.name="{ item }">
+        <div class="td-padding-wrapper">
+          <div class="td-content-main">
+            {{ item.certificate.name }}
+          </div>
+          <div
+            class="hint"
+            style="color: #4776E6;"
+          >
+            {{ item.order.num }}
+          </div>
+        </div>
+      </template>
 
-              <template v-slot:item.user.UserName="{ item }">
-                <div class="avatar">
-                  <img :src="item.user.avatar">
-                </div>
-                <div class="td-content-wrapper">
-                  <div class="td-content-main">
-                    {{ item.user.UserName }}
-                  </div>
-                  <div
-                    v-if="item.user.last_activity"
-                    class="hint"
-                    style="color: #9191A1"
-                  >
-                    Был(а) в сети {{ $moment(item.user.last_activity).format('DD.MM.YYYY\u00A0HH:mm') }}
-                  </div>
-                </div>
-              </template>
+      <template v-slot:item.user.UserName="{ item }">
+        <div class="avatar">
+          <img :src="item.user.avatar">
+        </div>
+        <div class="td-content-wrapper">
+          <div class="td-content-main">
+            {{ item.user.UserName }}
+          </div>
+          <div
+            v-if="item.user.last_activity"
+            class="hint"
+            style="color: #9191A1"
+          >
+            Был(а) в сети {{ $moment(item.user.last_activity).format('DD.MM.YYYY\u00A0HH:mm') }}
+          </div>
+        </div>
+      </template>
 
-              <template v-slot:item.nominal.selling_price="{ item }">
-                <span style="float: right">
-                  {{ item.nominal.selling_price }} &#8381
-                </span>
-              </template>
+      <template v-slot:item.nominal.selling_price="{ item }">
+        <span style="float: right">
+          // eslint-disable-next-line vue/no-parsing-error
+          {{ item.nominal.selling_price }} &#8381
+        </span>
+      </template>
 
-              <template v-slot:item.payment_status="{ item }">
-                <img :src="paymentStatusIcon(item.payment_status)">
-              </template>
+      <template v-slot:item.payment_status="{ item }">
+        <img :src="paymentStatusIcon(item.payment_status)">
+      </template>
 
-              <template v-slot:item.status="{ item }">
-                <img :src="statusIcon(item.status)">
-              </template>
+      <template v-slot:item.status="{ item }">
+        <img :src="statusIcon(item.status)">
+      </template>
 
-              <template v-slot:item.merchant_order_status="{ item }">
-                <img :src="merchantOrderStatusIcon(item.merchant_order_status)">
-              </template>
+      <template v-slot:item.merchant_order_status="{ item }">
+        <img :src="merchantOrderStatusIcon(item.merchant_order_status)">
+      </template>
 
-              <template v-slot:item.date_issued="{ item }">
-                <div
-                  v-if="item.date_issued"
-                  class="td-content-wrapper"
-                >
-                  <div class="td-content-main">
-                    {{ $moment(item.date_issued).format('DD.MM.YYYY') }}
-                  </div>
-                  <div
-                    v-if="item.expires_at"
-                    class="hint"
-                  >
-                    {{ $moment(item.expires_at).format('DD.MM.YYYY') }}
-                  </div>
-                </div>
-              </template>
-
-              <template v-slot:item.used_at="{ item }">
-                <div
-                  v-if="item.used_at"
-                  class="td-content-wrapper"
-                >
-                  <div class="td-content-main">
-                    {{ $moment(item.used_at).format('DD.MM.YYYY') }}
-                  </div>
-                  <div class="hint">
-                    в {{ $moment(item.used_at).format('HH:mm') }}
-                  </div>
-                </div>
-              </template>
-            </v-data-table>
-
-        <v-row
-          align="center"
-          class="pagination"
+      <template v-slot:item.date_issued="{ item }">
+        <div
+          v-if="item.date_issued"
+          class="td-content-wrapper"
         >
-          <v-col cols="3" class="pagination-total">
-            <span>{{ totalCount }} операций на {{ pagesCount }} страницах</span>
-          </v-col>
+          <div class="td-content-main">
+            {{ $moment(item.date_issued).format('DD.MM.YYYY') }}
+          </div>
+          <div
+            v-if="item.expires_at"
+            class="hint"
+          >
+            {{ $moment(item.expires_at).format('DD.MM.YYYY') }}
+          </div>
+        </div>
+      </template>
 
-          <v-col cols="2" class="pagination-per-page">
-            <v-select
-                v-model="tableOptions.itemsPerPage"
-                class="pagination-select"
-                :items="paginationOptions"
-                item-text="text"
-                item-value="value"
-                append-icon="fas fa-chevron-down"
-                dense
-            />
-          </v-col>
+      <template v-slot:item.used_at="{ item }">
+        <div
+          v-if="item.used_at"
+          class="td-content-wrapper"
+        >
+          <div class="td-content-main">
+            {{ $moment(item.used_at).format('DD.MM.YYYY') }}
+          </div>
+          <div class="hint">
+            в {{ $moment(item.used_at).format('HH:mm') }}
+          </div>
+        </div>
+      </template>
+    </v-data-table>
 
-          <v-col cols="7">
-            <div class="text-center">
-              <v-pagination
-                v-model="tableOptions.page"
-                next-icon="fas fa-chevron-right"
-                prev-icon="fas fa-chevron-left"
-                :length="pagesCount"
-                :total-visible="7"
-                circle
-              />
-            </div>
-          </v-col>
-        </v-row>
-      </div>
+    <v-row
+      align="center"
+      class="pagination"
+    >
+      <v-col
+        cols="3"
+        class="pagination-total"
+      >
+        <span>{{ totalCount }} операций на {{ pagesCount }} страницах</span>
+      </v-col>
+
+      <v-col
+        cols="2"
+        class="pagination-per-page"
+      >
+        <v-select
+          v-model="tableOptions.itemsPerPage"
+          class="pagination-select"
+          :items="paginationOptions"
+          item-text="text"
+          item-value="value"
+          append-icon="fas fa-chevron-down"
+          dense
+        />
+      </v-col>
+
+      <v-col cols="7">
+        <div class="text-center">
+          <v-pagination
+            v-model="tableOptions.page"
+            next-icon="fas fa-chevron-right"
+            prev-icon="fas fa-chevron-left"
+            :length="pagesCount"
+            :total-visible="7"
+            circle
+          />
+        </div>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>

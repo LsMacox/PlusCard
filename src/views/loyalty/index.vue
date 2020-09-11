@@ -47,10 +47,16 @@
         if (v) this.fetchData()
       },
       filter (v) {
-        if (v) this.fetchData()
+        if (v) {
+          console.log('watch filter')
+          this.fetchData()
+        }
       },
       period (v) {
-        if (v) this.fetchData()
+        if (v) {
+          console.log('watch period')
+          this.fetchData()
+        }
       },
     },
     created () {
@@ -58,6 +64,7 @@
     },
     methods: {
       async fetchData () {
+        console.log('fetchData ALL')
         const widget = {
           program_id: this.program.id,
           start_period: this.period.start,
@@ -79,7 +86,6 @@
       },
     },
   }
-
 </script>
 
 <style lang="sass" scoped>

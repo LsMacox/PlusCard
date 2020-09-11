@@ -1,24 +1,42 @@
 <template>
-  <div class="widget-line">
-    <div class="widget-line-block">
+  <v-row class="widget-line">
+    <v-col
+      :xs="6"
+      :sm="6"
+      :md="3"
+    >
       <clients
         :widgetdata="widgetClientData"
       />
-    </div>
-    <div class="widget-line-block">
+    </v-col>
+    <v-col
+      :xs="6"
+      :sm="6"
+      :md="3"
+    >
       <operations
         :widgetdata="widgetOperationData"
       />
-    </div>
-    <div class="widget-line-block">
-      <operators />
-    </div>
-    <div class="widget-line-block">
+    </v-col>
+    <v-col
+      :xs="6"
+      :sm="6"
+      :md="3"
+    >
+      <operators
+        :widgetdata="widgetOperatorsData"
+      />
+    </v-col>
+    <v-col
+      :xs="6"
+      :sm="6"
+      :md="3"
+    >
       <volume
         :widgetdata="widgetVolumeData"
       />
-    </div>
-  </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -48,9 +66,6 @@
       widgetOperatorsData () {
         return this.$store.getters['widget/operators/widgetData']
       },
-      operatorsData () {
-        return this.$store.getters['widget/operators/operators']
-      },
       widgetVolumeData () {
         return this.$store.getters['widget/bonuses/widgetData']
       },
@@ -58,13 +73,8 @@
   }
 </script>
 
-<style lang="sass" scoped>
-.widget-line
-  margin: 34px -10px 0 -10px
-  display: flex
-  align-items: center
-
-  .widget-line-block
-    margin: 0 10px
-    width: 100%
+<style lang="scss" scoped>
+.widget-line {
+  padding: 22px 0 0 0;
+}
 </style>
