@@ -44,45 +44,50 @@
     },
     watch: {
       program (v) {
-        if (v) this.fetchData()
+        if (v) {
+          this.fetchData()
+        }
       },
       filter (v) {
         if (v) {
-          console.log('watch filter')
           this.fetchData()
         }
       },
       period (v) {
         if (v) {
-          console.log('watch period')
           this.fetchData()
         }
       },
     },
-    created () {
-      this.$store.dispatch('widget/operators/operators', this.program.id)
+    async created () {
+      await this.$store.dispatch('widget/operators/operators', this.program.id)
+      await this.fetchData()
     },
     methods: {
       async fetchData () {
         console.log('fetchData ALL')
-        const widget = {
-          program_id: this.program.id,
-          start_period: this.period.start,
-          end_period: this.period.end,
-          filter: this.filter,
+        try {
+          this.loading = true
+          const widget = {
+            program_id: this.program.id,
+            start_period: this.period.start,
+            end_period: this.period.end,
+            filter: this.filter,
+          }
+          // console.log('load_data', widget)
+          // console.log('load_data', this.period)
+
+          await this.$store.dispatch('company/bonus_resources/GetActiveShortList', this.program.id)
+          await this.$store.dispatch('company/bonus_units/loadBonusUnits', this.program.id)
+          //
+          await this.$store.dispatch('widget/bonusClients/widget', widget)
+          await this.$store.dispatch('widget/operations/widget', widget)
+          await this.$store.dispatch('widget/operators/widget', widget)
+          await this.$store.dispatch('widget/bonuses/widget', widget)
+          // await this.$store.dispatch('widget/table/widget', widget)
+        } finally {
+          this.loading = false
         }
-        // console.log('load_data', widget)
-        // console.log('load_data', this.period)
-        this.loading = true
-        await this.$store.dispatch('company/bonus_resources/GetActiveShortList', this.program.id)
-        await this.$store.dispatch('company/bonus_units/loadBonusUnits', this.program.id)
-        //
-        await this.$store.dispatch('widget/bonusClients/widget', widget)
-        await this.$store.dispatch('widget/operations/widget', widget)
-        await this.$store.dispatch('widget/operators/widget', widget)
-        await this.$store.dispatch('widget/bonuses/widget', widget)
-        // await this.$store.dispatch('widget/table/widget', widget)
-        this.loading = false
       },
     },
   }
