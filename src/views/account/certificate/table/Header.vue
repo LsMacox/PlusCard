@@ -23,14 +23,22 @@
         </v-btn>
       </template>
       <v-list
-        class="my-class"
       >
         <v-list-item
           v-for="(item, index) in archiveStatuses"
           :key="index"
           @click="archiveStatusHandler(item)"
+          class="archive-status-menu-item"
         >
-          <v-list-item-title>{{ item.text }}</v-list-item-title>
+          <v-list-item-title>
+            {{ item.text }}
+            <div
+                v-if="archiveStatus.id === item.id"
+                class="archive-status-check-icon"
+            >
+              <span class="iconify" data-icon="bx:bx-check" data-inline="false"></span>
+            </div>
+          </v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -189,9 +197,35 @@
 
 .archive-status-btn {
   text-transform: lowercase;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 22px;
   &::before {
     background-color: transparent!important;
   }
+}
+
+.archive-status-menu-item {
+  .v-list-item__title {
+    font-family: Gilroy;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 21px;
+    color: rgb(145, 145, 161) !important;
+
+    svg {
+      font-size: 26px;
+    }
+  }
+}
+
+.archive-status-check-icon {
+  float: right;
+  position: relative;
+  top: -6px;
+  color: #4776e6!important;
 }
 
 @media (max-width: 1415px) {
