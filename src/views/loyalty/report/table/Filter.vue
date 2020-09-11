@@ -336,7 +336,6 @@
           this.filter[field].push(item.id)
         } else {
           this.filter[field].splice(index, 1)
-          this.clearItemFastFilter(field, item)
         }
       },
       setFastFilter (filter) {
@@ -377,6 +376,7 @@
         const filter = JSON.parse(JSON.stringify(this.filterStore))
         const j = filter[field].findIndex(objItem => objItem.id === item.id)
         if (typeof j !== 'undefined') filter[field].splice(j, 1)
+        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       clearFastFilter () {
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
@@ -405,6 +405,7 @@
       },
       apply () {
         this.$store.commit('widget/filter/filter', this.filter)
+        this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
         this.setFastFilter(this.filter)
         this.show = false
       },
