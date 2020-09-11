@@ -458,15 +458,15 @@
       },
       program (v) {
         // обнуление при смене программы
-        this.filter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.filter = JSON.parse(JSON.stringify(this.filterStore))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
         this.setFastFilter(this.filter)
       },
     },
     created () {
-      this.filter = this.filterDefault
+      this.filter = JSON.parse(JSON.stringify(this.filterStore))
       this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
-      console.log('PROGRAM ID: ' + this.program.id)
+
       this.$store.dispatch('account/certificate/certificate/programCertificates', this.program.id)
       this.$store.dispatch('account/certificate/buyers/buyers', this.program.id)
     },
@@ -528,13 +528,12 @@
         return 'app__filter-content-chip'
       },
       setFilter (field, item) {
-        // const filter = Object.assign({}, this.filter)
         const index = this.filter[field].indexOf(item.id)
         if (index === -1) {
           this.filter[field].push(item.id)
         } else {
           this.filter[field].splice(index, 1)
-          this.clearItemFastFilter(field, item)
+          // this.clearItemFastFilter(field, item)
         }
       },
       setFastFilter (filter) {
@@ -606,10 +605,6 @@
             startDate: null,
             endDate: null,
           }
-          // this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(this.filter)))
-          console.log('<FAST_FILTER>')
-          console.log(this.fastFilter)
-          console.log('</FAST_FILTER>')
           return
         }
         const i = this.fastFilter[field].findIndex(objItem => objItem.id === item.id)
@@ -618,12 +613,12 @@
         const filter = JSON.parse(JSON.stringify(this.filterStore))
         const j = filter[field].findIndex(objItem => objItem.id === item.id)
         if (typeof j !== 'undefined') filter[field].splice(j, 1)
-        // this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
+        this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       clearFastFilter () {
-        this.filter = JSON.parse(JSON.stringify(this.filterDefault))
+        this.filter = JSON.parse(JSON.stringify(this.filterStore))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
-        this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(this.filterDefault)))
+        this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(this.filter)))
       },
       async querySearchClient (search) {
         if (search.length >= 3) {
@@ -641,6 +636,7 @@
       },
       apply () {
         this.$store.commit('account/certificate/filter/filter', this.filter)
+        this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
         this.setFastFilter(this.filter)
         this.show = false
       },
