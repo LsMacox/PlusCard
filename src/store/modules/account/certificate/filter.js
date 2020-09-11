@@ -11,7 +11,7 @@ const getDefaultState = () => {
             certMerchantOrderStatus: [],
             certOrderStatus: [],
             buyers: [],
-            archived_at: null,
+            archiveStatus: { id: 'work', text: 'в работе' },
         },
     }
 }
@@ -24,13 +24,13 @@ const mutations = {
         Object.assign(state, defaultState)
         localStorage.setItem('certificateTableFilter', JSON.stringify(defaultState.filter))
     },
-    period (state, payload) {
-        state.period = payload
-        localStorage.setItem('certificateTableFilterPeriod', JSON.stringify(payload))
-    },
     filter (state, payload) {
         state.filter = payload
         localStorage.setItem('certificateTableFilter', JSON.stringify(state.filter))
+    },
+    archiveStatus (state, payload) {
+        console.log(payload)
+        state.filter.archiveStatus = payload
     },
 }
 
@@ -44,9 +44,6 @@ const actions = {
         }
     },
     async filterPeriod ({ commit }) {
-        // console.log('filterPeriod')
-        // console.log('localFilterStartPeriod', localStorage.getItem('startPeriodFilter'))
-        // console.log('localFilterEndPeriod', localStorage.getItem('endPeriodFilter'))
         const startPeriod = localStorage.getItem('startPeriodFilter')
         const endPeriod = localStorage.getItem('endPeriodFilter')
         if (startPeriod) commit('startPeriodFilter', startPeriod)
@@ -62,8 +59,7 @@ const getters = {
         const defaultState = Object.assign({}, getDefaultState())
         return defaultState.filter
     },
-    startPeriodFilter: (state) => state.startPeriodFilter,
-    endPeriodFilter: (state) => state.endPeriodFilter,
+    archiveStatus: (state) => state.filter.archiveStatus,
 }
 
 export default {
