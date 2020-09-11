@@ -86,7 +86,6 @@
       },
     },
   }
-
 </script>
 
 <style lang="sass" scoped>

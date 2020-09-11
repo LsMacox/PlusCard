@@ -16,6 +16,8 @@ export const ICONIFY_ICONS = [
   { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
   { id: 'ion-color-fill-outline', component: () => import('@iconify/icons-ion/color-fill-outline') },
   { id: 'feather-download', component: () => import('@iconify/icons-feather/download') },
+  { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') },
+  { id: 'ion-document-outline', component: () => import('@iconify/icons-ion/document-outline') },
 ]
 
 ICONIFY_ICONS.forEach((icon) => {

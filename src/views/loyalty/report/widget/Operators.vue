@@ -21,19 +21,19 @@
         class="operators__list"
       >
         <li
-          v-for="operator in someOperators"
-          :key="operator.id"
+          v-for="(item, i) in widgetOperators"
+          :key="i"
           class="operator__item"
         >
           <div class="operator__item-top">
             <p class="operator-name">
-              {{ operator.label }}
+              {{ item.operator }}
             </p>
-            <span class="operator-percent">10%</span>
+            <span class="operator-percent">{{ percent(item.operations_per_user, item.operations_count) }}%</span>
           </div>
           <div class="operator__item-bottom">
             <v-progress-linear
-              :value="25"
+              :value="percent(item.operations_per_user, item.operations_count)"
               style="height: 4px"
               color="primary"
               rounded="rounded"
@@ -61,15 +61,15 @@
           class="operators__list"
         >
           <li
-            v-for="operator in operators"
-            :key="operator.id"
+            v-for="(item, i) in operators"
+            :key="i"
             class="operator__item"
           >
             <div class="operator__item-top">
               <p class="operator-name">
-                {{ operator.label }}
+                {{ item.operator }}
               </p>
-              <span class="operator-percent">44 операций / 10%</span>
+              <span class="operator-percent">{{ item.operations_per_user }} операций / {{ percent(item.operations_per_user, item.operations_count) }}%</span>
             </div>
             <div class="operator__item-bottom">
               <v-progress-linear
@@ -99,12 +99,6 @@
           return []
         },
       },
-      operators: {
-        type: Array,
-        default () {
-          return []
-        },
-      },
     },
     data () {
       return {
@@ -112,21 +106,28 @@
       }
     },
     computed: {
-      someOperators () {
-        return this.$_.take(this.operators, 3)
+      operators () {
+        return this.widgetdata.sort((a, b) => b.operations_per_user - a.operations_per_user)
+      },
+      widgetOperators () {
+        return this.operators.slice(0, 3)
       },
     },
-    mounted () {},
     methods: {
       toggleSidePanel () {
         this.sidePanelActive = !this.sidePanelActive
+      },
+      percent (part, total) {
+        part = Number(part)
+        total = Number(total)
+        if (total > 0) return Math.round(part / total * 100)
+        return 0
       },
     },
   }
 </script>
 
 <style lang="scss" scoped>
-
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 
 .widget-box {
