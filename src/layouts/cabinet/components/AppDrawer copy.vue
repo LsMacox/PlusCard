@@ -181,10 +181,7 @@
     </div>
     <template v-slot:append>
       <v-list-item style="margin: 0">
-        <v-list-item-avatar
-          height="24px"
-          width="24px"
-          min-width="24px"
+        <v-list-item-avatar          
         >
           <v-img
             :src="profile.avatar"
@@ -409,7 +406,7 @@
   }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 
 @import '@/styles/vuetify-preset-plus/overrides'
 

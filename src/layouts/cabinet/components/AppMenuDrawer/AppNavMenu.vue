@@ -1,5 +1,6 @@
 <template>
   <v-list
+    id="AppNavMenu"
     expand
   >
     <template v-for="(item, i) in menuItems">
@@ -7,6 +8,7 @@
         v-if="item.children"
         :key="`group-${i}`"
         :item="item"
+        :mini="mini"
       >
         <!--  -->
       </main-menu-group-item>
@@ -15,6 +17,7 @@
         v-else
         :key="`item-${i}`"
         :item="item"
+        :mini="mini"
       />
     </template>
   </v-list>
@@ -25,9 +28,11 @@
   import MainMenuGroupItem from './MainMenuGroupItem'
 
   export default {
-    name: 'AppMenuDrawer',
+    name: 'AppNavMenu',
     components: { MainMenuItem, MainMenuGroupItem },
-
+    props: {
+      mini: Boolean,
+    },
     data: () => ({
       expandProgramList: false,
       admins: [
@@ -39,6 +44,7 @@
       menuItems: [
         {
           icon: '$iconify_ion-stats-chart',
+          active_icon_color: 'secondary',
           title: 'Общая информация',
           to: '/dashboard',
         },
@@ -63,23 +69,23 @@
         {
           icon: '$iconify_ion-funnel-outline',
           title: 'CRM',
-          to: '/',
+          to: '/crm',
         },
         {
           icon: '$iconify_ion-megaphone-outline',
           title: 'Рассылки',
-          to: '/',
+          to: '/sendings',
         },
         {
           icon: '$iconify_ion-chatbox-outline',
           title: 'Чаты',
-          to: '/',
+          to: '/chat',
           badge: 12,
         },
         {
           icon: '$iconify_feather-settings',
           title: 'Настройки компаний',
-          to: '/',
+          to: '/settings',
         },
       ],
     }),
@@ -135,19 +141,14 @@
         this.program = Object.assign({}, item)
         this.$refs.programListGroup.click()
       },
-      exitClick () {
-        this.exitRequest = true
-        this.$store.dispatch('auth/auth/logout').finally(() => {
-          this.exitRequest = false
-        })
-      },
+      
     },
   }
 </script>
 
 <style lang="scss" scoped>
 
-@import '@/styles/vuetify-preset-plus/overrides';
+// @import '@/styles/vuetify-preset-plus/overrides';
 
 .menu-divider{
   border-color: #F2F2F7;

@@ -10,7 +10,7 @@
 <script>
   export default {
     components: {
-      AppMenuDrawer: () => import('./components/AppMenuDrawer'),
+      AppMenuDrawer: () => import('./components/AppMenuDrawer/index'),
       AppView: () => import('./components/AppView'),
     },
     data: () => ({

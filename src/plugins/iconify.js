@@ -30,6 +30,7 @@ export const ICONIFY_ICONS = [
   { id: 'ion-funnel-outline', component: () => import('@iconify/icons-ion/funnel-outline') }, 
   { id: 'ion-megaphone-outline', component: () => import('@iconify/icons-ion/megaphone-outline') }, 
   { id: 'ion-chatbox-outline', component: () => import('@iconify/icons-ion/chatbox-outline') }, 
+  { id: 'ion-exit-outline', component: () => import('@iconify/icons-ion/exit-outline') }, 
 
   //feather
   { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') }, 
