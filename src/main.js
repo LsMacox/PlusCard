@@ -36,6 +36,8 @@ import VueMoment from 'vue-moment'
 import VueConstants from './plugins/vue-constants'
 import VueUnderScore from 'vue-underscore'
 // import DateRangePicker from 'vue2-daterange-picker'
+import { IsDebugQuery } from './router/router-handler-log'
+
 //
 // Vue.use(DateRangePicker)
 
@@ -76,7 +78,12 @@ Object.keys(filters).forEach(key => {
 })
 
 Vue.prototype.$IsDebugMode = function () {
-  return this.$route.query.debug === 'true' || +this.$route.query.debug === 1
+  return IsDebugQuery(this.$route)
+}
+
+if (process.env.NODE_ENV !== 'development') {
+  console.info('mute console.log')
+  window.console.log = () => { }
 }
 
 new Vue({

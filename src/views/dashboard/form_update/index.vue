@@ -85,7 +85,6 @@
       },
       async fetchData () {
         try {
-          console.log('fetchData')
           this.loading = true
           await this.$store.dispatch('company/program/read', { id: this.programId })
         } finally {
