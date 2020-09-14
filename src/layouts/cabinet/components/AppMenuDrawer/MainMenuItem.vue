@@ -19,7 +19,22 @@
       v-else-if="item.icon"
       class="item-icon"
     >
+      <v-badge
+        v-if="mini && item.badge"
+        dot
+        color="error"
+        overlap
+        avatar
+        offset-x="6"
+      >
+        <v-icon
+          style="height: 20px; width: 20px;"
+          :color="active ? ( item.active_icon_color || 'primary' ) : 'neutral-500' "
+          v-text="item.icon"
+        />
+      </v-badge>
       <v-icon
+        v-else
         style="height: 20px; width: 20px;"
         :color="active ? ( item.active_icon_color || 'primary' ) : 'neutral-500' "
         v-text="item.icon"
