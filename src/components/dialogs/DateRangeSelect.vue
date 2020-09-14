@@ -161,8 +161,8 @@
         show: false,
         showDatePicker: false,
         dateRange: {
-          startDate: new Date(Date.now()),
-          endDate: new Date(Date.now()),
+          startDate: new Date(Date.now()).toISOString().split('T')[0],
+          endDate: new Date(Date.now()).toISOString().split('T')[0],
         },
       }
     },
@@ -234,8 +234,8 @@
         const date = {
           id: 8,
           name: 'собственный диапазон',
-          start: this.dateRange.startDate.toISOString(),
-          end: this.dateRange.endDate.toISOString(),
+          start: this.dateRange.startDate.toISOString().split('T')[0],
+          end: this.dateRange.endDate.toISOString().split('T')[0],
         }
         // console.log(date)
         this.show = false
