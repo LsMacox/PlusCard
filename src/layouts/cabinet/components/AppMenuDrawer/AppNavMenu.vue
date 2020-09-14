@@ -141,7 +141,7 @@
         this.program = Object.assign({}, item)
         this.$refs.programListGroup.click()
       },
-      
+
     },
   }
 </script>

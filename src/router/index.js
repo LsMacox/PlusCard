@@ -200,8 +200,32 @@ export default new Router({
           meta: { title: 'Certificates', icon: 'certificates' },
         },
         {
+          path: 'crm',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'CRM',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        {
+          path: 'sendings',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Sendings',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        {
+          path: 'chat',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Chat',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        {
+          path: 'settings',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Settings',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        {
           path: 'help',
-          component: () => import('@/views/Help'),
+          component: () => import('@/views/SkeletonPage'),
           name: 'Help',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
@@ -212,7 +236,7 @@ export default new Router({
           name: '404',
           meta: { auth: false },
         },
-        
+
       ],
     },
   ],

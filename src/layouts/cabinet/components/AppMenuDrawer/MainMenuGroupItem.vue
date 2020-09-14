@@ -119,18 +119,16 @@
 
 #AppNavMenu {
   .main-menu-item-group {
-    
+
      .item-icon {
       margin-top: 12px ;
       margin-bottom: 12px ;
-     
+
     }
 
      &:not(.item-group-mini) .item-icon {
         margin-right: 20px;
      }
-    &.main-menu-item-group-active {
-    }
   }
 }
 

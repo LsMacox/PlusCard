@@ -11,7 +11,6 @@
         top
         offset-x
         offset-y
-        
       >
         <template v-slot:activator="{ on}">
           <v-list>

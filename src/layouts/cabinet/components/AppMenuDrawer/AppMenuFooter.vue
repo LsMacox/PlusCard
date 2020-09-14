@@ -3,15 +3,15 @@
     <v-list-item class="profile-item">
       <v-list-item-icon class="profile-item-avatar">
         <!-- :src="profile.avatar" -->
-        <v-img          
-            src="@/assets/svg/logo_32x32.svg"
+        <v-img
+          :src="profile.avatar"
           height="24"
-          width="24"          
+          width="24"
         />
       </v-list-item-icon>
       <v-list-item-content class="profile-item-content">
         <v-list-item-title
-          class="profile-item-title body-m-medium neutral-700--text"       
+          class="profile-item-title body-m-medium neutral-700--text"
         >
           {{ profile.UserName }}
         </v-list-item-title>
@@ -19,8 +19,8 @@
 
       <v-list-item-action-text
         class="body-s-semibold profile-item-action color-success"
-       
-      ><span class="success--text">{{balance+' ₽'}} </span> 
+      >
+        <span class="success--text">{{ balance+' ₽' }} </span>
       </v-list-item-action-text>
     </v-list-item>
 
@@ -40,7 +40,7 @@
       }"
       :mini="mini"
       @click="exitClick"
-      @actionClick="$router.push({ name: 'Help' })"
+      @action-click="$router.push({ name: 'Help' })"
     >
       <template v-slot:prependIcon>
         <v-icon
@@ -50,7 +50,6 @@
           $iconify_ion-exit-outline
         </v-icon>
       </template>
-      
     </main-menu-item>
   </v-list>
 </template>
@@ -73,8 +72,8 @@
     },
 
     data: () => ({
-     
-      balance: 9999
+
+      balance: 9999,
     }),
     computed: {
       profile () {

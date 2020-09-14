@@ -37,7 +37,7 @@
 
     }),
     computed: {
-      
+
       drawer: {
         get () {
           return this.$store.getters.drawer

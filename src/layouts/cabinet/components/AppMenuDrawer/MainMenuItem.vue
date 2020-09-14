@@ -43,8 +43,6 @@
       <v-list-item-subtitle v-text="item.subtitle" />
     </v-list-item-content>
 
- 
-
     <v-list-item-action
       v-if="item.badge"
       class="item-action"
@@ -68,9 +66,13 @@
     <v-list-item-action
       v-else-if="item.action_icon"
       class="item-action"
-      @click.stop.prevent="$emit('actionClick')"
+      @click.stop.prevent="$emit('action-click')"
+      @hover="hoverAction"
     >
-      <v-icon v-text="item.action_icon" />
+      <v-icon
+        class="item-action-icon"
+        v-text="item.action_icon"
+      />
     </v-list-item-action>
   </v-list-item>
 </template>
@@ -108,7 +110,7 @@
     }),
     computed: {
       active () {
-        return this.item.to == this.$route.path
+        return this.item.to === this.$route.path
       },
       computedText () {
         if (!this.item || !this.item.title) return ''
@@ -125,6 +127,9 @@
     methods: {
       itemClickHandler () {
         this.$emit('click')
+      },
+      hoverAction () {
+        console.log('hoverAction')
       },
     },
   }
@@ -159,10 +164,17 @@
       margin-bottom: 13px;
     }
     .item-action {
+      color: $neutral-500;
       margin-top: 7px;
       margin-bottom: 7px;
       min-width: 36px;
       justify-content: center;
+
+      &:hover{
+        .item-action-icon{
+          color: $primary-base;
+        }
+      }
     }
 
     &:not(.item-mini) .item-icon {
