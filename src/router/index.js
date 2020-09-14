@@ -121,9 +121,12 @@ export default new Router({
     {
       path: '/',
       component: CabinetLayout,
-      redirect: 'dashboard',
       meta: { auth: true },
       children: [
+        {
+          path: '',
+          redirect: 'dashboard',
+        },
         {
           path: 'dashboard',
           component: () => import('@/views/dashboard/index'),

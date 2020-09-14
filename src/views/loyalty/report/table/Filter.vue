@@ -102,11 +102,13 @@
               </div>
             </div>
             <!--поле ввода-->
-            <input
-              class="app__filter-block-input-field"
-              placeholder="Поиск и фильтр"
-              @focus="switchShow"
-            >
+            <div style="display: flex; flex-direction: column; flex: 1;">
+              <input
+                class="app__filter-block-input-field"
+                placeholder="Поиск и фильтр"
+                @focus="switchShow"
+              >
+            </div>
           </div>
 
           <v-icon
@@ -286,13 +288,35 @@
       },
       program (v) {
         // обнуление при смене программы
-        this.filter = JSON.parse(JSON.stringify(this.filterDefault))
-        this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
-        this.setFastFilter(this.filter)
+        if (v) {
+          this.filter = JSON.parse(JSON.stringify(this.filterStore))
+          this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+          this.setFastFilter(this.filter)
+        }
+      },
+      foundClients (v) {
+        if (v) {
+          this.setFastFilter(this.filter)
+        }
+      },
+      operators (v) {
+        if (v) {
+          this.setFastFilter(this.filter)
+        }
+      },
+      operations (v) {
+        if (v) {
+          this.setFastFilter(this.filter)
+        }
+      },
+      units (v) {
+        if (v) {
+          this.setFastFilter(this.filter)
+        }
       },
     },
     created () {
-      this.filter = JSON.parse(JSON.stringify(this.filterDefault))
+      this.filter = JSON.parse(JSON.stringify(this.filterStore))
       this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
       this.setFastFilter(this.filter)
     },
@@ -312,7 +336,6 @@
           this.filter[field].push(item.id)
         } else {
           this.filter[field].splice(index, 1)
-          this.clearItemFastFilter(field, item)
         }
       },
       setFastFilter (filter) {
@@ -348,17 +371,18 @@
       },
       clearItemFastFilter (field, item) {
         const i = this.fastFilter[field].findIndex(objItem => objItem.id === item.id)
-        if (typeof i !== 'undefined') this.fastFilter[field].splice(i, 1)
+        if (i !== -1) this.fastFilter[field].splice(i, 1)
 
         const filter = JSON.parse(JSON.stringify(this.filterStore))
-        const j = filter[field].findIndex(objItem => objItem.id === item.id)
-        if (typeof j !== 'undefined') filter[field].splice(j, 1)
+        const j = filter[field].findIndex(elem => elem === item.id)
+        if (j !== -1) filter[field].splice(j, 1)
+
+        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       clearFastFilter () {
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
-        this.setFastFilter(this.filter)
-        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(this.filterDefault)))
+        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(this.filter)))
       },
       async querySearchClient (search) {
         if (search.length >= 3) {
@@ -382,6 +406,7 @@
       },
       apply () {
         this.$store.commit('widget/filter/filter', this.filter)
+        this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
         this.setFastFilter(this.filter)
         this.show = false
       },
@@ -479,7 +504,7 @@
   }
 
   .app__filter-block-input-field {
-    display: inline;
+    width: 100%;
     outline: none !important;
     margin: 13px 0;
     padding: 0 10px;

@@ -31,11 +31,21 @@ export const ICONIFY_ICONS = [
   { id: 'ion-megaphone-outline', component: () => import('@iconify/icons-ion/megaphone-outline') }, 
   { id: 'ion-chatbox-outline', component: () => import('@iconify/icons-ion/chatbox-outline') }, 
   { id: 'ion-exit-outline', component: () => import('@iconify/icons-ion/exit-outline') }, 
+  { id: 'ion-color-fill-outline', component: () => import('@iconify/icons-ion/color-fill-outline') },
 
   //feather
   { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') }, 
+  { id: 'feather-download', component: () => import('@iconify/icons-feather/download') },
+  { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') },
+  { id: 'feather-chevron-down', component: () => import('@iconify/icons-feather/chevron-down') },
+  { id: 'feather-chevron-up', component: () => import('@iconify/icons-feather/chevron-up') },
+  { id: 'ion-document-outline', component: () => import('@iconify/icons-ion/document-outline') },
 
-  
+  //bi
+  { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
+
+  //octicon
+  { id: 'octicon-chevron-up-16', component: () => import('@iconify/icons-octicon/chevron-up-16') },
 
 ]
 

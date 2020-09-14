@@ -23,7 +23,7 @@
                   data-icon="bi:chevron-right"
                   data-inline="false"
                   @click="expand(!isExpanded)"
-                />
+                 />
               </template>
 
               <template v-slot:item.certificate.name="{ item }">
@@ -34,6 +34,7 @@
                   <div
                     class="hint"
                     style="color: #4776E6;"
+                    v-if="!item.order"
                   >
                     {{ item.order.num }}
                   </div>
@@ -93,20 +94,20 @@
                 </div>
               </template>
 
-              <template v-slot:item.used_at="{ item }">
-                <div
-                  v-if="item.used_at"
-                  class="td-content-wrapper"
-                >
-                  <div class="td-content-main">
-                    {{ $moment(item.used_at).format('DD.MM.YYYY') }}
-                  </div>
-                  <div class="hint">
-                    в {{ $moment(item.used_at).format('HH:mm') }}
-                  </div>
-                </div>
-              </template>
-            </v-data-table>
+      <template v-slot:item.used_at="{ item }">
+        <div
+          v-if="item.used_at"
+          class="td-content-wrapper"
+        >
+          <div class="td-content-main">
+            {{ $moment(item.used_at).format('DD.MM.YYYY') }}
+          </div>
+          <div class="hint">
+            в {{ $moment(item.used_at).format('HH:mm') }}
+          </div>
+        </div>
+      </template>
+    </v-data-table>
 
         <v-row
           align="center"
@@ -251,29 +252,16 @@
         console.log(this.tableOptions)
         if (v) this.fetchData()
       },
-      // page (newPage) {
-      //   this.page = newPage
-      //   this.loadData()
-      // },
-      // perPage (val) {
-      //   this.perPage = val
-      //   console.log(this.perPage)
-      //   this.loadData()
-      // },
-      filterForm: {
-        handler (val) {
-          console.log(val)
-        },
-        deep: true,
-      },
-      toolbarFilter: {
-        handler (val) {
-          console.log(val)
-        },
-        deep: true,
-      },
       filter (v) {
         if (v) this.fetchData()
+      },
+      program (v) {
+        if (v) this.fetchData()
+      },
+      'filter.archiveStatus.id' (v) {
+        if (v) {
+          this.fetchData()
+        }
       },
     },
     created () {

@@ -4,11 +4,18 @@
   >
     <div class="widget-box-header">
       <div class="widget-box-header-left">
-        <span>{{ loadingData ? currentClientsCount : 0 }}</span> клиентов
+        <span>{{ currentClientsCount }}</span> {{ declOfNum(currentClientsCount, titles) }}
       </div>
       <div class="app__spacer" />
       <div class="widget-box-header-right">
-        <span :class="percent >= 0 ? 'growth' : 'decline'">{{ percent }}%</span>
+        <span
+          v-if="relativeChange !== 0"
+          :class="relativeChange > 0 ? 'growth' : 'decline'"
+        >{{ relativeChange > 0 ? `+${relativeChange}%` : `${relativeChange}%` }}</span>
+        <span
+          v-else
+          class="neutral"
+        >{{ `${relativeChange}%` }}</span>
       </div>
     </div>
     <div
@@ -21,14 +28,17 @@
         color="primary"
         class="widget-box-body__progress"
       />
-      <diagram-line
+      <div
         v-if="_isMounted"
-        :data="diagramData"
-        :width="widgetBodyWidth"
-        :height="90"
         class="widget-box-body__diagram"
-        @percent-calc="setDiagramPercent"
-      />
+      >
+        <diagram-line
+          :diagramlabels="diagramLabels.reverse()"
+          :diagramdata="diagramData.reverse()"
+          :options="options"
+          :height="height"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -39,66 +49,79 @@
   export default {
     components: { DiagramLine },
     props: {
+      widgetdata: {
+        type: Array,
+        default () {
+          return [{
+            all_count: 0,
+            clients_count: 0,
+            clients_increment: 0,
+            date_end: '2020-09-08',
+            date_start: '2020-09-08',
+          }]
+        },
+      },
     },
     data () {
+      var _this = this
       return {
-        widgetBodyWidth: null,
-        percent: 0,
+        height: 90,
+        options: {
+          status: {
+            display: true,
+            growthColor: '#00D15D',
+            declineColor: '#EA4C2A',
+          },
+          tooltips: {
+            enabled: false,
+            callbacks: {
+              title: function (tooltipItem, data) {
+                return tooltipItem[0].xLabel.clients_count + ' клиента'
+              },
+              label: function (tooltipItem, data) {
+                var startDate = tooltipItem.xLabel.start_period
+                var endDate = tooltipItem.xLabel.end_period
+
+                const formatStart = _this.$moment(startDate, 'YYYY-MM-DD').format('D.MM.YYYY')
+                const formatEnd = _this.$moment(endDate, 'YYYY-MM-DD').format('D.MM.YYYY')
+
+                return formatStart + '-' + formatEnd
+              },
+            },
+          },
+        },
+        titles: ['клиент', 'клиента', 'клиентов'],
       }
     },
     computed: {
-      loadingData () {
-        return this.$store.getters['widget/bonusClients/loading']
+      currentClientsCount () {
+        return this.widgetdata.length ? this.widgetdata[0].clients_count : 0
       },
-      widgetRequest () {
-        // this.fetchData()
-        return {
-          start_period: this.period.start,
-          filter: this.filter,
-          program_id: this.program.id,
-          end_period: this.period.end,
+      relativeChange () {
+        if (this.widgetdata && this.widgetdata.length >= 2) {
+          if (this.widgetdata[1].clients_count > 0) {
+            return Math.round((this.widgetdata[0].clients_count - this.widgetdata[1].clients_count) / this.widgetdata[1].clients_count * 100)
+          }
         }
-      },
-      filter () {
-        return this.$store.getters['widget/filter/filter'] ?? this.$store.getters['widget/filter/filterDefault']
-      },
-      program () {
-        return this.$store.getters['company/program/program']
-      },
-      period () {
-        return this.$store.getters['widget/filter/period']
-      },
-      widgetData () {
-        return this.$store.getters['widget/bonusClients/widgetData']
+        return 0
       },
       diagramData () {
-        var newArr = []
-
-        this.widgetData.forEach(function (data, key) {
-          newArr.push(data.clients_count)
+        return this.$_.map(this.widgetdata, 'clients_count')
+      },
+      diagramLabels () {
+        var clientsCount = this.$_.map(this.widgetdata, 'clients_count')
+        var diagramLabels = []
+        clientsCount.forEach((val, index) => {
+          diagramLabels.push({ clients_count: val, start_period: this.widgetdata[index].date_start, end_period: this.widgetdata[index].date_end })
         })
-
-        return newArr
+        return diagramLabels
       },
-      currentClientsCount () {
-        return this.$store.getters['widget/bonusClients/currentAllCount']
-      },
-    },
-    created () {
-      this.fetchData()
-    },
-    mounted () {
-      this.setWidgetBodyWidth()
     },
     methods: {
-      fetchData () {
-        this.$store.dispatch('widget/bonusClients/widget', this.widgetRequest)
-      },
-      setWidgetBodyWidth () {
-        this.widgetBodyWidth = this.$refs['widget-box-body'].clientWidth
-      },
-      setDiagramPercent (data) {
-        this.percent = data
+      declOfNum (number, titles) {
+        number = Number(number)
+        const cases = [2, 0, 1, 1, 1, 2]
+        return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
       },
     },
   }
@@ -109,6 +132,7 @@
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 
 .widget-box {
+  height: 100%;
   padding: 20px;
   border: 1px solid $neutral-250;
   box-sizing: border-box;
@@ -142,12 +166,17 @@
         span.decline {
           color: $error-500;
         }
+        span.neutral {
+          color: $neutral-500;
+        }
       }
     }
     .widget-box-body {
+        width: 100%;
         display: flex;
         justify-content: center;
         .widget-box-body__diagram {
+          width: 100%;
           margin-top: 12px;
         }
         .widget-box-body__progress {

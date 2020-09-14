@@ -1,25 +1,25 @@
 <template>
   <div class="app__date-select">
-    <div class="app__date-select-btn">
-      <div
-        class="app__date-select-btn-text"
-        @click="show = !show"
-      >
+    <div
+      class="app__date-select-btn"
+      @click="show = !show"
+    >
+      <div class="app__date-select-btn-text">
         {{ getItemLabel(model) }}
       </div>
       <div>
-        <span
+        <v-icon
           v-if="!show"
-          class="iconify app__date-select-btn-icon"
-          data-icon="feather:chevron-down"
-          data-inline="false"
-        />
-        <span
+          style="position: relative; top: 3px;"
+        >
+          $iconify_feather-chevron-down
+        </v-icon>
+        <v-icon
           v-else
-          class="iconify app__date-select-btn-icon"
-          data-icon="octicon:chevron-up-16"
-          data-inline="false"
-        />
+          style="position: relative; top: 3px;"
+        >
+          $iconify_feather-chevron-up
+        </v-icon>
       </div>
     </div>
 
@@ -59,7 +59,7 @@
       >
         <div
           class="app__date-select-block-item-text"
-          :style="getStyle({id: 7})"
+          :style="getStyle({id: 8})"
         >
           {{ getMyPeriod() }}
         </div>
@@ -91,19 +91,18 @@
         }"
         @update="updateDateRange"
       >
-<!--        <template-->
-<!--          v-slot:input="picker"-->
-<!--          style="min-width: 350px;"-->
-<!--        >-->
-<!--          {{ picker.startDate }} - {{ picker.endDate }}-->
-<!--        </template>-->
+        <!--        <template-->
+        <!--          v-slot:input="picker"-->
+        <!--          style="min-width: 350px;"-->
+        <!--        >-->
+        <!--          {{ picker.startDate }} - {{ picker.endDate }}-->
+        <!--        </template>-->
 
         <template
-            #input="picker"
-            style="min-width: 350px;"
+          #input="picker"
+          style="min-width: 350px;"
         >
-          <div class="custom">
-          </div>
+          <div class="custom" />
         </template>
 
         <div
@@ -195,7 +194,7 @@
         return 'undefined'
       },
       getMyPeriod () {
-        if (this.period && this.period.id === 7) {
+        if (this.period && this.period.id === 8) {
           return this.$moment(this.dateRange.startDate).format('DD.MM.YYYY') + ' - ' +
             this.$moment(this.dateRange.endDate).format('DD.MM.YYYY')
         } else {
@@ -233,7 +232,7 @@
       },
       updateDateRange (v) {
         const date = {
-          id: 7,
+          id: 8,
           name: 'собственный диапазон',
           start: this.dateRange.startDate.toISOString(),
           end: this.dateRange.endDate.toISOString(),

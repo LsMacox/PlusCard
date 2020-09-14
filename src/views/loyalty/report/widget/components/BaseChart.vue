@@ -1,8 +1,14 @@
 <template>
-  <canvas
-    id="canvas-chartjs"
-    ref="canvas-chartjs"
-  />
+  <div
+    class="wrapper"
+    :style="`max-width: 100%; height: ${height}px`"
+  >
+    <canvas
+      id="canvas-chartjs"
+      ref="canvas-chartjs"
+      style="max-width: 100%"
+    />
+  </div>
 </template>
 <script>
   import Chart from 'chart.js'
@@ -21,6 +27,10 @@
       charoptions: {
         type: Object,
         default: null,
+      },
+      height: {
+        type: Number,
+        default: 100,
       },
     },
     data () {
