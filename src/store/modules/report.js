@@ -37,7 +37,7 @@ const mutations = {
     filter (state, payload) {
         // console.log('filter', payload);
         state.filter = payload
-        localStorage.setItem('reportFilter', JSON.stringify(state.filter))
+        localStorage.setItem('loyaltyFilter', JSON.stringify(state.filter))
     },
     startPeriodFilter (state, payload) {
         state.startPeriodFilter = payload
@@ -52,15 +52,15 @@ const mutations = {
 
 const actions = {
     filter ({ commit }) {
-        if (localStorage.getItem('reportFilter')) {
-            const filterLocal = JSON.parse(localStorage.getItem('reportFilter'))
+        if (localStorage.getItem('loyaltyFilter')) {
+            const filterLocal = JSON.parse(localStorage.getItem('loyaltyFilter'))
             if (filterLocal) {
                 commit('filter', filterLocal)
             }
         }
     },
-    async filterPeriod ({ commit }) {
-        // console.log('filterPeriod')
+    async loyaltyFilterPeriod ({ commit }) {
+        // console.log('loyaltyFilterPeriod')
         // console.log('localFilterStartPeriod', localStorage.getItem('startPeriodFilter'))
         // console.log('localFilterEndPeriod', localStorage.getItem('endPeriodFilter'))
         const startPeriod = localStorage.getItem('startPeriodFilter')
