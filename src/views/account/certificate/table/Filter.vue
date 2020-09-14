@@ -616,7 +616,7 @@
         this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       clearFastFilter () {
-        this.filter = JSON.parse(JSON.stringify(this.filterStore))
+        this.filter = JSON.parse(JSON.stringify(this.filterDefault))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
         this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(this.filter)))
       },

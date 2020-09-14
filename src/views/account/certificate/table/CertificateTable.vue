@@ -253,7 +253,6 @@
         if (v) this.fetchData()
       },
       filter (v) {
-        console.log('asdfsdafhjsdjkfhdkj')
         if (v) this.fetchData()
       },
       program (v) {
