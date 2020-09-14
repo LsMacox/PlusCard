@@ -55,6 +55,18 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" >
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 
+#AppMenuDrawer .v-navigation-drawer__content{
+  &::-webkit-scrollbar {
+    width: 2px;
+  }
+    
+  &::-webkit-scrollbar-thumb {
+    background: $primary-base;
+    border-radius: 20px;
+  }
+    
+}
 </style>
