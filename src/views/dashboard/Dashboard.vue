@@ -1,13 +1,18 @@
 <template>
-  <empty-company />
+  <div>
+    <toolbar />
+    <widget-line />
+  </div>
 </template>
 
 <script>
-  import EmptyCompany from './EmptyCompany.Vue'
+  import Toolbar from '@/views/dashboard/Toolbar'
+  import WidgetLine from '@/views/dashboard/widget/index'
+
   export default {
-    name: 'Dashboard',
     components: {
-      EmptyCompany,
+      Toolbar,
+      WidgetLine,
     },
     data () {
       return {}

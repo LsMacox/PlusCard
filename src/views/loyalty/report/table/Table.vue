@@ -16,7 +16,7 @@
           class="plus-table"
           hide-default-footer
         >
-          <template v-slot:expanded-item="{ headers, item }">
+          <template v-slot:expanded-item="{ Headers, item }">
             <td :colspan="headers.length">
               More info about {{ item.bsid }}
             </td>
@@ -90,6 +90,7 @@
             <div style="display: flex; align-items: center">
               <img
                 class="cell-avatar"
+                :style="`background-color: ${program.bgcolor1};`"
                 :src="(item.operator_avatar === 'system' || item.operator_avatar === 'external')
                   ? program.logo_short
                   : `https://storage.yandexcloud.net/plusstorage/${item.operator_avatar}`"
@@ -232,15 +233,19 @@
     },
     methods: {
       getDate (date) {
-        return this.$moment(date).format('L')
+        if (date) return this.$moment(date).format('L')
+        return '-'
       },
       getTime (date) {
-        // eslint-disable-next-line no-undef
-        const d = new Date(date).toISOString().split('T')[1]
-        return 'в ' + d.split(':')[0] + ':' + d.split(':')[1]
+        if (date) {
+          const d = new Date(date).toISOString().split('T')[1]
+          return 'в ' + d.split(':')[0] + ':' + d.split(':')[1]
+        }
+        return '-'
       },
       getLastActivity (date) {
-        return 'Был(а) в сети ' + this.getDate(date) + ' ' + this.getTime(date)
+        if (date) return 'Был(а) в сети ' + this.getDate(date) + ' ' + this.getTime(date)
+        return 'Был(а) в сети - '
       },
       getValue (value) {
         value = Number(value)

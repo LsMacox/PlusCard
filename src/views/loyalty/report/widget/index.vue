@@ -1,18 +1,42 @@
 <template>
-  <div class="widget-line">
-    <div class="widget-line-block">
-      <clients />
-    </div>
-    <div class="widget-line-block">
-      <operations />
-    </div>
-    <div class="widget-line-block">
-      <operators />
-    </div>
-    <div class="widget-line-block">
-      <volume />
-    </div>
-  </div>
+  <v-row class="widget-line">
+    <v-col
+      :xs="6"
+      :sm="6"
+      :md="3"
+    >
+      <clients
+        :widgetdata="widgetClientData"
+      />
+    </v-col>
+    <v-col
+      :xs="6"
+      :sm="6"
+      :md="3"
+    >
+      <operations
+        :widgetdata="widgetOperationData"
+      />
+    </v-col>
+    <v-col
+      :xs="6"
+      :sm="6"
+      :md="3"
+    >
+      <operators
+        :widgetdata="widgetOperatorsData"
+      />
+    </v-col>
+    <v-col
+      :xs="6"
+      :sm="6"
+      :md="3"
+    >
+      <volume
+        :widgetdata="widgetVolumeData"
+      />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -28,30 +52,29 @@
       Operators,
       Volume,
     },
-    props: {
-    },
     data () {
-      return {}
+      return {
+      }
     },
     computed: {
-
-    },
-    mounted () {
-
-    },
-    methods: {
-
+      widgetClientData () {
+        return this.$store.getters['widget/bonusClients/widgetData']
+      },
+      widgetOperationData () {
+        return this.$store.getters['widget/operations/widgetData']
+      },
+      widgetOperatorsData () {
+        return this.$store.getters['widget/operators/widgetData']
+      },
+      widgetVolumeData () {
+        return this.$store.getters['widget/bonuses/widgetData']
+      },
     },
   }
 </script>
 
-<style lang="sass" scoped>
-.widget-line
-  margin: 34px -10px 0 -10px
-  display: flex
-  align-items: center
-
-  .widget-line-block
-    margin: 0 10px
-    width: 33.3333%
+<style lang="scss" scoped>
+.widget-line {
+  padding: 22px 0 0 0;
+}
 </style>

@@ -2,7 +2,7 @@ export default {
     namespaced: true,
     state: {
         loading: false,
-        widgetData: []
+        widgetData: [],
     },
     mutations: {
         clearState (state) {
@@ -14,17 +14,17 @@ export default {
         },
         widgetData (state, payload) {
             state.widgetData = payload
-        }
+        },
     },
     actions: {
 
-        async widget ({commit}, widget) {
+        async widget ({ commit }, widget) {
             commit('loading', true)
             const success = await axios.post('/api/widget/buyers', widget)
-            
-            commit('widgetData', success.data.data)            
+
+            commit('widgetData', success.data.data)
             commit('loading', false)
-        }
+        },
 
     },
     getters: {
@@ -33,6 +33,6 @@ export default {
         },
         widgetData (state) {
             return state.widgetData
-        }
-    }
+        },
+    },
 }

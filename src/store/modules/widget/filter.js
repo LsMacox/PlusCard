@@ -2,9 +2,16 @@ import ApiService from '@/api/api-client'
 
 const getDefaultState = () => {
     return {
-        period: localStorage.getItem('filterPeriod') ? JSON.parse(localStorage.getItem('filterPeriod')) : { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
-        filter: localStorage.getItem('reportFilter') ? JSON.parse(localStorage.getItem('reportFilter')) : { enable: false, query: null, pbr: [], bu: [], client: [], operator: [] },
+        period: localStorage.getItem('loyaltyFilterPeriod') ? JSON.parse(localStorage.getItem('loyaltyFilterPeriod')) : { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
+        filter: localStorage.getItem('loyaltyFilter') ? JSON.parse(localStorage.getItem('loyaltyFilter')) : { enable: false, query: null, pbr: [], bu: [], client: [], operator: [] },
         foundClients: [],
+    }
+}
+
+const getDefaultFilter = () => {
+    return {
+        period: { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
+        filter: { enable: false, query: null, pbr: [], bu: [], client: [], operator: [] },
     }
 }
 
@@ -12,17 +19,19 @@ const state = getDefaultState()
 
 const mutations = {
     RESET_STATE: (state) => {
+        const defaultFilter = getDefaultFilter()
+        localStorage.setItem('loyaltyFilterPeriod', JSON.stringify(defaultFilter.period))
+        localStorage.setItem('loyaltyFilter', JSON.stringify(defaultFilter.filter))
         const defaultState = getDefaultState()
         Object.assign(state, defaultState)
-        localStorage.setItem('reportFilter', JSON.stringify(defaultState.filter))
     },
     period (state, payload) {
         state.period = payload
-        localStorage.setItem('filterPeriod', JSON.stringify(payload))
+        localStorage.setItem('loyaltyFilterPeriod', JSON.stringify(payload))
     },
     filter (state, payload) {
         state.filter = payload
-        localStorage.setItem('reportFilter', JSON.stringify(state.filter))
+        localStorage.setItem('loyaltyFilter', JSON.stringify(state.filter))
     },
     foundClients (state, payload) {
         // объединяем массивы и удаляем дубли
@@ -53,8 +62,8 @@ const actions = {
 const getters = {
     filter: (state) => state.filter,
     filterDefault: () => {
-        const defaultState = getDefaultState()
-        return defaultState.filter
+        const defaultFilter = getDefaultFilter()
+        return defaultFilter.filter
     },
     period: (state) => state.period,
     foundClients: (state) => state.foundClients,

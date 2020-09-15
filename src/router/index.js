@@ -121,24 +121,57 @@ export default new Router({
     {
       path: '/',
       component: CabinetLayout,
-      redirect: '/dashboard',
       meta: { auth: true },
       children: [
         {
-          path: '/dashboard',
-          component: () => import('@/views/dashboard/Dashboard'),
+          path: '',
+          redirect: 'dashboard',
+        },
+        {
+          path: 'dashboard',
+          component: () => import('@/views/dashboard/index'),
           name: 'Dashboard',
-          meta: { auth: false, title: 'Dashboard', icon: 'dashboard' },
+          meta: { auth: true, title: 'Dashboard', icon: 'dashboard' },
+        },
+        {
+          path: 'company/:program_id',
+          component: () => import('@/views/dashboard/form_update/index'),
+          name: 'Company',
+          meta: { auth: true },
+          children: [
+            {
+              path: '',
+              redirect: 'info',
+            },
+            {
+              path: 'info',
+              component: () => import('@/views/dashboard/form_update/UpdateInfo'),
+              name: 'CompanyUpdateInfo',
+              meta: { auth: true },
+            },
+            {
+              path: 'shop',
+              component: () => import('@/views/dashboard/form_update/UpdateShop'),
+              name: 'CompanyUpdateShop',
+              meta: { auth: true },
+            },
+            {
+              path: 'contact',
+              component: () => import('@/views/dashboard/form_update/UpdateContact'),
+              name: 'CompanyUpdateContact',
+              meta: { auth: true },
+            },
+          ],
         },
         {
           path: '/master',
           component: () => import('@/views/master/Master'),
           name: 'Master',
-          meta: { auth: false, title: 'Master', icon: 'master' },
+          meta: { auth: true, title: 'Master', icon: 'master' },
         },
         {
           path: '/loyalty',
-          component: () => import('@/views/loyalty/index.vue'),
+          component: () => import('@/views/loyalty/index'),
           name: 'loyalty',
           meta: { auth: true },
         },
@@ -150,8 +183,7 @@ export default new Router({
         },
         {
           path: '/certificate',
-          component: () =>
-            import('@/views/certificate/ProgramCertificateView.vue'),
+          component: () => import('@/views/certificate/ProgramCertificateView.vue'),
           name: 'components',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
@@ -168,28 +200,43 @@ export default new Router({
           meta: { title: 'Certificates', icon: 'certificates' },
         },
         {
-          path: '/communications/chat',
-          redirect: '/communications/chat/business',
-          meta: { auth: true, title: 'Чаты', icon: '' },
+          path: 'crm',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'CRM',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {
-          path: '/communications/chat/:conversation_type',
-          component: () => import('@/views/communications/Chat'),
-          props: route => ({
-            conversationType: route.params.conversation_type,
-            conversationId: null,
-          }),
-          meta: { auth: true, title: 'Чаты', icon: '' },
+          path: 'sendings',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Sendings',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {
-          path: '/communications/chat/:conversation_type/:conversation_id',
+          path: 'chat',
           component: () => import('@/views/communications/Chat'),
-          props: route => ({
-            conversationType: route.params.conversation_type,
-            conversationId: +route.params.conversation_id,
-          }),
-          meta: { auth: true, title: 'Чаты', icon: '' },
+          name: 'Chat',
+          meta: { auth: true, title: 'Help', icon: 'dashboard' },
         },
+        {
+          path: 'settings',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Settings',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        {
+          path: 'help',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Help',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        // 404 page
+        {
+          path: '*',
+          component: () => import('@/components/error-page/404'),
+          name: '404',
+          meta: { auth: false },
+        },
+
       ],
     },
   ],

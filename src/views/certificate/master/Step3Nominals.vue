@@ -47,8 +47,8 @@
                     class="text-align-right"
                     suffix="₽"
                     type="number"
-                    @blur="item.selling_price = Math.min(Math.max(item.selling_price, 0), MAX_PRICE)"
                     outlined
+                    @blur="item.selling_price = Math.min(Math.max(item.selling_price, 0), MAX_PRICE)"
                   />
                 </v-col>
                 <v-col :cols="'auto'">
@@ -60,7 +60,7 @@
                     placeholder="∞"
                     type="number"
                     outlined
-                    @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"                    
+                    @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"
                   >
                     <template v-slot:prepend>
                       <v-icon
@@ -126,7 +126,6 @@
                     :ripple="false"
                     @click="onAppendNominalClick"
                   >
-                 
                     <span
                       class="iconify"
                       data-icon="uil:plus-circle"
@@ -165,12 +164,11 @@
 
 <script>
   import NumberParser from '@/utils/NumberParser.js'
-   import { mapGetters } from 'vuex'
+  import { mapGetters } from 'vuex'
 
   const MIN_QUANTITY = 0
   const MAX_QUANTITY = 1000000
   const MAX_PRICE = 1000000
-   
 
   export default {
     model: {
@@ -191,12 +189,12 @@
           (v) => !!v || 'Введите название номинала',
         ],
         sellingPriceRules: [
-          (v) => (!!v && v>0) || 'Введите стоимость',
+          (v) => (!!v && v > 0) || 'Введите стоимость',
         ],
       }
     },
     computed: {
- ...mapGetters('company/program', ['program']),
+      ...mapGetters('company/program', ['program']),
     },
     created () {
       this.MAX_QUANTITY = MAX_QUANTITY
@@ -230,15 +228,15 @@
         console.log(item, event)
         const number = NumberParser('ru-RU').parse(event)
         console.log('number', number)
-        if (number != NaN) {
+        if (!isNaN(number)) {
           item.selling_price = number
         } else {
           item.selling_price = null
         }
       },
-      formatSellingPrice (selling_price) {
-        console.log('formatSellingPrice', selling_price)
-        return selling_price ? selling_price.toLocaleString('ru-RU', {
+      formatSellingPrice (sellingPrice) {
+        console.log('formatSellingPrice', sellingPrice)
+        return sellingPrice ? sellingPrice.toLocaleString('ru-RU', {
           style: 'decimal',
           currency: 'RUB',
           minimumFractionDigits: 0,
@@ -247,7 +245,7 @@
       },
       onEndClick () {
         if (this.$refs.form.validate()) {
-          this.createCert()            
+          this.createCert()
         }
       },
       onAppendNominalClick () {
@@ -270,7 +268,7 @@
         }
       },
       createCert () {
-        const post_data = {
+        const postData = {
           program_id: this.program.id,
           name: this.cert.name,
           short_description: this.cert.short_description,
@@ -289,9 +287,9 @@
         }
         this.createCertificateLoading = true
         this.$store
-          .dispatch('certificates/certificate/CreateCertificate', post_data)
-          .then(() => {           
-            this.$emit('continue', true)        
+          .dispatch('certificates/certificate/CreateCertificate', postData)
+          .then(() => {
+            this.$emit('continue', true)
           })
           .finally(() => {
             this.createCertificateLoading = false

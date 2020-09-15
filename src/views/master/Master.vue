@@ -1205,22 +1205,28 @@ line-height: 17px;"
       },
       searchString (v) {
         if (v && v.length > 3) {
-          ApiService.get(`/api-cabinet/company/shops/search?query=${this.searchCity + ' ' + this.searchString}`).then(resp => {
-            this.addresses = resp.response.GeoObjectCollection.featureMember
-            var array = []
-            let i = 0
-            const regex = /[^a-zA-Zа-яА-Я0-9\s]/gm
-            for (i; i < this.addresses.length; i++) {
-              // console.log('item', this.addresses[i])
-              array.push({
-                name: (this.addresses[i].GeoObject.name).replace(regex, ''),
-                pos: this.addresses[i].GeoObject.Point.pos,
-              })
-            }
-            // console.log('output', array)
-            this.filtered_addr = array
-          })
+          fetch('https://geocode-maps.yandex.ru/1.x/?apikey=e8c155ca-4721-4445-b3a0-0efb1215291b&format=json&geocode=' + encodeURIComponent(this.searchCity + ' ' + this.searchString))
+            .then(resp => resp.json())
+            .then(resp => {
+              this.addresses = resp.response.GeoObjectCollection.featureMember
+              var array = []
+              let i = 0
+              const regex = /[^a-zA-Zа-яА-Я0-9\s]/gm
+              for (i; i < this.addresses.length; i++) {
+                // console.log('item', this.addresses[i])
+                array.push({
+                  name: (this.addresses[i].GeoObject.name).replace(regex, ''),
+                  pos: this.addresses[i].GeoObject.Point.pos,
+                })
+              }
+              // console.log('output', array)
+              this.filtered_addr = array
+            })
         }
+
+        // ApiService.get(`/api-cabinet/company/shops/search?query=${this.searchCity + ' ' + this.searchString}`).then(resp => {
+
+        // })
       },
       'program.website' (v) {
         const regex = /^(http:\/\/|https:\/\/|)((www.|)[\w]+.[\w]+)(\/|)/gm
@@ -1270,21 +1276,29 @@ line-height: 17px;"
         if (label === 'startTime') {
           if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 2) {
             this.newShop.workTimes[index].startTime += ':00'
+          } else if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 1) {
+            this.newShop.workTimes[index].startTime = '0' + this.newShop.workTimes[index].startTime + ':00'
           }
         }
         if (label === 'endTime') {
           if (this.newShop.workTimes[index].endTime && this.newShop.workTimes[index].endTime.length === 2) {
             this.newShop.workTimes[index].endTime += ':00'
+          } else if (this.newShop.workTimes[index].endTime && this.newShop.workTimes[index].endTime.length === 1) {
+            this.newShop.workTimes[index].endTime = '0' + this.newShop.workTimes[index].endTime + ':00'
           }
         }
         if (label === 'breakStart') {
           if (this.newShop.workTimes[index].breakStart && this.newShop.workTimes[index].breakStart.length === 2) {
             this.newShop.workTimes[index].breakStart += ':00'
+          } else if (this.newShop.workTimes[index].breakStart && this.newShop.workTimes[index].breakStart.length === 1) {
+            this.newShop.workTimes[index].breakStart = '0' + this.newShop.workTimes[index].breakStart + ':00'
           }
         }
         if (label === 'breakEnd') {
           if (this.newShop.workTimes[index].breakEnd && this.newShop.workTimes[index].breakEnd.length === 2) {
             this.newShop.workTimes[index].breakEnd += ':00'
+          } else if (this.newShop.workTimes[index].breakEnd && this.newShop.workTimes[index].breakEnd.length === 1) {
+            this.newShop.workTimes[index].breakEnd = '0' + this.newShop.workTimes[index].breakEnd + ':00'
           }
         }
       },
@@ -1384,7 +1398,7 @@ line-height: 17px;"
         program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
         program.shops = this.shops
         program.merchant_id = this.merchant_id
-        const result = await ApiService.post(
+        await ApiService.post(
           '/api-cabinet/company/create',
           program,
         )

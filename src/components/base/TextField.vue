@@ -68,7 +68,7 @@
       value: {
         type: [String, Number],
         default: null,
-      },    
+      },
 
       appendIcon: String,
       appendOuterIcon: String,
@@ -116,8 +116,8 @@
       type: String,
       validateOnBlur: Boolean,
 
-      //New
-       minlength: {
+      // New
+      minlength: {
         type: [String, Number],
         default: 0,
       },

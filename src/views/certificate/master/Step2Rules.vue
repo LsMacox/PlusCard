@@ -117,7 +117,7 @@
               color="primary"
               :disabled="!formValid"
               class="master-next-btn"
-              @click="onNextClick"              
+              @click="onNextClick"
             >
               Далее
               <v-icon right>
@@ -155,9 +155,9 @@
       }
     },
     computed: {
-      formValid(){
+      formValid () {
         return this.valid && this.termsUserValid
-      }
+      },
     },
     watch: {
       'cert.terms_of_use': function (v) {
@@ -200,7 +200,7 @@
        border-color: #d7d7e0;
     }
     }
-    
+
   }
 }
 </style>

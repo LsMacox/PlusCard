@@ -1,75 +1,90 @@
 <template>
-<div>
-
+  <div>
     <div
-            :style="'background: url(' + content.thumb + ');'"
-            class="video-thumb"
-            @click="show = true"
+      :style="'background: url(' + content.thumb + ');'"
+      class="video-thumb"
+      @click="show = true"
     >
-<!--        <div-->
-<!--                style="background: url(img/videoplay.png);"-->
-<!--                class="video-thumb-mask"-->
-<!--        ></div>-->
-        <i class="fa fa-play-circle" aria-hidden="true" style="font-size: 48px; margin-top: 35px; color: #E0E0E0;"></i>
+      <!--        <div-->
+      <!--                style="background: url(img/videoplay.png);"-->
+      <!--                class="video-thumb-mask"-->
+      <!--        ></div>-->
+      <i
+        class="fa fa-play-circle"
+        aria-hidden="true"
+        style="font-size: 48px; margin-top: 35px; color: #E0E0E0;"
+      />
     </div>
 
-    <v-dialog v-if="show" :v-model="show"  top="10vh" class="previewDialog">
-        <div class="attachment--preview--toolbar">
-            <a style="color:#fff" :href="content.url" target="_blank" download><i class="fas fa-download"></i></a>
-            <i class="fas fa-times" style="font-size: 24px;position: relative;top: 1px;left: 25px;" @click="show = false"></i>
-        </div>
-        <video-player
-                class="video-player"
-                ref="videoPlayer"
-                :options="playerOptions"
-                :playsinline="true"
-        ></video-player>
+    <v-dialog
+      v-if="show"
+      :v-model="show"
+      top="10vh"
+      class="previewDialog"
+    >
+      <div class="attachment--preview--toolbar">
+        <a
+          style="color:#fff"
+          :href="content.url"
+          target="_blank"
+          download
+        ><i class="fas fa-download" /></a>
+        <i
+          class="fas fa-times"
+          style="font-size: 24px;position: relative;top: 1px;left: 25px;"
+          @click="show = false"
+        />
+      </div>
+      <video-player
+        ref="videoPlayer"
+        class="video-player"
+        :options="playerOptions"
+        :playsinline="true"
+      />
     </v-dialog>
-
-
-</div>
+  </div>
 </template>
 
 <script>
-import 'video.js/dist/video-js.css'
-import { videoPlayer } from 'vue-video-player'
+  import 'video.js/dist/video-js.css'
+  import { videoPlayer } from 'vue-video-player'
 
-export default {
+  export default {
     components: {
-        videoPlayer
+      videoPlayer,
     },
     props: [
-        'content'
+      'content',
     ],
     data () {
-        return {
-            show: false,
-            download: false,
-            playerOptions: {
-                // videojs options
-                height: '500',
-                autoplay: false,
-                muted: true,
-                language: 'ru',
-                playbackRates: [0.7, 1.0, 1.5, 2.0],
-                sources: [],
-                //poster: ''
-            }
-        }
+      return {
+        show: false,
+        download: false,
+        playerOptions: {
+          // videojs options
+          height: '500',
+          autoplay: false,
+          muted: true,
+          language: 'ru',
+          playbackRates: [0.7, 1.0, 1.5, 2.0],
+          sources: [],
+          // poster: ''
+        },
+      }
     },
     computed: {
-        player() {
-            return this.$refs.videoPlayer.player
-        }
+      player () {
+        return this.$refs.videoPlayer.player
+      },
     },
     mounted () {
-        this.playerOptions.sources.push({
-            type: this.content.mime,
-            src: this.content.url
-        })
-        //////console.log(this.content)
-    }
-}
+      this.playerOptions.sources.push({
+        type: this.content.mime,
+        src: this.content.url,
+      })
+      /// ///console.log(this.content)
+    },
+  }
 </script>
 
 <style lang="scss" scoped>

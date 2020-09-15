@@ -3,11 +3,11 @@
     <v-row
       align="center"
       justify="center"
-    >    
+    >
       <v-form
         ref="form"
-        v-model="valid"       
-      >     
+        v-model="valid"
+      >
         <BaseMasterFieldBlock
           title="Название сертификата"
           :horisontal="true"
@@ -44,7 +44,7 @@
               outlined
               multiple
               chips
-              deletable-chips            
+              deletable-chips
             />
           </template>
         </BaseMasterFieldBlock>
@@ -59,7 +59,7 @@
               v-model="cert.tags"
               placeholder="Выберите ключевые слова"
               :items="tags_id_list"
-               :rules="tagsRules"
+              :rules="tagsRules"
               :search-input.sync="tagSearch"
               :return-object="false"
               hide-selected
@@ -84,7 +84,7 @@
                   </v-list-item-content>
                 </v-list-item>
               </template>
-            </v-combobox>           
+            </v-combobox>
           </template>
         </BaseMasterFieldBlock>
 
@@ -108,8 +108,7 @@
         </BaseMasterFieldBlock>
 
         <v-row>
-          <v-col>          
-             
+          <v-col>
             <v-btn
               :disabled="!valid"
               color="primary"
@@ -161,7 +160,7 @@
           (v) => !!v || 'Выберите ключевые слова',
         ],
         descriptionRules: [
-           (v) => !!v || 'Введите описание',
+          (v) => !!v || 'Введите описание',
         ],
       }
     },

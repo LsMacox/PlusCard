@@ -87,10 +87,10 @@
             Body M 15-20/Regular
           </div>
           <div class="body-s-semibold">
-            Body S 13-18/SemiBold
+            Body S 13-17/SemiBold
           </div>
           <div class="body-s-regular">
-            Body S 13-18/Regular
+            Body S 13-17/Regular
           </div>
           <div class="body-xs-semibold">
             Body XS 11-14/Semibold
@@ -112,8 +112,11 @@
           <v-btn
             color="primary"
           >
-           <v-icon>$iconify_plus-circle-outlined</v-icon>   
-             <iconify-icon icon="plus-circle-outlined" height="24" />        
+            <v-icon>$iconify_plus-circle-outlined</v-icon>
+            <iconify-icon
+              icon="plus-circle-outlined"
+              height="24"
+            />
             <span
               class="iconify"
               data-icon="ant-design:plus-circle-outlined"
@@ -171,6 +174,13 @@
             :small="true"
           >
             small btn
+          </v-btn>
+          <v-btn
+            color="secondary"
+            x-small
+            rounded
+          >
+            x-small btn
           </v-btn>
         </div>
         <div class="mt-1">
@@ -424,39 +434,43 @@
           placeholder="multiple select"
           outlined
           multiple
-        >        
-        </v-select>
-         <v-autocomplete  
-            v-model="selectedFruits"           
-              :items="fruits"              
-              placeholder="Выберите категории"              
-              outlined
-              multiple
-              chips
-              deletable-chips            
-            />
+        />
+        <v-autocomplete
+          v-model="selectedFruits"
+          :items="fruits"
+          placeholder="Выберите категории"
+          outlined
+          multiple
+          chips
+          deletable-chips
+        />
       </v-col>
     </v-row>
     <v-row>
       <v-col>
         SMALL
-           <v-autocomplete  
-            v-model="selectedFruits"           
-              :items="fruits"              
-              placeholder="Выберите категории"              
-              outlined
-              multiple
-              chips
-              deletable-chips    
-              dense        
-            />
+        <v-autocomplete
+          v-model="selectedFruits"
+          :items="fruits"
+          placeholder="Выберите категории"
+          outlined
+          multiple
+          chips
+          deletable-chips
+          dense
+        />
       </v-col>
     </v-row>
-    
-    <v-row><v-col>
-       <v-icon>$iconify_plus-circle</v-icon>
-       <iconify-icon icon="plus-circle" height="14" />
-      </v-col></v-row>
+
+    <v-row>
+      <v-col>
+        <v-icon>$iconify_plus-circle</v-icon>
+        <iconify-icon
+          icon="plus-circle"
+          height="14"
+        />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

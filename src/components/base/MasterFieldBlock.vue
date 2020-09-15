@@ -29,7 +29,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col> <slot name="input" /></v-col>
+          <v-col><slot name="input" /></v-col>
         </v-row>
       </v-col>
     </v-row>
