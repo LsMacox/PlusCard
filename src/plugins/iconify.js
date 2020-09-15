@@ -12,6 +12,10 @@ export const ICONIFY_ICONS = [
   { id: 'plus-circle-outlined', component: () => import('@iconify/icons-ant-design/plus-circle-outlined') },
   { id: 'search-outlined', component: () => import('@iconify/icons-ant-design/search-outlined') },
   { id: 'ant-design-gift-outlined', component: () => import('@iconify/icons-ant-design/gift-outlined') },
+  { id: 'ant-design-youtube-filled', component: () => import('@iconify/icons-ant-design/youtube-filled') },
+
+  // bi
+  { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
 
   // bx
   { id: 'bx-check', component: () => import('@iconify/icons-bx/bx-check') },
@@ -33,6 +37,9 @@ export const ICONIFY_ICONS = [
   { id: 'ion-exit-outline', component: () => import('@iconify/icons-ion/exit-outline') },
   { id: 'ion-color-fill-outline', component: () => import('@iconify/icons-ion/color-fill-outline') },
   { id: 'ion-checkmark-circle-outline', component: () => import('@iconify/icons-ion/checkmark-circle-outline') },
+  { id: 'ion-document-outline', component: () => import('@iconify/icons-ion/document-outline') },
+  { id: 'ion-logo-vk', component: () => import('@iconify/icons-ion/logo-vk') },
+  { id: 'ion-logo-instagram', component: () => import('@iconify/icons-ion/logo-instagram') },
 
   // feather
   { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') },
@@ -40,10 +47,11 @@ export const ICONIFY_ICONS = [
   { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') },
   { id: 'feather-chevron-down', component: () => import('@iconify/icons-feather/chevron-down') },
   { id: 'feather-chevron-up', component: () => import('@iconify/icons-feather/chevron-up') },
-  { id: 'ion-document-outline', component: () => import('@iconify/icons-ion/document-outline') },
+  { id: 'feather-phone', component: () => import('@iconify/icons-feather/phone') },
+  { id: 'feather-mouse-pointer', component: () => import('@iconify/icons-feather/mouse-pointer') },
 
-  // bi
-  { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
+  // la
+  { id: 'la-facebook-f', component: () => import('@iconify/icons-la/facebook-f') },
 
   // octicon
   { id: 'octicon-chevron-up-16', component: () => import('@iconify/icons-octicon/chevron-up-16') },

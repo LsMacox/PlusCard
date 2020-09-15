@@ -33,7 +33,6 @@
     :placeholder="placeholder"
     :prefix="prefix"
     :prepend-icon="prependIcon"
-    :prepend-inner-icon="prependInnerIcon"
     :readonly="readonly"
     :reverse="false"
     :rounded="false"
@@ -47,11 +46,22 @@
     :suffix="suffix"
     :type="type"
     :validate-on-blur="validateOnBlur"
-
     :class="getClass"
-
     :maxlength="maxlength"
-  />
+  >
+    <template v-slot:prepend-inner>
+      <v-icon
+        v-if="prependInnerIcon"
+        :color="prependInnerIconColor"
+      >
+        {{ prependInnerIcon }}
+      </v-icon>
+      <slot
+        v-else
+        name="prepend-inner"
+      />
+    </template>
+  </v-text-field>
 </template>
 
 <script>
@@ -106,6 +116,10 @@
       prefix: String,
       prependIcon: String,
       prependInnerIcon: String,
+      prependInnerIconColor: {
+        type: String,
+        default: '#000000',
+      },
       readonly: Boolean,
       rules: Array,
       shaped: Boolean,
@@ -129,7 +143,6 @@
         },
         set (val) {
           if (val === this.value) return
-
           this.$emit('input', val)
         },
       },
@@ -153,12 +166,11 @@
     },
     watch: {
       value (v) {
-        console.log('v.l', this.value.length, this.minlength)
+        // console.log('v.l', this.value.length, this.minlength)
       },
     },
-
     mounted () {
-      console.log('getClass', this.getClass)
+      // console.log('getClass', this.getClass)
     },
   }
 </script>
