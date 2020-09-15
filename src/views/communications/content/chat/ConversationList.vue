@@ -26,22 +26,31 @@
             ></span>
           </div>
         </div>
-        <v-btn
-          style="padding: 12px; margin-left: 15px;"
-          color="primary"
-          fab
-          @click="openCreate()"
-          
+        <v-tooltip
+          :open-delay="$config.tooltipButtonDelay"
+          left
         >
-          <v-icon>mdi-plus</v-icon>
-         <!-- <v-icon>$iconify_plus-circle-outlined</v-icon>    -->
-        </v-btn>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              style="padding: 12px; margin-left: 15px;"
+              color="primary"
+              fab
+              v-on="on"
+              @click="openCreate()"
+            >
+              <v-icon>mdi-plus</v-icon>
+              <!-- <v-icon>$iconify_plus-circle-outlined</v-icon>    -->
+            </v-btn>
+          </template>
+          <span>Начать переписку</span>
+        </v-tooltip>
       </div>
     </div>
 
     <v-skeleton-loader
       :loading="loadingConversations"
-      type="image"
+      :style="{height: '100%', width: '100%'}"
+      type="list-item-avatar-two-line@8"
     >
       <div
         class="app--conversation--content"
@@ -467,6 +476,7 @@
             display:flex;
             flex-grow: 1;
             width:100%;
+            height: 100%;
             overflow-y: hidden;
             overflow-x: hidden;
 
@@ -477,6 +487,7 @@
 
             &::-webkit-scrollbar-track {
                 -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+                box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
                 background-color: #f5f5f5;
             }
 
@@ -491,9 +502,7 @@
             }
         }
 
-        .app--conversation--list{
-
-        }
+        // .app--conversation--list{ }
     }
 
     .list-item {
@@ -513,6 +522,7 @@
 
     .app--conversation--list::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
         background-color: #f5f5f5;
     }
 

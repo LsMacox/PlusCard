@@ -166,7 +166,7 @@
     props: {
       conversationId: {
         required: true,
-        type: [String, Number],        
+        type: [String, Number],
       },
       dialogReplyMessage: Boolean,
       quotedMessage: {
@@ -251,11 +251,8 @@
       loadingSend () {
         return this.$store.getters['chat/message/loading']
       },
-      colors () {
-        return this.$store.getters['template/colors/colors']
-      },
       profile () {
-        return this.$store.getters.getProfile
+        return this.$store.getters.user
       },
       programId () {
         return this.$store.getters['brand/program/programId']
@@ -266,8 +263,9 @@
       conversation () {
         const conversation = this.$store.getters[
           'chat/conversation/conversations'
-        ].filter((item) => item.id == this.conversationId)
-        if (conversation[0]) return conversation[0]
+        ].filter((item) => item.id === this.conversationId)
+
+        return conversation[0] || null
       },
       selectedTopicId () {
         return this.$store.getters['chat/topic/selectedTopicId']
@@ -284,8 +282,8 @@
           if (
             /\S/.test(this.message) ||
             this.files.length ||
-            this.message.trim() != '' ||
-            this.message.replace('\n', '').trim() != '' ||
+            this.message.trim() !== '' ||
+            this.message.replace('\n', '').trim() !== '' ||
             (this.quotedMessage && this.quotedMessage.id)
           ) {
             return true
@@ -325,7 +323,7 @@
         }
         if (this.overlayChat) {
           const elem = this.$refs.conversationField
-          elem.scrollTop = elem.scrollHeight
+          if (elem) elem.scrollTop = elem.scrollHeight
           this.overlayChat = false
           this.dialogReplyMessage = true
           this.sendType = 'forward'
@@ -369,8 +367,7 @@
       },
       addFile (e) {
         const droppedFiles = e.dataTransfer.files
-        if (!droppedFiles) return
-        else {
+        if (droppedFiles) {
           this.moveOut()
           this.$refs.attachFile.files = droppedFiles
           this.validateFile()
@@ -475,28 +472,34 @@
         e.stopPropagation()
         this.message = this.message + '\n'
         var text = document.getElementById('message')
-        text.style.height = 'auto'
-        text.style.height = text.scrollHeight + 'px'
+        if (text) {
+          text.style.height = 'auto'
+          text.style.height = text.scrollHeight + 'px'
+        }
         this.$emit('send-message')
       },
       messageEvent (conversationId, $event) {
         // ctrl + enter новая строка
-        if ($event.ctrlKey == true && $event.code == 'Enter') {
+        if ($event.ctrlKey === true && $event.code === 'Enter') {
           this.message = this.message + '\n'
         }
-        if ($event.ctrlKey == true && $event.code == 'NumpadEnter') {
+        if ($event.ctrlKey === true && $event.code === 'NumpadEnter') {
           this.message = this.message + '\n'
         }
         // enter отправка сообщения
-        if ($event.ctrlKey == false && $event.code == 'Enter') {
+        if ($event.ctrlKey === false && $event.code === 'Enter') {
           if (!this.sending) this.send(this.sendType)
         }
-        if ($event.ctrlKey == false && $event.code == 'NumpadEnter') {
+        if ($event.ctrlKey === false && $event.code === 'NumpadEnter') {
           if (!this.sending) this.send(this.sendType)
         }
 
-        text.style.height = 'auto'
-        text.style.height = text.scrollHeight + 'px'
+        var text = document.getElementById('message')
+        if (text) {
+          text.style.height = 'auto'
+          text.style.height = text.scrollHeight + 'px'
+        }
+
         this.$emit('send-message')
       },
       sendTypingEvent (conversationId) {
@@ -674,7 +677,7 @@
         this.$emit('update:dialogReplyMessage', false)
         if (this.overlayChat) {
           const elem = this.$refs.conversationField
-          elem.scrollTop = elem.scrollHeight
+          if (elem) elem.scrollTop = elem.scrollHeight
           this.overlayChat = false
         }
       },
@@ -763,6 +766,7 @@
           }
         }
         var text = document.getElementById('message')
+        if (!text) return
 
         const resize = () => {
           text.style.height = 'auto'
@@ -784,11 +788,9 @@
         resize()
       },
       async getMedia () {
-        let stream = null
-
         try {
-          stream = await navigator.mediaDevices.getUserMedia()
-        /// /console.log('stream', stream)
+          const stream = await navigator.mediaDevices.getUserMedia()
+          console.log('stream', stream)
         /* use the stream */
         } catch (err) {
         /* handle the error */
@@ -940,8 +942,8 @@
         infinite alternate;
     }
 
-    .app--conversation--sendForm__recorder__timer {
-    }
+    // .app--conversation--sendForm__recorder__timer {
+    // }
 
     .app--conversation--sendForm__recorder__label {
       font-size: 12px;
@@ -1002,6 +1004,7 @@
 
 #message::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 6px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 6px 0 rgba(0, 0, 0, 0.3);
   background-color: #f5f5f5;
 }
 

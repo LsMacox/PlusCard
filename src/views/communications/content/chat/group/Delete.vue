@@ -1,76 +1,76 @@
 <template>
-<v-dialog
-        v-model="dialog"        
-        custom-class="app--modal"
->
+  <v-dialog
+    v-model="dialog"
+    custom-class="app--modal"
+  >
     <div class="modal">
+      <div class="header">
+        Удалить группу?
+      </div>
 
-        <div class="header">Удалить группу?</div>
+      <div class="content">
+        <div>Название: {{ item.name }}</div>
+      </div>
 
-        <div class="content">
+      <div class="action">
+        <v-btn
+          @click="close()"
+        >
+          Отмена
+        </v-btn>
 
-            <div>Название: {{item.name}}</div>
+        <v-spacer />
 
-        </div>
-
-        <div class="action">
-            <el-button
-                    size="medium"
-                    @click="close()"
-            >Отмена</el-button>
-
-            <div class="app--spacer"></div>
-
-            <el-button
-                    type="danger"
-                    size="medium"
-                    :loading="loadingRequest"
-                    @click="remove()"
-            >Удалить</el-button>
-        </div>
-
+        <v-btn
+          color="error"
+          :loading="groupDeleteAction"
+          @click="remove()"
+        >
+          Удалить
+        </v-btn>
+      </div>
     </div>
-</v-dialog>
+  </v-dialog>
 </template>
 
 <script>
-export default {
-    props: [
-        'dialog',
-        'item'
-    ],
-    data () {
-        return {
+  export default {
 
-        }
+    props: {
+      dialog: Boolean,
+      item: {
+        type: Object,
+        required: true,
+      },
     },
-    computed: {
-        loadingRequest () {
-            return this.$store.getters['template/shared/loadingRequest']
-        },
-        colors () {
-            return this.$store.getters['template/colors/colors']
-        }
+    data () {
+      return {
+        groupDeleteAction: false,
+      }
     },
+    computed: { },
     methods: {
-        close () {
-            this.$emit('update:dialog', false)
-        },
-        remove () {
-            const group = {
-                id: this.item.id,
-            }
-            ////console.log(group)
-            this.$store.dispatch("chat/group/delete", group).then(() => {
-                this.close()
-            })
+      close () {
+        this.$emit('update:dialog', false)
+      },
+      remove () {
+        const group = {
+          id: this.item.id,
         }
-    }
-}
+        /// /console.log(group)
+        this.groupDeleteAction = true
+        this.$store.dispatch('chat/group/delete', group).then(() => {
+          this.close()
+        }).finally(() => {
+          this.groupDeleteAction = false
+        })
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/components/_modal.scss"; 
+@import "@/styles/components/_modal.scss";
 
 .modal {
     min-width: 400px;

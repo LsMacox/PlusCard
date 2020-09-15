@@ -137,12 +137,13 @@ export default new Router({
           path: 'company/:program_id',
           component: () => import('@/views/dashboard/form_update/index'),
           name: 'Company',
+          redirect: '/info',
           meta: { auth: true },
           children: [
-            {
-              path: '',
-              redirect: 'info',
-            },
+            // {
+            //   path: '',
+            //   redirect: 'info',
+            // },
             {
               path: 'info',
               component: () => import('@/views/dashboard/form_update/UpdateInfo'),
@@ -184,7 +185,7 @@ export default new Router({
         {
           path: '/certificate',
           component: () => import('@/views/certificate/ProgramCertificateView.vue'),
-          name: 'components',
+          name: 'ProgramCertificate',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
         {
@@ -196,7 +197,7 @@ export default new Router({
         {
           path: '/account/certificates',
           component: () => import('@/views/account/certificate/table/index'),
-          name: 'certificates',
+          name: 'UserCertificates',
           meta: { title: 'Certificates', icon: 'certificates' },
         },
         {
@@ -212,10 +213,27 @@ export default new Router({
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {
-          path: 'chat',
+          path: '/communications/chat',
+          redirect: '/communications/chat/business',
+          meta: { auth: true, title: 'Чаты', icon: '' },
+        },
+        {
+          path: '/communications/chat/:conversation_type',
           component: () => import('@/views/communications/Chat'),
-          name: 'Chat',
-          meta: { auth: true, title: 'Help', icon: 'dashboard' },
+          props: route => ({
+            conversationType: route.params.conversation_type,
+            conversationId: null,
+          }),
+          meta: { auth: true, title: 'Чаты', icon: '' },
+        },
+        {
+          path: '/communications/chat/:conversation_type/:conversation_id',
+          component: () => import('@/views/communications/Chat'),
+          props: route => ({
+            conversationType: route.params.conversation_type,
+            conversationId: +route.params.conversation_id,
+          }),
+          meta: { auth: true, title: 'Чаты', icon: '' },
         },
         {
           path: 'settings',

@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="dialog"    
+    v-model="dialog"
     custom-class="app--modal"
   >
     <v-skeleton-loader
@@ -23,7 +23,7 @@
         >
           <div class="content">
             <el-form-item prop="name">
-              <el-input
+              <v-text-field
                 v-model="form.name"
                 placeholder="Введите название чата"
               />
@@ -34,36 +34,36 @@
               <div class="name-all">
                 Участники чата
               </div>
-              <div class="app--spacer" />
-              <el-button
-                type="primary"
-                size="mini"
+              <v-spacer />
+              <v-btn
+                color="primary"
+                small
                 @click="openAdd()"
               >
                 Добавить участника
-              </el-button>
+              </v-btn>
             </div>
 
             <!-- список получателей -->
             <div
-              v-for="(item, i) in clients"
+              v-for="(client, i) in clients"
               :key="i"
             >
               <div
-                v-if="item.active"
+                v-if="client.active"
                 class="res-row"
               >
                 <div
                   class="avatar"
-                  :style="'background: url(' + item.avatar + ');'"
+                  :style="'background: url(' + client.avatar + ');'"
                 />
                 <div class="name">
-                  {{ item.name }}
+                  {{ client.name }}
                 </div>
                 <div
-                  v-if="!isPrivateChat && chatUser.id !== item.id"
+                  v-if="!isPrivateChat && chatUser.id !== client.id"
                   class="remove-link"
-                  @click="openRemove(item)"
+                  @click="openRemove(client)"
                 >
                   удалить
                 </div>
@@ -72,24 +72,22 @@
           </div>
 
           <div class="action">
-            <el-button
-              size="medium"
+            <v-btn
               @click="close()"
             >
               Отмена
-            </el-button>
+            </v-btn>
 
-            <div class="app--spacer" />
+            <v-spacer />
 
-            <el-button
-              type="primary"
-              size="medium"
+            <v-btn
+              color="primary"
               :loading="conversationUpdateLoading"
               :disabled="!members.length"
               @click="submit('form')"
             >
               Обновить
-            </el-button>
+            </v-btn>
           </div>
         </el-form>
       </div>
@@ -120,7 +118,10 @@
     },
     props: {
       dialog: Boolean,
-      item: Object,
+      item: {
+        type: Object,
+        required: true,
+      },
     },
     data () {
       return {
@@ -143,12 +144,9 @@
       }
     },
     computed: {
-      
+
       loadingSend () {
         return this.$store.getters['chat/message/loading']
-      },
-      colors () {
-        return this.$store.getters['template/colors/colors']
       },
       programId () {
         return this.$store.getters['brand/program/programId']
@@ -194,7 +192,7 @@
        */
 
       setRecipientAll () {
-        if (this.members.length == this.clients.length) {
+        if (this.members.length === this.clients.length) {
           this.members = []
         } else {
           this.members = Object.assign([], this.clients)
@@ -232,8 +230,8 @@
         this.conversationUpdateLoading = true
         this.$store.dispatch('chat/conversation/update', conversation).then(() => {
           this.close()
-        }).finally(()=>{
-            this.conversationUpdateLoading = false
+        }).finally(() => {
+          this.conversationUpdateLoading = false
         })
       },
       openAdd () {

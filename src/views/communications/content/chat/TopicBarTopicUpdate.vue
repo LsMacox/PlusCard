@@ -3,7 +3,7 @@
     <div class="modal-content">
       <!-- новая тема -->
       <!-- настройки темы -->
-       <v-input
+      <v-input
         class="input-field"
         label="Название темы"
         :value.sync="topic.name"
@@ -170,12 +170,14 @@
       <!-- кнопка добавить тему -->
       <v-btn
         class="box-button"
-        icon="edit"
-        :color="colors.buttons.success"
-        :loading="loadingRequest"
+        color="success"
+        :loading="topicUpdateRequest"
         :disabled="!validateTopic"
         @click="update()"
       >
+        <v-icon left>
+          edit
+        </v-icon>
         Сохранить
       </v-btn>
     </div>
@@ -193,10 +195,20 @@
   import AppTopicBarTopicDelete from './TopicBarTopicDelete'
 
   export default {
-    components: {    
+    components: {
       AppTopicBarTopicDelete,
     },
-    props: ['dialog', 'conversationId', 'topicId'],
+    props: {
+      dialog: Boolean,
+      conversationId: {
+        type: Number,
+        required: true,
+      },
+      topicId: {
+        type: Number,
+        required: true,
+      },
+    },
     data () {
       return {
         topic: {},
@@ -205,6 +217,8 @@
         recipients: [],
         dialogTopicDelete: false,
         deleteSuccess: false,
+        topicUpdateRequest: false,
+
       }
     },
     validations: {
@@ -216,21 +230,15 @@
       },
     },
     computed: {
-      loadingRequest () {
-        return this.$store.getters['template/shared/loadingRequest']
-      },
       loadingSend () {
         return this.$store.getters['chat/message/loading']
-      },
-      colors () {
-        return this.$store.getters['template/colors/colors']
       },
       chatUser () {
         return this.$store.getters['chat/chatUser/chatUser']
       },
       topicOld () {
         const topics = this.$store.getters['chat/topic/topics']
-        const topic = topics.filter((item) => item.id == this.topicId)
+        const topic = topics.filter((item) => item.id === this.topicId)
         if (topic.length) {
           return topic[0]
         }
@@ -239,7 +247,7 @@
       conversation () {
         const conversation = this.$store.getters[
           'chat/conversation/conversations'
-        ].filter((item) => item.id == this.conversationId)
+        ].filter((item) => item.id === this.conversationId)
         if (conversation.length) return conversation[0]
         return {}
       },
@@ -248,7 +256,7 @@
         const chatUser = this.$store.getters['chat/chatUser/chatUser']
         if (this.conversation && this.conversation.members) {
           members = this.conversation.members.filter((item) => {
-            if (item.id != chatUser.id && item.active) return item
+            if (item.id !== chatUser.id && item.active) return item
           })
         }
         return members
@@ -267,32 +275,29 @@
         return errors
       },
       validateTopic () {
-        if (
-          this.$v.topic.name.required &&
+        return (this.$v.topic.name.required &&
           this.$v.topic.name.maxLength &&
           this.checkRecipients() &&
           !this.nameExist &&
-          JSON.stringify(this.topic) != JSON.stringify(this.topicOld)
-        ) { return true }
-        return false
+          JSON.stringify(this.topic) !== JSON.stringify(this.topicOld))
       },
     },
     watch: {
       'topic.name' (newVal, oldVal) {
         if (
           newVal &&
-          oldVal != 'undefined' &&
-          this.chatUser.id == this.topic.owner_id &&
-          newVal != this.topicOld.name
+          oldVal !== 'undefined' &&
+          this.chatUser.id === this.topic.owner_id &&
+          newVal !== this.topicOld.name
         ) {
           this.getValidate()
         }
-        if (newVal == this.topicOld.name) {
+        if (newVal === this.topicOld.name) {
           this.$store.commit('chat/topic/nameExist', false)
         }
       },
       'topic.members' (val) {
-        if (val.length == this.members.length) this.checkAll = true
+        if (val.length === this.members.length) this.checkAll = true
         else this.checkAll = false
       },
       deleteSuccess (val) {
@@ -316,14 +321,14 @@
       },
       checkRecipients () {
         const recipients = this.topic.members.filter(
-          (item) => item.id != this.chatUser.id,
+          (item) => item.id !== this.chatUser.id,
         )
         if (recipients.length) return true
         return false
       },
       setRecipientAll () {
-        if (this.topic.members.length == this.members.length) {
-          if (this.topic.owner_id == this.chatUser.id) {
+        if (this.topic.members.length === this.members.length) {
+          if (this.topic.owner_id === this.chatUser.id) {
             this.topic.members = []
             this.topic.members.push({
               id: this.chatUser.id,
@@ -344,7 +349,7 @@
       setRecipient (id) {
         let index = null
         this.topic.members.forEach((item, i) => {
-          if (item.id == id) {
+          if (item.id === id) {
             return (index = i)
           }
         })
@@ -358,20 +363,20 @@
       },
       isRecipient (id) {
         if (!this.isEmptyObject(this.topic)) {
-          const check = this.topic.members.filter((item) => item.id == id)
+          const check = this.topic.members.filter((item) => item.id === id)
           if (check.length) return true
         }
         return false
       },
       getCanWriteClass (id) {
-        const recipient = this.topic.members.filter((item) => item.id == id)
+        const recipient = this.topic.members.filter((item) => item.id === id)
         if (recipient.length) {
           if (recipient[0].can_write) return 'can-write can-write-active'
         }
         return 'can-write'
       },
       getCanWriteLabelClass (id) {
-        const recipient = this.topic.members.filter((item) => item.id == id)
+        const recipient = this.topic.members.filter((item) => item.id === id)
         if (recipient.length) {
           if (recipient[0].can_write) return 'can-write-label-active'
         }
@@ -380,7 +385,7 @@
       setCanWrite (id) {
         let index = null
         this.topic.members.forEach((item, i) => {
-          if (item.id == id) index = i
+          if (item.id === id) index = i
         })
         if (index !== null) {
           if (this.topic.members[index]) {
@@ -414,8 +419,11 @@
           members: this.topic.members,
         }
         // console.log(topic)
+        this.topicUpdateRequest = true
         this.$store.dispatch('chat/topic/update', topic).then(() => {
           this.back()
+        }).finally(() => {
+          this.topicUpdateRequest = false
         })
       },
       openTopicDelete () {

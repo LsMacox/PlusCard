@@ -116,28 +116,37 @@
 
       <!-- кнопка добавить тему -->
       <v-btn
-          class="box-button"          
-          icon="add"
-          :color="colors.buttons.success"
-          :loading="loadingRequest"
-          :disabled="!validateTopic"
-          @click="create()"
-        >Добавить</v-btn>
-      
+        class="box-button"
+        color="success"
+        :loading="topicCreateAction"
+        :disabled="!validateTopic"
+        @click="create()"
+      >
+        <v-icon left>
+          add
+        </v-icon>Добавить
+      </v-btn>
     </div>
   </div>
 </template>
 
 <script>
   export default {
-    components: {      
+    components: {
     },
-    props: ['dialog', 'conversationId'],
+    props: {
+      dialog: Boolean,
+      conversationId: {
+        type: Number,
+        required: true,
+      },
+    },
     data () {
       return {
         checkAll: false,
         name: '',
         recipients: [],
+
       }
     },
     validations: {
@@ -147,20 +156,14 @@
       },
     },
     computed: {
-      loadingRequest () {
-        return this.$store.getters['template/shared/loadingRequest']
-      },
       loadingSend () {
         return this.$store.getters['chat/message/loading']
-      },
-      colors () {
-        return this.$store.getters['template/colors/colors']
       },
       chatUser () {
         return this.$store.getters['chat/chatUser/chatUser']
       },
       conversation () {
-        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id == this.conversationId)
+        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
         if (conversation.length) return conversation[0]
         return {}
       },
@@ -169,7 +172,7 @@
         const chatUser = this.$store.getters['chat/chatUser/chatUser']
         if (this.conversation && this.conversation.members) {
           members = this.conversation.members.filter(item => {
-            if (item.id != chatUser.id && item.active) return item
+            if (item.id !== chatUser.id && item.active) return item
           })
         }
         return members
@@ -201,7 +204,7 @@
         if (v) this.getValidate()
       },
       recipients (val) {
-        if (val.length == this.members.length && val.length > 0) this.checkAll = true
+        if (val.length === this.members.length && val.length > 0) this.checkAll = true
         else this.checkAll = false
       },
     },
@@ -229,13 +232,13 @@
       },
       checkRecipients () {
         const recipients = this.recipients.filter(
-          item => item.id != this.chatUser.id,
+          item => item.id !== this.chatUser.id,
         )
         if (recipients.length) return true
         return false
       },
       setRecipientAll () {
-        if (this.recipients.length == this.members.length) {
+        if (this.recipients.length === this.members.length) {
           this.recipients = []
         } else {
           this.recipients = this.members.map(item => {
@@ -249,7 +252,7 @@
       setRecipient (id) {
         let index = null
         this.recipients.forEach((item, i) => {
-          if (item.id == id) {
+          if (item.id === id) {
             return (index = i)
           }
         })
@@ -262,19 +265,19 @@
         }
       },
       isRecipient (id) {
-        const check = this.recipients.filter(item => item.id == id)
+        const check = this.recipients.filter(item => item.id === id)
         if (check.length) return true
         return false
       },
       getCanWriteClass (id) {
-        const recipient = this.recipients.filter(item => item.id == id)
+        const recipient = this.recipients.filter(item => item.id === id)
         if (recipient.length) {
           if (recipient[0].can_write) return 'can-write can-write-active'
         }
         return 'can-write'
       },
       getCanWriteLabelClass (id) {
-        const recipient = this.recipients.filter(item => item.id == id)
+        const recipient = this.recipients.filter(item => item.id === id)
         if (recipient.length) {
           if (recipient[0].can_write) return 'can-write-label-active'
         }
@@ -283,7 +286,7 @@
       setCanWrite (id) {
         let index = null
         this.recipients.forEach((item, i) => {
-          if (item.id == id) index = i
+          if (item.id === id) index = i
         })
         if (index !== null) {
           if (this.recipients[index]) {
@@ -321,8 +324,12 @@
           can_write: true,
         })
         /// /console.log(topic)
+
+        this.topicCreateAction = true
         this.$store.dispatch('chat/topic/create', topic).then(() => {
           this.back()
+        }).finally(() => {
+          this.topicCreateAction = false
         })
       },
     },

@@ -16,7 +16,7 @@
       >
         <div class="content">
           <el-form-item prop="name">
-            <el-input
+            <v-text-field
               v-model="form.name"
               placeholder="Введите название группы"
             />
@@ -44,7 +44,7 @@
 
           <!-- список получателей -->
           <div
-            v-for="(item, i) in members"
+            v-for="(member, i) in members"
             :key="i"
             class="res-row"
           >
@@ -53,10 +53,10 @@
             </div>
             <div
               class="check"
-              @click="setRecipient(item)"
+              @click="setRecipient(member)"
             >
               <div
-                v-show="checkAll || isRecipient(item)"
+                v-show="checkAll || isRecipient(member)"
                 class="check-all-back"
               >
                 <v-icon color="white">
@@ -66,33 +66,29 @@
             </div>
             <div
               class="avatar"
-              :style="'background: url(' + item.avatar + ');'"
+              :style="'background: url(' + member.avatar + ');'"
             />
             <div class="name">
-              {{ item.name }}
+              {{ member.name }}
             </div>
           </div>
         </div>
 
         <div class="action">
-          <el-button
-            size="medium"
-            @click="close()"
-          >
+          <v-btn @click="close()">
             Отмена
-          </el-button>
+          </v-btn>
 
-          <div class="app--spacer" />
+          <v-spacer />
 
-          <el-button
-            type="primary"
-            size="medium"
+          <v-btn
+            color="primary"
             :loading="loadingRequest"
             :disabled="!recipients.length"
             @click="submit('form')"
           >
             Обновить
-          </el-button>
+          </v-btn>
         </div>
       </el-form>
     </div>
@@ -101,11 +97,20 @@
 
 <script>
   export default {
-    props: [
-      'dialog',
-      'conversationId',
-      'item',
-    ],
+    props: {
+      item: {
+        type: Object,
+        required: true,
+      },
+      dialog: {
+        type: Boolean,
+        default: false,
+      },
+      conversationId: {
+        type: [Number, String, null],
+        default: null,
+      },
+    },
     data () {
       const validateName = (rule, value, callback) => {
         const check = this.groups.filter(item => (item.name === value && item.id !== this.item.id))
@@ -137,14 +142,11 @@
       loadingSend () {
         return this.$store.getters['chat/message/loading']
       },
-      colors () {
-        return this.$store.getters['template/colors/colors']
-      },
       groups () {
         return this.$store.getters['chat/group/groups']
       },
       conversation () {
-        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id == this.conversationId)
+        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
         if (conversation.length) return conversation[0]
         return {}
       },
@@ -153,7 +155,7 @@
         const chatUser = this.$store.getters['chat/chatUser/chatUser']
         if (this.conversation && this.conversation.members) {
           members = this.conversation.members.filter(item => {
-            if (item.id != chatUser.id && item.active) return item
+            if (item.id !== chatUser.id && item.active) return item
           })
         }
         return members
@@ -183,7 +185,7 @@
        */
 
       setRecipientAll () {
-        if (this.recipients.length == this.members.length) {
+        if (this.recipients.length === this.members.length) {
           this.recipients = []
         } else {
           this.recipients = Object.assign([], this.members)

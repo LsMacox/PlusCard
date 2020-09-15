@@ -23,7 +23,7 @@
         >
           <div class="content">
             <el-form-item prop="name">
-              <el-input
+              <v-text-field
                 v-model="form.name"
                 placeholder="Введите название чата"
                 :disabled="members.length < 2"
@@ -83,24 +83,20 @@
           </div>
 
           <div class="action">
-            <el-button
-              size="medium"
-              @click="close()"
-            >
+            <v-btn @click="close()">
               Отмена
-            </el-button>
+            </v-btn>
 
-            <div class="app--spacer" />
+            <v-spacer />
 
-            <el-button
-              type="primary"
-              size="medium"
-              :loading="loadingRequest"
+            <v-btn
+              color="primary"
+              :loading="conversationCreateRequest"
               :disabled="!members.length"
               @click="submit('form')"
             >
               Создать
-            </el-button>
+            </v-btn>
           </div>
         </el-form>
       </div>
@@ -133,17 +129,12 @@
             { validator: checkName, trigger: 'blur' },
           ],
         },
+        conversationCreateRequest: false,
       }
     },
     computed: {
-      loadingRequest () {
-        return this.$store.getters['template/shared/loadingRequest']
-      },
       loadingSend () {
         return this.$store.getters['chat/message/loading']
-      },
-      colors () {
-        return this.$store.getters['template/colors/colors']
       },
       programId () {
         return this.$store.getters['brand/program/programId']
@@ -180,7 +171,7 @@
        */
 
       setRecipientAll () {
-        if (this.members.length == this.clients.length) {
+        if (this.members.length === this.clients.length) {
           this.members = []
         } else {
           this.members = Object.assign([], this.clients)
@@ -216,8 +207,11 @@
           members: this.members.map(item => item.id),
         }
         /// /console.log(conversation)
+        this.conversationCreateRequest = true
         this.$store.dispatch('chat/conversation/create', conversation).then(() => {
           this.close()
+        }).finally(() => {
+          this.conversationCreateRequest = false
         })
       },
     },

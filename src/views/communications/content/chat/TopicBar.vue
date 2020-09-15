@@ -8,7 +8,7 @@
           top
           offset-y
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ on }">
             <v-btn
               v-if="!selectedTopicId"
               color="primary"
@@ -46,7 +46,7 @@
           top
           offset-y
         >
-          <template v-slot:activator="{ on, attrs }">
+          <template v-slot:activator="{ on }">
             <v-btn
               v-if="!recipients.length"
               color="primary"
@@ -78,7 +78,7 @@
           </v-list>
         </v-menu>
 
-        <div class="app--spacer" />
+        <v-spacer />
 
         <div
           v-if="lastTopic.sender_id == chatUser.id
@@ -125,7 +125,10 @@
       AppTopicBarTopic,
     },
     props: {
-      conversationId: String | Number,
+      conversationId: {
+        type: [Number, String, null],
+        default: null,
+      },
     },
     data () {
       return {
@@ -134,14 +137,8 @@
       }
     },
     computed: {
-      loadingRequest () {
-        return this.$store.getters['template/shared/loadingRequest']
-      },
       loadingSend () {
         return this.$store.getters['chat/message/loading']
-      },
-      colors () {
-        return this.$store.getters['template/colors/colors']
       },
       chatUser () {
         return this.$store.getters['chat/chatUser/chatUser']
@@ -149,7 +146,7 @@
       conversation () {
         const conversation = this.$store.getters[
           'chat/conversation/conversations'
-        ].filter((item) => item.id == this.conversationId)
+        ].filter((item) => item.id === this.conversationId)
         if (conversation.length) return conversation[0]
         return {}
       },
@@ -158,7 +155,7 @@
         const chatUser = this.$store.getters['chat/chatUser/chatUser']
         if (this.conversation && this.conversation.members) {
           members = this.conversation.members.filter((item) => {
-            if (item.id != chatUser.id && item.active) return item
+            if (item.id !== chatUser.id && item.active) return item
           })
         }
         return members
@@ -186,8 +183,8 @@
             message = messages[key]
             if (
               message &&
-              message.sender_id == this.chatUser.id &&
-              topics.filter((item) => item.id == message.topic_id).length > 0
+              message.sender_id === this.chatUser.id &&
+              topics.filter((item) => item.id === message.topic_id).length > 0
             ) {
               return {
                 sender_id: message.sender_id,
@@ -243,7 +240,7 @@
       },
       getTopicName () {
         const topic = this.topics.filter(
-          (item) => item.id == this.selectedTopicId,
+          (item) => item.id === this.selectedTopicId,
         )
         if (topic.length) {
           return topic[0].name
@@ -253,7 +250,7 @@
       setGroup (id) {
         if (id === 0) this.openDialogGroups()
         else {
-          const group = this.groups.filter((item) => item.id == id)
+          const group = this.groups.filter((item) => item.id === id)
           if (group.length) {
             this.recipients = group[0].members.map((item) => item.id)
           }
@@ -261,7 +258,7 @@
       },
       getGroupName () {
         const group = this.groups.filter(
-          (item) => item.id == this.selectedGroupId,
+          (item) => item.id === this.selectedGroupId,
         )
         if (group.length) {
           return group[0].name

@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="dialog"    
+    v-model="dialog"
     custom-class="app--modal"
   >
     <v-skeleton-loader
@@ -19,23 +19,21 @@
         </div>
 
         <div class="action">
-          <el-button
-            size="medium"
+          <v-btn
             @click="close()"
           >
             Отмена
-          </el-button>
+          </v-btn>
 
-          <div class="app--spacer" />
+          <v-spacer />
 
-          <el-button
-            type="danger"
-            size="medium"
+          <v-btn
+            color="error"
             :loading="memberRemoveLoading"
             @click="remove()"
           >
             Удалить
-          </el-button>
+          </v-btn>
         </div>
       </div>
     </v-skeleton-loader>
@@ -46,8 +44,14 @@
   export default {
     props: {
       dialog: Boolean,
-      conversationId: Number,
-      item: Object,
+      conversationId: {
+        type: Number,
+        required: true,
+      },
+      item: {
+        type: Object,
+        required: true,
+      },
     },
     data () {
       return {
@@ -59,9 +63,6 @@
     computed: {
       loadingSend () {
         return this.$store.getters['chat/message/loading']
-      },
-      colors () {
-        return this.$store.getters['template/colors/colors']
       },
     },
     methods: {

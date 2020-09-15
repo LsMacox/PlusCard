@@ -38,13 +38,13 @@ export default {
       // если сообщения уже загружены
       if (state.messages[conversationId]) { messages = state.messages[conversationId] }
 
-      payload.data.forEach(item => Vue.set(messages, item.id, item))
+      payload.forEach(item => Vue.set(messages, item.id, item))
       // ключ = id чата
       Vue.set(state.messages, conversationId, messages)
     },
     unreadMessages (state, payload) {
       const messages = {}
-      payload.data.forEach(item => Vue.set(messages, item.id, item))
+      payload.forEach(item => Vue.set(messages, item.id, item))
       // ключ = id чата
       Vue.set(state.unreadMessages, payload.conversation_id, messages)
     },
@@ -83,7 +83,7 @@ export default {
   actions: {
     status ({ rootGetters, state }, payload) {
       const conversationId = payload.conversation_id
-      payload.data.forEach(item => {
+      payload.forEach(item => {
         // если send_type = null
         if (!item.send_type) {
           if (state.messages[conversationId]) {
@@ -119,7 +119,6 @@ export default {
     },
 
     toDelivered ({ dispatch, commit, state, rootGetters }, conversationId) {
-      try {
         const chatUser = rootGetters['chat/chatUser/chatUser']
         const toDelivered = []
         let id = null
@@ -140,13 +139,9 @@ export default {
           }
           dispatch('deliveredStatus', delivered)
         }
-      } catch (e) {
-        /// /console.log(e)
-      }
     },
 
     toRead ({ dispatch, commit, state, rootGetters }, conversationId) {
-      try {
         const chatUser = rootGetters['chat/chatUser/chatUser']
         const toRead = []
         let msgId = null
@@ -168,7 +163,6 @@ export default {
           }
           dispatch('readStatus', read)
         }
-      } catch (e) {}
     },
 
     async list ({ dispatch, commit, state, rootState, rootGetters }, item) {

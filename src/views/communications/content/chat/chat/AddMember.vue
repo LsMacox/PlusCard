@@ -1,6 +1,6 @@
 <template>
-  <v-dialog    
-    v-model="dialog"    
+  <v-dialog
+    v-model="dialog"
     custom-class="app--modal"
   >
     <v-skeleton-loader
@@ -66,24 +66,20 @@
         </div>
 
         <div class="action">
-          <el-button
-            size="medium"
-            @click="close()"
-          >
+          <v-btn @click="close()">
             Отмена
-          </el-button>
+          </v-btn>
 
-          <div class="app--spacer" />
+          <v-spacer />
 
-          <el-button
-            type="primary"
-            size="medium"
+          <v-btn
+            color="primary"
             :loading="memberAddLoading"
             :disabled="!members.length"
             @click="add()"
           >
             Добавить
-          </el-button>
+          </v-btn>
         </div>
       </div>
     </v-skeleton-loader>
@@ -108,9 +104,6 @@
 
       loadingSend () {
         return this.$store.getters['chat/message/loading']
-      },
-      colors () {
-        return this.$store.getters['template/colors/colors']
       },
       programId () {
         return this.$store.getters['brand/program/programId']
@@ -163,7 +156,7 @@
        */
 
       setRecipientAll () {
-        if (this.members.length == this.clients.length) {
+        if (this.members.length === this.clients.length) {
           this.members = []
         } else {
           this.members = Object.assign([], this.clients)

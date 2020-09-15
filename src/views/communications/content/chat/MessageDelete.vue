@@ -35,8 +35,8 @@
         <v-btn
           class="box-button"
           icon="clear"
-          :color="colors.buttons.success"
-          :loading="loadingRequest"
+          color="success"
+          :loading="messageDeleteLoading"
           @click="remove()"
         >
           Удалить
@@ -63,18 +63,11 @@
     data () {
       return {
         deleteForAll: false,
+        messageDeleteLoading: false,
       }
     },
     computed: {
-      loadingApp () {
-        return this.$store.getters['template/shared/loadingApp']
-      },
-      loadingRequest () {
-        return this.$store.getters['template/shared/loadingRequest']
-      },
-      colors () {
-        return this.$store.getters['template/colors/colors']
-      },
+
     },
     created () {
 
@@ -88,15 +81,18 @@
           conversation_id: this.item.conversation_id,
           message_id: this.item.id,
         }
-        // console.log(message)
-        if (!this.deleteForAll) {
-          this.$store.dispatch('chat/message/delete', message).then(() => {
-            this.$emit('update:dialog', false)
-          })
-        }
+        this.messageDeleteLoading = true
         if (this.deleteForAll) {
           this.$store.dispatch('chat/message/deleteAll', message).then(() => {
             this.$emit('update:dialog', false)
+          }).finally(() => {
+            this.messageDeleteLoading = false
+          })
+        } else {
+          this.$store.dispatch('chat/message/delete', message).then(() => {
+            this.$emit('update:dialog', false)
+          }).finally(() => {
+            this.messageDeleteLoading = false
           })
         }
       },

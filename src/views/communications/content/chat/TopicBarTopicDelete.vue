@@ -25,12 +25,13 @@
 
         <v-btn
           class="box-button"
-          label=""
-          icon="clear"
-          :color="colors.buttons.success"
-          :loading="loadingRequest"
+          color="success"
+          :loading="topicDeleteRequest"
           @click="remove()"
         >
+          <v-icon left>
+            clear
+          </v-icon>
           Удалить тему
         </v-btn>
       </v-card-actions>
@@ -51,32 +52,26 @@
         type: Number,
         default: null,
       },
+
     },
     data () {
       return {
-
+        topicDeleteRequest: false,
       }
     },
-    computed: {
-      loadingApp () {
-        return this.$store.getters['template/shared/loadingApp']
-      },
-      loadingRequest () {
-        return this.$store.getters['template/shared/loadingRequest']
-      },
-      colors () {
-        return this.$store.getters['template/colors/colors']
-      },
-    },
+    computed: { },
     methods: {
       close () {
         this.$emit('update:dialog', false)
       },
       async remove () {
         // чат-пользователь
+        this.topicDeleteRequest = true
         this.$store.dispatch('chat/topic/delete', this.topicId).then(() => {
           this.$emit('update:dialog', false)
           this.$emit('update:deleteSuccess', true)
+        }).finally(() => {
+          this.topicDeleteRequest = false
         })
       },
     },

@@ -2,10 +2,7 @@
   <div
     class="message-line"
   >
-    <div
-      v-if="myMessage"
-      class="app--spacer"
-    />
+    <v-spacer v-if="myMessage" />
 
     <div class="message-block">
       <div
@@ -22,131 +19,98 @@
         </div>
 
         <div
-          class="message-box"
+          :class="{
+            'message-box': true,
+            'message-my': myMessage,
+          }"
           :style="getMessageBoxStyle()"
           @mouseenter="showMenu(item, $event)"
           @mouseleave="hideMenu(item, $event)"
         >
           <!-- message menu мое -->
           <div
-            v-if="myMessage"
             :id="'message' + item.id"
-            class="message-menu-my"
+            :class="{
+              'message-menu-my': myMessage,
+              'message-menu-other': !myMessage,
+            }"
             style="display: none; height: 60px;"
           >
-            <div class="message-menu-my-icons">
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="Удалить"
-                placement="top"
-                :open-delay="$Config.tooltipButtonDelay"
+            <div
+              :class="{
+                'message-menu-my-icons': myMessage,
+                'message-menu-other-icons': !myMessage,
+              }"
+            >
+              <v-tooltip
+                :open-delay="$config.tooltipButtonDelay"
+                dark
+                top
               >
-                <v-icon
-                  class="message-menu-my-icon1"
-                  @click="openDelete(item, true)"
-                >
-                  delete_sweep
-                </v-icon>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="Переслать"
-                placement="top"
-                :open-delay="$Config.tooltipButtonDelay"
-              >
-                <v-icon
-                  class="message-menu-my-icon2"
-                  @click="openForwardMessage(item)"
-                >
-                  reply_all
-                </v-icon>
-              </el-tooltip>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    @click="openDelete(item, true)"
+                    v-on="on"
+                  >
+                    <v-icon
+                      :class="myMessage?'message-menu-my-icon1': 'message-menu-other-icon1'"
+                    >
+                      fa-trash-alt
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <span>Удалить</span>
+              </v-tooltip>
 
-              <el-tooltip
+              <v-tooltip
                 class="item"
-                effect="dark"
-                content="Ответить"
-                placement="top"
-                :open-delay="$Config.tooltipButtonDelay"
+                :open-delay="$config.tooltipButtonDelay"
+                v-html="'Переслать'"
               >
-                <v-icon
-                  class="message-menu-my-icon2"
-                  @click="openReplyMessage(item)"
-                >
-                  reply
-                </v-icon>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="Редактировать"
-                placement="top"
-                :open-delay="$Config.tooltipButtonDelay"
-              >
-                <v-icon
-                  class="message-menu-my-icon2"
-                  @click="openUpdate(item)"
-                >
-                  create
-                </v-icon>
-              </el-tooltip>
-            </div>
-          </div>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    :class="myMessage?'message-menu-my-icon2': 'message-menu-other-icon2'"
+                    @click="openForwardMessage(item)"
+                    v-on="on"
+                  >
+                    fa-reply-all
+                  </v-icon>
+                </template>
+              </v-tooltip>
 
-          <!-- message menu другое -->
-          <div
-            v-if="!myMessage"
-            :id="'message' + item.id"
-            class="message-menu-other"
-            style="display: none; height: 60px;"
-          >
-            <div class="message-menu-other-icons">
-              <el-tooltip
+              <v-tooltip
                 class="item"
-                effect="dark"
-                content="Удалить"
-                placement="top"
-                :open-delay="$Config.tooltipButtonDelay"
+                :open-delay="$config.tooltipButtonDelay"
+                v-html="'Ответить'"
               >
-                <v-icon
-                  class="message-menu-other-icon1"
-                  @click="openDelete(item, false)"
-                >
-                  delete_sweep
-                </v-icon>
-              </el-tooltip>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    :class="myMessage?'message-menu-my-icon2': 'message-menu-other-icon2'"
+                    @click="openReplyMessage(item)"
+                    v-on="on"
+                  >
+                    fa-reply
+                  </v-icon>
+                </template>
+              </v-tooltip>
 
-              <el-tooltip
+              <v-tooltip
                 class="item"
-                effect="dark"
-                content="Переслать"
-                placement="top"
-                :open-delay="$Config.tooltipButtonDelay"
+                :open-delay="$config.tooltipButtonDelay"
+                v-html="'Редактировать'"
               >
-                <v-icon
-                  class="message-menu-other-icon2"
-                  @click="openForwardMessage(item)"
-                >
-                  reply_all
-                </v-icon>
-              </el-tooltip>
-
-              <el-tooltip
-                class="item"
-                effect="dark"
-                content="Ответить"
-                placement="top"
-                :open-delay="$Config.tooltipButtonDelay"
-              >
-                <v-icon
-                  class="message-menu-other-icon2"
-                  @click="openReplyMessage(item)"
-                >
-                  reply
-                </v-icon>
-              </el-tooltip>
+                <template v-slot:activator="{ on }">
+                  <v-icon
+                    v-if="myMessage"
+                    :class="myMessage?'message-menu-my-icon2': 'message-menu-other-icon2'"
+                    @click="openUpdate(item)"
+                    v-on="on"
+                  >
+                    fa-edit
+                  </v-icon>
+                </template>
+              </v-tooltip>
             </div>
           </div>
 
@@ -280,7 +244,7 @@
             v-if="myMessage"
             class="message-box-footer"
           >
-            <div class="app--spacer" />
+            <v-spacer v-if="myMessage" />
 
             <div class="message-time">
               {{ getDate(item.created_at) }}
@@ -307,7 +271,7 @@
             <div class="message-time-other">
               {{ getDate(item.created_at) }}
             </div>
-            <div class="app--spacer" />
+            <v-spacer v-if="myMessage" />
           </div>
 
           <!-- тема -->
@@ -326,27 +290,25 @@
               v-for="(member, i) in recipients"
               :key="i"
             >
-              <el-tooltip
-                :content="member.name"
-                placement="top"
-                :open-delay="$Config.tooltipDelay"
+              <v-tooltip
+                :open-delay="$config.tooltipButtonDelay"
+                v-html="member.name"
               >
-                <img
-                  :src="member.avatar"
-                  alt=""
-                  class="message-box-recipients-avatars"
-                >
-              </el-tooltip>
+                <template v-slot:activator="{ on }">
+                  <v-img
+                    :src="member.avatar"
+                    class="message-box-recipients-avatars"
+                    v-on="on"
+                  />
+                </template>
+              </v-tooltip>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div
-      v-if="!myMessage"
-      class="app--spacer"
-    />
+    <!-- <v-spacer v-if="myMessage" /> -->
 
     <app-message-update
       v-if="dialogUpdate"
@@ -391,13 +353,28 @@
       AppAttachmentPurchase,
     },
     props: {
-      item: Object,
-      conversationId: String | Number,
+      item: {
+        type: Object,
+        required: true,
+      },
+      conversationId: {
+        type: [Number, String, null],
+        default: null,
+      },
       myMessage: Boolean,
       dialogReplyMessage: Boolean,
-      quotedMessage: Object,
-      quotedMessageSender: String,
-      sendType: String,
+      quotedMessage: {
+        type: Object,
+        default: null,
+      },
+      quotedMessageSender: {
+        type: String,
+        default: null,
+      },
+      sendType: {
+        type: String,
+        default: null,
+      },
       overlayChat: Boolean,
     },
     data () {
@@ -450,10 +427,8 @@
         return JSON.stringify(obj) === '{}'
       },
       getMessageBoxStyle () {
-        if (this.myMessage) {
-          return 'background-color: #169AC7; color: #ffffff; border-radius: 5px 5px 0 5px; word-break: break-word;'
-        }
-        return 'background-color: #f4f3f7; color: #181818; border-radius: 5px 5px 5px 0; word-break: break-word;'
+        return this.myMessage ? 'background-color: #169AC7; color: #ffffff; border-radius: 5px 5px 0 5px; word-break: break-word;'
+          : 'background-color: #f4f3f7; color: #181818; border-radius: 5px 5px 5px 0; word-break: break-word;'
       },
       getAuthorName (item) {
         let author = {}
@@ -728,9 +703,7 @@
                     }
                 }
 
-                .chat-scroll-x {
-
-                }
+                // .chat-scroll-x { }
 
                 /* блок сообщения */
                 .message-box-message {
@@ -765,9 +738,7 @@
                         }
                     }
 
-                    .message-time-other {
-
-                    }
+                    // .message-time-other { }
                 }
 
                 .message-box-footer-other {
@@ -777,9 +748,7 @@
                     font-size: 11px;
                     line-height: 11px;
 
-                    .message-time-other {
-
-                    }
+                    // .message-time-other { }
                 }
             }
         }

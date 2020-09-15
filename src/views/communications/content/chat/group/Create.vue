@@ -1,217 +1,230 @@
 <template>
-<v-dialog
-        v-model="dialog"
-        custom-class="app--modal"
->
+  <v-dialog
+    v-model="dialog"
+    custom-class="app--modal"
+  >
     <div class="modal">
+      <div class="header">
+        Новая группа
+      </div>
 
-        <div class="header">Новая группа</div>
+      <el-form
+        ref="form"
+        :model="form"
+        :rules="rules"
+        @submit.prevent.native="submit('form')"
+      >
+        <div class="content">
+          <el-form-item prop="name">
+            <v-text-field
+              v-model="form.name"
+              placeholder="Введите название группы"
+            />
+          </el-form-item>
 
-        <el-form
-                :model="form"
-                :rules="rules"
-                ref="form"
-                @submit.prevent.native="submit('form')"
-        >
-            <div class="content">
-
-                <el-form-item prop="name">
-                    <el-input
-                            v-model="form.name"
-                            placeholder="Введите название группы"
-                    ></el-input>
-                </el-form-item>
-
-                <!-- все получатели -->
-                <div style="display: flex;">
-                    <div
-                            class="check-all"
-                            @click="setRecipientAll()"
-                    >
-                        <div
-                                v-if="checkAll"
-                                class="check-all-back"
-                        ><v-icon color="white">check</v-icon></div>
-                    </div>
-                    <div class="name-all">Все участники чата</div>
-                </div>
-
-                <!-- список получателей -->
-                <div
-                        v-for="(item, i) in members"
-                        :key="i"
-                        class="res-row"
-                >
-                    <div class="line-h">
-                        <div class="line-v"></div>
-                    </div>
-                    <div
-                            class="check"
-                            @click="setRecipient(item)"
-                    >
-                        <div
-                                v-show="checkAll || isRecipient(item)"
-                                class="check-all-back"
-                        ><v-icon color="white">check</v-icon></div>
-                    </div>
-                    <div
-                            class="avatar"
-                            :style="'background: url(' + item.avatar + ');'"
-                    ></div>
-                    <div class="name">{{item.name}}</div>
-                </div>
-
+          <!-- все получатели -->
+          <div style="display: flex;">
+            <div
+              class="check-all"
+              @click="setRecipientAll()"
+            >
+              <div
+                v-if="checkAll"
+                class="check-all-back"
+              >
+                <v-icon color="white">
+                  check
+                </v-icon>
+              </div>
             </div>
-
-            <div class="action">
-                <el-button
-                        size="medium"
-                        @click="close()"
-                >Отмена</el-button>
-
-                <div class="app--spacer"></div>
-
-                <el-button
-                        type="primary"
-                        size="medium"
-                        :loading="loadingRequest"
-                        :disabled="!recipients.length"
-                        @click="submit('form')"
-                >Создать</el-button>
+            <div class="name-all">
+              Все участники чата
             </div>
+          </div>
 
-        </el-form>
+          <!-- список получателей -->
+          <div
+            v-for="(item, i) in members"
+            :key="i"
+            class="res-row"
+          >
+            <div class="line-h">
+              <div class="line-v" />
+            </div>
+            <div
+              class="check"
+              @click="setRecipient(item)"
+            >
+              <div
+                v-show="checkAll || isRecipient(item)"
+                class="check-all-back"
+              >
+                <v-icon color="white">
+                  check
+                </v-icon>
+              </div>
+            </div>
+            <div
+              class="avatar"
+              :style="'background: url(' + item.avatar + ');'"
+            />
+            <div class="name">
+              {{ item.name }}
+            </div>
+          </div>
+        </div>
 
+        <div class="action">
+          <v-btn
+
+            @click="close()"
+          >
+            Отмена
+          </v-btn>
+
+          <v-spacer />
+
+          <v-btn
+            color="primary"
+            :loading="groupCreateAction"
+            :disabled="!recipients.length"
+            @click="submit('form')"
+          >
+            Создать
+          </v-btn>
+        </div>
+      </el-form>
     </div>
-</v-dialog>
+  </v-dialog>
 </template>
 
 <script>
-export default {
-    props: [
-        'dialog',
-        'conversationId'
-    ],
-    data () {
-        let validateName = (rule, value, callback) => {
-            let check = this.groups.filter(item => item.name === value)
-            if (check.length) {
-                callback(new Error('Группа с таким именем уже существует'))
-            } else {
-                callback()
-            }
-        }
-        return {
-            form: {
-                name: null
-            },
-            checkAll: false,
-            recipients: [],
-            rules: {
-                name: [
-                    { required: true, message: 'Название группы обязательно', trigger: 'blur' },
-                    { max: 100, message: 'Название группы не должен быть более 100 символов', trigger: 'blur' },
-                    { validator: validateName, trigger: 'blur' }
-                ]
-            }
-        }
+  export default {
+    props: {
+      dialog: Boolean,
+      conversationId: {
+        type: [Number, String, null],
+        default: null,
+      },
     },
-    watch: {
-        recipients (val) {
-            if (val && val.length === this.members.length) this.checkAll = true
-            else this.checkAll = false
+    data () {
+      const validateName = (rule, value, callback) => {
+        const check = this.groups.filter(item => item.name === value)
+        if (check.length) {
+          callback(new Error('Группа с таким именем уже существует'))
+        } else {
+          callback()
         }
+      }
+      return {
+        form: {
+          name: null,
+        },
+        checkAll: false,
+        recipients: [],
+        rules: {
+          name: [
+            { required: true, message: 'Название группы обязательно', trigger: 'blur' },
+            { max: 100, message: 'Название группы не должен быть более 100 символов', trigger: 'blur' },
+            { validator: validateName, trigger: 'blur' },
+          ],
+        },
+        groupCreateAction: false,
+      }
     },
     computed: {
-        loadingRequest () {
-            return this.$store.getters['template/shared/loadingRequest']
-        },
-        loadingSend () {
-            return this.$store.getters['chat/message/loading']
-        },
-        colors () {
-            return this.$store.getters['template/colors/colors']
-        },
-        groups () {
-            return this.$store.getters['chat/group/groups']
-        },
-        conversation() {
-            let conversation = this.$store.getters["chat/conversation/conversations"].filter(item => item.id == this.conversationId)
-            if (conversation.length) return conversation[0]
-            return {}
-        },
-        members () {
-            let members = []
-            let chatUser = this.$store.getters['chat/chatUser/chatUser']
-            if (this.conversation && this.conversation.members) {
-                members = this.conversation.members.filter(item => {
-                    if (item.id != chatUser.id && item.active) return item
-                })
-            }
-            return members
-        },
+      loadingSend () {
+        return this.$store.getters['chat/message/loading']
+      },
+      groups () {
+        return this.$store.getters['chat/group/groups']
+      },
+      conversation () {
+        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
+        if (conversation.length) return conversation[0]
+        return {}
+      },
+      members () {
+        let members = []
+        const chatUser = this.$store.getters['chat/chatUser/chatUser']
+        if (this.conversation && this.conversation.members) {
+          members = this.conversation.members.filter(item => {
+            if (item.id !== chatUser.id && item.active) return item
+          })
+        }
+        return members
+      },
+    },
+    watch: {
+      recipients (val) {
+        if (val && val.length === this.members.length) this.checkAll = true
+        else this.checkAll = false
+      },
     },
     methods: {
-        close () {
-            this.recipients = []
-            this.$emit('update:dialog', false)
-        },
-        isEmptyObject (obj) {
-            return JSON.stringify(obj) === '{}'
-        },
+      close () {
+        this.recipients = []
+        this.$emit('update:dialog', false)
+      },
+      isEmptyObject (obj) {
+        return JSON.stringify(obj) === '{}'
+      },
 
-        /*
-         * ПОЛУЧАТЕЛИ
-         */
+      /*
+       * ПОЛУЧАТЕЛИ
+       */
 
-        setRecipientAll () {
-            if (this.recipients.length == this.members.length) {
-                this.recipients = []
-            } else {
-                this.recipients = Object.assign([], this.members)
-            }
-        },
-        setRecipient (item) {
-            let check = false
-            let index = null
-            this.recipients.forEach((recipient, i) => {
-                if (recipient.id === item.id) {
-                    check = true
-                    index = i
-                }
-            })
-            if (check) this.recipients.splice(index, 1)
-            else this.recipients.push(item)
-        },
-        isRecipient (item) {
-            let check = this.recipients.filter(recipient => recipient.id === item.id)
-            if (check.length) return true
-            return false
-        },
-        submit (formRef) {
-            this.$refs[formRef].validate((v) => {
-                if (v) this.create()
-                else return false
-            })
-        },
-        create () {
-            const group = {
-                name: this.form.name,
-                conversation_id: this.conversationId,
-                parent_group_id: null,
-                members: this.recipients.map(item => item.id)
-            }
-            ////console.log(group)
-            this.$store.dispatch("chat/group/create", group).then(() => {
-                this.close()
-            })
+      setRecipientAll () {
+        if (this.recipients.length === this.members.length) {
+          this.recipients = []
+        } else {
+          this.recipients = Object.assign([], this.members)
         }
-    }
-}
+      },
+      setRecipient (item) {
+        let check = false
+        let index = null
+        this.recipients.forEach((recipient, i) => {
+          if (recipient.id === item.id) {
+            check = true
+            index = i
+          }
+        })
+        if (check) this.recipients.splice(index, 1)
+        else this.recipients.push(item)
+      },
+      isRecipient (item) {
+        const check = this.recipients.filter(recipient => recipient.id === item.id)
+        if (check.length) return true
+        return false
+      },
+      submit (formRef) {
+        this.$refs[formRef].validate((v) => {
+          if (v) this.create()
+          else return false
+        })
+      },
+      create () {
+        const group = {
+          name: this.form.name,
+          conversation_id: this.conversationId,
+          parent_group_id: null,
+          members: this.recipients.map(item => item.id),
+        }
+        /// /console.log(group)
+        this.groupCreateAction = true
+        this.$store.dispatch('chat/group/create', group).then(() => {
+          this.close()
+        }).finally(() => {
+          this.groupCreateAction = false
+        })
+      },
+    },
+  }
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/components/_modal.scss"; 
+@import "@/styles/components/_modal.scss";
 
 .modal {
     min-width: 400px;

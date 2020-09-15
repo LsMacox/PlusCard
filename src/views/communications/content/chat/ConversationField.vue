@@ -19,7 +19,12 @@
   <v-skeleton-loader
     v-else
     :loading="loadingConversations || loadingMessage"
-    type="card"
+    type="header, body, actions"
+    :types="{
+      test: 'avatar, text',
+      header: 'list-item-avatar-two-line',
+      body: 'image@3',
+    }"
   >
     <div
 
@@ -46,11 +51,11 @@
       >
         <!-- прелоадер старых сообщений -->
         <v-skeleton-loader
-          :loading="loadingMessagePage"         
+          :loading="loadingMessagePage"
           height="100%"
           type="list-item-avatar-three-line@5"
         >
-          <div            
+          <div
             v-for="(item, i) in messages"
             :key="i"
           >
@@ -195,7 +200,7 @@
         },
       },
       profile () {
-        return this.$store.getters.getProfile
+        return this.$store.getters.user
       },
       programId () {
         return this.$store.getters['brand/program/programId']
@@ -628,7 +633,7 @@
         this.dialogReplyMessage = false
         if (this.overlayChat) {
           const elem = this.$refs.conversationField
-          elem.scrollTop = elem.scrollHeight
+          if (elem) elem.scrollTop = elem.scrollHeight
           this.overlayChat = false
         }
       },
@@ -650,7 +655,7 @@
       },
       toBottomFeed () {
         const elem = this.$refs.conversationField
-        elem.scrollTop = elem.scrollHeight
+        if (elem) elem.scrollTop = elem.scrollHeight
       },
       async updateMessages (messages) {
         this.overlayChat = false
@@ -688,7 +693,7 @@
 
           // асинхронная загрузка
           if (Object.keys(this.messages).length) {
-            // console.log('асинхронная загрузка')
+            console.log('асинхронная загрузка')
             try {
               this.$store.dispatch('chat/topic/list', id)
               this.$store.dispatch('chat/group/list', id)
@@ -701,11 +706,14 @@
 
               this.$store.dispatch('chat/message/list', conversation)
             } catch (e) {
+              console.error(e)
+            } finally {
+              this.loadingMessage = false
             }
 
             // синхронная загрузка
           } else {
-            // console.log('синхронная загрузка')
+            console.log('синхронная загрузка')
             try {
               await this.$store.dispatch('chat/topic/list', id)
               await this.$store.dispatch('chat/group/list', id)
@@ -718,10 +726,11 @@
 
               await this.$store.dispatch('chat/message/list', conversation)
             } catch (e) {
+              console.error(e)
+            } finally {
+              this.loadingMessage = false
             }
           }
-
-          this.loadingMessage = false
         }
       },
       async scrollFeed (e) {
@@ -766,25 +775,28 @@
         }
         var text = document.getElementById('message')
 
-        function resize () {
-          text.style.height = 'auto'
-          text.style.height = text.scrollHeight + 'px'
+        if (text) {
+          const resize = () => {
+            text.style.height = 'auto'
+            text.style.height = text.scrollHeight + 'px'
+          }
+
+          /* 0-timeout to get the already changed text */
+          const delayedResize = () => {
+            window.setTimeout(resize, 0)
+          }
+
+          observe(text, 'change', resize)
+          observe(text, 'cut', delayedResize)
+          observe(text, 'paste', delayedResize)
+          observe(text, 'drop', delayedResize)
+          observe(text, 'keydown', delayedResize)
+
+          text.focus()
+          text.select()
+          resize()
         }
 
-        /* 0-timeout to get the already changed text */
-        function delayedResize () {
-          window.setTimeout(resize, 0)
-        }
-
-        observe(text, 'change', resize)
-        observe(text, 'cut', delayedResize)
-        observe(text, 'paste', delayedResize)
-        observe(text, 'drop', delayedResize)
-        observe(text, 'keydown', delayedResize)
-
-        text.focus()
-        text.select()
-        resize()
         window.onresize = this.toBottomFeed()
       },
     },
@@ -800,7 +812,7 @@
 
     .emptyChat {
         padding-top: 20vh;
-        height: calc(100vh - 172px);
+        height: calc(100vh - 40px);
         border-radius: 5px;
         background-color: rgba(255, 255, 255, 1);
         z-index: 10;
@@ -1133,6 +1145,7 @@
     /* conversation scrool-x */
     .conversation-scroll-x::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 6px 0 rgba(0, 0, 0, 0.3);
+        box-shadow: inset 0 6px 0 rgba(0, 0, 0, 0.3);
         background-color: #f5f5f5;
     }
 
@@ -1149,6 +1162,7 @@
     /* conversation scrool-y */
     .conversation-scroll-y::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
         background-color: #f5f5f5;
     }
 
@@ -1203,7 +1217,7 @@
         display: flex;
         flex-direction: column;
         min-height: 310px;
-        height: calc(100vh - 170px);
+        height: calc(100vh - 40px);
 
         .app--conversation--content{
             flex-grow: 1;
@@ -1224,6 +1238,7 @@
 
             &::-webkit-scrollbar-track {
                 -webkit-box-shadow: inset 0 0 6px rgba(156, 68, 68, 0.3);
+                box-shadow: inset 0 0 6px rgba(156, 68, 68, 0.3);
                 background-color: #f5f5f5;
             }
             &::-webkit-scrollbar {

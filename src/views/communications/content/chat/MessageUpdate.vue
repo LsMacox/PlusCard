@@ -1,126 +1,119 @@
 <template>
+  <v-dialog
+    v-model="dialog"
+    max-width="650"
+    hide-overlay
+    persistent
+  >
+    <v-card class="modal-card">
+      <div class="modal-header">
+        Редактирование сообщения
+      </div>
 
-    <v-dialog
-            v-model="dialog"
-            max-width="650"
-            hide-overlay
-            persistent
-    >
-        <v-card class="modal-card">
+      <div class="modal-content">
+        <app-textarea
+          class="input-field"
+          label="Текст сообщения *"
+          :value.sync="messageText"
+          max-length="10000"
+          hint="* поле не должно быть пустым"
+          error=""
+          validate.sync=""
+        />
+      </div>
 
-            <div class="modal-header">Редактирование сообщения</div>
+      <div class="modal-action">
+        <div>
+          <div
+            class="close"
+            @click="close()"
+          >
+            Отмена
+          </div>
+        </div>
 
-            <div class="modal-content">
-                <app-textarea
-                        class="input-field"
-                        label="Текст сообщения *"
-                        :value.sync="messageText"
-                        max-length="10000"
-                        hint="* поле не должно быть пустым"
-                        error=""
-                        validate.sync=""
-                ></app-textarea>
-            </div>
+        <v-spacer />
 
-            <div class="modal-action">
-
-                <div>
-                    <div
-                            class="close"
-                            @click="close()"
-                    >Отмена</div>
-                </div>
-
-                <v-spacer></v-spacer>
-
-                <v-btn
-                        class="box-button"                        
-                        icon="create"
-                        :color="validate ? colors.buttons.success : colors.buttons.disable"
-                        :loading="loadingRequest"
-                        @click.native="update(validate)"
-                >Сохранить</v-btn>
-
-            </div>
-        </v-card>
-    </v-dialog>
-
+        <v-btn
+          class="box-button"
+          icon="create"
+          :disabled="!validate"
+          color="success"
+          :loading="messageUpdateRequest"
+          @click.native="update(validate)"
+        >
+          Сохранить
+        </v-btn>
+      </div>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 
 // import AppTextarea from '../../../../template/form/Textarea'
 
-export default {
+  export default {
     components: {
-        
-        // AppTextarea
+
+      // AppTextarea
     },
     props: {
-        dialog: Boolean,
-        item: Object,
+      dialog: Boolean,
+      item: {
+        type: Object,
+        required: true,
+      },
     },
     data () {
-        return {
-            messageText: '',
-            messageTextOld: ''
-        }
+      return {
+        messageText: '',
+        messageTextOld: '',
+        messageUpdateRequest: false,
+      }
     },
     computed: {
-        loadingApp () {
-            return this.$store.getters['template/shared/loadingApp']
-        },
-        loadingRequest () {
-            return this.$store.getters['template/shared/loadingRequest']
-        },
-        colors () {
-            return this.$store.getters['template/colors/colors']
-        },
-        messageOld () {
-            if (this.id) return this.$store.getters['chat/message/messages'][this.item.conversation_id][this.item.id] // id чата
-        },
-        validate () {
-            if (this.messageText !== this.messageTextOld && this.messageText) return true
-            return false
+      validate () {
+        if (this.messageText !== this.messageTextOld && this.messageText) return true
+        return false
+      },
+    },
+    created () {
+      if (this.item.message) {
+        this.messageText = this.item.message
+        this.messageTextOld = this.item.message
+      } else if (this.item.attachments && this.item.attachments.length) {
+        const msgAttach = this.item.attachments.filter(item => item.type === 'message/text')
+        if (msgAttach.length) {
+          this.messageText = msgAttach[0].content
+          this.messageTextOld = msgAttach[0].content
         }
+      }
     },
     methods: {
-        close () {
+      close () {
+        this.$emit('update:dialog', false)
+      },
+      async update (validate) {
+        if (validate) {
+          // токен чат-пользователя для операций с чатами
+
+          const message = {
+            conversation_id: this.item.conversation_id,
+            message_id: this.item.id,
+            message: this.messageText,
+          }
+          // console.log(message)
+          this.messageUpdateRequest = true
+          this.$store.dispatch('chat/message/update', message).then(() => {
             this.$emit('update:dialog', false)
-        },
-        async update (validate) {
-            if (validate) {
-                // токен чат-пользователя для операций с чатами
-
-                const message = {
-                    conversation_id: this.item.conversation_id,
-                    message_id: this.item.id,
-                    message: this.messageText,
-                }
-                //console.log(message)
-                this.$store.dispatch('chat/message/update', message).then(() => {
-                    this.$emit('update:dialog', false)
-                })
-            }
+          }).finally(() => {
+            this.messageUpdateRequest = false
+          })
         }
+      },
     },
-    created() {
-
-        if (this.item.message) {
-
-            this.messageText = this.item.message
-            this.messageTextOld = this.item.message
-
-        } else if (this.item.attachments && this.item.attachments.length) {
-
-            let msgAttach = this.item.attachments.filter(item => item.type == 'message/text')
-            if (msgAttach.length) {
-                this.messageText = msgAttach[0].content
-                this.messageTextOld = msgAttach[0].content
-            }
-        }
-    }
-}
+  }
 </script>
 
 <style scoped>

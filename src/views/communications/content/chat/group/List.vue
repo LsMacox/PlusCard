@@ -9,15 +9,16 @@
       </div>
 
       <div class="content">
-        <el-button
+        <v-btn
           class="content-input"
-          type="primary"
-          size="medium"
-          icon="el-icon-plus"
+          color="primary"
           @click="openCreate()"
         >
+          <v-icon left>
+            el-icon-plus
+          </v-icon>
           Новая группа
-        </el-button>
+        </v-btn>
 
         <!-- список получателей -->
         <div
@@ -57,7 +58,7 @@
           <div class="type">
             {{ getType(item.entity_type) }}
           </div>
-          <div class="app--spacer" />
+          <v-spacer />
           <div
             v-if="item.entity_type === 'GROUP'"
             class="update"
@@ -76,23 +77,21 @@
       </div>
 
       <div class="action">
-        <el-button
-          size="medium"
+        <v-btn
           @click="close"
         >
           Сброс и отмена
-        </el-button>
+        </v-btn>
 
-        <div class="app--spacer" />
+        <v-spacer />
 
-        <el-button
-          type="primary"
-          size="medium"
+        <v-btn
+          color="primary"
           :disabled="!recipients.length"
           @click="save"
         >
           Выбрать
-        </el-button>
+        </v-btn>
       </div>
 
       <create
@@ -129,10 +128,16 @@
       Delete,
 
     },
-    props: [
-      'dialog',
-      'conversationId',
-    ],
+    props: {
+      dialog: {
+        type: Boolean,
+        default: false,
+      },
+      conversationId: {
+        type: [Number, String, null],
+        default: null,
+      },
+    },
     data () {
       return {
         createDialog: false,
@@ -149,11 +154,8 @@
       loadingSend () {
         return this.$store.getters['chat/message/loading']
       },
-      colors () {
-        return this.$store.getters['template/colors/colors']
-      },
       conversation () {
-        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id == this.conversationId)
+        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
         if (conversation.length) return conversation[0]
         return {}
       },
@@ -162,7 +164,7 @@
         const chatUser = this.$store.getters['chat/chatUser/chatUser']
         if (this.conversation && this.conversation.members) {
           members = this.conversation.members.filter(item => {
-            if (item.id != chatUser.id && item.active) return item
+            if (item.id !== chatUser.id && item.active) return item
           })
         }
         return members
@@ -178,7 +180,7 @@
           conversation.members.sort((a, b) => a.name - b.name)
 
           list = conversation.members.filter(item => {
-            if (item.id != chatUser.id && item.active) {
+            if (item.id !== chatUser.id && item.active) {
               item.entity_type = 'USER'
               return item
             }

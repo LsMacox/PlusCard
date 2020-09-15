@@ -1,12 +1,4 @@
-module.exports = {
-    title: 'Plus Cabinet',
-
-    /**
-     * @type {boolean} true | false
-     * @description Whether show the settings right-panel
-     */
-    showSettings: true,
-
+const config = Object.freeze({
     date: {
         // Non-breakable space is \u00A0
         DATE_FORMAT: 'DD.MM.YYYY',
@@ -16,4 +8,12 @@ module.exports = {
     },
     tooltipButtonDelay: 1000,
     tooltipDelay: 500,
+})
+
+export { config }
+
+export default {
+    install (Vue) {
+        Vue.prototype.$config = config
+    },
 }
