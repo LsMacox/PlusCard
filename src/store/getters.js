@@ -1,5 +1,6 @@
 const getters = {
   auth: state => state.auth,
+  user: state => state['profile/profile'].profile,
   drawer: state => state.app.drawer,
   loadingRequest: state => state.app.loadingRequest,
   loadingApp: state => state.app.loadingApp,

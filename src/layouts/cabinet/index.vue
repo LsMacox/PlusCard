@@ -22,12 +22,18 @@
       },
     },
     async created () {
-      await this.$store.dispatch('app/setLoadingApp', true)
+      try {
+        await this.$store.dispatch('app/setLoadingApp', true)
 
-      console.log('loading App Data')
-      await this.$store.dispatch('auth/auth/loadingApp')
+        console.log('loading App Data: start')
+        await this.$store.dispatch('auth/auth/loadingApp')
+        //TODO connect socket+redis
 
-      await this.$store.dispatch('app/setLoadingApp', false)
+        await this.$store.dispatch('app/setLoadingApp', false)
+         console.log('loading App Data: end')
+      } catch (error) {
+        console.log('loading error', error)
+      }
     },
   }
 </script>

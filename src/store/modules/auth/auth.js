@@ -22,6 +22,7 @@ const state = getDefaultState()
 const mutations = {
   RESET_STATE: (state) => Object.assign(state, getDefaultState()),
   SET_DEVICE: (state, payload) => { state.device = payload },
+  SET_USER: (state, payload) => { state.user = payload },
   SET_MERCHANT: (state, payload) => { state.merchant = payload },
   SET_MERCHANT_ID: (state, payload) => { state.merchant_id = payload },
   SET_AUTH: (state, payload) => {
@@ -114,6 +115,7 @@ const actions = {
 
 const getters = {
   merchants: state => state.merchants,
+  user: state => state.user,
   merchant: state => state.merchant,
   merchant_id: state => state.merchant_id,
   device: state => state.device,
