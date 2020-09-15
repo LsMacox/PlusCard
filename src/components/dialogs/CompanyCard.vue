@@ -276,4 +276,8 @@
     }
   }
 }
+
+.colorPickerWrapper {
+  background-color: #ffffff;
+}
 </style>

@@ -1,10 +1,16 @@
 @import '../variables'
+@import '@/styles/_typography'
 
 @import disabled
 @import primary
 @import secondary
 @import neutral
 
+.v-btn.v-btn--contained.v-size--x-small
+  @include body-s-semibold 
+  height: 32px
+
+  .v-btn--fab.v-size--small
 
 .v-btn.v-btn--contained.theme--light
   border: none !important

@@ -2,10 +2,10 @@ import router from './router'
 
 // import { getToken } from '@/utils/auth' // get token from cookie
 import AuthGuard from '@/router/guard-auth'
+import LogHandler from '@/router/router-handler-log'
 
 router.beforeEach(async (to, from, next) => {
-  // start progress bar
-  // console.log('AuthGuard', to, from)
+  LogHandler(to, from)
 
   if (to.meta && to.meta.auth) {
     AuthGuard(to, from, next)
