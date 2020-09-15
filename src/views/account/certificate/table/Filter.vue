@@ -605,14 +605,15 @@
             startDate: null,
             endDate: null,
           }
+          this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(this.filter)))
           return
         }
         const i = this.fastFilter[field].findIndex(objItem => objItem.id === item.id)
-        if (typeof i !== 'undefined') this.fastFilter[field].splice(i, 1)
+        if (i !== -1) this.fastFilter[field].splice(i, 1)
 
         const filter = JSON.parse(JSON.stringify(this.filterStore))
         const j = filter[field].findIndex(objItem => objItem.id === item.id)
-        if (typeof j !== 'undefined') filter[field].splice(j, 1)
+        if (j !== -1) filter[field].splice(j, 1)
         this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
       },
       clearFastFilter () {
