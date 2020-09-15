@@ -79,7 +79,7 @@
         {
           icon: '$iconify_ion-chatbox-outline',
           title: 'Чаты',
-          to: '/chat',
+          to: '/communications/chat',
           badge: 12,
         },
         {

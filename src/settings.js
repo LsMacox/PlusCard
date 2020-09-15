@@ -1,35 +1,19 @@
 module.exports = {
-  title: 'Vue Element Admin',
+    title: 'Plus Cabinet',
 
-  /**
-   * @type {boolean} true | false
-   * @description Whether show the settings right-panel
-   */
-  showSettings: true,
+    /**
+     * @type {boolean} true | false
+     * @description Whether show the settings right-panel
+     */
+    showSettings: true,
 
-  /**
-   * @type {boolean} true | false
-   * @description Whether need tagsView
-   */
-  tagsView: true,
-
-  /**
-   * @type {boolean} true | false
-   * @description Whether fix the header
-   */
-  fixedHeader: false,
-
-  /**
-   * @type {boolean} true | false
-   * @description Whether show the logo in sidebar
-   */
-  sidebarLogo: false,
-
-  /**
-   * @type {string | array} 'production' | ['production', 'development']
-   * @description Need show err logs component.
-   * The default is only used in the production env
-   * If you want to also use it in dev, you can pass ['production', 'development']
-   */
-  errorLog: 'production',
+    date: {
+        // Non-breakable space is \u00A0
+        DATE_FORMAT: 'DD.MM.YYYY',
+        DATETIME_FORMAT: 'DD.MM.YYYY\u00A0HH:mm:ss',
+        DATETIME_FORMAT_MIN: 'DD.MM.YYYY\u00A0HH:mm',
+        DATETIME_FORMAT_MIN2: 'DD.MM.YYYY\u00A0в\u00A0HH:mm',
+    },
+    tooltipButtonDelay: 1000,
+    tooltipDelay: 500,
 }
