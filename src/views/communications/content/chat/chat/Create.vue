@@ -1,106 +1,121 @@
 <template>
   <v-dialog
-    v-model="dialog"
-    custom-class="app--modal"
+    v-model="dialogLocal"
+    width="500px"
+    persistent
+    scrollable
   >
-    <v-skeleton-loader
-      :loading="loading"
-      type="image"
-    >
-      <div
-
-        class="modal"
-      >
-        <div class="header">
-          Новый чат
-        </div>
-
-        <el-form
-          ref="form"
-          :model="form"
-          :rules="rules"
-          @submit.prevent.native="submit('form')"
+    <v-card>
+      <v-toolbar color="primary">
+        <v-toolbar-title>Новый чат</v-toolbar-title>
+        <v-spacer />
+        <v-toolbar-items>
+          <v-btn
+            icon
+            @click="dialogLocal = false"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <!-- <v-card-title>
+        <span class="headline">Новый чат</span>
+      </v-card-title> -->
+      <v-divider />
+      <v-card-text>
+        <v-form v-model="formValid">
+          <v-container>
+            <v-row v-if="members.length > 1">
+              <v-col>
+                <v-text-field
+                  v-model="form.name"
+                  :rules="nameRules"
+                  placeholder="Введите название чата"
+                  :disabled="members.length < 2"
+                  counter
+                  outlined
+                  clearable
+                  minlength="1"
+                  maxlength="100"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <!-- все получатели -->
+                <div style="display: flex;">
+                  <div
+                    class="check-all"
+                    @click="setRecipientAll()"
+                  >
+                    <div
+                      v-if="checkAll"
+                      class="check-all-back"
+                    >
+                      <v-icon color="white">
+                        fa-check
+                      </v-icon>
+                    </div>
+                  </div>
+                  <div class="name-all">
+                    Участники ваших чатов
+                  </div>
+                </div>
+                <!-- список получателей -->
+                <div
+                  v-for="(item, i) in clients"
+                  :key="i"
+                  class="res-row"
+                >
+                  <div class="line-h">
+                    <div class="line-v" />
+                  </div>
+                  <div
+                    class="check"
+                    @click="setRecipient(item)"
+                  >
+                    <div
+                      v-show="checkAll || isRecipient(item)"
+                      class="check-all-back"
+                    >
+                      <v-icon color="white">
+                        fa-check
+                      </v-icon>
+                    </div>
+                  </div>
+                  <div
+                    class="avatar"
+                    :style="'background: url(' + item.avatar + ');'"
+                  />
+                  <div class="name">
+                    {{ item.name }}
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </v-card-text>
+      <v-divider />
+      <v-card-actions>
+        <v-btn
+          text
+          @click="dialogLocal = false"
         >
-          <div class="content">
-            <el-form-item prop="name">
-              <v-text-field
-                v-model="form.name"
-                placeholder="Введите название чата"
-                :disabled="members.length < 2"
-              />
-            </el-form-item>
+          Отмена
+        </v-btn>
+        <v-spacer />
 
-            <!-- все получатели -->
-            <div style="display: flex;">
-              <div
-                class="check-all"
-                @click="setRecipientAll()"
-              >
-                <div
-                  v-if="checkAll"
-                  class="check-all-back"
-                >
-                  <v-icon color="white">
-                    check
-                  </v-icon>
-                </div>
-              </div>
-              <div class="name-all">
-                Участники ваших чатов
-              </div>
-            </div>
-
-            <!-- список получателей -->
-            <div
-              v-for="(item, i) in clients"
-              :key="i"
-              class="res-row"
-            >
-              <div class="line-h">
-                <div class="line-v" />
-              </div>
-              <div
-                class="check"
-                @click="setRecipient(item)"
-              >
-                <div
-                  v-show="checkAll || isRecipient(item)"
-                  class="check-all-back"
-                >
-                  <v-icon color="white">
-                    check
-                  </v-icon>
-                </div>
-              </div>
-              <div
-                class="avatar"
-                :style="'background: url(' + item.avatar + ');'"
-              />
-              <div class="name">
-                {{ item.name }}
-              </div>
-            </div>
-          </div>
-
-          <div class="action">
-            <v-btn @click="close()">
-              Отмена
-            </v-btn>
-
-            <v-spacer />
-
-            <v-btn
-              color="primary"
-              :loading="conversationCreateRequest"
-              :disabled="!members.length"
-              @click="submit('form')"
-            >
-              Создать
-            </v-btn>
-          </div>
-        </el-form>
-      </div>
-    </v-skeleton-loader>
+        <v-btn
+          color="primary"
+          :loading="conversationCreateRequest"
+          :disabled="!(members.length && formValid)"
+          @click="createChatClick"
+        >
+          Создать
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -109,35 +124,35 @@
     props: {
       dialog: Boolean,
     },
+    constants: {
+
+    },
     data () {
-      const checkName = (rule, value, callback) => {
-        if (this.members.length > 1 && !value) {
-          return callback(new Error('Название чата обязательно'))
-        } else if (this.members.length > 1 && value.length > 100) {
-          return callback(new Error('Название чата не должен быть более 100 символов'))
-        } else callback()
-      }
       return {
         form: {
           name: null,
         },
+        formValid: false,
         loading: false,
         checkAll: false,
         members: [],
-        rules: {
-          name: [
-            { validator: checkName, trigger: 'blur' },
-          ],
-        },
         conversationCreateRequest: false,
+        nameRules: [
+          v => (this.members.length === 0 || !!v) || 'Название чата обязательно',
+          v => (v && v.length < 100) || 'Название чата не должен быть более 100 символов',
+        ],
       }
     },
     computed: {
-      loadingSend () {
-        return this.$store.getters['chat/message/loading']
+
+      dialogLocal: {
+        get () { return this.dialog },
+        set (v) {
+          this.$emit('update:dialog', v)
+        },
       },
       programId () {
-        return this.$store.getters['brand/program/programId']
+        return this.$store.getters.programId
       },
       clients () {
         return this.$store.getters['chat/member/clients']
@@ -150,22 +165,12 @@
       },
     },
     async created () {
-      this.loading = true
-      try {
-        if (this.programId) await this.$store.dispatch('chat/member/list', this.programId)
-      } catch (e) {
-      }
-      this.loading = false
     },
+
     methods: {
       close () {
-        this.members = []
-        this.$emit('update:dialog', false)
+        this.dialogLocal = false
       },
-      isEmptyObject (obj) {
-        return JSON.stringify(obj) === '{}'
-      },
-
       /*
        * ПОЛУЧАТЕЛИ
        */
@@ -194,13 +199,7 @@
         if (check.length) return true
         return false
       },
-      submit (formRef) {
-        this.$refs[formRef].validate((v) => {
-          if (v) this.create()
-          else return false
-        })
-      },
-      create () {
+      createChatClick () {
         const conversation = {
           name: this.form.name,
           program_id: this.programId,
@@ -220,18 +219,6 @@
 
 <style lang="scss" scoped>
 @import "@/styles/components/_modal.scss";
-
-.modal {
-    min-width: 500px;
-}
-
-.content {
-    min-height: 300px;
-    margin: 0 0 20px 0;
-    padding: 0 !important;
-    max-height: 60vh;
-    overflow-y: auto;
-}
 
 /* RECIPIENTS */
 
@@ -302,29 +289,4 @@
     padding: 5px 10px;
 }
 
-/* MEDIA */
-/* EXTRA SMALL */
-@media (max-width: 600px) {
-
-}
-
-/* SMALL */
-@media (min-width: 600px) and (max-width: 959.8px) {
-
-}
-
-/* MEDIUM */
-@media (min-width: 960px) and (max-width: 1263.8px) {
-
-}
-
-/* LARGE */
-@media (min-width: 1264px) and (max-width: 1903.8px) {
-
-}
-
-/* X LARGE */
-@media (min-width: 1904px) {
-
-}
 </style>

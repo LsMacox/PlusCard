@@ -27,10 +27,10 @@
 
         console.log('loading App Data: start')
         await this.$store.dispatch('auth/auth/loadingApp')
-        //TODO connect socket+redis
+        // TODO connect socket+redis
 
         await this.$store.dispatch('app/setLoadingApp', false)
-         console.log('loading App Data: end')
+        console.log('loading App Data: end')
       } catch (error) {
         console.log('loading error', error)
       }

@@ -1758,8 +1758,8 @@ line-height: 17px;"
                 padding: 16px 5px 12px 7px
                 &__colorchange
                   .iconify
-                  width: 21px
-                  height: 21px
+                    width: 21px
+                    height: 21px
               .card-bottomline
                 position: relative
                 z-index: 3
@@ -1941,7 +1941,7 @@ line-height: 17px;"
                 .v-btn__content
                   color: #B5B5C4 !important
         &__name
-          .v-input.theme--light.v-text-field.v-text-field--is-booted
+          // .v-input.theme--light.v-text-field.v-text-field--is-booted
           .v-input__control
             .v-input__slot
               input
@@ -1949,7 +1949,7 @@ line-height: 17px;"
 
         &__city
           &_select
-            .v-input__control
+            // .v-input__control
             .v-select__slot
               .v-input__append-inner
                 .v-input__icon.v-input__icon--append
@@ -1963,7 +1963,7 @@ line-height: 17px;"
           top: -15px
 
         &__work
-          .workdays
+          // .workdays
           &__title
             color: #2A2A34
             margin-bottom: 12px

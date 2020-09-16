@@ -98,6 +98,7 @@
   background: #fff;
   margin: 0 auto;
   max-width: 1392px;
+  height: calc(100vh - 40px);
   display: flex;
   flex-direction: row;
   align-items: stretch;
