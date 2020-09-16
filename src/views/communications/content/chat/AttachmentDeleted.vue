@@ -1,21 +1,19 @@
 <template>
-<div>
-
+  <div>
     <div class="attachment-deleted">
-        <v-icon>delete_forever</v-icon>Вложение удалено
+      <v-icon>delete_forever</v-icon>Вложение удалено
     </div>
-
-</div>
+  </div>
 </template>
 
 <script>
-export default {
+  export default {
     data () {
-        return {
+      return {
 
-        }
-    }
-}
+      }
+    },
+  }
 </script>
 
 <style scoped>

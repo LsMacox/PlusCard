@@ -7,7 +7,29 @@
           top
           offset-y
         >
-          <div>
+          <v-list dense>
+            <v-subheader><span class="body-m-semibold">Участники чата</span> </v-subheader>
+            <v-list-item
+              v-for="(member, i) in activeMembers"
+              :key="i"
+            >
+              <v-list-item-content>
+                <v-list-item-title
+                  class="row no-gutters"
+                  @click="toAccount(member.id)"
+                >
+                  <div
+                    :class="{
+                      'is-member-client': isMemberClient(member.id)
+                    }"
+                  >
+                    {{ member.name }}
+                  </div>
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+          <div v-if="false">
             <div style="display: flex; padding-bottom: 10px;">
               <div>Участники чата</div>
             </div>
@@ -142,9 +164,11 @@
       }
     },
     computed: {
-
+      activeMembers () {
+        return this.conversation.members.filter((item) => item.active)
+      },
       program () {
-        return this.$store.getters['brand/program/program']
+        return this.$store.getters.program
       },
       profile () {
         return this.$store.getters.user
@@ -181,6 +205,9 @@
       },
     },
     methods: {
+      isMemberClient (memberId) {
+        return memberId !== this.chatUser.id
+      },
       isEmptyObject (obj) {
         return JSON.stringify(obj) === '{}'
       },
@@ -188,10 +215,6 @@
         if (this.$route.path !== path) this.$router.push(path)
       },
       // TEMPLATE
-      getClass (id) {
-        if (id === this.conversationId) return 'list-item list-item-active'
-        return 'list-item'
-      },
       getAvatars (item) {
         let avatars = []
 
@@ -423,20 +446,35 @@
         return status
       },
       async toAccount (id) {
-        this.$store.dispatch('account/account/getUserAccount', { programId: this.program.id, userId: id }).then((accountId) => {
-          // TODO
-          console.log('accountId', accountId)
-          if (accountId) {
-            const href = '/accounts/client/' + accountId
-            window.open(href, '_blank')
-          }
-        })
+        if (!this.isMemberClient(id)) return
+        this.$notify('TODO go to account form')
+
+        // this.$notify({
+        //    group: 'api',
+        //       message: 'Размер файла превышает 30 МБ',
+        //       type: 'error',
+        //        title: 'Ошибка',
+        //     })
+
+        // this.$store.dispatch('account/account/getUserAccount', { programId: this.program.id, userId: id }).then((accountId) => {
+        //   // TODO
+        //   console.log('accountId', accountId)
+        //   if (accountId) {
+        //     const href = '/accounts/client/' + accountId
+        //     window.open(href, '_blank')
+        //   }
+        // })
       },
     },
   }
 </script>
 
 <style lang="scss" scoped>
+.is-member-client {
+  color: #409EFF;
+   border-bottom: 1px dotted #409EFF;
+    cursor:pointer;
+}
     .list {
         border-radius: 5px;
         background-color: #ffffff;

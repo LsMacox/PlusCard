@@ -33,6 +33,7 @@ const actions = {
 
 const getters = {
   program: state => state.program,
+  programId: state => state.program ? state.program.id : null,
   programs: state => state.programs,
 }
 
