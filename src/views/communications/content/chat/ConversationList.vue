@@ -13,38 +13,37 @@
                 </div>
             </div>
             -->
-      <div style="display: flex; align-items: center;">
-        <div class="app--conversation--list--search--wrapper">
-          <div class="app--conversation--list--search">
-            <input
-              v-model="search"
-              class="app--conversation--list--search--input"
-              type="text"
-            > <span class="app--conversation--list--search--icon"><img
-              src="@/assets/chat/search.svg"
-              alt=""
-            ></span>
-          </div>
-        </div>
-        <v-tooltip
-          :open-delay="$config.tooltipButtonDelay"
-          left
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn
-              style="padding: 12px; margin-left: 15px;"
-              color="primary"
-              fab
-              v-on="on"
-              @click="openCreate()"
-            >
-              <v-icon>mdi-plus</v-icon>
+      <v-row justify="space-between">
+        <v-col>
+          <base-text-field
+            v-model="search"
+            placeholder="Поиск"
+            prepend-inner-icon="fa-search"
+            clearable
+            hide-details
+          />
+        </v-col>
+        <v-col cols="auto">
+          <v-tooltip
+            :open-delay="$config.tooltipButtonDelay"
+            top
+          >
+            <template v-slot:activator="{ on }">
+              <v-btn
+                color="primary"
+                fab
+                :loading="chatMemberListAction"
+                v-on="on"
+                @click="openCreate()"
+              >
+                <v-icon>mdi-plus</v-icon>
               <!-- <v-icon>$iconify_plus-circle-outlined</v-icon>    -->
-            </v-btn>
-          </template>
-          <span>Начать переписку</span>
-        </v-tooltip>
-      </div>
+              </v-btn>
+            </template>
+            <span>Начать переписку</span>
+          </v-tooltip>
+        </v-col>
+      </v-row>
     </div>
 
     <v-skeleton-loader
@@ -107,11 +106,13 @@
     data () {
       return {
         dialogCreate: false,
+        chatMemberListAction: false,
         search: null,
       }
     },
     computed: {
-      ...mapGetters('company/program', ['program']),
+      ...mapGetters('company/program', ['program', 'programId']),
+      ...mapGetters('chat/member', ['clients']),
       loadingConversations: {
         get () {
           return this.$store.getters['chat/conversation/loadingConversations']
@@ -286,8 +287,25 @@
           return messageDate.toLocaleString('ru', options)
         }
       },
-      openCreate () {
-        this.dialogCreate = true
+      async openCreate () {
+        this.chatMemberListAction = true
+        try {
+          await this.$store.dispatch('chat/member/list', this.programId)
+          if (this.clients && this.clients.length > 0) {
+            this.dialogCreate = true
+          } else {
+            throw Error('Отсуствуют чаты с клиентами')
+          }
+        } catch (e) {
+          this.$notify({
+            type: 'error',
+            group: 'app',
+            title: 'Ошибка',
+            text: e.message,
+          })
+        } finally {
+          this.chatMemberListAction = false
+        }
       },
       clearChatState () {
         this.$store.commit('chat/chatUser/clearState')

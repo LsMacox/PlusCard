@@ -45,18 +45,12 @@ export default {
     },
 
     async list ({ commit, rootState }, conversationId) {
-      try {
         const result = await ApiService.get(
           '/api/conversation/topic/list?conversation_id=' + conversationId,
         )
-        /// ///console.log('topic/list')
-        /// ///console.log(success)
 
         // подставляем в ответ id чата
         commit('topics', result)
-      } catch (error) {
-        // console.log(error)
-      }
     },
 
     async update ({ commit, rootState, dispatch }, topic) {

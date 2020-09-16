@@ -1,5 +1,6 @@
 
 <template>
+
   <v-text-field
     :id="id"
     v-model="internalValue"
@@ -66,6 +67,9 @@
 
 <script>
 // https://vuetifyjs.com/en/components/text-fields/#text-fields
+/**
+ * todo  counter + clearable
+ */
 
   export default {
     name: 'Textfield',
