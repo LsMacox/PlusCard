@@ -1,105 +1,115 @@
 <template>
-  <div style="width: 100%">
-    <div class="box">
-      <div style="display: flex;">
-        <!-- выбор тем -->
-        <v-menu
-          v-if="members.length > 0"
-          top
-          offset-y
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn
-              v-if="!selectedTopicId"
-              color="primary"
-              text
-              v-on="on"
-            >
-              Выбрать тему
-            </v-btn>
-            <v-btn
-              v-else
-              color="primary"
-              v-on="on"
-            >
-              {{ getTopicName() }}
-            </v-btn>
-          </template>
+  <v-row class="row-send-bar">
+    <!-- выбор тем -->
+    <v-col
+      cols="auto"
+      align-self="center"
+    >
+      <v-menu
+        v-if="members.length > 0"
+        top
+        offset-y
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-if="!selectedTopicId"
+            color="primary"
+            text
+            v-on="on"
+          >
+            Выбрать тему
+          </v-btn>
+          <v-btn
+            v-else
+            color="primary"
+            x-small
+            v-on="on"
+          >
+            {{ getTopicName() }}
+          </v-btn>
+        </template>
 
-          <v-list>
-            <v-list-item
-              v-for="(item, index) in topics"
-              :key="index"
-              @click="setTopic(item.id)"
-            >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="setTopic(0)">
-              <span style="color: #24D3ED;">Другая или новая тема</span>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <v-list>
+          <v-list-item
+            v-for="(item, index) in topics"
+            :key="index"
+            @click="setTopic(item.id)"
+          >
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="setTopic(0)">
+            <span style="color: #24D3ED;">Другая или новая тема</span>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-col>
 
-        <!-- выбор получателей -->
-        <v-menu
-          v-if="members.length > 0"
-          top
-          offset-y
-        >
-          <template v-slot:activator="{ on }">
-            <v-btn
-              v-if="!recipients.length"
-              color="primary"
-              text
-              v-on="on"
-            >
-              Выбрать получателей
-            </v-btn>
-            <v-btn
-              v-else
-              color="primary"
-              v-on="on"
-            >
-              {{ getGroupCount(recipients) }} получателей
-            </v-btn>
-          </template>
+    <v-col
+      cols="auto"
+      align-self="center"
+    >
+      <!-- выбор получателей -->
+      <v-menu
+        v-if="members.length > 0"
+        top
+        offset-y
+      >
+        <template v-slot:activator="{ on }">
+          <v-btn
+            v-if="!recipients.length"
+            color="primary"
+            text
+            v-on="on"
+          >
+            Выбрать получателей
+          </v-btn>
+          <v-btn
+            v-else
+            color="primary"
+            v-on="on"
+          >
+            {{ getGroupCount(recipients) }} получателей
+          </v-btn>
+        </template>
 
-          <v-list>
-            <v-list-item
-              v-for="(item, i) in groups"
-              :key="i"
-              @click.native="setGroup(item.id)"
-            >
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="setTopic(0)">
-              <span style="color: #24D3ED;">Другая или новая группа </span>
-            </v-list-item>
-          </v-list>
-        </v-menu>
+        <v-list>
+          <v-list-item
+            v-for="(item, i) in groups"
+            :key="i"
+            @click.native="setGroup(item.id)"
+          >
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="setTopic(0)">
+            <span style="color: #24D3ED;">Другая или новая группа </span>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-col>
+    <v-spacer />
 
-        <v-spacer />
+    <div
+      v-if="lastTopic.sender_id == chatUser.id
+        && lastTopic.topic_id
+        && (!selectedTopicId && !recipients.length)"
+      class="btn2"
+      @click="setTopic(lastTopic.topic_id)"
+    >
+      {{ lastTopic.topic_name }}
+    </div>
 
-        <div
-          v-if="lastTopic.sender_id == chatUser.id
-            && lastTopic.topic_id
-            && (!selectedTopicId && !recipients.length)"
-          class="btn2"
-          @click="setTopic(lastTopic.topic_id)"
-        >
-          {{ lastTopic.topic_name }}
-        </div>
-
-        <!-- сброс настроек -->
+    <!-- сброс настроек -->
+    <v-col cols="auto" align-self="center">
+      <v-btn icon>
         <v-icon
           v-if="selectedTopicId || recipients.length"
-          color="white"
+          color="primary"
           @click="clear()"
         >
-          clear
+          fa-times-circle
         </v-icon>
-      </div>
-    </div>
+      </v-btn>
+    </v-col>
 
     <app-topic-bar-topic
       :dialog.sync="dialogTopics"
@@ -110,7 +120,7 @@
       :dialog.sync="dialogGroups"
       :conversation-id="conversationId"
     />
-  </div>
+  </v-row>
 </template>
 
 <script>
@@ -273,12 +283,13 @@
 </script>
 
 <style scoped>
-.box {
+
+.row-send-bar {
   width: 100%;
-  height: 46px;
-  padding: 8px 13px 0 13px;
+  /* height: 46px; */
+  /* padding: 8px 13px 0 13px; */
   background-color: #dddfe0;
-  z-index: 2;
+  /* z-index: 2; */
 }
 
 .btn {

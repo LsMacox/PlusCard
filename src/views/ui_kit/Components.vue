@@ -108,6 +108,9 @@
         md="6"
         lg="3"
       >
+        <v-row>
+          <v-btn>btn.Default</v-btn>
+        </v-row>
         <div class="mt-1">
           <v-btn
             color="primary"

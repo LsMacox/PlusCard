@@ -67,7 +67,7 @@
         }
       },
     },
-    created () {      
+    created () {
       if (this.typing) {
         if (this.typing && this.typing.sender_id !== this.profile.id && this.typing.conversation_id === this.conversationId) {
           this.setTyping(this.typing)

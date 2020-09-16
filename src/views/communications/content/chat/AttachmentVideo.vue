@@ -53,9 +53,12 @@
     components: {
       videoPlayer,
     },
-    props: [
-      'content',
-    ],
+    props: {
+      content: {
+        type: Object,
+        required: true,
+      },
+    },
     data () {
       return {
         show: false,
@@ -119,9 +122,7 @@
         background-color: #ffffff;
     }
 
-    .video-player {
-
-    }
+    // .video-player {}
 
     .download {
         display: block;

@@ -1,6 +1,8 @@
 const getters = {
   auth: state => state.auth,
   user: state => state['profile/profile'].profile,
+  program: (state, getters) => getters['company/program'].program,
+  programId: (state, getters) => getters['company/program'].programId,
   drawer: state => state.app.drawer,
   loadingRequest: state => state.app.loadingRequest,
   loadingApp: state => state.app.loadingApp,

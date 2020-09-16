@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <v-col
-      :xs="12"
+      :cols="12"
       :sm="12"
       :md="12"
       :lg="6"
@@ -22,7 +22,7 @@
       </div>
     </v-col>
     <v-col
-      :xs="12"
+      :cols="12"
       :sm="12"
       :md="12"
       :lg="6"

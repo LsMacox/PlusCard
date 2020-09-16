@@ -616,10 +616,11 @@
                     z-index: 3;
 
                     .message-menu-my-icons {
-                        position: absolute;
-                        top: 50%;
+                        position: absolute;                        
+                        // top: 50%;
                         right: 5px;
-                        margin-top: 7px;
+                        bottom: 0px;                        
+                        // margin-bottom: 16px;
                     }
 
                     .message-menu-my-icon1 {
@@ -656,9 +657,10 @@
                     .message-menu-other-icons {
                         display: flex;
                         position: absolute;
-                        top: 50%;
+                        // top: 50%;
                         left: 5px;
-                        margin-top: 7px;
+                        bottom: 0px;                        
+                        // margin-bottom: 16px;
                     }
 
                     .message-menu-other-icon1 {

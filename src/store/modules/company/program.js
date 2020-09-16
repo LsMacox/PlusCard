@@ -98,6 +98,7 @@ const actions = {
 const getters = {
   programs: state => state.programs,
   program: state => state.program,
+  programId: state => state.program ? state.program.id : null,
   programModel: state => state.programModel,
 }
 

@@ -1,6 +1,5 @@
 <template>
-  <div class="errPage-container">    
-  </div>
+  <div class="errPage-container" />
 </template>
 
 <script>

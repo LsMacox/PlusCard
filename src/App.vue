@@ -2,6 +2,7 @@
   <div>
     <vue-progress-bar />
     <notifications group="api" />
+    <notifications />
     <router-view />
   </div>
 </template>
