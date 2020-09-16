@@ -7,3 +7,72 @@
         color: #D7D7E0
     }
 }
+
+.map {
+    position: sticky;
+    top: 24px;
+    width: 100%;
+    height: calc(100vh - 82px);
+    min-height: 600px;
+}
+
+.shop-card {
+    margin: 0 68px;
+}
+
+.shop-title {
+    margin: 68px 0 0 0;
+}
+
+.shop-description {
+    margin: 12px 0 0 0;
+}
+
+.shop-form {
+    padding: 18px 24px 34px 24px;
+    width: 420px;
+    background: #FFFFFF;
+    border: 1px solid #F2F2F7;
+    box-sizing: border-box;
+    box-shadow: 0 24px 20px -16px rgba(88, 93, 106, 0.1);
+    border-radius: 10px;
+
+    .shop-form-control {
+        .shop-form-label {
+            margin-bottom: 8px;
+        }
+        .shop-form-field {
+
+        }
+    }
+
+    .shop-form-work-time {
+        display: flex;
+
+        .shop-form-work-time-control {
+            width: 50%;
+        }
+    }
+
+    .shop-form-period {
+        display: flex;
+
+        .shop-form-period-control {
+            width: calc(50% - (21px / 2));
+        }
+
+        .shop-form-period-separator {
+            width: 16px;
+            text-align: center;
+        }
+
+        .shop-form-period-action {
+
+        }
+    }
+
+    .shop-form-action {
+        display: flex;
+        margin-top: 36px;
+    }
+}

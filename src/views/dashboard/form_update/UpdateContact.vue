@@ -54,6 +54,32 @@
         return this.$store.getters['company/program/programModel']
       },
     },
+    watch: {
+      'program.website' (v) {
+        const regex = /^(http:\/\/|https:\/\/|)((www.|)[\w]+.[\w]+)(\/|)/gm
+        const str = regex.exec(v)
+        if (str && str[2] != null) {
+          this.program.website = str[2]
+        }
+      },
+      'program.social.vk' (v) {
+        const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
+        this.program.social.vk = v.replace(regex, '')
+      },
+      'program.social.fb' (v) {
+        const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
+        this.program.social.fb = v.replace(regex, '')
+      },
+      'program.social.youtube' (v) {
+        const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm
+        this.program.social.youtube = v.replace(regex, '')
+      },
+      'program.social.instagram' (v) {
+        // //console.log('instagram', v)
+        const regex = /^(http:\/\/|https:\/\/|)(www.|)(instagram.com)/gm
+        this.program.social.instagram = v.replace(regex, '')
+      },
+    },
     created () {
       const program = JSON.parse(JSON.stringify(this.programModel))
       // если социальные сети не заполнены

@@ -1,57 +1,57 @@
 <template>
   <v-row>
     <v-col>
-      <yandex-map
-        id="map1"
-        :settings="settings"
-        :zoom="zoom"
-        class="map"
-        :coords="coords"
-        :scroll-zoom="true"
-
-        :init-without-markers="true"
-        @click="setMarker($event)"
-      >
-        <ymap-marker
-          v-for="(item, idx) in shops"
-          :key="idx"
-          :marker-id="idx"
-          :coords="item.coords"
-          :icon="{
-            layout: 'default#imageWithContent',
-            imageHref: require('@/assets/svg/Bottom-tail.svg'),
-            imageSize: [150, 55],
-            imageOffset: [-75, -50],
-            content: item.name,
-            contentOffset: [0, 0],
-            contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
-          }"
-        />
-        <ymap-marker
-          v-if="newShop.name && newShop.coords"
-          :marker-id="shops.length"
-          :coords="newShop.coords"
-          :icon="{
-            layout: 'default#imageWithContent',
-            imageHref: require('@/assets/svg/Bottom-tail.svg'),
-            imageSize: [150, 55],
-            imageOffset: [-75, -50],
-            content: newShop.name,
-            contentOffset: [0, 0],
-            contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
-          }"
-        />
-      </yandex-map>
+      <div style="position: relative; height: 100%;">
+        <yandex-map
+          id="map1"
+          :settings="settings"
+          :zoom="zoom"
+          class="map"
+          :coords="coords"
+          :scroll-zoom="true"
+          :init-without-markers="true"
+          @click="setMarker($event)"
+        >
+          <ymap-marker
+            v-for="(item, idx) in shops"
+            :key="idx"
+            :marker-id="idx"
+            :coords="item.coords"
+            :icon="{
+              layout: 'default#imageWithContent',
+              imageHref: require('@/assets/svg/Bottom-tail.svg'),
+              imageSize: [150, 55],
+              imageOffset: [-75, -50],
+              content: item.name,
+              contentOffset: [0, 0],
+              contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+            }"
+          />
+          <ymap-marker
+            v-if="newShop.name && newShop.coords"
+            :marker-id="shops.length"
+            :coords="newShop.coords"
+            :icon="{
+              layout: 'default#imageWithContent',
+              imageHref: require('@/assets/svg/Bottom-tail.svg'),
+              imageSize: [150, 55],
+              imageOffset: [-75, -50],
+              content: newShop.name,
+              contentOffset: [0, 0],
+              contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+            }"
+          />
+        </yandex-map>
+      </div>
     </v-col>
     <v-col>
       <div style="margin: 0 68px;">
-        <BaseMasterFieldBlock
-          title="Точки продаж"
-        >
-          <span
-            slot="description"
-          >Если у вас несколько точек продаж - внесите их контактные данные и режимы работы, чтобы клиенты могли связаться с конкретным магазином и уточненить свои вопросы.</span>
-        </BaseMasterFieldBlock>
+        <div class="shop-title title-m-bold">
+          Точки продаж
+        </div>
+        <div class="shop-description body-m-regular">
+          Если у вас несколько точек продаж - внесите их контактные данные и режимы работы, чтобы клиенты могли связаться с конкретным магазином и уточненить свои вопросы.
+        </div>
 
         <div
           v-if="shops.length >= 5"
@@ -70,6 +70,11 @@
             </template>
           </v-text-field>
         </div>
+
+        <!--
+          МАГАЗИНЫ
+        -->
+
         <div
           v-for="(item, index) in shops"
           :key="index"
@@ -172,18 +177,23 @@
             </div>
           </div>
         </div>
+
+        <!--
+          МАГАЗИН ФОРМА
+        -->
+
         <div
           v-if="newShopActive || newShopEdit"
-          class="content-block__shop shop-card"
+          class="shop-form"
+          style="margin: 36px 0 0 0;"
         >
-          <div class="shop-card__name">
+          <div>
             <v-text-field
               v-model="newShop.name"
-              class="shop-card__name_input"
               placeholder="Введите название точки"
             />
           </div>
-          <div class="shop-card__city">
+          <div>
             <v-autocomplete
               v-model="newShop.city"
               :items="filtered_cities"
@@ -191,8 +201,6 @@
               hide-details
               hide-no-data
               placeholder="Выберите город"
-              class="shop-card__city_select"
-              style="width: 380px;"
               item-text="name"
               item-value="id"
               aria-autocomplete="none"
@@ -234,7 +242,7 @@
               </template>
             </v-autocomplete>
           </div>
-          <div class="shop-card__input shop-card__address">
+          <div>
             <v-text-field
               v-if="markerGenerated"
               v-model="newShop.address"
@@ -253,8 +261,6 @@
               hide-details
               hide-no-data
               placeholder="Введите адрес"
-              class="shop-card__city_select"
-              style="width: 380px"
               item-text="name"
               item-value="pos"
               aria-autocomplete="none"
@@ -296,7 +302,7 @@
               </template>
             </v-autocomplete>
           </div>
-          <div class="shop-card__input shop-card__phone">
+          <div>
             <v-text-field
               v-model="newShop.phone"
               placeholder="Введите телефон"
@@ -310,20 +316,24 @@
               </template>
             </v-text-field>
           </div>
+
+          <!--
+            РАБОЧЕЕ ВРЕМЯ
+          -->
+
           <div
             v-for="(worktime, globalIndex) in newShop.workTimes"
             :key="globalIndex"
-            class="shop-card__work"
           >
-            <div class="work-block workdays">
-              <div class="workdays__title body-m-semibold">
+            <div class="shop-form-control">
+              <div class="shop-form-label body-m-semibold">
                 Рабочие дни
               </div>
               <v-select
                 v-model="worktime.days"
                 :items="days.filter(item => !selectedDays.includes(item.id) || worktime.days.includes(item.id))"
                 item-value="id"
-                placeholder="Дни"
+                placeholder="Выберите рабочие дни"
                 outlined
                 multiple
               >
@@ -363,81 +373,80 @@
                 </template>
               </v-select>
             </div>
-            <div class="work-block-wrapper">
-              <div class="work-block work-time">
-                <div class="work-time__title body-m-semibold">
-                  Рабочее время
-                </div>
-                <div
-                  class="work-time__inputs"
-                >
-                  <div class="inputs__first">
-                    <v-text-field
-                      v-model="worktime.startTime"
-                      v-mask="'##:##'"
-                      placeholder="00:00"
-                      outlined
-                      style="width: 74px; margin-right: 4px"
-                      @blur="checkLength('startTime', globalIndex)"
-                    />
+            <div class="shop-form-work-time">
+              <div class="shop-form-work-time-control">
+                <div class="shop-form-control">
+                  <div class="shop-form-label body-m-semibold">
+                    Рабочее время
                   </div>
-                  <div
-                    class="inputs__separator"
-                    style="height: 50px"
-                  >
-                    -
-                  </div>
-                  <div class="inputs__second">
-                    <v-text-field
-                      v-model="worktime.endTime"
-                      v-mask="'##:##'"
-                      placeholder="00:00"
-                      outlined
-                      style="width: 74px;  margin: 0 16px 0 4px"
-                      @blur="checkLength('endTime', globalIndex)"
-                    />
+                  <div class="shop-form-period">
+                    <div class="shop-form-period-control">
+                      <v-text-field
+                        v-model="worktime.startTime"
+                        v-mask="'##:##'"
+                        placeholder="С"
+                        outlined
+                        @blur="checkLength('startTime', globalIndex)"
+                      />
+                    </div>
+                    <div
+                      class="shop-form-period-separator"
+                      style="height: 50px"
+                    >
+                      -
+                    </div>
+                    <div class="shop-form-period-control">
+                      <v-text-field
+                        v-model="worktime.endTime"
+                        v-mask="'##:##'"
+                        placeholder="По"
+                        outlined
+                        @blur="checkLength('endTime', globalIndex)"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="break-time">
-                <div class="break-time__title body-m-semibold">
-                  Перерыв
-                </div>
-                <div
-                  class="break-time__inputs"
-                >
-                  <div class="inputs__first">
-                    <v-text-field
-                      :ref="'from'+globalIndex"
-                      v-model="worktime.breakStart"
-                      v-mask="'##:##'"
-                      placeholder="00:00"
-                      outlined
-                      style="width: 74px; margin-right: 4px"
-                      @blur="checkLength('breakStart', globalIndex)"
-                    />
+              <div
+                class="shop-form-work-time-control"
+                style="padding-left: 10px;"
+              >
+                <div class="shop-form-control">
+                  <div class="shop-form-label body-m-semibold">
+                    Перерыв
                   </div>
-                  <div
-                    class="inputs__separator"
-                    style="height: 50px"
-                  >
-                    -
-                  </div>
-                  <div class="inputs__second">
-                    <v-text-field
-                      v-model="worktime.breakEnd"
-                      v-mask="'##:##'"
-                      placeholder="00:00"
-                      outlined
-                      style="width: 74px;  margin: 0 16px 0 4px"
-                      @blur="checkLength('breakEnd', globalIndex)"
-                    />
+                  <div class="shop-form-period">
+                    <div class="shop-form-period-control">
+                      <v-text-field
+                        :ref="'from'+globalIndex"
+                        v-model="worktime.breakStart"
+                        v-mask="'##:##'"
+                        placeholder="С"
+                        outlined
+                        @blur="checkLength('breakStart', globalIndex)"
+                      />
+                    </div>
+                    <div
+                      class="shop-form-period-separator"
+                      style="height: 50px"
+                    >
+                      -
+                    </div>
+                    <div class="shop-form-period-control">
+                      <v-text-field
+                        v-model="worktime.breakEnd"
+                        v-mask="'##:##'"
+                        placeholder="По"
+                        outlined
+                        @blur="checkLength('breakEnd', globalIndex)"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="work-block-actions">
+          <div class="shop-form-period-action">
             <v-btn
               color="primary"
               text
@@ -451,11 +460,11 @@
                 width="21px"
                 heigth="21px"
               />
-              Добавить период
+              Еще рабочее время
             </v-btn>
           </div>
-          <div class="shop-card__actions">
-            <div class="action__cancel">
+          <div class="shop-form-action">
+            <div style="width: 28%;">
               <v-btn
                 :ripple="false"
                 :text="true"
@@ -472,7 +481,7 @@
                 Отменить
               </v-btn>
             </div>
-            <div class="action__save">
+            <div style="width: 72%;">
               <v-btn
                 color="secondary"
                 small
@@ -484,52 +493,32 @@
             </div>
           </div>
         </div>
-
-        <div class="shop-card__actions">
-          <div class="action__cancel">
-            <v-btn
-              :ripple="false"
-              :text="true"
-              color="info"
-              style="width:85px; height: 41px; text-transform: none; font-weight: 600;
-font-size: 13px;
-line-height: 17px;"
-              @click="cancelShop()"
-            >
-              <v-img
-                src="@/assets/svg/close-circle_grey.svg"
-                style="margin-right: 6px"
-              />
-              Отменить
-            </v-btn>
-          </div>
-          <div class="action__save">
-            <v-btn
-              color="secondary"
-              small
-              style="width: 265px; margin-right: 0"
-              @click="saveShop()"
-            >
-              Сохранить
-            </v-btn>
-          </div>
+        <div style="margin: 36px 0 0 0;">
+          <v-btn
+            color="primary"
+            :text="true"
+            style="padding: 0 !important;"
+            @click="addShop()"
+          >
+            <v-img
+              src="@/assets/svg/plus-circle.svg"
+              style="margin-right: 5px"
+            />
+            Добавить точку продажи
+          </v-btn>
         </div>
-      </div>
-
-      <div>
-        <v-btn
-          color="primary"
-          :text="true"
-          style="padding: 0 !important;"
-          @click="addShop()"
-        >
-          <v-img
-            src="@/assets/svg/plus-circle.svg"
-            style="margin-right: 5px"
-          />
-          Добавить точку продажи
-        </v-btn>
-      </div>
+        <div style="margin: 68px 0;">
+          <v-btn
+            color="primary"
+            :loading="loading"
+            @click="updateShop()"
+          >
+            <v-icon style="margin-right: 10px;">
+              $iconify_ion-checkmark-circle-outline
+            </v-icon>
+            Сохранить
+          </v-btn>
+        </div>
       </div>
     </v-col>
   </v-row>
@@ -537,7 +526,6 @@ line-height: 17px;"
 
 <script>
   import ApiService from '@/api/api-client'
-  import Color from 'color'
   import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import { mask } from 'vue-the-mask'
 
@@ -549,6 +537,16 @@ line-height: 17px;"
     directives: { mask },
     data () {
       return {
+        settings: {
+          apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
+          lang: 'ru_RU',
+          coordorder: 'latlong',
+          version: '2.1',
+        },
+        coords: [53.757592, 87.136173],
+        zoom: 16,
+        //
+        loading: false,
         markerGenerated: false,
         newShopEdit: false,
         resultAdr: '',
@@ -606,39 +604,7 @@ line-height: 17px;"
           { id: 5, shortName: 'СБ', fullName: 'Суббота' },
           { id: 6, shortName: 'ВС', fullName: 'Воскресенье' },
         ],
-        settings: {
-          apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
-          lang: 'ru_RU',
-          coordorder: 'latlong',
-          version: '2.1',
-        },
-        coords: [53.757592, 87.136173],
-        zoom: 16,
         cropperSmallDialog: false,
-        smallImg: {
-          data: null,
-          mime: null,
-        },
-        fileLogo: {
-          data: null,
-          mime: null,
-        },
-        selectedImg: null,
-        currentStep: 0,
-        colorPickerMenu: false,
-        program: {
-          companyName: '',
-          bgcolor: ['#4776E6', '#8E54E9'],
-          color: '#FFFFFF',
-          logo: null,
-          website: '',
-          social: {
-            vk: '',
-            youtube: '',
-            fb: '',
-            instagram: '',
-          },
-        },
         rules: {
           required: value => !!value || this.$t('required'),
           counter: value => value.length <= 20 || 'Max 20 characters',
@@ -708,48 +674,14 @@ line-height: 17px;"
 
         // })
       },
-      'program.website' (v) {
-        const regex = /^(http:\/\/|https:\/\/|)((www.|)[\w]+.[\w]+)(\/|)/gm
-        const str = regex.exec(v)
-        if (str && str[2] != null) {
-          this.program.website = str[2]
-        }
-      },
-      'program.social.vk' (v) {
-        const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
-        this.program.social.vk = v.replace(regex, '')
-      },
-      'program.social.fb' (v) {
-        const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
-        this.program.social.fb = v.replace(regex, '')
-      },
-      'program.social.youtube' (v) {
-        const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm
-        this.program.social.youtube = v.replace(regex, '')
-      },
-      'program.social.instagram' (v) {
-        // //console.log('instagram', v)
-        const regex = /^(http:\/\/|https:\/\/|)(www.|)(instagram.com)/gm
-        this.program.social.instagram = v.replace(regex, '')
-      },
-      smallImg (v) {
-        if (v.data.indexOf('base64') !== -1) {
-          this.fileLogo = {
-            data: v.data.split(',')[1],
-            mime: 'image/png',
-          }
-          this.program.logo = v.data
-        }
-      },
     },
     async mounted () {
-      this.changeColor(this.program.bgcolor[0])
       const cities = await ApiService.get('/api-cabinet/company/shops/city/list')
       this.cities = cities
       // //console.log('cities', cities)
     },
     async created () {
-      this.changeColor(this.program.bgcolor[0])
+      // this.changeColor(this.program.bgcolor[0])
     },
     methods: {
       checkLength (label, index) {
@@ -883,12 +815,6 @@ line-height: 17px;"
           program,
         )
       },
-      getUnitColor () {
-        if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.5)' } else { return 'rgba(0, 0, 0, 0.5)' }
-      },
-      getBorderColor () {
-        if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.2)' } else { return 'rgba(0, 0, 0, 0.2)' }
-      },
       arrayUnique (array) {
         const a = array.concat()
         for (let i = 0; i < a.length; ++i) {
@@ -995,7 +921,6 @@ line-height: 17px;"
         this.markerGenerated = true
         // console.log('currentShop', this.newShop)
       },
-
       addWorkTime () {
         if (this.newShop.workTimes.length === 7) {
           return false
@@ -1011,95 +936,10 @@ line-height: 17px;"
           )
         }
       },
-      ColorToStr (rgb, mask, alpha) {
-        let red, green, blue
-        red = rgb[0] + (mask - rgb[0]) * alpha
-        green = rgb[1] + (mask - rgb[1]) * alpha
-        blue = rgb[2] + (mask - rgb[2]) * alpha
-
-        red = red ? this.dechex(red) : '00'
-        green = green ? this.dechex(green) : '00'
-        blue = blue ? this.dechex(blue) : '00'
-
-        if (red.length === 1) red = '0' + red
-        if (green.length === 1) green = '0' + green
-        if (blue.length === 1) blue = '0' + blue
-
-        return '#' + red + green + blue
-      },
-      dechex (number) {
-        if (number < 0) {
-          number = 0xFFFFFFFF + number + 1
-        }
-        return parseInt(number, 10)
-          .toString(16)
-      },
-      changeColor (str) {
-        const color = Color(str)
-        let alpha, mask
-        if (color.isLight()) {
-          alpha = 0.04
-          mask = 0
-          this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
-          this.program.color = '#2A2A34'
-          // //console.log('color', this.program.bgcolor[1])
-        } else {
-          alpha = 0.1
-          mask = 255
-          this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
-          this.program.color = '#FFFFFF'
-          // //console.log('color', this.program.bgcolor[1])
-        }
-      },
-      changeStep (step) {
-        this.currentStep = step
-      },
       async updateCompany () {
         // console.log('merchant_id', this.merchant_id)
         // await this.$store.dispatch("brand/company/updateDesign", program)
         this.changeStep(2)
-      },
-      setSmallImage (e) {
-        this.selectedImg = e.target.files[0]
-        this.cropperSmallDialog = true
-        e.target.type = 'text'
-        e.target.type = 'file'
-      },
-      getCurrentWidth () {
-        if (this.currentStep === 0) {
-          return 7
-        } else if (this.currentStep === 1) {
-          return 20
-        } else if (this.currentStep === 2) {
-          return 30
-        } else {
-          return 70
-        }
-      },
-      getCurrentColor (step) {
-        if (step === 'first') {
-          if (this.currentStep <= 1) {
-            return '#8E54E9'
-          } else {
-            return '#2A2A34'
-          }
-        } else if (step === 'second') {
-          if (this.currentStep <= 1) {
-            return '#D7D7E0'
-          } else if (this.currentStep === 2) {
-            return '#4776E6'
-          } else {
-            return '#2A2A34'
-          }
-        } else if (step === 'third') {
-          if (this.currentStep <= 2) {
-            return '#D7D7E0'
-          } else if (this.currentStep === 3) {
-            return '#4776E6'
-          } else {
-            return '#2A2A34'
-          }
-        }
       },
       async updateShop () {
         try {
