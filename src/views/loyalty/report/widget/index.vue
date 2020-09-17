@@ -25,7 +25,6 @@
     >
       <operators
         :widget-data="widgetOperatorsData"
-        :operators="operatorsData"
       />
     </v-col>
     <v-col
@@ -71,9 +70,6 @@
       },
       widgetVolumeData () {
         return this.$store.getters['widget/bonuses/widgetData']
-      },
-      operatorsData () {
-        return this.$store.getters['widget/operators/operators']
       },
     },
     mounted () {},

@@ -43,8 +43,8 @@
       },
       percentageDifference () {
         if (this.widgetData && this.widgetData.length >= 2) {
-          if (this.widgetData[1].clients_count > 0) {
-            return this.relativeChange(this.widgetData[0].clients_count, this.widgetData[1].clients_count)
+          if (this.widgetData[1].operations_count > 0) {
+            return this.relativeChange(this.widgetData[0].operations_count, this.widgetData[1].operations_count)
           }
         }
         return 0

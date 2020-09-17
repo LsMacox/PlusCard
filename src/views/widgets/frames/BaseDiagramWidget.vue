@@ -8,9 +8,14 @@
 
     <template v-slot:header-right>
       <span
-        :class="dataPercentageDifference >= 0 ? 'wc-success' : 'wc-error'"
+        v-if="dataPercentageDifference !== 0"
+        :class="dataPercentageDifference > 0 ? 'wc-success' : 'wc-error'"
         class="body-m-semibold"
       >{{ dataPercentageDifference > 0 ? `+${dataPercentageDifference}%` : `${dataPercentageDifference}%` }}</span>
+      <span
+        v-else
+        class="body-m-semibold wc-neutral"
+      >{{ `${dataPercentageDifference}%` }}</span>
     </template>
 
     <template v-slot:body>
@@ -120,7 +125,5 @@
 </script>
 
 <style lang="scss">
-
 @import "@/styles/vuetify-preset-plus/light_theme/widgets/frames/_base-diagram.scss";
-
 </style>

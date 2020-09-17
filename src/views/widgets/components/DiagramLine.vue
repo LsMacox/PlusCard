@@ -62,6 +62,7 @@
           growthColor: '#00D15D',
           declineColor: '#EA4C2A',
           evenColor: '#FFDD00',
+          neutralColor: '#B5B5C4',
         },
         chartOptionRaw: {
           responsive: true,
@@ -203,7 +204,7 @@
 
         if (this.status && this.status.display) {
           if (firstNumber < secondNumber) pointColors.push(this.status.growthColor)
-          else if (firstNumber === secondNumber) pointColors.push(this.status.evenColor)
+          else if (firstNumber === secondNumber) pointColors.push(this.status.neutralColor)
           else pointColors.push(this.status.declineColor)
         } else {
           pointColors.push(this.status.baseColor)

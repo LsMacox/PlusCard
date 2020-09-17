@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%;">
     <widget-template style-name="w-operator">
       <template v-slot:header-left>
         <p
@@ -24,19 +24,19 @@
           class="w-operator__list"
         >
           <li
-            v-for="operator in someOperators"
+            v-for="operator in operators"
             :key="operator.id"
             class="w-operator__item"
           >
             <div class="w-operator__item-top">
               <p class="w-operator__name body-s-medium">
-                {{ operator.label }}
+                {{ operator.operator }}
               </p>
-              <span class="w-operator__percent body-s-semibold">10%</span>
+              <span class="w-operator__percent body-s-semibold">{{ `${getShare(operator)}%` }}</span>
             </div>
             <div class="w-operator__item-bottom">
               <v-progress-linear
-                :value="25"
+                :value="getShare(operator)"
                 style="height: 4px"
                 color="primary"
                 rounded="rounded"
@@ -65,15 +65,17 @@
           class="panel-operator__list"
         >
           <li
-            v-for="operator in operators"
+            v-for="operator in widgetData"
             :key="operator.id"
             class="panel-operator__item"
           >
             <div class="panel-operator__item-top">
               <p class="panel-operator__name body-m-medium">
-                {{ operator.label }}
+                {{ operator.operator }}
               </p>
-              <span class="panel-operator__percent body-m-semibold">44 операций / 10%</span>
+              <span class="panel-operator__percent body-m-semibold">
+                {{ `${operator.operations_per_user} ${declOfNum(operator.operations_per_user, titles)} / ${getShare(operator)}%` }}
+              </span>
             </div>
             <div class="panel-operator__item-bottom">
               <v-progress-linear
@@ -104,27 +106,30 @@
           return []
         },
       },
-      operators: {
-        type: Array,
-        default () {
-          return []
-        },
-      },
     },
     data () {
       return {
         sidePanelActive: false,
+        titles: ['операция', 'операции', 'операция'],
       }
     },
     computed: {
-      someOperators () {
-        return this.$_.take(this.operators, 3)
+      operators () {
+        return this.widgetData.slice(0, 3)
       },
     },
     mounted () {},
     methods: {
       toggleSidePanel () {
         this.sidePanelActive = !this.sidePanelActive
+      },
+      getShare (operator) {
+        return Math.round(operator.operations_per_user / operator.operations_count * 100)
+      },
+      declOfNum (number, titles) {
+        number = Number(number)
+        const cases = [2, 0, 1, 1, 1, 2]
+        return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
       },
     },
   }
