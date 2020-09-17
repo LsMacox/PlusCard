@@ -16,15 +16,15 @@
   export default {
     name: 'BaseChart',
     props: {
-      charttype: {
+      chartType: {
         type: String,
         default: 'line',
       },
-      chartdata: {
+      chartData: {
         type: Object,
         default: null,
       },
-      charoptions: {
+      chartOptions: {
         type: Object,
         default: null,
       },
@@ -43,23 +43,29 @@
       }
     },
     watch: {
-      chartdata: function (val) {
-        this.$_chart.data.datasets = this.chartdata.datasets
-        this.$_chart.data.labels = this.chartdata.labels
-        this.$_chart.update()
+      chartOptions: function (val) {
+        this.updateChart()
+      },
+      chartData: function (val) {
+        this.updateChart()
       },
     },
     mounted () {
       this.createChart()
-      this.$_chart.render(this.animation)
     },
     methods: {
       createChart () {
         this.$_chart = new Chart(this.$refs['canvas-chartjs'], {
-          type: this.charttype,
-          data: this.chartdata,
-          options: this.charoptions,
+          type: this.chartType,
+          data: this.chartData,
+          options: this.chartOptions,
         })
+        this.$_chart.render(this.animation)
+      },
+      updateChart () {
+        this.$_chart.data.datasets = this.chartData.datasets
+        this.$_chart.data.labels = this.chartData.labels
+        this.$_chart.update()
       },
     },
   }

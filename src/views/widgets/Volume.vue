@@ -1,14 +1,20 @@
 <template>
-  <div class="widget-box w-volume">
-    <div class="widget-box-header w-volume__header">
-      <div class="widget-box-header-left w-volume__header-left body-m-semibold">
+  <widget-template style-name="w-volume">
+    <template v-slot:header-left>
+      <p
+        class="body-m-semibold"
+      >
         Общий оборот
-      </div>
-      <div class="widget-box-header-right w-volume__header-right body-s-semibold">
+      </p>
+    </template>
+
+    <template v-slot:header-right>
+      <p class="body-m-semibold">
         {{ volume }}
-      </div>
-    </div>
-    <div class="widget-box-body w-volume__body">
+      </p>
+    </template>
+
+    <template v-slot:body>
       <ul
         class="w-volume__list"
       >
@@ -73,14 +79,18 @@
           </div>
         </li>
       </ul>
-    </div>
-  </div>
+    </template>
+  </widget-template>
 </template>
 
 <script>
+
+  import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
+
   export default {
+    components: { WidgetTemplate },
     props: {
-      widgetdata: {
+      widgetData: {
         type: Array,
         default () {
           return [{
@@ -103,7 +113,7 @@
     },
     computed: {
       mainUnit () {
-        const unit = this.widgetdata.find(item => item.is_main)
+        const unit = this.widgetData.find(item => item.is_main)
         if (unit) return unit
         return {}
       },
