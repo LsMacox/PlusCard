@@ -40,6 +40,7 @@ export const ICONIFY_ICONS = [
   { id: 'ion-document-outline', component: () => import('@iconify/icons-ion/document-outline') },
   { id: 'ion-logo-vk', component: () => import('@iconify/icons-ion/logo-vk') },
   { id: 'ion-logo-instagram', component: () => import('@iconify/icons-ion/logo-instagram') },
+  { id: 'ion-location-outline', component: () => import('@iconify/icons-ion/location-outline') },
 
   // feather
   { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') },
@@ -49,6 +50,13 @@ export const ICONIFY_ICONS = [
   { id: 'feather-chevron-up', component: () => import('@iconify/icons-feather/chevron-up') },
   { id: 'feather-phone', component: () => import('@iconify/icons-feather/phone') },
   { id: 'feather-mouse-pointer', component: () => import('@iconify/icons-feather/mouse-pointer') },
+  { id: 'feather-more-vertical', component: () => import('@iconify/icons-feather/more-vertical') },
+  { id: 'feather-calendar', component: () => import('@iconify/icons-feather/calendar') },
+  { id: 'feather-clock', component: () => import('@iconify/icons-feather/clock') },
+  { id: 'feather-coffee', component: () => import('@iconify/icons-feather/coffee') },
+  { id: 'feather-plus-circle', component: () => import('@iconify/icons-feather/plus-circle') },
+  { id: 'feather-trash', component: () => import('@iconify/icons-feather/trash') },
+  { id: 'feather-edit', component: () => import('@iconify/icons-feather/edit') },
 
   // la
   { id: 'la-facebook-f', component: () => import('@iconify/icons-la/facebook-f') },
