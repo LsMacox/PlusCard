@@ -1,19 +1,21 @@
-@import './standart';
+@import '../_variables.sass';
 
 .w-operator {
-
     .w-operator__header {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        cursor: pointer;
 
         .w-operator__header-right {
+            cursor: pointer;
             display: inherit;
-
             .w-operator__header-icon {
                 color: $neutral-500;
             }
+        }
+
+        .w-operator__header-left {
+            cursor: pointer;
         }
     }
 
@@ -33,62 +35,62 @@
 
                 .w-operator__name {
                     color: $neutral-600;
+                    margin-bottom: 3px;
                 }
 
                 .w-operator__percent {
                     color: $primary-base;
-                    margin-bottom: 2px;
                 }
             }
         }
     }
+}
 
-    .panel-operator {
-        .panel-operator__header {
-            margin-top: 45px;
-            margin-left: 35px;
+.panel-operator {
+    .panel-operator__header {
+        margin-top: 45px;
+        margin-left: 35px;
 
-            .panel-operator__title {
-                color: $neutral-900;
-            }
-
-            .panel-operator__sub-title {
-                color: $neutral-700;
-                margin-top: 10px;
-                margin-bottom: 0;
-            }
+        .panel-operator__title {
+            color: $neutral-900;
         }
 
-        .panel-operator__body {
-            width: 415px;
-            margin-left: 34px;
-            margin-right: 34px;
-            margin-top: 25px;
+        .panel-operator__sub-title {
+            color: $neutral-700;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+    }
 
-            .panel-operator__list {
-                padding: 0;
-                list-style: none;
+    .panel-operator__body {
+        width: 415px;
+        margin-left: 34px;
+        margin-right: 34px;
+        margin-top: 25px;
 
-                .panel-operator__item {
-                    margin-top: 24px;
+        .panel-operator__list {
+            padding: 0;
+            list-style: none;
 
-                    .panel-operator__item-top {
-                        display: flex;
-                        justify-content: space-between;
+            .panel-operator__item {
+                margin-top: 24px;
 
-                        .panel-operator__name {
-                            margin-bottom: 0;
-                            color: $neutral-900;
-                        }
+                .panel-operator__item-top {
+                    display: flex;
+                    justify-content: space-between;
 
-                        .panel-operator__percent {
-                            color: $neutral-900;
-                        }
+                    .panel-operator__name {
+                        margin-bottom: 0;
+                        color: $neutral-900;
                     }
 
-                    .panel-operator__item-bottom {
-                        margin-top: 4px;
+                    .panel-operator__percent {
+                        color: $neutral-900;
                     }
+                }
+
+                .panel-operator__item-bottom {
+                    margin-top: 4px;
                 }
             }
         }

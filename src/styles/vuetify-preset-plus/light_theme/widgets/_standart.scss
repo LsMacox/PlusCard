@@ -6,6 +6,10 @@
     box-sizing: border-box;
     border-radius: 10px;
 
+    p {
+        margin-bottom: 0;
+    }
+
     .wc-base {
         color: $primary-base;
     }
@@ -19,17 +23,9 @@
     }
 
     .widget-box-header {
-
-        .widget-box-header-right {
-            float: right;
-        }
-
-        .widget-box-header-left {
-            float: left;
-            .header-left__number {
-                color: $primary-base;
-            }
-        }
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
 
     .widget-box-body {

@@ -1,49 +1,52 @@
 <template>
-  <div class="widget-box w-operator">
-    <div
-      class="widget-box-header w-operator__header"
-      @click="toggleSidePanel"
-    >
-      <div class="widget-box-header-left w-operator__header-left">
-        <p class="body-m-semibold mb-0">
+  <div>
+    <widget-template style-name="w-operator">
+      <template v-slot:header-left>
+        <p
+          class="body-m-semibold mb-0"
+          @click="toggleSidePanel"
+        >
           Операторы
         </p>
-      </div>
-      <div class="widget-box-header-right w-operator__header-right">
+      </template>
+
+      <template v-slot:header-right>
         <iconify-icon
           class="w-operator__header-icon"
           icon="chevron-right"
           height="17"
+          @click="toggleSidePanel"
         />
-      </div>
-    </div>
-    <div class="widget-box-body w-operator__body">
-      <ul
-        class="w-operator__list"
-      >
-        <li
-          v-for="operator in someOperators"
-          :key="operator.id"
-          class="w-operator__item"
+      </template>
+
+      <template v-slot:body>
+        <ul
+          class="w-operator__list"
         >
-          <div class="w-operator__item-top">
-            <p class="w-operator__name body-s-medium">
-              {{ operator.label }}
-            </p>
-            <span class="w-operator__percent body-s-semibold">10%</span>
-          </div>
-          <div class="w-operator__item-bottom">
-            <v-progress-linear
-              :value="25"
-              style="height: 4px"
-              color="primary"
-              rounded="rounded"
-              class="w-operator__progress"
-            />
-          </div>
-        </li>
-      </ul>
-    </div>
+          <li
+            v-for="operator in someOperators"
+            :key="operator.id"
+            class="w-operator__item"
+          >
+            <div class="w-operator__item-top">
+              <p class="w-operator__name body-s-medium">
+                {{ operator.label }}
+              </p>
+              <span class="w-operator__percent body-s-semibold">10%</span>
+            </div>
+            <div class="w-operator__item-bottom">
+              <v-progress-linear
+                :value="25"
+                style="height: 4px"
+                color="primary"
+                rounded="rounded"
+                class="w-operator__progress"
+              />
+            </div>
+          </li>
+        </ul>
+      </template>
+    </widget-template>
     <side-panel
       v-model="sidePanelActive"
       :width="483"
@@ -89,12 +92,13 @@
 </template>
 
 <script>
+  import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
   import SidePanel from '@/components/base/SidePanel.vue'
 
   export default {
-    components: { SidePanel },
+    components: { SidePanel, WidgetTemplate },
     props: {
-      widgetdata: {
+      widgetData: {
         type: Array,
         default () {
           return []
@@ -126,7 +130,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 @import "@/styles/vuetify-preset-plus/light_theme/widgets/_operators.scss";
 
