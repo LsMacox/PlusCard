@@ -1,0 +1,22 @@
+@import "../../_variables.sass";
+
+.w-circle {
+    // Header
+    .w-circle__header {
+
+        .w-circle__header-right {
+            .question__icon {
+                display: inherit;
+                color: $neutral-500;
+            }
+        }
+    }
+
+    // Body
+    .w-circle__body {
+        .w-circle__progress-circular {
+            width: 106px;
+            height: 106px;
+        }
+    }
+}

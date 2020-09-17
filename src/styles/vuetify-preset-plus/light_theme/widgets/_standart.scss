@@ -1,0 +1,40 @@
+@import '../variables';
+
+.widget-box {
+    padding: 20px;
+    border: 1px solid $neutral-250;
+    box-sizing: border-box;
+    border-radius: 10px;
+
+    p {
+        margin-bottom: 0;
+    }
+
+    .wc-base {
+        color: $primary-base;
+    }
+
+    .wc-success {
+        color: $success-500;
+    }
+
+    .wc-error {
+        color: $error-500;
+    }
+
+    .widget-box-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .widget-box-body {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        .widget-box-body__diagram {
+            width: 100%;
+        }
+    }
+}
