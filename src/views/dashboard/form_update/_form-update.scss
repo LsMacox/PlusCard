@@ -1,3 +1,22 @@
+$shopCardTitle: #2A2A34;
+$shopWorkTime: #70707D;
+$shopAddress: #9191A1;
+$shopIconGrey: #9191A1;
+$shopIconBlue: #4776E6;
+$shopIconRed: #EA4C2A;
+
+.icon-grey {
+    color: $shopIconGrey;
+}
+
+.icon-blue {
+    color: $shopIconBlue;
+}
+
+.icon-red {
+    color: $shopIconRed;
+}
+
 .stepper {
     display: flex;
     flex-direction: row;
@@ -16,16 +35,74 @@
     min-height: 600px;
 }
 
-.shop-card {
-    margin: 0 68px;
-}
-
 .shop-title {
     margin: 68px 0 0 0;
 }
 
 .shop-description {
     margin: 12px 0 0 0;
+}
+
+.shop-card {
+    margin-top: 34px;
+    padding: 24px;
+    width: 420px;
+    background: #FFFFFF;
+    border: 1px solid #F2F2F7;
+    box-sizing: border-box;
+    box-shadow: 0 24px 20px -16px rgba(88, 93, 106, 0.1);
+    border-radius: 10px;
+
+    .shop-card-header {
+        display: flex;
+        align-items: center;
+        height: 31px;
+
+        .shop-card-title {
+            width: calc(100% - 24px);
+            color: $shopCardTitle;
+        }
+
+        .shop-card-title-action {
+            position: relative;
+            width: 24px;
+
+            .shop-card-title-action-items {
+                position: absolute;
+                top: -12px;
+                right: 0;
+                display: flex;
+            }
+        }
+    }
+
+    .shop-card-work-time {
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        color: $shopWorkTime;
+
+        .shop-card-work-time-item {
+            display: flex;
+            align-items: center;
+
+            .shop-card-work-time-icon {
+                color: $shopIconBlue;
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .shop-card-address {
+        margin-top: 16px;
+        display: flex;
+        align-items: center;
+        color: $shopAddress;
+
+        .shop-card-address-icon {
+            margin-right: 10px;
+        }
+    }
 }
 
 .shop-form {
@@ -62,6 +139,7 @@
         }
 
         .shop-form-period-separator {
+            margin-top: 12px;
             width: 16px;
             text-align: center;
         }

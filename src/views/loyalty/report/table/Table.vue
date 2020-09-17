@@ -233,18 +233,18 @@
     },
     methods: {
       getDate (date) {
-        if (date) return this.$moment(date).format('L')
+        if (date) return this.$moment.utc(date).local().format(this.$config.date.DATE_FORMAT)
         return '-'
       },
       getTime (date) {
         if (date) {
-          const d = new Date(date).toISOString().split('T')[1]
-          return 'в ' + d.split(':')[0] + ':' + d.split(':')[1]
+          const d = this.$moment.utc(date).local().format('HH:mm')
+          return 'в ' + d
         }
         return '-'
       },
       getLastActivity (date) {
-        if (date) return 'Был(а) в сети ' + this.getDate(date) + ' ' + this.getTime(date)
+        if (date) return 'Был(а) в сети ' + this.$moment.utc(date).local().format(this.$config.date.DATETIME_FORMAT_MIN2)
         return 'Был(а) в сети - '
       },
       getValue (value) {

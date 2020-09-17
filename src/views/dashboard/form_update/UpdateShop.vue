@@ -78,102 +78,86 @@
         <div
           v-for="(item, index) in shops"
           :key="index"
-          class="content-block__shop complete-shop"
+          class="shop-card"
         >
-          <div class="complete-shop__header">
-            <div class="header__title body-l-semibold">
+          <div class="shop-card-header">
+            <div class="shop-card-title body-l-semibold">
               {{ item.name }}
             </div>
-            <div class="actions">
+            <div class="shop-card-title-action">
               <div
                 v-show="!actionsShow"
-                class="more_icons"
                 @mouseover="actionsShow = true"
               >
-                <span
-                  class="iconify"
-                  data-icon="feather:more-vertical"
-                  data-inline="false"
-                />
+                <v-icon style="color: #B5B5C4; position: relative; top: 3px;">
+                  $iconify_feather-more-vertical
+                </v-icon>
               </div>
               <div
                 v-show="actionsShow"
-                class="actions_icons"
+                class="shop-card-title-action-items"
                 @mouseleave="actionsShow = false"
               >
-                <div
-                  style="display: inline-block"
+                <v-icon
+                  class="icon-red"
+                  style="margin-right: 18px;"
                   @click="deleteShop(item)"
                 >
-                  <span
-                    class="iconify trash_icon"
-                    data-icon="feather:trash"
-                    data-inline="false"
-                  />
-                </div>
-                <div
-                  style="display: inline-block"
+                  $iconify_feather-trash
+                </v-icon>
+                <v-icon
+                  class="icon-blue"
                   @click="editShop(item)"
                 >
-                  <span
-                    class="iconify edit_icon"
-                    data-icon="feather:edit"
-                    data-inline="false"
-                  />
-                </div>
+                  $iconify_feather-edit
+                </v-icon>
               </div>
             </div>
           </div>
-          <div class="complete-shop__content shop-content">
-            <div
-              v-for="(worktime, itemid) in item.workTimes"
-              :key="itemid + 1000"
-              class="shop-content__first"
-            >
-              <div class="workdays body-m-regular">
-                <span
-                  class="iconify"
-                  data-icon="feather:calendar"
-                  data-inline="false"
-                />
+          <div
+            v-for="(worktime, itemid) in item.workTimes"
+            :key="itemid + 1000"
+            class="shop-card-work-time"
+          >
+            <div class="shop-card-work-time-item body-m-regular">
+              <v-icon class="shop-card-work-time-icon">
+                $iconify_feather-calendar
+              </v-icon>
+              <div style="width: 65px;">
                 {{ getSelectedDays(worktime.days) }}
               </div>
-              <div class="worktime body-m-regular">
-                <span
-                  class="iconify"
-                  data-icon="feather:clock"
-                  data-inline="false"
-                />
+            </div>
+            <div class="shop-card-work-time-item body-m-regular">
+              <v-icon class="shop-card-work-time-icon">
+                $iconify_feather-clock
+              </v-icon>
+              <div style="width: 100px;">
                 {{ worktime.startTime + '-' + worktime.endTime }}
               </div>
-              <div class="breaktime body-m-regular">
-                <span
-                  class="iconify"
-                  data-icon="feather:coffee"
-                  data-inline="false"
-                />
+            </div>
+            <div class="shop-card-work-time-item body-m-regular">
+              <v-icon class="shop-card-work-time-icon">
+                $iconify_feather-coffee
+              </v-icon>
+              <div style="width: 100px;">
                 {{ worktime.breakStart + '-' + worktime.breakEnd }}
               </div>
             </div>
-            <div class="shop-content__second">
-              <div class="address body-m-regular">
-                <span
-                  class="iconify"
-                  data-icon="ion:location-outline"
-                  data-inline="false"
-                />
-                {{ item.address }}
-              </div>
+          </div>
+          <div class="shop-card-address">
+            <v-icon class="shop-card-address-icon">
+              $iconify_ion-location-outline
+            </v-icon>
+            <div class="body-m-regular">
+              {{ item.address }}
             </div>
-            <div class="shop-content__third">
-              <div class="phone body-m-regular">
-                <span
-                  class="iconify"
-                  data-icon="feather:phone"
-                  data-inline="false"
-                />
-                {{ item.phone }}
-              </div>
+          </div>
+          <div class="shop-card-address">
+            <v-icon class="shop-card-address-icon">
+              $iconify_feather-phone
+            </v-icon>
+            <div class="body-m-regular">
+              {{ item.phone }}
             </div>
           </div>
         </div>
@@ -391,7 +375,6 @@
                     </div>
                     <div
                       class="shop-form-period-separator"
-                      style="height: 50px"
                     >
                       -
                     </div>
@@ -428,7 +411,6 @@
                     </div>
                     <div
                       class="shop-form-period-separator"
-                      style="height: 50px"
                     >
                       -
                     </div>
@@ -500,10 +482,9 @@
             style="padding: 0 !important;"
             @click="addShop()"
           >
-            <v-img
-              src="@/assets/svg/plus-circle.svg"
-              style="margin-right: 5px"
-            />
+            <v-icon style="margin-right: 5px;">
+              $iconify_feather-plus-circle
+            </v-icon>
             Добавить точку продажи
           </v-btn>
         </div>
@@ -604,7 +585,6 @@
           { id: 5, shortName: 'СБ', fullName: 'Суббота' },
           { id: 6, shortName: 'ВС', fullName: 'Воскресенье' },
         ],
-        cropperSmallDialog: false,
         rules: {
           required: value => !!value || this.$t('required'),
           counter: value => value.length <= 20 || 'Max 20 characters',
@@ -803,6 +783,8 @@
         this.newShop.workTimes = this.sortById(this.newShop.workTimes)
         this.newShop.worktime_json = JSON.stringify(this.newShop.workTimes)
         this.shops.push(this.newShop)
+        console.log('this.shops.push(this.newShop)')
+        console.log(this.shops)
         this.cancelShop()
       },
       async createProgram () {
@@ -895,6 +877,8 @@
         }
       },
       addShop () {
+        console.log('addShop')
+        console.log(this.shops)
         this.markerGenerated = false
         this.newShopActive = true
       },
@@ -959,6 +943,29 @@
     },
   }
 </script>
+
+<style lang="scss">
+.classMarker {
+  display: flex;
+  align-self: center;
+  align-content: center;
+  justify-content: center;
+  width: 150px;
+  height: 50px;
+  color: #FFFFFF;
+  font-weight: bold;
+  text-align: center;
+  line-height: 50px;
+
+  .ymapMarker {
+    width: 150px;
+    height: 50px;
+    background: #4776E6;
+    border-radius: 8px;
+    opacity: .3;
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 @import 'form-update.scss';
