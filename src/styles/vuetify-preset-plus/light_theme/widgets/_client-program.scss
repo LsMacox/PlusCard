@@ -1,0 +1,23 @@
+@import './standart';
+
+.w-client-program {
+    .w-client-program__body {
+
+        .w-client-program__box {
+            .w-client-program__box-container {
+                .w-client-program__box-info {
+                    margin-right: 23px;
+                }
+                &:nth-child(1) {
+                    .w-client-program__box-diagram {
+                        margin-top: -9px;
+                    }
+                }
+
+                &:nth-child(2) {
+                    margin-top: 18px;
+                }
+            }
+        }
+    }
+}

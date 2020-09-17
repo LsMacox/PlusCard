@@ -67,12 +67,12 @@
         periodId: null,
         periods: [
           { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 2, name: 'за вчера', start: new Date(Date.now() - 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 3, name: 'за последние 7 дней', start: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 4, name: 'за последние 30 дней', start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 5, name: 'за последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 6, name: 'за последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 7, name: 'за последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
+          { id: 2, name: 'за вчера', start: new Date(Date.now() - 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now() - 24 * 3600 * 1000).toISOString().split('T')[0] },
+          { id: 3, name: 'за последние 7 дней', start: new Date(Date.now() - 6 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
+          { id: 4, name: 'за последние 30 дней', start: new Date(Date.now() - 29 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
+          { id: 5, name: 'за последние 90 дней', start: new Date(Date.now() - 89 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
+          { id: 6, name: 'за последние 180 дней', start: new Date(Date.now() - 179 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
+          { id: 7, name: 'за последние 365 дней', start: new Date(Date.now() - 364 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
           // { id: 7, name: 'собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
         ],
       }

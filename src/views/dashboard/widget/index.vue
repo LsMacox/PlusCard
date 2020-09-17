@@ -1,20 +1,28 @@
 <template>
   <div class="widget-line">
     <div class="widget-line-block">
-      <company-client />
+      <client-program />
     </div>
-    <div class="widget-line-block" />
-    <div class="widget-line-block" />
+    <div class="widget-line-block">
+      <purchase />
+    </div>
+    <div class="widget-line-block">
+      <share-purchase />
+    </div>
     <div class="widget-line-block" />
   </div>
 </template>
 
 <script>
-  import CompanyClient from '@/views/dashboard/widget/CompanyClient'
+  import Purchase from '@/views/widgets/Purchase'
+  import SharePurchase from '@/views/widgets/SharePurchase'
+  import ClientProgram from '@/views/widgets/ClientProgram'
 
   export default {
     components: {
-      CompanyClient,
+      ClientProgram,
+      Purchase,
+      SharePurchase,
     },
     props: {
     },
@@ -41,5 +49,4 @@
 
   .widget-line-block
     margin: 0 10px
-    width: 33.3333%
 </style>

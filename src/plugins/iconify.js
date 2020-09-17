@@ -4,6 +4,8 @@ import IconifyIcon from '@iconify/vue'
 // https://iconify.design/icon-sets/?query=plus-circle
 // npm i @iconify/icons-bx -D
 // npm i @iconify/icons-codicon -D
+// npm i @iconify/icons-ant-design -D
+// npm i @iconify/icons-entypo -D
 export const ICONIFY_ICONS = [
   // uil
   { id: 'plus-circle', component: () => import('@iconify/icons-uil/plus-circle') },
@@ -63,6 +65,8 @@ export const ICONIFY_ICONS = [
 
   // octicon
   { id: 'octicon-chevron-up-16', component: () => import('@iconify/icons-octicon/chevron-up-16') },
+  { id: 'question-circle-outlined', component: () => import('@iconify/icons-ant-design/question-circle-outlined') },
+  { id: 'chevron-right', component: () => import('@iconify/icons-entypo/chevron-right') },
 ]
 
 ICONIFY_ICONS.forEach((icon) => {

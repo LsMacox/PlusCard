@@ -6,7 +6,7 @@
       :md="3"
     >
       <clients
-        :widgetdata="widgetClientData"
+        :widget-data="widgetClientData"
       />
     </v-col>
     <v-col
@@ -15,7 +15,7 @@
       :md="3"
     >
       <operations
-        :widgetdata="widgetOperationData"
+        :widget-data="widgetOperationData"
       />
     </v-col>
     <v-col
@@ -24,7 +24,7 @@
       :md="3"
     >
       <operators
-        :widgetdata="widgetOperatorsData"
+        :widget-data="widgetOperatorsData"
       />
     </v-col>
     <v-col
@@ -33,17 +33,18 @@
       :md="3"
     >
       <volume
-        :widgetdata="widgetVolumeData"
+        :widget-data="widgetVolumeData"
       />
     </v-col>
   </v-row>
 </template>
 
 <script>
-  import Clients from './Clients'
-  import Operations from './Operations'
-  import Operators from './Operators'
-  import Volume from './Volume'
+  import WidgetRequest from '@/views/widgets/mixins/WidgetRequest.js'
+  import Clients from '@/views/widgets/Clients'
+  import Operations from '@/views/widgets/Operations'
+  import Operators from '@/views/widgets/Operators'
+  import Volume from '@/views/widgets/Volume'
 
   export default {
     components: {
@@ -52,6 +53,7 @@
       Operators,
       Volume,
     },
+    mixins: [WidgetRequest],
     data () {
       return {
       }
@@ -68,6 +70,16 @@
       },
       widgetVolumeData () {
         return this.$store.getters['widget/bonuses/widgetData']
+      },
+    },
+    mounted () {},
+    methods: {
+      fetchData () {
+        this.$store.dispatch('widget/bonusClients/widget', this.widgetRequest)
+        this.$store.dispatch('widget/operations/widget', this.widgetRequest)
+        this.$store.dispatch('widget/bonuses/widget', this.widgetRequest)
+        // this.$store.dispatch('widget/operators/widget', this.widgetRequest)
+        // this.$store.dispatch('widget/operators/operators')
       },
     },
   }

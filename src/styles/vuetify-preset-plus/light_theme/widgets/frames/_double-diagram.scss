@@ -1,0 +1,68 @@
+@import '../standart';
+
+.w-double-diagram {
+    border-radius: 12px;
+
+    // Header
+    .w-double-diagram__header {
+
+        .w-double-diagram__header-right {
+            .question__icon {
+                display: inherit;
+                color: $neutral-500;
+            }
+        }
+    }
+
+    // Body
+    .w-double-diagram__body {
+
+        .w-double-diagram__box {
+            .w-double-diagram__box-container {
+                justify-content: space-between;
+                margin-top: 20px;
+                
+                .w-double-diagram__box-info {
+                    // margin-right: 45px;
+                    .w-double-diagram__info-title {
+                        margin-bottom: 5px;
+                        p {
+                            margin-bottom: 0;
+                            color: $neutral-500;
+                        }
+                    }
+                }
+
+                &:nth-child(1) {
+                    .w-double-diagram__box-diagram {
+                        margin-top: -9px;
+                    }
+                }
+
+                &:nth-child(2) {
+                    margin-top: 18px;
+                    .w-double-diagram__box-info {
+                         margin-right: 23px;
+                    }
+                }
+
+                .w-double-diagram__info-statistics {
+                    .statistics__number {
+                        float: left;
+                        margin-right: 8px;
+                    }
+                    .statistics__percent {
+                        margin-top: 5px;
+                        display: inline-block;
+                    }
+                }
+
+                .w-double-diagram__box-diagram {
+                    margin-top: -2px;
+                    width: 100px;
+                    float: left;
+                }
+            }
+        }
+    }
+}
