@@ -66,9 +66,10 @@
           <v-btn
             v-else
             color="primary"
+            x-small
             v-on="on"
           >
-            {{ getGroupCount(recipients) }} получателей
+            {{ getGroupCount(recipients) }} {{ getGroupCount(recipients) > 1 ? 'получателей': 'получатель' }}
           </v-btn>
         </template>
 
@@ -78,9 +79,9 @@
             :key="i"
             @click.native="setGroup(item.id)"
           >
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="setTopic(0)">
+          <v-list-item @click="setGroup(0)">
             <span style="color: #24D3ED;">Другая или новая группа </span>
           </v-list-item>
         </v-list>

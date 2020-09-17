@@ -1,36 +1,39 @@
 <template>
   <v-dialog
-    v-model="dialog"
-    max-width="350"
-    persistent
+    v-model="dialogLocal"
+    :max-width="300"
   >
-    <v-card class="modal-card">
-      <div class="modal-header">
-        Удалить тему?
-      </div>
+    <template v-slot:activator="{ on }">
+      <slot
+        name="activator"
+        :on="on"
+      />
+    </template>
+    <v-card>
+      <v-card-title>
+        <span class="modal-header">Удалить тему?</span>
+      </v-card-title>
+      <!-- <v-card-text>
+        Название темы: {{}}
+      </v-card-text> -->
 
-      <v-card-text />
+      <v-divider />
 
       <v-card-actions>
-        <div>
-          <div
-            class="close"
-            @click="close()"
-          >
-            Отмена
-          </div>
-        </div>
-
-        <v-spacer />
-
         <v-btn
-          class="box-button"
+          text
+          @click="close()"
+        >
+          Отмена
+        </v-btn>
+        <v-spacer />
+        <v-btn
           color="success"
           :loading="topicDeleteRequest"
           @click="remove()"
         >
           <v-icon left>
-            clear
+            fa-trash
           </v-icon>
           Удалить тему
         </v-btn>
@@ -47,29 +50,36 @@
     },
     props: {
       dialog: Boolean,
-      deleteSuccess: Boolean,
       topicId: {
         type: Number,
-        default: null,
+        required: true,
       },
-
     },
     data () {
       return {
         topicDeleteRequest: false,
       }
     },
-    computed: { },
+    computed: {
+      dialogLocal: {
+        get () {
+          return this.dialog
+        },
+        set (v) {
+          this.$emit('update:dialog', v)
+        },
+      },
+    },
     methods: {
       close () {
-        this.$emit('update:dialog', false)
+        this.dialogLocal = false
       },
       async remove () {
         // чат-пользователь
         this.topicDeleteRequest = true
         this.$store.dispatch('chat/topic/delete', this.topicId).then(() => {
-          this.$emit('update:dialog', false)
-          this.$emit('update:deleteSuccess', true)
+          this.close()
+          this.$emit('onDelete')
         }).finally(() => {
           this.topicDeleteRequest = false
         })

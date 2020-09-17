@@ -1,100 +1,114 @@
 <template>
   <v-dialog
-    v-model="dialog"
-    custom-class="app--modal"
+    v-model="internalDialog"
+    max-width="500px"
   >
-    <div class="modal">
-      <div class="header">
-        Новая группа
-      </div>
-
-      <el-form
-        ref="form"
-        :model="form"
-        :rules="rules"
-        @submit.prevent.native="submit('form')"
-      >
-        <div class="content">
-          <el-form-item prop="name">
-            <v-text-field
-              v-model="form.name"
-              placeholder="Введите название группы"
-            />
-          </el-form-item>
-
-          <!-- все получатели -->
-          <div style="display: flex;">
-            <div
-              class="check-all"
-              @click="setRecipientAll()"
-            >
-              <div
-                v-if="checkAll"
-                class="check-all-back"
-              >
-                <v-icon color="white">
-                  check
-                </v-icon>
-              </div>
-            </div>
-            <div class="name-all">
-              Все участники чата
-            </div>
-          </div>
-
-          <!-- список получателей -->
-          <div
-            v-for="(item, i) in members"
-            :key="i"
-            class="res-row"
-          >
-            <div class="line-h">
-              <div class="line-v" />
-            </div>
-            <div
-              class="check"
-              @click="setRecipient(item)"
-            >
-              <div
-                v-show="checkAll || isRecipient(item)"
-                class="check-all-back"
-              >
-                <v-icon color="white">
-                  check
-                </v-icon>
-              </div>
-            </div>
-            <div
-              class="avatar"
-              :style="'background: url(' + item.avatar + ');'"
-            />
-            <div class="name">
-              {{ item.name }}
-            </div>
-          </div>
-        </div>
-
-        <div class="action">
+    <v-card>
+      <v-toolbar color="info">
+        <v-toolbar-title>Новая группа получателей</v-toolbar-title>
+        <v-spacer />
+        <v-toolbar-items>
           <v-btn
-
+            icon
             @click="close()"
           >
-            Отмена
+            <v-icon>mdi-close</v-icon>
           </v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <v-card-text>
+        <v-form v-model="formValid">
+          <v-container>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="form.name"
+                  :rules="nameRules"
+                  placeholder="Введите название группы"
+                  counter
+                  outlined
+                  clearable
+                  minlength="1"
+                  maxlength="100"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <!-- все получатели -->
+                <div style="display: flex;">
+                  <div
+                    class="check-all"
+                    @click="setRecipientAll()"
+                  >
+                    <div
+                      v-if="checkAll"
+                      class="check-all-back"
+                    >
+                      <v-icon color="white">
+                        fa-check
+                      </v-icon>
+                    </div>
+                  </div>
+                  <div class="name-all">
+                    Все участники чата
+                  </div>
+                </div>
 
-          <v-spacer />
-
-          <v-btn
-            color="primary"
-            :loading="groupCreateAction"
-            :disabled="!recipients.length"
-            @click="submit('form')"
-          >
-            Создать
-          </v-btn>
-        </div>
-      </el-form>
-    </div>
+                <!-- список получателей -->
+                <div
+                  v-for="(item, i) in members"
+                  :key="i"
+                  class="res-row"
+                >
+                  <div class="line-h">
+                    <div class="line-v" />
+                  </div>
+                  <div
+                    class="check"
+                    @click="setRecipient(item)"
+                  >
+                    <div
+                      v-show="checkAll || isRecipient(item)"
+                      class="check-all-back"
+                    >
+                      <v-icon color="white">
+                        fa-check
+                      </v-icon>
+                    </div>
+                  </div>
+                  <div
+                    class="avatar"
+                    :style="'background: url(' + item.avatar + ');'"
+                  />
+                  <div class="name">
+                    {{ item.name }}
+                  </div>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </v-card-text>
+      <v-divider />
+      <v-card-actions>
+        <v-btn
+          text
+          @click="close()"
+        >
+          Отмена
+        </v-btn>
+        <v-spacer />
+        <v-btn
+          color="primary"
+          :loading="groupCreateAction"
+          :disabled="!(recipients.length && formValid)"
+          @click="create"
+        >
+          Создать
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -108,33 +122,30 @@
       },
     },
     data () {
-      const validateName = (rule, value, callback) => {
-        const check = this.groups.filter(item => item.name === value)
-        if (check.length) {
-          callback(new Error('Группа с таким именем уже существует'))
-        } else {
-          callback()
-        }
-      }
       return {
         form: {
           name: null,
         },
         checkAll: false,
         recipients: [],
-        rules: {
-          name: [
-            { required: true, message: 'Название группы обязательно', trigger: 'blur' },
-            { max: 100, message: 'Название группы не должен быть более 100 символов', trigger: 'blur' },
-            { validator: validateName, trigger: 'blur' },
-          ],
-        },
+        nameRules: [
+          v => !!v || 'Введите название группы',
+          v => this.isUniqueName(v) || 'Групп с таким названием уже существует',
+        ],
         groupCreateAction: false,
+        formValid: false,
       }
     },
     computed: {
-      loadingSend () {
-        return this.$store.getters['chat/message/loading']
+      internalDialog: {
+        get () {
+          return this.dialog
+        },
+        set (val) {
+          if (val === this.dialog) return
+
+          this.$emit('update:dialog', val)          
+        },
       },
       groups () {
         return this.$store.getters['chat/group/groups']
@@ -162,9 +173,12 @@
       },
     },
     methods: {
+      isUniqueName (name) {
+        return this.groups.filter(item => item.name === name).length === 0
+      },
       close () {
         this.recipients = []
-        this.$emit('update:dialog', false)
+        this.internalDialog = false
       },
       isEmptyObject (obj) {
         return JSON.stringify(obj) === '{}'
@@ -198,12 +212,7 @@
         if (check.length) return true
         return false
       },
-      submit (formRef) {
-        this.$refs[formRef].validate((v) => {
-          if (v) this.create()
-          else return false
-        })
-      },
+
       create () {
         const group = {
           name: this.form.name,
