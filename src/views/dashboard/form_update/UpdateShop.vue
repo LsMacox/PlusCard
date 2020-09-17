@@ -391,7 +391,6 @@
                     </div>
                     <div
                       class="shop-form-period-separator"
-                      style="height: 50px"
                     >
                       -
                     </div>
@@ -428,7 +427,6 @@
                     </div>
                     <div
                       class="shop-form-period-separator"
-                      style="height: 50px"
                     >
                       -
                     </div>
