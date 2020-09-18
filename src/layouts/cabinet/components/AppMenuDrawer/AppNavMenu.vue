@@ -57,14 +57,15 @@
           icon: '$iconify_ant-design-gift-outlined',
           title: 'Сертификаты',
           to: '/account/certificates',
-          children: [
-            {
-              icon: '$iconify_ant-design-gift-outlined',
-              title: 'Сертификаты',
-              to: '/account/certificates',
-            },
+          alias: ['/program/certificate', '/certificate/master'],
+          // children: [
+          //   {
+          //     icon: '$iconify_ant-design-gift-outlined',
+          //     title: 'Сертификаты',
+          //     to: '/account/certificates',
+          //   },
 
-          ],
+          // ],
         },
         {
           icon: '$iconify_ion-funnel-outline',
