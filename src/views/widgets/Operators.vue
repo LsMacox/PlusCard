@@ -57,7 +57,7 @@
           Операторы
         </h1>
         <p class="panel-operator__sub-title body-m-regular">
-          96 операций за сегодня
+          {{ `${operations[0] ? operations[0] : 0} ${declOfNum(operations[0], titles)} ${getMyPeriod()}` }}
         </p>
       </div>
       <div class="panel-operator__body">
@@ -110,12 +110,18 @@
     data () {
       return {
         sidePanelActive: false,
-        titles: ['операция', 'операции', 'операция'],
+        titles: ['операция', 'операции', 'операций'],
       }
     },
     computed: {
       operators () {
         return this.widgetData.slice(0, 3)
+      },
+      operations () {
+        return this.$_.map(this.widgetData, 'operations_count')
+      },
+      period () {
+        return this.$store.getters['widget/filter/period']
       },
     },
     mounted () {},
@@ -131,12 +137,18 @@
         const cases = [2, 0, 1, 1, 1, 2]
         return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
       },
+      getMyPeriod () {
+        if (this.period && this.period.id === 8) {
+          return `за ${this.$moment(this.period.start).format('DD.MM.YYYY')} -
+            ${this.$moment(this.period.end).format('DD.MM.YYYY')}`
+        } else {
+          return this.period.name
+        }
+      },
     },
   }
 </script>
 
 <style lang="scss">
-
 @import "@/styles/vuetify-preset-plus/light_theme/widgets/_operators.scss";
-
 </style>
