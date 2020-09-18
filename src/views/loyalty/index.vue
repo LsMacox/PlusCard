@@ -4,7 +4,22 @@
   >
     <toolbar />
     <widget-line />
-    <app-table />
+    <app-table v-if="true" />
+    <div
+      v-else
+      class="dummy-screen"
+    >
+      <v-img
+        class="dummy-screen-img"
+        src="@//assets/png/loyalty-dummy.png"
+      />
+      <div class="dummy-screen-header title-s-bold">
+        Здесь пока ничего нет :(
+      </div>
+      <div class="dummy-screen-text body-m-regular">
+        Здесь будет отображаться вся информация, котороая касается вашей програмы лояльности. Данные появятся как только клиенты начнут ею пользоваться.
+      </div>
+    </div>
   </div>
 </template>
 
@@ -40,6 +55,9 @@
       },
       filter () {
         return this.$store.getters['widget/filter/filter']
+      },
+      tableData () {
+        return this.$store.getters['widget/table/widgetData']
       },
     },
     watch: {
@@ -93,6 +111,28 @@
   }
 </script>
 
-<style lang="sass" scoped>
-@import "~@/styles/loyalty-report"
+<style lang="scss" scoped>
+@import "~@/styles/loyalty-report";
+
+.dummy-screen {
+    margin: 100px 0;
+
+    .dummy-screen-img {
+      margin: 0 auto;
+      width: 186px;
+      height: 156px;
+  }
+
+    .dummy-screen-header {
+      margin: 34px auto 0 auto;
+      max-width: 500px;
+      text-align: center;
+  }
+
+    .dummy-screen-text {
+      margin: 12px auto 0 auto;
+      max-width: 500px;
+      text-align: center;
+  }
+}
 </style>
