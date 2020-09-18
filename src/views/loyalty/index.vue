@@ -4,9 +4,9 @@
   >
     <toolbar />
     <widget-line />
-    <app-table v-if="true" />
+    <app-table v-show="tableData.length" />
     <div
-      v-else
+      v-show="!tableData.length"
       class="dummy-screen"
     >
       <v-img
@@ -14,10 +14,10 @@
         src="@//assets/png/loyalty-dummy.png"
       />
       <div class="dummy-screen-header title-s-bold">
-        Здесь пока ничего нет :(
+        Здесь пока ничего нет :’(
       </div>
       <div class="dummy-screen-text body-m-regular">
-        Здесь будет отображаться вся информация, котороая касается вашей програмы лояльности. Данные появятся как только клиенты начнут ею пользоваться.
+        Здесь отобрается информация по операциям програмы лояльности. По текущим настройкам фильтра или периода данных нет.
       </div>
     </div>
   </div>

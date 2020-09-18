@@ -1,5 +1,7 @@
 <template>
   <div class="widget-box">
+    {{ operators }}<br><br>
+    {{ operatorsStore }}
     <div
       class="widget-box-header"
       @click="toggleSidePanel"
@@ -110,7 +112,16 @@
         return this.widgetdata.sort((a, b) => b.operations_per_user - a.operations_per_user)
       },
       widgetOperators () {
-        return this.operators.slice(0, 3)
+        const operators = this.operators.slice(0, 3)
+        if (operators.length) {
+          console.log(operators)
+          return operators.slice(0, 3)
+        }
+        console.log(this.operatorsStore)
+        return this.operatorsStore
+      },
+      operatorsStore () {
+        return this.$store.getters['widget/operators/operators'].slice(0, 3)
       },
     },
     methods: {
