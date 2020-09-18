@@ -156,6 +156,12 @@ export default new Router({
           ],
         },
         {
+          path: '/program/bonus/settings',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'ProgramBonusSetting',
+          meta: { title: 'ProgramBonusSetting', icon: 'ui_kit' },
+        },
+        {
           path: '/master',
           component: () => import('@/views/master/Master'),
           name: 'Master',
@@ -199,15 +205,21 @@ export default new Router({
         },
         {
           path: 'settings',
-          component: () => import('@/views/SkeletonPage'),
+          component: () => import('@/views/settings/ProgramSettings.vue'),
           name: 'Settings',
-          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+          meta: { auth: true, title: 'Settings', icon: 'dashboard' },
         },
         {
           path: 'help',
           component: () => import('@/views/SkeletonPage'),
           name: 'Help',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        {
+          path: 'todo',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Todo',
+          meta: { auth: false, title: 'Todo', icon: 'dashboard' },
         },
 
       ]

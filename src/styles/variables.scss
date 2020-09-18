@@ -1,4 +1,9 @@
+// https://vuetifyjs.com/en/customization/sass-variables/#sass-variables
 $body-font-family: Gilroy, sans-serif;
+
+$spacer: 4px; //4px !default;
+$grid-gutter: 20px; //$spacer * 6 !default;
+$container-padding-x: $grid-gutter / 2; //$grid-gutter / 2 !default;
 
 $font-size-root: 14px;
 $sheet-border-radius: 4px;
