@@ -34,7 +34,7 @@
                   <div
                     class="hint"
                     style="color: #4776E6;"
-                    v-if="!item.order"
+                    v-if="item.order"
                   >
                     {{ item.order.num }}
                   </div>
