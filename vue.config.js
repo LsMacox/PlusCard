@@ -37,7 +37,7 @@ module.exports = {
       //https://github.com/vuetifyjs/vuetify-loader
       progressiveImages: {
         size: 12, // Use higher-resolution previews  Default: 9
-        sharp: false, // Use sharp instead of ImageMagick Default: false
+        sharp: true, // Use sharp instead of ImageMagick Default: false
       },
     }])
   },
