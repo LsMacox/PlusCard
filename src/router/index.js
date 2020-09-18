@@ -4,6 +4,8 @@ import Router from 'vue-router'
 /* Layout */
 import AuthLayout from '@/layouts/auth'
 import CabinetLayout from '@/layouts/cabinet'
+import CrmRouters from './modules/crm'
+import ChatRouters from './modules/chat'
 
 /* Router Modules */
 
@@ -34,17 +36,6 @@ export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
-    // {
-    //   path: "/redirect",
-    //   component: Layout,
-    //   hidden: true,
-    //   children: [
-    //     {
-    //       path: "/redirect/:path(.*)",
-    //       component: () => import("@/views/redirect/index")
-    //     }
-    //   ]
-    // },
     {
       path: '/login',
       component: AuthLayout,
@@ -201,39 +192,10 @@ export default new Router({
           meta: { title: 'Certificates', icon: 'certificates' },
         },
         {
-          path: 'crm',
-          component: () => import('@/views/SkeletonPage'),
-          name: 'CRM',
-          meta: { auth: false, title: 'Help', icon: 'dashboard' },
-        },
-        {
           path: 'sendings',
           component: () => import('@/views/SkeletonPage'),
           name: 'Sendings',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
-        },
-        {
-          path: '/communications/chat',
-          redirect: '/communications/chat/business',
-          meta: { auth: true, title: 'Чаты', icon: '' },
-        },
-        {
-          path: '/communications/chat/:conversation_type',
-          component: () => import('@/views/communications/Chat'),
-          props: route => ({
-            conversationType: route.params.conversation_type,
-            conversationId: null,
-          }),
-          meta: { auth: true, title: 'Чаты', icon: '' },
-        },
-        {
-          path: '/communications/chat/:conversation_type/:conversation_id',
-          component: () => import('@/views/communications/Chat'),
-          props: route => ({
-            conversationType: route.params.conversation_type,
-            conversationId: +route.params.conversation_id,
-          }),
-          meta: { auth: true, title: 'Чаты', icon: '' },
         },
         {
           path: 'settings',
@@ -247,16 +209,23 @@ export default new Router({
           name: 'Help',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
-        // 404 page
+
+      ]
+      .concat(
+        CrmRouters.children,
+        ChatRouters.children,
+        )
+      .concat([
+          // 404 page
         {
           path: '*',
           component: () => import('@/components/error-page/404'),
           name: '404',
           meta: { auth: false },
         },
-
-      ],
+      ]),
     },
+
   ],
 })
 
