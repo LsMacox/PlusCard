@@ -1,8 +1,10 @@
 <template>
-  <div class="app__date-select">
+  <div
+    class="app__date-select"
+  >
     <div
       class="app__date-select-btn"
-      @click="show = !show"
+      @click.stop="show = !show"
     >
       <div class="app__date-select-btn-text">
         {{ getItemLabel(model) }}
@@ -28,6 +30,7 @@
       v-show="show"
       class="app__date-select-block"
       :style="`min-width: ${minWidth};`"
+      @click.stop=""
     >
       <div class="app__date-select-block-square" />
       <div
@@ -71,6 +74,7 @@
       v-if="showDatePicker"
       class="app__date-select-block-datepicker"
       :style="`min-width: ${minWidth};`"
+      @click.stop=""
     >
       <div class="app__date-select-block-square" />
       <!--выбор календарь-->
@@ -178,6 +182,12 @@
           endDate: this.period.end,
         }
       }
+
+      document.addEventListener('click', () => {
+        if (this.show) {
+          this.show = !this.show
+        }
+      })
     },
     methods: {
       getItemLabel (model) {

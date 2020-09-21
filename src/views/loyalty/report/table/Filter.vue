@@ -106,7 +106,7 @@
               <input
                 class="app__filter-block-input-field"
                 placeholder="Поиск и фильтр"
-                @focus="switchShow"
+                @click.stop="switchShow"
               >
             </div>
           </div>
@@ -124,6 +124,7 @@
         <div
           v-show="show"
           class="app__filter-block"
+          @click.stop=""
         >
           <div
             class="app__filter-block-input"
@@ -319,6 +320,12 @@
       this.filter = JSON.parse(JSON.stringify(this.filterStore))
       this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
       this.setFastFilter(this.filter)
+
+      document.addEventListener('click', () => {
+        if (this.show) {
+          this.close()
+        }
+      })
     },
     methods: {
       async switchShow () {

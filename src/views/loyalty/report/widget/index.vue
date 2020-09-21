@@ -87,6 +87,6 @@
 
 <style lang="scss" scoped>
 .widget-line {
-  padding: 22px 0 0 0;
+  padding: 24px 0 0 0;
 }
 </style>

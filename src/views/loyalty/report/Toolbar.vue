@@ -1,10 +1,10 @@
 <template>
-  <v-row>
+  <v-row no-gutters>
     <v-col
       :cols="12"
       :sm="12"
       :md="12"
-      :lg="6"
+      :lg="8"
     >
       <div class="toolbar-col toolbar-col-left">
         <div class="toolbar-name">
@@ -25,7 +25,7 @@
       :cols="12"
       :sm="12"
       :md="12"
-      :lg="6"
+      :lg="4"
     >
       <div class="toolbar-col toolbar-col-right">
         <v-btn
@@ -148,6 +148,7 @@
 
 .toolbar-col-left {
   justify-content: flex-start;
+  padding-top: 5px;
 }
 
 .toolbar-col-right {
