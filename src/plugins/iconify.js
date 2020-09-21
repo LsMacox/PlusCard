@@ -28,7 +28,7 @@ export const ICONIFY_ICONS = [
 
   // jam
   { id: 'jam-close', component: () => import('@iconify/icons-jam/close') },
-  
+
   // carbon
   { id: 'carbon-diagram', component: () => import('@iconify/icons-carbon/diagram') },
 
@@ -64,7 +64,6 @@ export const ICONIFY_ICONS = [
   { id: 'feather-edit', component: () => import('@iconify/icons-feather/edit') },
   { id: 'feather-users', component: () => import('@iconify/icons-feather/users') },
   { id: 'feather-shopping-bag', component: () => import('@iconify/icons-feather/shopping-bag') },
-
 
   // la
   { id: 'la-facebook-f', component: () => import('@iconify/icons-la/facebook-f') },

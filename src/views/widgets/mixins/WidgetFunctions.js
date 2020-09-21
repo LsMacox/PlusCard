@@ -7,6 +7,9 @@ export default {
       }
       return vueTheme.themes.light
     },
+    parentClass () {
+      return this.$options._parentVnode.data.staticClass ?? this.$options._parentVnode.data.class
+    },
   },
   methods: {
     relativeChange (num1, num2) {

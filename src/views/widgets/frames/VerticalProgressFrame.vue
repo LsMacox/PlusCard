@@ -20,7 +20,7 @@
         class="d-flex flex-column"
       >
         <div
-          v-for="i in 3"
+          v-for="(percent, i) in percentageDifferences"
           :key="i"
           :class="generateClassesByPrefix(widgetClasses, '__box-container')"
           class="d-flex"
@@ -28,35 +28,39 @@
           <div :class="generateClassesByPrefix(widgetClasses, '__box-info')">
             <div :class="generateClassesByPrefix(widgetClasses, '__info-title')">
               <p class="body-s-semibold">
-                {{ subTitles[i-1] }}
+                {{ subTitles[i] }}
               </p>
             </div>
             <div
               :class="generateClassesByPrefix(widgetClasses, '__info-statistics')"
             >
-              <p class="statistics__number title-m-bold">
-                {{ counts[i-1] }} ₽
-              </p>
-              <p class="statistics__percent-all title-m-bold">
-                {{ prepareDecimalNumberToDisplay(allPercentageDifferences[i-1]) }}%
-              </p>
               <span
-                :class="percentageDifferences[i-1] >= 0 ? 'wc-success' : 'wc-error'"
-                class="statistics__percent body-m-semibold"
-              >{{ percentageDifferences[i-1] > 0 ? `+${prepareDecimalNumberToDisplay(percentageDifferences[i-1])}%` : `${prepareDecimalNumberToDisplay(percentageDifferences[i-1])}%` }}</span>
+                class="statistics__percent title-m-bold"
+              >{{ percent }}%</span>
             </div>
           </div>
         </div>
       </div>
       <div
-        v-if="diagramData.length"
         :class="generateClassesByPrefix(widgetClasses, '__diagram')"
       >
-        <multi-filled-graph
-          :labels="diagramLabels"
-          :data="diagramData"
-          :height="diagramHeight"
-        />
+        <div :class="generateClassesByPrefix(widgetClasses, '__diagram-progress')">
+          <v-progress-linear
+            :rounded="true"
+            :value="percentageDifferences[0]"
+            color="primary"
+          />
+          <v-progress-linear
+            :rounded="true"
+            :value="percentageDifferences[0]"
+            color="warning"
+          />
+          <v-progress-linear
+            :rounded="true"
+            :value="percentageDifferences[0]"
+            color="chart-500"
+          />
+        </div>
       </div>
     </template>
   </widget-template>
@@ -65,33 +69,16 @@
 <script>
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
-  import MultiFilledGraph from '@/views/widgets/components/graphs/MultiFilledGraph'
 
   export default {
-    name: 'TrippleFilledDiagramFrame',
-    components: { MultiFilledGraph, WidgetTemplate },
+    name: 'DoubleDiagramFrame',
+    components: { WidgetTemplate },
     mixins: [WidgetFunctions],
     inheritAttrs: false,
     props: {
-      diagramData: {
-        type: Array,
-        default () {
-          return [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]
-        },
-      },
-      diagramLabels: {
-        type: Array,
-        default () {
-          return ['0.0', '0.0', '0.0', '0.0', '0.0', '0.0', '0.0']
-        },
-      },
-      diagramHeight: {
-        type: Number,
-        default: 90,
-      },
       title: {
         type: String,
-        default: 'titile',
+        default: '',
       },
       subTitles: {
         type: Array,
@@ -99,22 +86,10 @@
           return ['title', 'title', 'title']
         },
       },
-      counts: {
-        type: Array,
-        default () {
-          return [0, 0, 0]
-        },
-      },
-      allPercentageDifferences: {
-        type: Array,
-        default () {
-          return [0, 0, 0]
-        },
-      },
       percentageDifferences: {
         type: Array,
         default () {
-          return [0, 0, 0]
+          return [30, 40, 60]
         },
       },
     },
@@ -123,7 +98,7 @@
     },
     computed: {
       widgetClasses () {
-        return this.parentClass !== undefined ? this.parentClass + ' f-tripple-filled' : 'f-tripple-filled'
+        return this.parentClass !== undefined ? this.parentClass + ' f-vertical-progress' : 'f-vertical-progress'
       },
     },
     mounted () {},
@@ -132,5 +107,7 @@
 </script>
 
 <style lang="scss">
-@import "@/styles/vuetify-preset-plus/light_theme/widgets/frames/_tripple-filled-frame.scss";
+
+@import "@/styles/vuetify-preset-plus/light_theme/widgets/frames/_vertical-progress-frame.scss";
+
 </style>
