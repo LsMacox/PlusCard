@@ -33,6 +33,8 @@
           :text="true"
           :ripple="false"
           style="margin-right: 16px;"
+          :loading="loading"
+          @click="excelExport()"
         >
           <v-icon style="position: relative; top: -2px; width: 18px; height: 18px; margin-right: 8px;">
             $iconify_ion-document-outline
@@ -54,6 +56,7 @@
 </template>
 
 <script>
+  import ApiService from '@/api/api-client'
   import DateRangeSelect from '@/components/dialogs/DateRangeSelect'
 
   export default {
@@ -64,6 +67,7 @@
     },
     data () {
       return {
+        loading: false,
         periodId: null,
         periods: [
           { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
@@ -89,6 +93,9 @@
           this.$store.commit('widget/filter/period', v)
         },
       },
+      filter () {
+        return this.$store.getters['widget/filter/filter']
+      },
     },
     watch: {
       periodId (v) {
@@ -102,6 +109,27 @@
     },
     created () {
       if (this.period) this.periodId = this.period.id
+    },
+    methods: {
+      async excelExport () {
+        try {
+          this.loading = true
+          const widget = {
+            program_id: this.program.id,
+            start_period: this.period.start,
+            end_period: this.period.end,
+            filter: this.filter,
+          }
+          // console.log(widget)
+          ApiService.downloadFile(
+            '/api-cabinet/widget/excel',
+            widget,
+            `Отчет по бонусной программе компании №${this.program.id} от ${this.$moment().format(this.$config.date.DATE_FORMAT)}.xls`,
+          )
+        } finally {
+          this.loading = false
+        }
+      },
     },
   }
 </script>
