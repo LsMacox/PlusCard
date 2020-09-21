@@ -121,9 +121,6 @@
       }
     },
     computed: {
-      parentClass () {
-        return this.$options._parentVnode.data.staticClass ?? this.$options._parentVnode.data.class
-      },
       widgetClasses () {
         return this.parentClass !== undefined ? this.parentClass + ' f-double' : 'f-double'
       },

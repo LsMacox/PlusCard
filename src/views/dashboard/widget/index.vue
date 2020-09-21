@@ -17,7 +17,7 @@
       <purchase />
     </v-col>
     <v-col
-      style="max-width: 250px"
+      style="max-width: 254px"
       :cols="6"
       :sm="6"
       :md="6"
@@ -25,11 +25,20 @@
       <share-purchase />
     </v-col>
     <v-col
+      style="min-width: 794px; max-width: 794px"
       :cols="6"
       :sm="6"
       :md="6"
     >
       <movement-bonuses />
+    </v-col>
+    <v-col
+      style="max-width: 254px"
+      :cols="6"
+      :sm="6"
+      :md="6"
+    >
+      <bonus-ratio />
     </v-col>
   </v-row>
 </template>
@@ -39,6 +48,7 @@
   import SharePurchase from '@/views/widgets/SharePurchase'
   import ClientProgram from '@/views/widgets/ClientProgram'
   import MovementBonuses from '@/views/widgets/MovementBonuses'
+  import BonusRatio from '@/views/widgets/BonusRatio'
 
   export default {
     components: {
@@ -46,6 +56,7 @@
       Purchase,
       SharePurchase,
       MovementBonuses,
+      BonusRatio,
     },
     props: {
     },

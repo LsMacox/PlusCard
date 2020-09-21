@@ -122,9 +122,6 @@
       return {}
     },
     computed: {
-      parentClass () {
-        return this.$options._parentVnode.data.staticClass ?? this.$options._parentVnode.data.class
-      },
       widgetClasses () {
         return this.parentClass !== undefined ? this.parentClass + ' f-tripple-filled' : 'f-tripple-filled'
       },
