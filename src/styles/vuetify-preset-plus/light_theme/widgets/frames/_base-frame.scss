@@ -1,6 +1,10 @@
 @import "../../_variables.sass";
 
 .f-base {
+    .f-base__header {
+        justify-content: space-between;
+    }
+    
     .f-base__body {
         .f-base__diagram {
             width: 100%;

@@ -1,5 +1,5 @@
 <template>
-  <widget-template :style-name="widgetClasses">
+  <widget-template :class-name="widgetClasses">
     <template v-slot:header-left>
       <p class="body-m-semibold">
         <span class="wc-base">{{ count }}</span> {{ declOfNum(count, titles) }}
@@ -48,7 +48,7 @@
   import BaseLineGraph from '@/views/widgets/components/graphs/BaseLineGraph'
 
   export default {
-    name: 'BaseFrame',
+    name: 'BaseDiagramFrame',
     components: { BaseLineGraph, WidgetTemplate },
     mixins: [WidgetFunctions],
     inheritAttrs: false,

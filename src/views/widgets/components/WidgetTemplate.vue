@@ -1,20 +1,20 @@
 <template>
   <div
-    :class="generateClassesByPrefix(styleName)"
+    :class="generateClassesByPrefix(className)"
     class="widget-box"
   >
     <div
-      :class="generateClassesByPrefix(styleName, '__header')"
+      :class="generateClassesByPrefix(className, '__header')"
       class="widget-box__header"
     >
       <div
-        :class="generateClassesByPrefix(styleName, '__header-left')"
+        :class="generateClassesByPrefix(className, '__header-left')"
         class="widget-box__header-left"
       >
         <slot name="header-left" />
       </div>
       <div
-        :class="generateClassesByPrefix(styleName, '__header-right')"
+        :class="generateClassesByPrefix(className, '__header-right')"
         class="widget-box__header-right"
       >
         <slot name="header-right" />
@@ -22,7 +22,7 @@
     </div>
     <div
       ref="widget-box-body"
-      :class="generateClassesByPrefix(styleName, '__body')"
+      :class="generateClassesByPrefix(className, '__body')"
       class="widget-box__body"
     >
       <slot name="body" />
@@ -38,9 +38,9 @@
     mixins: [WidgetFunctions],
     inheritAttrs: false,
     props: {
-      styleName: {
+      className: {
         type: String,
-        default: 'w-default',
+        default: '',
       },
     },
     computed: {},

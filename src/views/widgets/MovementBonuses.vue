@@ -1,5 +1,5 @@
 <template>
-  <tripple-filled-frame
+  <tripple-filled-diagram-frame
     class="w-movement-bonuses"
     :diagram-data="[[10, 40, 50, 90, 60, 70, 20], [0, 20, 45, 56, 40, 38, 47], [0, 10, 25, 36, 20, 18, 7]]"
     :diagram-lables="['09.09', '10.09', '11.09', '12.09', '13.09', '14.09', '15.09']"
@@ -13,11 +13,11 @@
 </template>
 
 <script>
-  import TrippleFilledFrame from '@/views/widgets/frames/TrippleFilledFrame'
+  import TrippleFilledDiagramFrame from '@/views/widgets/frames/TrippleFilledDiagramFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
 
   export default {
-    components: { TrippleFilledFrame },
+    components: { TrippleFilledDiagramFrame },
     mixins: [WidgetFunctions],
     props: {
     //   widgetData: {

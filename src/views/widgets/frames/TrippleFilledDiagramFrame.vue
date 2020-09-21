@@ -1,5 +1,5 @@
 <template>
-  <widget-template :style-name="widgetClasses">
+  <widget-template :class-name="widgetClasses">
     <template v-slot:header-left>
       <p class="body-m-semibold">
         {{ title }}
@@ -68,7 +68,7 @@
   import MultiFilledGraph from '@/views/widgets/components/graphs/MultiFilledGraph'
 
   export default {
-    name: 'TrippleFilledFrame',
+    name: 'TrippleFilledDiagramFrame',
     components: { MultiFilledGraph, WidgetTemplate },
     mixins: [WidgetFunctions],
     inheritAttrs: false,

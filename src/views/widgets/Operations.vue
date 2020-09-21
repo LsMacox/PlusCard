@@ -1,5 +1,5 @@
 <template>
-  <base-frame
+  <base-diagram-frame
     class="w-operation"
     :diagram-labels="diagramLabels.reverse()"
     :diagram-data="diagramData.reverse()"
@@ -11,11 +11,11 @@
 </template>
 
 <script>
-  import BaseFrame from '@/views/widgets/frames/BaseFrame'
+  import BaseDiagramFrame from '@/views/widgets/frames/BaseDiagramFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
 
   export default {
-    components: { BaseFrame },
+    components: { BaseDiagramFrame },
     mixins: [WidgetFunctions],
     props: {
       widgetData: {

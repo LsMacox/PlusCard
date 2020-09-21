@@ -1,5 +1,5 @@
 <template>
-  <double-frame
+  <double-diagram-frame
     class="w-client-program"
     :diagram-data="[testWidgetData, testWidgetData]"
     :diagram-labels="[testWidgetData, testWidgetData]"
@@ -12,11 +12,11 @@
 </template>
 
 <script>
-  import DoubleFrame from '@/views/widgets/frames/DoubleFrame'
+  import DoubleDiagramFrame from '@/views/widgets/frames/DoubleDiagramFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
 
   export default {
-    components: { DoubleFrame },
+    components: { DoubleDiagramFrame },
     mixins: [WidgetFunctions],
     // props: {
     //   widgetData: {

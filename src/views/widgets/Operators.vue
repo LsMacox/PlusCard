@@ -1,6 +1,9 @@
 <template>
   <div style="height: 100%;">
-    <widget-template style-name="w-operator">
+    <list-progress-frame
+      :data="listProgressData"
+      class="w-operator"
+    >
       <template v-slot:header-left>
         <p
           class="body-m-semibold mb-0"
@@ -12,41 +15,14 @@
 
       <template v-slot:header-right>
         <iconify-icon
-          class="w-operator__header-icon"
+          class="w-operator__header-icon wc-neutral"
           icon="chevron-right"
           height="17"
           @click="toggleSidePanel"
         />
       </template>
+    </list-progress-frame>
 
-      <template v-slot:body>
-        <ul
-          class="w-operator__list"
-        >
-          <li
-            v-for="operator in operators"
-            :key="operator.id"
-            class="w-operator__item"
-          >
-            <div class="w-operator__item-top">
-              <p class="w-operator__name body-s-medium">
-                {{ operator.operator }}
-              </p>
-              <span class="w-operator__percent body-s-semibold">{{ `${getShare(operator)}%` }}</span>
-            </div>
-            <div class="w-operator__item-bottom">
-              <v-progress-linear
-                :value="getShare(operator)"
-                style="height: 4px"
-                color="primary"
-                rounded="rounded"
-                class="w-operator__progress"
-              />
-            </div>
-          </li>
-        </ul>
-      </template>
-    </widget-template>
     <side-panel
       v-model="sidePanelActive"
       :width="483"
@@ -94,12 +70,12 @@
 </template>
 
 <script>
-  import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
+  import ListProgressFrame from '@/views/widgets/frames/ListProgressFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import SidePanel from '@/components/base/SidePanel.vue'
 
   export default {
-    components: { SidePanel, WidgetTemplate },
+    components: { SidePanel, ListProgressFrame },
     mixins: [WidgetFunctions],
     props: {
       widgetData: {
@@ -118,6 +94,15 @@
     computed: {
       operators () {
         return this.widgetData.slice(0, 3)
+      },
+      listProgressData () {
+        const data = []
+
+        this.operators.forEach(operator => {
+          data.push({ left: operator.operator, right: `${this.getShare(operator)}%`, progress: this.getShare(operator) })
+        })
+
+        return data
       },
     },
     mounted () {},
