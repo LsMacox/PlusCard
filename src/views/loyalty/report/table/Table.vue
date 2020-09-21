@@ -214,7 +214,13 @@
       },
       pagesCount () {
         const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
-        if (count) return count
+        if (count) {
+          if (this.tableOptions.page > count) {
+            this.tableOptions.page = count
+          }
+          return count
+        }
+        this.tableOptions.page = 1
         return 1
       },
       program () {

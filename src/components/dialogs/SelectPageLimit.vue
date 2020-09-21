@@ -1,10 +1,10 @@
 <template>
   <div class="app__date-select">
-    <div class="app__date-select-btn">
-      <div
-        class="app__date-select-btn-text body-s-semibold"
-        @click.stop="show = !show"
-      >
+    <div
+      class="app__date-select-btn"
+      @click.stop="show = !show"
+    >
+      <div class="app__date-select-btn-text body-s-semibold">
         {{ getItemLabel(model) }}
       </div>
       <div>
