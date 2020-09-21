@@ -10,7 +10,7 @@
 
     <template v-slot:header-right>
       <p class="body-m-semibold">
-        {{ volume }}
+        {{ formatNumberString(volume) }}
       </p>
     </template>
 
@@ -25,7 +25,7 @@
             <p class="w-volume__name body-s-medium">
               Баланс
             </p>
-            <span class="w-volume__number body-s-semibold wc-base">{{ balance }}</span>
+            <span class="w-volume__number body-s-semibold wc-base">{{ formatNumberString(balance) }}</span>
           </div>
           <div class="w-volume__item-bottom">
             <v-progress-linear
@@ -45,7 +45,7 @@
             <p class="w-volume__name body-s-medium">
               Начислено
             </p>
-            <span class="w-volume__number body-s-semibold wc-success">{{ credit }}</span>
+            <span class="w-volume__number body-s-semibold wc-success">{{ formatNumberString(credit) }}</span>
           </div>
           <div class="w-volume__item-bottom">
             <v-progress-linear
@@ -65,7 +65,7 @@
             <p class="w-volume__name body-s-medium">
               Списано
             </p>
-            <span class="w-volume__number body-s-semibold wc-error">{{ debit }}</span>
+            <span class="w-volume__number body-s-semibold wc-error">{{ formatNumberString(debit) }}</span>
           </div>
           <div class="w-volume__item-bottom">
             <v-progress-linear
@@ -84,11 +84,12 @@
 </template>
 
 <script>
-
+  import FormatNumber from '@/mixins/formatNumber'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
 
   export default {
     components: { WidgetTemplate },
+    mixins: [FormatNumber],
     props: {
       widgetData: {
         type: Array,

@@ -23,12 +23,13 @@
           </template>
 
           <template v-slot:item.data-table-expand="{ expand, isExpanded }">
-            <span
-              class="iconify"
-              data-icon="bi:chevron-right"
-              data-inline="false"
+            <v-icon
+              color="neutral-500"
+              style="width: 16px;"
               @click="expand(!isExpanded)"
-            />
+            >
+              $iconify_ion-chatbox-outline
+            </v-icon>
           </template>
 
           <template v-slot:item.operation="{ item }">
@@ -61,7 +62,11 @@
                 :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`"
               >
               <div>
-                <div class="cell-text-bold">
+                <div
+                  class="cell-text-bold"
+                  style="cursor: pointer;"
+                  @click.stop="toRoute(`/accounts/client/${item.bsid}`)"
+                >
                   {{ item.client }}
                 </div>
                 <div
@@ -82,6 +87,7 @@
           <template v-slot:item.amount="{ item }">
             <div
               class="cell-text-bold"
+              style="text-align: right;"
               v-html="getValue(item.value)"
             />
           </template>
@@ -141,7 +147,11 @@
 </template>
 
 <script>
+  import FormatNumber from '@/mixins/formatNumber'
+  import Routing from '@/mixins/routing'
+
   export default {
+    mixins: [FormatNumber, Routing],
     data () {
       return {
         tableOptions: {
@@ -249,8 +259,8 @@
       },
       getValue (value) {
         value = Number(value)
-        if (value >= 0) return `<span style="color: #00D15D;">+${value}</span>`
-        return `<span style="color: #EA4C2A;">${value}</span>`
+        if (value >= 0) return `<span style="color: #00D15D;">+${this.formatNumberString(value)}</span>`
+        return `<span style="color: #EA4C2A;">${this.formatNumberString(value)}</span>`
       },
       getWord (number, words) {
         const cases = [2, 0, 1, 1, 1, 2]
