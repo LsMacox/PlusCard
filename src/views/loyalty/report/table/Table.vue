@@ -116,16 +116,18 @@
     >
       <v-col>
         <div class="table-pagination-block">
-          <div>Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}</div>
+          <div
+            style="margin-right: 20px;"
+          >
+            Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}
+          </div>
 
-          <v-select
-            v-model="tableOptions.itemsPerPage"
-            class="pagination-select table-pagination-block-select"
+          <select-page-limit
+            min-width="200px"
             :items="paginationOptions"
-            item-text="text"
+            :model.sync="tableOptions.itemsPerPage"
             item-value="value"
-            append-icon="fas fa-chevron-down"
-            dense
+            item-label="text"
           />
 
           <div class="app__spacer" />
@@ -147,10 +149,14 @@
 </template>
 
 <script>
+  import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
 
   export default {
+    components: {
+      SelectPageLimit,
+    },
     mixins: [FormatNumber, Routing],
     data () {
       return {

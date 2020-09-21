@@ -47,11 +47,9 @@
           v-if="isActiveItem(item)"
           style="position: relative;"
         >
-          <span
-            class="iconify app__date-select-block-item-icon"
-            data-icon="bx:bx-check"
-            data-inline="false"
-          />
+          <v-icon>
+            $iconify_bx-check
+          </v-icon>
         </div>
       </div>
 

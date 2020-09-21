@@ -8,6 +8,7 @@
         <div
           class="app__filter-block-input"
           style="border: 1px solid #D7D7E0; border-radius: 10px;"
+          @click.stop="switchShow"
         >
           <v-icon
             v-show="emptyFastFilter"
@@ -27,7 +28,7 @@
                 {{ item.label }}
                 <v-icon
                   class="app__filter-chip-icon-append"
-                  @click="clearItemFastFilter('pbr', item)"
+                  @click.stop="clearItemFastFilter('pbr', item)"
                 >
                   $iconify_jam-close
                 </v-icon>
@@ -44,7 +45,7 @@
                 {{ item.label }}
                 <v-icon
                   class="app__filter-chip-icon-append"
-                  @click="clearItemFastFilter('bu', item)"
+                  @click.stop="clearItemFastFilter('bu', item)"
                 >
                   $iconify_jam-close
                 </v-icon>
@@ -61,7 +62,7 @@
                 {{ item.label }}
                 <v-icon
                   class="app__filter-chip-icon-append"
-                  @click="clearItemFastFilter('operator', item)"
+                  @click.stop="clearItemFastFilter('operator', item)"
                 >
                   $iconify_jam-close
                 </v-icon>
@@ -78,7 +79,7 @@
                 {{ item.label }}
                 <v-icon
                   class="app__filter-chip-icon-append"
-                  @click="clearItemFastFilter('client', item)"
+                  @click.stop="clearItemFastFilter('client', item)"
                 >
                   $iconify_jam-close
                 </v-icon>
@@ -95,26 +96,23 @@
                 {{ fastFilter.query }}
                 <v-icon
                   class="app__filter-chip-icon-append"
-                  @click="clearFilterQuery()"
+                  @click.stop="clearFilterQuery()"
                 >
                   $iconify_jam-close
                 </v-icon>
               </div>
             </div>
             <!--поле ввода-->
-            <div style="display: flex; flex-direction: column; flex: 1;">
-              <input
-                class="app__filter-block-input-field"
-                placeholder="Поиск и фильтр"
-                @click.stop="switchShow"
-              >
-            </div>
+            <input
+              class="app__filter-block-input-field"
+              placeholder="Поиск и фильтр"
+            >
           </div>
 
           <v-icon
             v-show="!emptyFastFilter"
             class="app__filter-block-input-icon-append"
-            @click="clearFastFilter"
+            @click.stop="clearFastFilter"
           >
             $iconify_chrome-close
           </v-icon>
@@ -511,7 +509,6 @@
   }
 
   .app__filter-block-input-field {
-    width: 100%;
     outline: none !important;
     margin: 13px 0;
     padding: 0 10px;
