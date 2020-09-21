@@ -26,6 +26,7 @@
         />
       </template>
 
+<<<<<<< HEAD
       <template v-slot:item.certificate.name="{ item }">
         <div class="td-padding-wrapper">
           <div class="td-content-main">
@@ -40,6 +41,22 @@
           </div>
         </div>
       </template>
+=======
+              <template v-slot:item.certificate.name="{ item }">
+                <div class="td-padding-wrapper">
+                  <div class="td-content-main">
+                    {{ item.certificate.name }}
+                  </div>
+                  <div
+                    class="hint"
+                    style="color: #4776E6;"
+                    v-if="item.order"
+                  >
+                    {{ item.order.num }}
+                  </div>
+                </div>
+              </template>
+>>>>>>> 33085e1e1449dcdc6bc7a58a3bfddc372f0af274
 
       <template v-slot:item.user.UserName="{ item }">
         <div class="avatar">
@@ -59,6 +76,7 @@
         </div>
       </template>
 
+<<<<<<< HEAD
       <template v-slot:item.nominal.selling_price="{ item }">
         <span style="float: right">
           // eslint-disable-next-line vue/no-parsing-error
@@ -77,6 +95,54 @@
       <template v-slot:item.merchant_order_status="{ item }">
         <img :src="merchantOrderStatusIcon(item.merchant_order_status)">
       </template>
+=======
+              <template v-slot:item.nominal.selling_price="{ item }">
+                <span style="float: right">
+                  {{ formatBum(item.nominal.selling_price) }} &#8381
+                </span>
+              </template>
+
+              <template v-slot:item.payment_status="{ item }">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-img class="status-icon" align="center" height="21" width="21" v-bind="attrs" v-on="on" :src="paymentStatusIcon(item.payment_status)"></v-img>
+                  </template>
+                  <span>{{ paymentStatusTooltip(item.payment_status) }}</span>
+                </v-tooltip>
+              </template>
+
+              <template v-slot:item.status="{ item }">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-img
+                        class="status-icon"
+                        align="center"
+                        height="21"
+                        width="21"
+                        v-bind="attrs"
+                        v-on="on"
+                        :src="statusIcon(item.status)"></v-img>
+                  </template>
+                  <span>{{ statusTooltip(item.status) }}</span>
+                </v-tooltip>
+              </template>
+
+              <template v-slot:item.merchant_order_status="{ item }">
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-img
+                        class="status-icon"
+                        align="center"
+                        height="21"
+                        width="21"
+                        v-bind="attrs"
+                        v-on="on"
+                        :src="merchantOrderStatusIcon(item.merchant_order_status)"></v-img>
+                  </template>
+                  <span>{{ merchantOrderStatusTooltip(item.merchant_order_status) }}</span>
+                </v-tooltip>
+              </template>
+>>>>>>> 33085e1e1449dcdc6bc7a58a3bfddc372f0af274
 
       <template v-slot:item.date_issued="{ item }">
         <div
@@ -94,6 +160,23 @@
           </div>
         </div>
       </template>
+
+              <template v-slot:item.created_at="{ item }">
+                <div
+                    v-if="item.created_at"
+                    class="td-content-wrapper"
+                >
+                  <div class="td-content-main">
+                    {{ $moment(item.created_at).format('DD.MM.YYYY') }}
+                  </div>
+                  <div
+                      v-if="item.created_at"
+                      class="hint"
+                  >
+                    в {{ $moment(item.created_at).format('HH:MM:SS') }}
+                  </div>
+                </div>
+              </template>
 
       <template v-slot:item.used_at="{ item }">
         <div
@@ -208,6 +291,10 @@
             align: 'center',
           },
           {
+            text: 'Дата создания',
+            value: 'created_at',
+          },
+          {
             text: 'Выпущен',
             value: 'date_issued',
           },
@@ -275,11 +362,51 @@
       this.fetchData()
     },
     methods: {
+      formatBum (num) {
+        var int = String(Math.trunc(num))
+        if (int.length <= 3) return int
+        var space = 0
+        var number = ''
+
+        for (var i = int.length - 1; i >= 0; i--) {
+          if (space === 3) {
+            number = ' ' + number
+            space = 0
+          }
+          number = int.charAt(i) + number
+          space++
+        }
+
+        return number
+      },
       statusIcon (status) {
         if (status === 'wait_payment') {
           status = 'wait'
         }
         return require('@/icons/svg/' + status + '.svg')
+      },
+      statusTooltip (status) {
+        switch (status) {
+          case 'deleted':
+            status = 'Удален'
+            break
+          case 'paid':
+            status = 'Оплачен'
+            break
+          case 'wait_payment':
+            status = 'Ожидает оплаты'
+            break
+          case 'used':
+            status = 'Использован'
+            break
+          case 'new':
+            status = 'Размещен'
+            break
+          case 'issued':
+            status = 'Выпущен'
+            break
+        }
+        return status
       },
       merchantOrderStatusIcon (status) {
         // switch (status) {
@@ -291,6 +418,23 @@
         //     break
         // }
         return require('@/icons/svg/payments/' + status + '.svg')
+      },
+      merchantOrderStatusTooltip (status) {
+        switch (status) {
+          case 'not_paid':
+            status = 'Не выплачено'
+            break
+          case 'not_required':
+            status = 'Не требуется'
+            break
+          case 'succeded':
+            status = 'Выплачено'
+            break
+          case 'wait':
+            status = 'Ожидает'
+            break
+        }
+        return status
       },
       paymentStatusIcon (status) {
         switch (status) {
@@ -307,6 +451,22 @@
             status = 'another'
         }
         return require('@/icons/svg/' + status + '.svg')
+      },
+      paymentStatusTooltip (status) {
+        switch (status) {
+          case 'SBERBANK':
+            status = 'Оплачен картой'
+            break
+          case 'PLUS_CASH':
+            status = 'Оплачен на кассе'
+            break
+          case 'wait':
+            status = 'Ожидает оплаты'
+            break
+          default:
+            status = 'Оплачен другим способом'
+        }
+        return status
       },
       fetchData () {
         this.loadingList = true
@@ -326,5 +486,7 @@
 </script>
 
 <style scoped>
-
+  .status-icon {
+    margin-left: 40%!important;
+  }
 </style>

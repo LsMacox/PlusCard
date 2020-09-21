@@ -93,6 +93,6 @@
   }
 </script>
 
-<style lang="sass" scoped>
-@import "~@/styles/loyalty-report"
+<style lang="scss" scoped>
+@import "~@/styles/loyalty-report";
 </style>

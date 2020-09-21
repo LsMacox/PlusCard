@@ -8,18 +8,18 @@
         {{ getItemLabel(model) }}
       </div>
       <div>
-        <span
+        <v-icon
           v-if="!show"
-          class="iconify app__date-select-btn-icon"
-          data-icon="feather:chevron-down"
-          data-inline="false"
-        />
-        <span
+          style="position: relative; top: 3px;"
+        >
+          $iconify_feather-chevron-down
+        </v-icon>
+        <v-icon
           v-else
-          class="iconify app__date-select-btn-icon"
-          data-icon="octicon:chevron-up-16"
-          data-inline="false"
-        />
+          style="position: relative; top: 3px;"
+        >
+          $iconify_feather-chevron-up
+        </v-icon>
       </div>
     </div>
     <div
@@ -42,11 +42,9 @@
           v-if="isActiveItem(item)"
           style="position: relative;"
         >
-          <span
-            class="iconify app__date-select-block-item-icon"
-            data-icon="bx:bx-check"
-            data-inline="false"
-          />
+          <v-icon>
+            $iconify_bx-check
+          </v-icon>
         </div>
       </div>
     </div>

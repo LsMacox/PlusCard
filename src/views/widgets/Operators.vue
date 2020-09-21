@@ -12,7 +12,6 @@
           Операторы
         </p>
       </template>
-
       <template v-slot:header-right>
         <iconify-icon
           class="w-operator__header-icon wc-neutral"
@@ -33,7 +32,7 @@
           Операторы
         </h1>
         <p class="panel-operator__sub-title body-m-regular">
-          96 операций за сегодня
+          {{ `${operations[0] ? operations[0] : 0} ${declOfNum(operations[0], titles)} ${getMyPeriod()}` }}
         </p>
       </div>
       <div class="panel-operator__body">
@@ -88,12 +87,25 @@
     data () {
       return {
         sidePanelActive: false,
-        titles: ['операция', 'операции', 'операция'],
+        titles: ['операция', 'операции', 'операций'],
       }
     },
     computed: {
       operators () {
-        return this.widgetData.slice(0, 3)
+        const o = this.widgetData.slice(0, 3)
+        if (o.length) return o
+        return this.operatorsStore.map(item => {
+          return { operator: item.label }
+        })
+      },
+      operations () {
+        return this.$_.map(this.widgetData, 'operations_count')
+      },
+      operatorsStore () {
+        return this.$store.getters['widget/operators/operators'].slice(0, 3)
+      },
+      period () {
+        return this.$store.getters['widget/filter/period']
       },
       listProgressData () {
         const data = []
@@ -105,20 +117,28 @@
         return data
       },
     },
-    mounted () {},
     methods: {
       toggleSidePanel () {
         this.sidePanelActive = !this.sidePanelActive
       },
       getShare (operator) {
-        return Math.round(operator.operations_per_user / operator.operations_count * 100)
+        const unit = operator.operations_per_user
+        const total = operator.operations_count
+        if (total) return Math.round(unit / total * 100)
+        return 0
+      },
+      getMyPeriod () {
+        if (this.period && this.period.id === 8) {
+          return `за ${this.$moment(this.period.start).format('DD.MM.YYYY')} -
+            ${this.$moment(this.period.end).format('DD.MM.YYYY')}`
+        } else {
+          return this.period.name
+        }
       },
     },
   }
 </script>
 
 <style lang="scss">
-
 @import "@/styles/vuetify-preset-plus/light_theme/widgets/_operators.scss";
-
 </style>

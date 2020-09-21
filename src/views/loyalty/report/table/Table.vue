@@ -23,12 +23,13 @@
           </template>
 
           <template v-slot:item.data-table-expand="{ expand, isExpanded }">
-            <span
-              class="iconify"
-              data-icon="bi:chevron-right"
-              data-inline="false"
+            <v-icon
+              color="neutral-500"
+              style="width: 16px;"
               @click="expand(!isExpanded)"
-            />
+            >
+              $iconify_ion-chatbox-outline
+            </v-icon>
           </template>
 
           <template v-slot:item.operation="{ item }">
@@ -61,7 +62,11 @@
                 :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`"
               >
               <div>
-                <div class="cell-text-bold">
+                <div
+                  class="cell-text-bold"
+                  style="cursor: pointer;"
+                  @click.stop="toRoute(`/accounts/client/${item.bsid}`)"
+                >
                   {{ item.client }}
                 </div>
                 <div
@@ -82,6 +87,7 @@
           <template v-slot:item.amount="{ item }">
             <div
               class="cell-text-bold"
+              style="text-align: right;"
               v-html="getValue(item.value)"
             />
           </template>
@@ -110,16 +116,18 @@
     >
       <v-col>
         <div class="table-pagination-block">
-          <div>Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}</div>
+          <div
+            style="margin-right: 20px;"
+          >
+            Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}
+          </div>
 
-          <v-select
-            v-model="tableOptions.itemsPerPage"
-            class="pagination-select table-pagination-block-select"
+          <select-page-limit
+            min-width="200px"
             :items="paginationOptions"
-            item-text="text"
+            :model.sync="tableOptions.itemsPerPage"
             item-value="value"
-            append-icon="fas fa-chevron-down"
-            dense
+            item-label="text"
           />
 
           <div class="app__spacer" />
@@ -141,7 +149,15 @@
 </template>
 
 <script>
+  import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
+  import FormatNumber from '@/mixins/formatNumber'
+  import Routing from '@/mixins/routing'
+
   export default {
+    components: {
+      SelectPageLimit,
+    },
+    mixins: [FormatNumber, Routing],
     data () {
       return {
         tableOptions: {
@@ -198,7 +214,13 @@
       },
       pagesCount () {
         const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
-        if (count) return count
+        if (count) {
+          if (this.tableOptions.page > count) {
+            this.tableOptions.page = count
+          }
+          return count
+        }
+        this.tableOptions.page = 1
         return 1
       },
       program () {
@@ -249,8 +271,8 @@
       },
       getValue (value) {
         value = Number(value)
-        if (value >= 0) return `<span style="color: #00D15D;">+${value}</span>`
-        return `<span style="color: #EA4C2A;">${value}</span>`
+        if (value >= 0) return `<span style="color: #00D15D;">+${this.formatNumberString(value)}</span>`
+        return `<span style="color: #EA4C2A;">${this.formatNumberString(value)}</span>`
       },
       getWord (number, words) {
         const cases = [2, 0, 1, 1, 1, 2]

@@ -69,7 +69,11 @@
     >
       <v-btn
         color="secondary"
+<<<<<<< HEAD
         @click="onMasterCreateCert"
+=======
+        :to="{name:'ProgramCertificate'}"
+>>>>>>> 33085e1e1449dcdc6bc7a58a3bfddc372f0af274
       >
         <v-icon left>
           $iconify_feather-settings
@@ -81,6 +85,11 @@
     >
       <v-btn
         color="primary"
+<<<<<<< HEAD
+=======
+        :to="{name: 'ProgramCertificateMaster' }"
+        @click="onMasterCreateCert"
+>>>>>>> 33085e1e1449dcdc6bc7a58a3bfddc372f0af274
       >
         <v-icon left>
           $iconify_plus-circle-outlined
@@ -121,9 +130,7 @@
       },
     },
     methods: {
-      onMasterCreateCert () {
-        this.$router.push({ name: 'ProgramCertificateMaster' })
-      },
+
       archiveStatusHandler (item) {
         this.chevronUp = !this.chevronUp
         this.$store.commit('account/certificate/filter/archiveStatus', item)
