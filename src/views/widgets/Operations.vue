@@ -1,22 +1,21 @@
 <template>
-  <base-diagram-widget
+  <base-frame
     class="w-operation"
     :diagram-labels="diagramLabels.reverse()"
     :diagram-data="diagramData.reverse()"
-    :diagram-height="diagramHeight"
-    diagram-tooltip-title="операций"
-    data-title="операций"
-    :data-count="currentCount"
-    :data-percentage-difference="percentageDifference"
+    :diagram-height="90"
+    :titles="titles"
+    :count="currentCount"
+    :percentage-difference="percentageDifference"
   />
 </template>
 
 <script>
-  import BaseDiagramWidget from '@/views/widgets/frames/BaseDiagramWidget'
+  import BaseFrame from '@/views/widgets/frames/BaseFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
 
   export default {
-    components: { BaseDiagramWidget },
+    components: { BaseFrame },
     mixins: [WidgetFunctions],
     props: {
       widgetData: {
@@ -34,7 +33,7 @@
     },
     data () {
       return {
-        diagramHeight: 90,
+        titles: ['операция', 'операции', 'операций'],
       }
     },
     computed: {
@@ -60,9 +59,3 @@
     methods: {},
   }
 </script>
-
-<style lang="scss">
-
-@import "@/styles/vuetify-preset-plus/light_theme/widgets/_operations.scss";
-
-</style>

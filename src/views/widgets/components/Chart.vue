@@ -14,19 +14,25 @@
   import Chart from 'chart.js'
 
   export default {
-    name: 'BaseChart',
+    name: 'Chart',
     props: {
-      chartType: {
+      type: {
         type: String,
         default: 'line',
       },
-      chartData: {
+      data: {
         type: Object,
         default: null,
       },
-      chartOptions: {
+      options: {
         type: Object,
         default: null,
+      },
+      plugins: {
+        type: Array,
+        default () {
+          return []
+        },
       },
       height: {
         type: Number,
@@ -53,19 +59,29 @@
     mounted () {
       this.createChart()
     },
+    created () {
+      window.addEventListener('resize', this.handleResize)
+    },
+    destroyed () {
+      window.removeEventListener('resize', this.handleResize)
+    },
     methods: {
       createChart () {
         this.$_chart = new Chart(this.$refs['canvas-chartjs'], {
-          type: this.chartType,
-          data: this.chartData,
-          options: this.chartOptions,
+          type: this.type,
+          data: this.data,
+          options: this.options,
+          plugins: this.plugins,
         })
         this.$_chart.render(this.animation)
       },
       updateChart () {
-        this.$_chart.data.datasets = this.chartData.datasets
-        this.$_chart.data.labels = this.chartData.labels
+        this.$_chart.data.datasets = this.data.datasets
+        this.$_chart.data.labels = this.data.labels
         this.$_chart.update()
+      },
+      handleResize () {
+        this.updateChart()
       },
     },
   }

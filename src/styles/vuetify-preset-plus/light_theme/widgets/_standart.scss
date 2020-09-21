@@ -26,18 +26,24 @@
         color: $neutral-500;
     }
 
-    .widget-box-header {
+    .widget-box__header {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        .widget-box__header-right {
+            margin-left: 8px;
+            .icon-question {
+                display: inherit;
+                color: #B5B5C4;
+            }
+        }
     }
 
-    .widget-box-body {
+    .widget-box__body {
         width: 100%;
         display: flex;
         justify-content: center;
 
-        .widget-box-body__diagram {
+        .widget-box__body-diagram {
             width: 100%;
         }
     }

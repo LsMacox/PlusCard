@@ -1,7 +1,7 @@
 <template>
   <v-row class="widget-line">
     <v-col
-      :xs="6"
+      :cols="6"
       :sm="6"
       :md="3"
     >
@@ -10,7 +10,7 @@
       />
     </v-col>
     <v-col
-      :xs="6"
+      :cols="6"
       :sm="6"
       :md="3"
     >
@@ -19,7 +19,7 @@
       />
     </v-col>
     <v-col
-      :xs="6"
+      :cols="6"
       :sm="6"
       :md="3"
     >
@@ -28,7 +28,7 @@
       />
     </v-col>
     <v-col
-      :xs="6"
+      :cols="6"
       :sm="6"
       :md="3"
     >

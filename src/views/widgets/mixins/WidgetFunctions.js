@@ -1,4 +1,13 @@
 export default {
+  computed: {
+    theme () {
+      const vueTheme = this.$vuetify.theme
+      if (vueTheme.isDark) {
+        return vueTheme.themes.dark
+      }
+      return vueTheme.themes.light
+    },
+  },
   methods: {
     relativeChange (num1, num2) {
       if (num2 > 0) {
@@ -27,6 +36,19 @@ export default {
         else resClass += classEl + ' '
       })
       return resClass.slice(0, -1)
+    },
+    declOfNum (number, titles) {
+      number = Number(number)
+      const cases = [2, 0, 1, 1, 1, 2]
+      return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
+    },
+    prepareDecimalNumberToDisplay (v) {
+      const [int, dec] = v.toString().split('.')
+      if (dec === undefined) return int
+      return int + ',' + dec
+    },
+    getPercentToDisplay (percent) {
+      return percent > 0 ? `+${percent}%` : `${percent}%`
     },
   },
 }

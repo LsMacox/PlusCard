@@ -2,51 +2,53 @@
   <widget-template :style-name="widgetClasses">
     <template v-slot:header-left>
       <p class="body-m-semibold">
-        {{ dataTitle }}
+        {{ title }}
       </p>
     </template>
 
     <template v-slot:header-right>
       <iconify-icon
-        class="question__icon"
+        class="icon-question"
         icon="question-circle-outlined"
         height="16"
       />
     </template>
 
     <template v-slot:body>
-      <v-progress-circular
-        :class="generateClassesByPrefix(widgetClasses, '__progress-circular')"
-        :rotate="-90"
-        :size="106"
-        :width="12"
-        :value="percentageDifference"
-        color="primary"
+      <circular-progress
+        :class="generateClassesByPrefix(widgetClasses, '__circular-progress')"
+        :stroke-width="12"
+        :stroke-background="theme['primary-100']"
+        :stroke-color="theme['primary']"
+        :radius="52"
+        :transition-duration="400"
+        :value="circlePercentageDifference"
       >
-        {{ percentageDifference }}
-      </v-progress-circular>
+        <div :class="generateClassesByPrefix(widgetClasses, '__circular-progress__data')">
+          <p class="title-m-bold">
+            {{ circlePercentageDifference }}
+          </p>
+          <p class="wc-success">
+            {{ getPercentToDisplay(percentageDifference) }}
+          </p>
+        </div>
+      </circular-progress>
     </template>
   </widget-template>
 </template>
 
 <script>
+  import CircularProgress from '@/views/widgets/components/CircularProgress'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
 
   export default {
-    components: { WidgetTemplate },
+    name: 'RoundFrame',
+    components: { WidgetTemplate, CircularProgress },
     mixins: [WidgetFunctions],
     inheritAttrs: false,
     props: {
-      dataTitle: {
-        type: String,
-        default: '',
-      },
-      dataSubTitleFirst: {
-        type: String,
-        default: '',
-      },
-      dataSubTitleSecond: {
+      title: {
         type: String,
         default: '',
       },
@@ -71,7 +73,10 @@
         return this.$options._parentVnode.data.staticClass ?? this.$options._parentVnode.data.class
       },
       widgetClasses () {
-        return this.parentClass !== undefined ? this.parentClass + ' w-circle' : 'w-circle'
+        return this.parentClass !== undefined ? this.parentClass + ' f-round' : 'f-round'
+      },
+      circlePercentageDifference () {
+        return this.relativeChange(this.allCount, this.currentCount)
       },
     },
     mounted () {},
@@ -81,6 +86,6 @@
 
 <style lang="scss">
 
-@import "@/styles/vuetify-preset-plus/light_theme/widgets/frames/_circle.scss";
+@import "@/styles/vuetify-preset-plus/light_theme/widgets/frames/_round-frame.scss";
 
 </style>

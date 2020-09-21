@@ -99,7 +99,10 @@
     </div>
 
     <!-- сброс настроек -->
-    <v-col cols="auto" align-self="center">
+    <v-col
+      cols="auto"
+      align-self="center"
+    >
       <v-btn icon>
         <v-icon
           v-if="selectedTopicId || recipients.length"

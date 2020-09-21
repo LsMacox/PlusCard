@@ -1,0 +1,29 @@
+@import "../../_variables.sass";
+
+.f-round {
+    padding-bottom: 6.5px!important;
+
+    .f-round__body {
+        .f-round__progress-circular {
+            width: 106px;
+            height: 106px;
+        }
+
+        .f-round__circular-progress {
+            margin-top: 14px;
+            .f-round__circular-progress__data {
+                margin-top: 2px;
+                p {
+                    &:nth-child(1) {
+                        color: $neutral-900
+                    }
+                    &:nth-child(2) {
+                        margin-top: -6px;
+                        display: inherit;
+                        margin-left: -2px;
+                    }
+                }
+            }
+        }
+    } 
+}

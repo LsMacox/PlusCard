@@ -1,22 +1,18 @@
 <template>
-  <circle-widget
+  <round-frame
     class="w-share-purchase"
-    data-title="Общая доля покупок"
-    data-sub-title-first="244 покупки по программе"
-    data-sub-title-second="344 покупки всего"
+    title="Общая доля покупок"
     :all-count="allCount"
     :current-count="currentCount"
-    :percentage-difference="percentageDifference"
+    :percentage-difference="32"
   />
 </template>
 
 <script>
-  import CircleWidget from '@/views/widgets/frames/CircleWidget'
-  import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
+  import RoundFrame from '@/views/widgets/frames/RoundFrame'
 
   export default {
-    components: { CircleWidget },
-    mixins: [WidgetFunctions],
+    components: { RoundFrame },
     // props: {
     //   widgetData: {
     //     type: Array,
@@ -37,17 +33,7 @@
         currentCount: 140,
       }
     },
-    computed: {
-      percentageDifference () {
-        return this.relativeChange(this.allCount, this.currentCount)
-      },
-    },
+    computed: {},
     mounted () {},
   }
 </script>
-
-<style lang="scss">
-
-@import "@/styles/vuetify-preset-plus/light_theme/widgets/_share-purchase.scss";
-
-</style>
