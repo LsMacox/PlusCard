@@ -1,15 +1,13 @@
 <template>
   <v-row class="widget-line">
     <v-col
-      style="max-width: 275px"
       :cols="6"
       :sm="6"
-      :md="6"
+      :md="3"
     >
       <client-program />
     </v-col>
     <v-col
-      style="max-width: 518px"
       :cols="6"
       :sm="6"
       :md="6"
@@ -17,26 +15,23 @@
       <purchase />
     </v-col>
     <v-col
-      style="max-width: 254px"
       :cols="6"
       :sm="6"
-      :md="6"
+      :md="3"
     >
       <share-purchase />
     </v-col>
     <v-col
-      style="min-width: 794px; max-width: 794px"
       :cols="6"
-      :sm="6"
-      :md="6"
+      :sm="9"
+      :md="9"
     >
       <movement-bonuses />
     </v-col>
     <v-col
-      style="max-width: 254px"
       :cols="6"
-      :sm="6"
-      :md="6"
+      :sm="3"
+      :md="3"
     >
       <bonus-ratio />
     </v-col>
