@@ -205,7 +205,7 @@
 
           <div class="cert-details-content">
             <div class="cert-details-property d-flex" v-if="detailedCert.used_at">
-              <div class="cert-details-used body-s-semibold">Использован {{ detailedCert.used_at }}</div>
+              <div class="cert-details-used body-s-semibold">Использован {{ $moment(detailedCert.used_at).format('DD.MM.YYYY,\u00A0HH:mm') }}</div>
             </div>
 
             <div class="cert-details-cert-name d-flex" v-if="detailedCert.certificate">
