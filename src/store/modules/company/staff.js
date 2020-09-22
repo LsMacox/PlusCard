@@ -2,6 +2,7 @@ import ApiService from '@/api/api-client'
 
 const getDefaultState = () => {
   return {
+    roles: [],
     staff: [],
   }
 }
@@ -10,6 +11,9 @@ const state = getDefaultState()
 
 const mutations = {
   RESET_STATE: (state) => Object.assign(state, getDefaultState()),
+  SET_ROLES (state, payload) {
+    state.roles = payload
+  },
   SET_STAFF (state, payload) {
     state.staff = payload
   },
@@ -26,6 +30,18 @@ const actions = {
 
   resetState ({ commit }) {
     commit('RESET_STATE')
+  },
+
+  async roles ({ commit }) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const result = await ApiService.get('/api-cabinet/staff/roles')
+      console.log('/api-cabinet/staff/roles')
+      console.log(result)
+      commit('SET_ROLES', result)
+    } catch (error) {
+      throw error
+    }
   },
 
   async list ({ commit }) {
@@ -68,6 +84,7 @@ const actions = {
 }
 
 const getters = {
+  roles: state => state.roles,
   staff: state => state.staff,
 }
 
