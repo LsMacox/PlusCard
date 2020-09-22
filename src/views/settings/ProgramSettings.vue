@@ -90,7 +90,7 @@
             icon: require('@/assets/settings/Stuff-On.png'),
             title: 'Сотрудники',
             description: 'Настройка и редактирование прав доступа сотрудников комапнии, добавление новых.',
-            to: '/todo',
+            to: '/staff',
           },
           {
             icon: require('@/assets/settings/Embed-On.png'),
