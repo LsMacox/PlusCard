@@ -210,6 +210,12 @@ export default new Router({
           meta: { auth: true, title: 'Settings', icon: 'dashboard' },
         },
         {
+          path: 'staff',
+          component: () => import('@/views/settings/staff/index'),
+          name: 'CompanySettingsStaff',
+          meta: { auth: true },
+        },
+        {
           path: 'help',
           component: () => import('@/views/SkeletonPage'),
           name: 'Help',

@@ -1,5 +1,23 @@
 <template>
   <div>
+    <!-- TOOLBAR -->
+    <v-row no-gutters>
+      <v-col>
+        <span class="title-m-bold neutral-900--text">Настройка сотрудников</span>
+      </v-col>
+      <v-col style="text-align: right;">
+        <v-btn
+          color="primary"
+          @click=""
+        >
+          <v-icon left>
+            $iconify_plus-circle-outlined
+          </v-icon> Добавить сотрудника
+        </v-btn>
+      </v-col>
+    </v-row>
+
+    <!-- TABLE -->
     <v-row>
       <v-col
         cols="12"
@@ -28,7 +46,7 @@
               style="width: 16px;"
               @click="expand(!isExpanded)"
             >
-              $iconify_ion-chatbox-outline
+              $iconify_ion-close
             </v-icon>
           </template>
 
@@ -110,6 +128,7 @@
       </v-col>
     </v-row>
 
+    <!-- PAGINATION -->
     <v-row
       align="center"
       class="pagination"
@@ -119,7 +138,7 @@
           <div
             style="margin-right: 20px;"
           >
-            Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}
+            Всего {{ totalCount }} {{ getWord(totalCount, wordStaff) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}
           </div>
 
           <select-page-limit
@@ -150,17 +169,14 @@
 
 <script>
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
-  import FormatNumber from '@/mixins/formatNumber'
-  import Routing from '@/mixins/routing'
 
   export default {
     components: {
       SelectPageLimit,
     },
-    mixins: [FormatNumber, Routing],
     data () {
       return {
-        loadingList: false,
+        loading: false,
         tableOptions: {
           page: 1,
           itemsPerPage: 25,
@@ -176,39 +192,42 @@
         expanded: [],
         headers: [
           {
-            text: 'Операция',
+            text: 'Сотрудник',
             align: 'start',
             value: 'operation',
           },
           {
-            text: 'Дата',
+            text: 'Телефон',
             value: 'date',
           },
           {
-            text: 'Клиент',
+            text: 'Почта',
             value: 'client',
           },
           {
-            text: 'Валюта',
+            text: 'Команда',
             value: 'unit',
           },
           {
-            text: 'Сумма',
+            text: 'Роль',
             value: 'amount',
-          },
-          {
-            text: 'Оператор',
-            value: 'operator',
           },
           { text: '', value: 'data-table-expand' },
         ],
+        wordStaff: ['сотрудник', 'сотрудника', 'сотрудников'],
         wordPages: ['странице', 'страницах', 'страницах'],
-        wordOperations: ['операция', 'операции', 'операций'],
       }
     },
     computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
       tableData () {
-        return this.$store.getters['widget/table/widgetData']
+        return this.$store.getters['company/staff/staff'].map(item => {
+          return {
+            id: item.id,
+          }
+        })
       },
       totalCount () {
         return this.$store.getters['widget/table/count']
@@ -224,24 +243,9 @@
         this.tableOptions.page = 1
         return 1
       },
-      program () {
-        return this.$store.getters['company/program/program']
-      },
-      period () {
-        return this.$store.getters['widget/filter/period']
-      },
-      filter () {
-        return this.$store.getters['widget/filter/filter']
-      },
     },
     watch: {
       program (v) {
-        if (v) this.fetchData()
-      },
-      filter (v) {
-        if (v) this.fetchData()
-      },
-      period (v) {
         if (v) this.fetchData()
       },
       'tableOptions.page' (v) {
@@ -255,46 +259,16 @@
       this.fetchData()
     },
     methods: {
-      getDate (date) {
-        if (date) return this.$moment.utc(date).local().format(this.$config.date.DATE_FORMAT)
-        return '-'
-      },
-      getTime (date) {
-        if (date) {
-          const d = this.$moment.utc(date).local().format('HH:mm')
-          return 'в ' + d
-        }
-        return '-'
-      },
-      getLastActivity (date) {
-        if (date) return 'Был(а) в сети ' + this.$moment.utc(date).local().format(this.$config.date.DATETIME_FORMAT_MIN2)
-        return 'Был(а) в сети - '
-      },
-      getValue (value) {
-        value = Number(value)
-        if (value >= 0) return `<span style="color: #00D15D;">+${this.formatNumberString(value)}</span>`
-        return `<span style="color: #EA4C2A;">${this.formatNumberString(value)}</span>`
-      },
       getWord (number, words) {
         const cases = [2, 0, 1, 1, 1, 2]
         return words[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
       },
       fetchData () {
-        this.loadingList = true
-        const list = {
-          program_id: this.program.id,
-          start_period: this.period.start,
-          end_period: this.period.end,
-          filter: this.filter,
-          offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
-          limit: this.tableOptions.itemsPerPage,
-        }
-        // console.log('table/list')
-        // console.log(list)
         try {
-          this.$store.dispatch('widget/table/widget', list)
+          this.loading = true
+          this.$store.dispatch('company/staff/list')
         } finally {
-          this.loadingList = false
+          this.loading = false
         }
       },
     },
