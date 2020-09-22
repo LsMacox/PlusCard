@@ -1,21 +1,21 @@
 <template>
-  <widget-template :style-name="widgetClasses">
+  <widget-template :class-name="widgetClasses">
     <template v-slot:header-left>
       <p class="body-m-semibold">
-        <span class="wc-base">{{ dataCount }}</span> {{ dataTitle }}
+        <span class="wc-base">{{ count }}</span> {{ declOfNum(count, titles) }}
       </p>
     </template>
 
     <template v-slot:header-right>
       <span
-        v-if="dataPercentageDifference !== 0"
-        :class="dataPercentageDifference > 0 ? 'wc-success' : 'wc-error'"
+        v-if="percentageDifference !== 0"
+        :class="percentageDifference > 0 ? 'wc-success' : 'wc-error'"
         class="body-m-semibold"
-      >{{ dataPercentageDifference > 0 ? `+${dataPercentageDifference}%` : `${dataPercentageDifference}%` }}</span>
+      >{{ getPercentToDisplay(percentageDifference) }}</span>
       <span
         v-else
         class="body-m-semibold wc-neutral"
-      >{{ `${dataPercentageDifference}%` }}</span>
+      >{{ `${percentageDifference}%` }}</span>
     </template>
 
     <template v-slot:body>
@@ -29,9 +29,9 @@
         v-if="diagramData.length"
         :class="generateClassesByPrefix(widgetClasses, '__diagram')"
       >
-        <diagram-line
-          :diagram-labels="diagramLabels"
-          :diagram-data="diagramData"
+        <base-line-graph
+          :labels="diagramLabels"
+          :data="diagramData"
           :point-radius="diagramOptions.pointRadius"
           :point-border-width="diagramOptions.pointBorderWidth"
           :tooltips="diagramOptions.tooltips"
@@ -45,17 +45,14 @@
 <script>
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
-  import DiagramLine from '@/views/widgets/components/DiagramLine'
+  import BaseLineGraph from '@/views/widgets/components/graphs/BaseLineGraph'
 
   export default {
-    components: { DiagramLine, WidgetTemplate },
+    name: 'BaseDiagramFrame',
+    components: { BaseLineGraph, WidgetTemplate },
     mixins: [WidgetFunctions],
     inheritAttrs: false,
     props: {
-      diagramHeight: {
-        type: Number,
-        default: 90,
-      },
       diagramData: {
         type: Array,
         default () {
@@ -68,21 +65,23 @@
           return [0, 0, 0, 0, 0]
         },
       },
-      diagramTooltipTitle: {
-        type: String,
-        default: 'неизвестно',
+      diagramHeight: {
+        type: Number,
+        default: 90,
       },
-      dataTitle: {
-        type: String,
-        default: '',
-      },
-      dataCount: {
+      count: {
         type: Number,
         default: 0,
       },
-      dataPercentageDifference: {
+      percentageDifference: {
         type: Number,
         default: 0,
+      },
+      titles: {
+        type: Array,
+        default () {
+          return []
+        },
       },
     },
     data () {
@@ -95,7 +94,7 @@
             display: true,
             callbacks: {
               title: function (tooltipItem, data) {
-                return tooltipItem[0].xLabel.count + ' ' + _this.diagramTooltipTitle
+                return tooltipItem[0].xLabel.count + ' ' + _this.declOfNum(tooltipItem[0].xLabel.count, _this.titles)
               },
               label: function (tooltipItem, data) {
                 var startDate = tooltipItem.xLabel.start_period
@@ -112,11 +111,8 @@
       }
     },
     computed: {
-      parentClass () {
-        return this.$options._parentVnode.data.staticClass ?? this.$options._parentVnode.data.class
-      },
       widgetClasses () {
-        return this.parentClass !== undefined ? this.parentClass + ' w-base-diagram' : 'w-base-diagram'
+        return this.parentClass !== undefined ? this.parentClass + ' f-base' : 'f-base'
       },
     },
     mounted () {},
@@ -125,5 +121,5 @@
 </script>
 
 <style lang="scss">
-@import "@/styles/vuetify-preset-plus/light_theme/widgets/frames/_base-diagram.scss";
+@import "@/styles/vuetify-preset-plus/light_theme/widgets/frames/_base-frame.scss";
 </style>

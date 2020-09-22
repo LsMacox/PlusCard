@@ -1,53 +1,5 @@
 @import '../_variables.sass';
 
-.w-operator {
-    height: 100%;
-
-    .w-operator__header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        .w-operator__header-right {
-            cursor: pointer;
-            display: inherit;
-            .w-operator__header-icon {
-                color: $neutral-500;
-            }
-        }
-
-        .w-operator__header-left {
-            cursor: pointer;
-        }
-    }
-
-    .w-operator__list {
-        width: 100%;
-        list-style: none;
-        padding-left: 0;
-        margin-top: 6.5px;
-
-        .w-operator__item {
-            margin-top: 11px;
-
-            .w-operator__item-top {
-                display: flex;
-                justify-content: space-between;
-                margin-bottom: -2px;
-
-                .w-operator__name {
-                    color: $neutral-600;
-                    margin-bottom: 3px;
-                }
-
-                .w-operator__percent {
-                    color: $primary-base;
-                }
-            }
-        }
-    }
-}
-
 .panel-operator {
     .panel-operator__header {
         margin-top: 45px;

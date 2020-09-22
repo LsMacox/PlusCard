@@ -1,21 +1,18 @@
 <template>
-  <base-diagram-frame
-    class="w-client"
-    :diagram-labels="diagramLabels.reverse()"
-    :diagram-data="diagramData.reverse()"
-    :diagram-height="90"
-    :titles="titles"
-    :count="currentCount"
-    :percentage-difference="percentageDifference"
+  <vertical-progress-frame
+    class="w-bonus-ratio"
+    title="Cоотношение бонусов"
+    :sub-titles="['Начислено', 'Списано', 'Сгорело']"
+    :percentage-difference="[72, 22, 6]"
   />
 </template>
 
 <script>
-  import BaseDiagramFrame from '@/views/widgets/frames/BaseDiagramFrame'
+  import VerticalProgressFrame from '@/views/widgets/frames/VerticalProgressFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
 
   export default {
-    components: { BaseDiagramFrame },
+    components: { VerticalProgressFrame },
     mixins: [WidgetFunctions],
     props: {
       widgetData: {
@@ -32,14 +29,9 @@
       },
     },
     data () {
-      return {
-        titles: ['клиент', 'клиента', 'клиентов'],
-      }
+      return {}
     },
     computed: {
-      currentCount () {
-        return this.widgetData.length ? this.widgetData[0].clients_count : 0
-      },
       percentageDifference () {
         if (this.widgetData && this.widgetData.length >= 2) {
           if (this.widgetData[1].clients_count > 0) {
@@ -47,12 +39,6 @@
           }
         }
         return 0
-      },
-      diagramLabels () {
-        return this.prepareDiagramLabels(this.widgetData, 'clients_count')
-      },
-      diagramData () {
-        return this.$_.map(this.widgetData, 'clients_count')
       },
     },
     mounted () {},

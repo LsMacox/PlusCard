@@ -1,32 +1,32 @@
 <template>
   <div
-    ref="diagram-line"
     class="diagram-line"
   >
-    <base-chart
-      ref="base-chart"
-      chart-type="line"
+    <chart
+      type="line"
       :height="height+5"
-      :chart-data="chartData"
-      :chart-options="chartOptions"
+      :data="chartData"
+      :options="chartOptions"
     />
   </div>
 </template>
 
 <script>
-  import BaseChart from './BaseChart'
+  import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
+  import Chart from '@/views/widgets/components/Chart'
 
   export default {
-    name: 'DiagramLine',
-    components: { BaseChart },
+    name: 'BaseLineGraph',
+    components: { Chart },
+    mixins: [WidgetFunctions],
     props: {
-      diagramLabels: {
+      labels: {
         type: Array,
         default () {
           return [10, 20, 30, 30, 50]
         },
       },
-      diagramData: {
+      data: {
         type: Array,
         default () {
           return [10, 20, 30, 30, 50]
@@ -54,17 +54,58 @@
       },
     },
     data () {
-      const _this = this
       return {
-        status: {
-          display: true,
-          baseColor: '#4776E6',
-          growthColor: '#00D15D',
-          declineColor: '#EA4C2A',
-          evenColor: '#FFDD00',
-          neutralColor: '#B5B5C4',
-        },
-        chartOptionRaw: {
+        is_status: true,
+      }
+    },
+    computed: {
+      pointsBackground () {
+        if (!this.data.length) return
+
+        const pointColors = Array((this.data.length - 1)).fill(this.theme.primary)
+        const firstNumber = this.data[this.data.length - 2]
+        const secondNumber = this.data[this.data.length - 1]
+
+        if (this.is_status) {
+          if (firstNumber < secondNumber) pointColors.push(this.theme.success)
+          else if (firstNumber === secondNumber) pointColors.push(this.theme['neutral-500'])
+          else pointColors.push(this.theme.error)
+        } else {
+          pointColors.push(this.theme.primary)
+        }
+
+        return pointColors
+      },
+      baseGradient () {
+        const cvs = document.createElement('canvas')
+        const ctx = cvs.getContext('2d')
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300)
+        gradient.addColorStop(0, 'rgba(71, 118, 230, 0.2)')
+        gradient.addColorStop(0.1, 'rgba(71, 118, 230, 0)')
+        return gradient
+      },
+      chartData () {
+        return {
+          labels: this.labels,
+          datasets: [
+            {
+              borderWidth: 2,
+              borderColor: this.theme.primary,
+              backgroundColor: this.baseGradient,
+              fill: true,
+              data: this.data,
+              pointBorderColor: '#fff',
+              pointRadius: this.pointRadius,
+              pointBorderWidth: this.pointBorderWidth,
+              pointBackgroundColor: this.pointsBackground,
+              pointStyle: 'circle',
+            },
+          ],
+        }
+      },
+      chartOptions () {
+        var _this = this
+        const options = {
           responsive: true,
           maintainAspectRatio: false,
           layout: {
@@ -81,7 +122,7 @@
           tooltips: {
             display: true,
             enabled: false,
-            backgroundColor: '#4776E6',
+            backgroundColor: this.theme.primary,
             cornerRadius: 8,
             labelTextColor: '#fff',
             yPadding: 6,
@@ -175,10 +216,10 @@
                 stacked: true,
               },
               gridLines: {
-                color: '#EBF1FF',
+                color: this.theme['primary-100'],
                 drawBorder: false,
                 drawOnChartArea: true,
-                zeroLineColor: '#EBF1FF',
+                zeroLineColor: this.theme['primary-100'],
               },
             }],
             yAxes: [{
@@ -191,68 +232,16 @@
               },
             }],
           },
-        },
-      }
-    },
-    computed: {
-      pointsBackground () {
-        if (!this.diagramData.length) return
-
-        const pointColors = Array((this.diagramData.length - 1)).fill(this.status.baseColor)
-        const firstNumber = this.diagramData[this.diagramData.length - 2]
-        const secondNumber = this.diagramData[this.diagramData.length - 1]
-
-        if (this.status && this.status.display) {
-          if (firstNumber < secondNumber) pointColors.push(this.status.growthColor)
-          else if (firstNumber === secondNumber) pointColors.push(this.status.neutralColor)
-          else pointColors.push(this.status.declineColor)
-        } else {
-          pointColors.push(this.status.baseColor)
         }
 
-        return pointColors
-      },
-      fillBackground () {
-        const cvs = document.createElement('canvas')
-        const ctx = cvs.getContext('2d')
-        const gradient = ctx.createLinearGradient(0, 0, 0, 300)
-        gradient.addColorStop(0, 'rgba(71, 118, 230, 0.1)')
-        gradient.addColorStop(0.5, 'transparent')
+        this.$_.extend(options.tooltips, this.tooltips)
 
-        return gradient
-      },
-      chartData () {
-        return {
-          labels: this.diagramLabels,
-          datasets: [
-            {
-              borderWidth: 2,
-              borderColor: '#4776E6',
-              backgroundColor: this.fillBackground,
-              fill: false,
-              data: this.diagramData,
-              // lineTension: 0,
-              pointBorderColor: '#fff',
-              pointRadius: this.pointRadius,
-              pointBorderWidth: this.pointBorderWidth,
-              pointBackgroundColor: this.pointsBackground,
-              pointStyle: 'circle',
-            },
-          ],
-        }
-      },
-      chartOptions () {
-        this.setOptionTooltip()
-        return this.chartOptionRaw
+        return options
       },
     },
     mounted () {
     },
-    methods: {
-      setOptionTooltip () {
-        this.$_.extend(this.chartOptionRaw.tooltips, this.tooltips)
-      },
-    },
+    methods: {},
   }
 </script>
 <style lang="scss" scoped>

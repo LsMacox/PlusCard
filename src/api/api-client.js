@@ -92,4 +92,21 @@ service.interceptors.response.use(
   },
 )
 
+service.downloadFile = function (route, params, fileName = '') {
+    return this.post(route, params, {
+        responseType: 'blob', // important
+    }).then((response) => {
+        // const serverFileName = response.headers['x-suggested-filename']
+        // const url = window.URL.createObjectURL(new Blob([response.data]))
+        const url = window.URL.createObjectURL(new Blob([response]))
+        const link = document.createElement('a')
+        link.href = url
+        // link.setAttribute('download', fileName || serverFileName)
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+    })
+}
+
 export default service

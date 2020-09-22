@@ -1,22 +1,22 @@
 <template>
   <div class="app__date-select">
-    <div class="app__date-select-btn">
-      <div
-        class="app__date-select-btn-text"
-        @click="show = !show"
-      >
+    <div
+      class="app__date-select-btn"
+      @click.stop="show = !show"
+    >
+      <div class="app__date-select-btn-text body-s-semibold">
         {{ getItemLabel(model) }}
       </div>
       <div>
         <v-icon
           v-if="!show"
-          style="position: relative; top: 3px;"
+          class="app__date-select-btn-icon"
         >
           $iconify_feather-chevron-down
         </v-icon>
         <v-icon
           v-else
-          style="position: relative; top: 3px;"
+          class="app__date-select-btn-icon"
         >
           $iconify_feather-chevron-up
         </v-icon>
@@ -33,10 +33,10 @@
         :key="i"
         class="app__date-select-block-item"
         :style="getStyle(item)"
-        @click="selectItem(item)"
+        @click.stop="selectItem(item)"
       >
         <div class="app__date-select-block-item-text">
-          {{ item.name }}
+          {{ item[itemLabel] }}
         </div>
         <div
           v-if="isActiveItem(item)"
@@ -64,6 +64,13 @@
       return {
         show: false,
       }
+    },
+    created () {
+      document.addEventListener('click', () => {
+        if (this.show) {
+          this.show = !this.show
+        }
+      })
     },
     methods: {
       getItemLabel (model) {
@@ -101,26 +108,24 @@
   .app__date-select-btn {
     display: flex;
     align-items: center;
+    cursor: pointer;
 
     .app__date-select-btn-text {
-      font-weight: 600;
-      font-size: 17px;
-      line-height: 22px;
-      letter-spacing: 0.4px;
       color: #4776E6;
     }
 
     .app__date-select-btn-icon {
       position: relative;
-      top: 4px;
-      font-size: 24px;
+      top: 1px;
+      left: 5px;
+      width: 22px;
       color: #4776E6;
     }
   }
 
   .app__date-select-block {
     position: absolute;
-    top: 40px;
+    bottom: 40px;
     left: -20px;
     padding: 8px 18px 8px 20px;
     background: #FFFFFF;
@@ -130,7 +135,7 @@
 
     .app__date-select-block-square {
       position: absolute;
-      top: -6px;
+      bottom: -6px;
       left: 57px;
       width: 12px;
       height: 12px;

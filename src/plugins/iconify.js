@@ -29,7 +29,7 @@ export const ICONIFY_ICONS = [
 
   // jam
   { id: 'jam-close', component: () => import('@iconify/icons-jam/close') },
-  
+
   // carbon
   { id: 'carbon-diagram', component: () => import('@iconify/icons-carbon/diagram') },
 

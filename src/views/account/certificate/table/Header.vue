@@ -82,7 +82,6 @@
       <v-btn
         color="primary"
         :to="{name: 'ProgramCertificateMaster' }"
-        @click="onMasterCreateCert"
       >
         <v-icon left>
           $iconify_plus-circle-outlined

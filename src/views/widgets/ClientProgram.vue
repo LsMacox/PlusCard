@@ -1,27 +1,22 @@
 <template>
-  <double-diagram-widget
+  <double-diagram-frame
     class="w-client-program"
+    :diagram-data="[testWidgetData, testWidgetData]"
+    :diagram-labels="[testWidgetData, testWidgetData]"
     :diagram-height="46"
-    :diagram-data-first="testWidgetData"
-    :diagram-data-second="testWidgetData"
-    :diagram-labels-first="testWidgetData"
-    :diagram-labels-second="testWidgetData"
-    data-title="Клиенты программы"
-    data-sub-title-first="Новые"
-    data-sub-title-second="Всего"
-    :data-count-first="currentCount"
-    :data-count-second="currentCount"
-    :data-percentage-difference-first="percentageDifference"
-    :data-percentage-difference-second="percentageDifference"
+    title="Клиенты программы"
+    :sub-titles="['Новые', 'Всего']"
+    :counts="[currentCount, currentCount]"
+    :percentage-differences="[percentageDifference, percentageDifference]"
   />
 </template>
 
 <script>
-  import DoubleDiagramWidget from '@/views/widgets/frames/DoubleDiagramWidget'
+  import DoubleDiagramFrame from '@/views/widgets/frames/DoubleDiagramFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
 
   export default {
-    components: { DoubleDiagramWidget },
+    components: { DoubleDiagramFrame },
     mixins: [WidgetFunctions],
     // props: {
     //   widgetData: {
