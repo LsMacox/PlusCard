@@ -200,7 +200,7 @@
         >
           <div class="details-header" @click="closeCertDetails">
             <v-icon>$iconify_arrow-left</v-icon>
-            <span>Назад</span>
+            <span class="body-s-semibold">Назад</span>
           </div>
 
           <div class="cert-details-content">
