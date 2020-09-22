@@ -330,38 +330,39 @@
             </div>
 
             <div v-if="detailedCert" class="cert-details-user-block">
-              <div class="cert-details-user d-flex">
-                <img
-                    v-if="detailedCert.user"
-                    :src="detailedCert.user.avatar"
-                />
-              </div>
-              <div class="cert-details-user-info">
-                <div v-if="detailedCert.user">
-                  <div class="body-l-semibold">
-                    {{ detailedCert.user.UserName }}
-                  </div>
-                  <div
-                      v-if="detailedCert.user.last_activity"
-                      class="cert-details-user-activity body-xs-semibold"
-                  >
-                    Был(а) в сети {{ $moment(detailedCert.user.last_activity).format('DD.MM.YYYY\u00A0HH:mm') }}
-                  </div>
-
-
-                  <div class="cert-details-user-contact d-flex">
-                    <v-icon>$iconify_bi-phone</v-icon>
-                    <div class="body-m-medium" v-if="detailedCert.user.phone">
-                      {{ detailedCert.user.phone }}
+              <div class="cert-details-user-content">
+                <div class="cert-details-user d-flex">
+                  <img
+                      v-if="detailedCert.user"
+                      :src="detailedCert.user.avatar"
+                  />
+                </div>
+                <div class="cert-details-user-info">
+                  <div v-if="detailedCert.user">
+                    <div class="body-l-semibold">
+                      {{ detailedCert.user.UserName }}
                     </div>
-                    <div v-else>-</div>
-                  </div>
-                  <div class="cert-details-user-contact d-flex">
-                    <v-icon>$iconify_carbon-email</v-icon>
-                    <div class="body-m-medium" v-if="detailedCert.user.email">
-                      {{ detailedCert.user.email }}
+                    <div
+                        v-if="detailedCert.user.last_activity"
+                        class="cert-details-user-activity body-xs-semibold"
+                    >
+                      Был(а) в сети {{ $moment(detailedCert.user.last_activity).format('DD.MM.YYYY\u00A0HH:mm') }}
                     </div>
-                    <div v-else>-</div>
+
+                    <div class="cert-details-user-contact d-flex">
+                      <v-icon>$iconify_bi-phone</v-icon>
+                      <div class="body-m-medium" v-if="detailedCert.user.phone">
+                        {{ detailedCert.user.phone }}
+                      </div>
+                      <div v-else>-</div>
+                    </div>
+                    <div class="cert-details-user-contact d-flex">
+                      <v-icon>$iconify_carbon-email</v-icon>
+                      <div class="body-m-medium" v-if="detailedCert.user.email">
+                        {{ detailedCert.user.email }}
+                      </div>
+                      <div v-else>-</div>
+                    </div>
                   </div>
                 </div>
               </div>
