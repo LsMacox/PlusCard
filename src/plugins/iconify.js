@@ -18,6 +18,7 @@ export const ICONIFY_ICONS = [
 
   // bi
   { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
+  { id: 'bi-phone', component: () => import('@iconify/icons-bi/phone') },
 
   // bx
   { id: 'bx-check', component: () => import('@iconify/icons-bx/bx-check') },
@@ -65,6 +66,8 @@ export const ICONIFY_ICONS = [
   { id: 'feather-users', component: () => import('@iconify/icons-feather/users') },
   { id: 'feather-shopping-bag', component: () => import('@iconify/icons-feather/shopping-bag') },
 
+  // carbon-email
+  { id: 'carbon-email', component: () => import('@iconify/icons-carbon/email') },
 
   // la
   { id: 'la-facebook-f', component: () => import('@iconify/icons-la/facebook-f') },
