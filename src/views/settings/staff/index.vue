@@ -8,7 +8,7 @@
       <v-col style="text-align: right;">
         <v-btn
           color="primary"
-          @click=""
+          @click="sidePanelActive = true"
         >
           <v-icon left>
             $iconify_plus-circle-outlined
@@ -139,21 +139,105 @@
         </div>
       </v-col>
     </v-row>
+
+    <side-panel
+      v-model="sidePanelActive"
+      :width="483"
+      class="staff-side-panel"
+    >
+      <div class="staff-side-panel__header title-m-bold">
+        Добавить сотрудника
+      </div>
+      <div class="staff-side-panel__text-block">
+        <div class="staff-side-panel__text-block-header body-l-semibold">
+          Отправка приглашения
+        </div>
+        <div class="body-m-regular">
+          Пригласите сотрудника используя его почту или телефон. Выбранный способ будет использоваться для регистрации и дальнейшего входа в систему.
+        </div>
+      </div>
+
+      <div style="margin: 18px 34px 0 34px;">
+        <v-radio-group
+          v-model="form.method"
+          row
+        >
+          <v-radio
+            label="Почта"
+            value="email"
+          />
+          <v-radio
+            label="Телефон"
+            value="phone"
+          />
+        </v-radio-group>
+
+        <v-text-field
+          v-model="form.login"
+          :placeholder="form.method === 'email' ? 'Введите почту сотрудника' : 'Введите телефон сотрудника'"
+          class="auth-text-field"
+          outlined
+          required
+          validate-on-blur
+        />
+      </div>
+
+      <div
+        class="staff-side-panel__text-block"
+        style="margin: 4px 34px 0 34px;"
+      >
+        <div class="staff-side-panel__text-block-header body-l-semibold">
+          Роль сотрудника
+        </div>
+        <div class="body-m-regular">
+          Выберите роль сотрудника. От нее зависит доступ к информации и функционалу системы.
+        </div>
+      </div>
+
+      <div style="margin: 34px 34px 0 34px;">
+        <v-select
+          v-model="form.role_id"
+          :items="roles"
+          placeholder="Выберите роль сотрудника"
+          item-text="display_name"
+          item-value="id"
+          outlined
+        />
+
+        <v-btn
+          style="margin-top: 26px;"
+          color="primary"
+          @click="inviteStaff()"
+        >
+          <v-icon left>
+            $iconify_plus-circle-outlined
+          </v-icon> Добавить сотрудника
+        </v-btn>
+      </div>
+    </side-panel>
   </div>
 </template>
 
 <script>
+  import SidePanel from '@/components/base/SidePanel.vue'
   import RoleSelect from '@/components/dialogs/RoleSelect'
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
 
   export default {
     components: {
+      SidePanel,
       RoleSelect,
       SelectPageLimit,
     },
     data () {
       return {
         loading: false,
+        sidePanelActive: false,
+        form: {
+          method: 'email',
+          login: null,
+          role_id: null,
+        },
         tableOptions: {
           page: 1,
           itemsPerPage: 25,
@@ -196,6 +280,13 @@
       }
     },
     computed: {
+      defaultForm () {
+        return {
+          method: 'email',
+          login: null,
+          role_id: null,
+        }
+      },
       program () {
         return this.$store.getters['company/program/program']
       },
@@ -230,6 +321,11 @@
       'tableOptions.itemsPerPage' (v) {
         if (v) this.fetchData()
       },
+      sidePanelActive (v) {
+        if (!v) {
+          this.form = JSON.parse(JSON.stringify(this.defaultForm))
+        }
+      },
     },
     created () {
       this.fetchData()
@@ -252,6 +348,9 @@
         } finally {
           this.loading = false
         }
+      },
+      inviteStaff () {
+        console.log(this.form)
       },
     },
   }
@@ -305,5 +404,21 @@
     left: 20px;
     width: 250px;
   }
+}
+
+.staff-side-panel {
+
+  .staff-side-panel__header {
+    margin: 50px 34px 0 34px;
+  }
+
+  .staff-side-panel__text-block {
+    margin: 34px 34px 0 34px;
+
+    staff-side-panel__text-block-header {
+      margin-bottom: 6px;
+    }
+  }
+
 }
 </style>
