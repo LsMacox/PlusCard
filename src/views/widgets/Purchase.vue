@@ -1,13 +1,13 @@
 <template>
   <double-diagram-frame
     class="w-purchase"
-    :diagram-data="[totalWD, byProgramWD]"
+    :diagram-data="[byProgramWD, totalWD]"
     :diagram-labels="[totalWD, byProgramWD]"
     :diagram-height="46"
     title="Покупки"
     :sub-titles="subTitles()"
-    :counts="[totalPurchases, byProgramPurchases]"
-    :percentage-differences="[totalPD, byProgramPD]"
+    :counts="[byProgramPurchases, totalPurchases]"
+    :percentage-differences="[byProgramPD, totalPD]"
   />
 </template>
 

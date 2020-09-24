@@ -19,14 +19,14 @@
       :sm="6"
       :md="3"
     >
-      <share-purchase :widget-data="sharePurchase" />
+      <share-purchase :widget-data="purchases" />
     </v-col>
     <v-col
       :cols="6"
       :sm="9"
       :md="9"
     >
-      <movement-bonuses />
+      <movement-bonuses :widget-data="bonuses" />
     </v-col>
     <v-col
       :cols="6"
@@ -74,8 +74,8 @@
       purchases () {
         return this.$store.getters['dashboard/purchase/widgetData']
       },
-      sharePurchase () {
-        return this.$store.getters['dashboard/sharePurchase/widgetData']
+      bonuses () {
+        return this.$store.getters['dashboard/bonuses/widgetData']
       },
     },
     watch: {
@@ -92,7 +92,7 @@
           end_period: v.end,
         })
 
-        this.$store.dispatch('dashboard/purchase/widget', {
+        this.$store.dispatch('dashboard/bonuses/widget', {
           program_id: this.program.id,
           start_period: v.start,
           end_period: v.end,
@@ -102,6 +102,7 @@
     mounted () {
       this.start_period = this.period.start
       this.end_period = this.period.end
+
       this.$store.dispatch('dashboard/clients/widget', {
         program_id: this.program.id,
         start_period: this.start_period,
@@ -114,7 +115,7 @@
         end_period: this.end_period,
       })
 
-      this.$store.dispatch('dashboard/sharePurchase/widget', {
+      this.$store.dispatch('dashboard/bonuses/widget', {
         program_id: this.program.id,
         start_period: this.start_period,
         end_period: this.end_period,

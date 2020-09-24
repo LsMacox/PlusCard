@@ -35,6 +35,10 @@ export default {
         widgetData (state) {
             const chartData = [[], []]
 
+            console.log('dafadasd')
+            console.log(state.widgetData)
+            console.log('dafadasd')
+
             if (state.widgetData.chart && state.widgetData.chart.by_program) {
                 state.widgetData.chart.by_program.forEach(item => {
                     chartData[0].push(item.sum)
@@ -49,6 +53,10 @@ export default {
                 chart: chartData,
                 totalCount: state.widgetData.total_count,
                 byProgramCount: state.widgetData.by_program_count,
+                totalSum: state.widgetData.total_sum_current,
+                byProgramSum: state.widgetData.by_program_sum_current,
+                totalSumPrev: state.widgetData.total_sum_prev,
+                byProgramSumPrev: state.widgetData.by_program_sum_prev,
             }
         },
     },
