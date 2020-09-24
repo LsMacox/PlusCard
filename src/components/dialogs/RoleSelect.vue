@@ -65,6 +65,12 @@
         show: false,
       }
     },
+    watch: {
+      model (v) {
+        console.log('changerole')
+        this.$emit('changerole')
+      },
+    },
     created () {
       document.addEventListener('click', () => {
         if (this.show) {
