@@ -28,5 +28,7 @@ yarn-error.log*
 .env.development.local
 .browserslistrc
 .editorconfig
+.gitignore
+.eslintignore
 .env.staging
 LICENSE.md

@@ -1,22 +1,21 @@
 <template>
-  <base-diagram-widget
+  <base-diagram-frame
     class="w-client"
     :diagram-labels="diagramLabels.reverse()"
     :diagram-data="diagramData.reverse()"
-    :diagram-height="diagramHeight"
-    diagram-tooltip-title="клиента"
-    data-title="клиентов"
-    :data-count="currentCount"
-    :data-percentage-difference="percentageDifference"
+    :diagram-height="90"
+    :titles="titles"
+    :count="currentCount"
+    :percentage-difference="percentageDifference"
   />
 </template>
 
 <script>
-  import BaseDiagramWidget from '@/views/widgets/frames/BaseDiagramWidget'
+  import BaseDiagramFrame from '@/views/widgets/frames/BaseDiagramFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
 
   export default {
-    components: { BaseDiagramWidget },
+    components: { BaseDiagramFrame },
     mixins: [WidgetFunctions],
     props: {
       widgetData: {
@@ -34,7 +33,6 @@
     },
     data () {
       return {
-        diagramHeight: 90,
         titles: ['клиент', 'клиента', 'клиентов'],
       }
     },
@@ -58,18 +56,6 @@
       },
     },
     mounted () {},
-    methods: {
-      declOfNum (number, titles) {
-        number = Number(number)
-        const cases = [2, 0, 1, 1, 1, 2]
-        return titles[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
-      },
-    },
+    methods: {},
   }
 </script>
-
-<style lang="scss">
-
-@import "@/styles/vuetify-preset-plus/light_theme/widgets/_clients.scss";
-
-</style>

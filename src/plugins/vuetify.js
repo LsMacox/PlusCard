@@ -63,6 +63,7 @@ const options = {
         'neutral-300': '#E8E8ED',
         'neutral-250': '#f2f2f7',
         'neutral-100': '#ffffff',
+        'chart-500': '#95C5DA',
 
         // brand color
         'logo-vk': '#4a76a8',

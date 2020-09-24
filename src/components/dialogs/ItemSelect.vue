@@ -8,18 +8,18 @@
         {{ getItemLabel(model) }}
       </div>
       <div>
-        <span
+        <v-icon
           v-if="!show"
-          class="iconify app__date-select-btn-icon"
-          data-icon="feather:chevron-down"
-          data-inline="false"
-        />
-        <span
+          class="app__date-select-btn-icon"
+        >
+          $iconify_feather-chevron-down
+        </v-icon>
+        <v-icon
           v-else
-          class="iconify app__date-select-btn-icon"
-          data-icon="octicon:chevron-up-16"
-          data-inline="false"
-        />
+          class="app__date-select-btn-icon"
+        >
+          $iconify_feather-chevron-up
+        </v-icon>
       </div>
     </div>
     <div
@@ -36,17 +36,15 @@
         @click="selectItem(item)"
       >
         <div class="app__date-select-block-item-text">
-          {{ item.name }}
+          {{ item[itemLabel] }}
         </div>
         <div
           v-if="isActiveItem(item)"
           style="position: relative;"
         >
-          <span
-            class="iconify app__date-select-block-item-icon"
-            data-icon="bx:bx-check"
-            data-inline="false"
-          />
+          <v-icon>
+            $iconify_bx-check
+          </v-icon>
         </div>
       </div>
     </div>
@@ -105,16 +103,16 @@
     align-items: center;
 
     .app__date-select-btn-text {
+      font-style: normal;
       font-weight: 600;
-      font-size: 17px;
-      line-height: 22px;
-      letter-spacing: 0.4px;
-      color: #4776E6;
+      font-size: 13px;
+      line-height: 17px;
+      color: #2A2A34;
     }
 
     .app__date-select-btn-icon {
       position: relative;
-      top: 4px;
+      top: 3px;
       font-size: 24px;
       color: #4776E6;
     }

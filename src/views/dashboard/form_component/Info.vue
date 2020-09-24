@@ -65,7 +65,9 @@
     props: {
       program: {
         type: Object,
-        default: {},
+        default: function () {
+          return {}
+        },
       },
     },
     data () {

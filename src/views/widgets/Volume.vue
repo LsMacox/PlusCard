@@ -1,94 +1,22 @@
 <template>
-  <widget-template style-name="w-volume">
-    <template v-slot:header-left>
-      <p
-        class="body-m-semibold"
-      >
-        Общий оборот
-      </p>
-    </template>
-
+  <list-progress-frame
+    title="Общий оборот"
+    :data="listProgressData"
+    class="w-volume"
+  >
     <template v-slot:header-right>
-      <p class="body-m-semibold">
+      <p class="body-m-semibold wc-neutral">
         {{ volume }}
       </p>
     </template>
-
-    <template v-slot:body>
-      <ul
-        class="w-volume__list"
-      >
-        <li
-          class="w-volume__item"
-        >
-          <div class="w-volume__item-top">
-            <p class="w-volume__name body-s-medium">
-              Баланс
-            </p>
-            <span class="w-volume__number body-s-semibold wc-base">{{ balance }}</span>
-          </div>
-          <div class="w-volume__item-bottom">
-            <v-progress-linear
-              :value="getProgress('balance')"
-              style="height: 4px"
-              rounded="rounded"
-              class="w-volume__progress"
-              background-color="#EBF1FF"
-              color="primary"
-            />
-          </div>
-        </li>
-        <li
-          class="w-volume__item"
-        >
-          <div class="w-volume__item-top">
-            <p class="w-volume__name body-s-medium">
-              Начислено
-            </p>
-            <span class="w-volume__number body-s-semibold wc-success">{{ credit }}</span>
-          </div>
-          <div class="w-volume__item-bottom">
-            <v-progress-linear
-              :value="getProgress('credit')"
-              style="height: 4px"
-              rounded="rounded"
-              class="w-volume__progress"
-              background-color="#EBF1FF"
-              color="success"
-            />
-          </div>
-        </li>
-        <li
-          class="w-volume__item"
-        >
-          <div class="w-volume__item-top">
-            <p class="w-volume__name body-s-medium">
-              Списано
-            </p>
-            <span class="w-volume__number body-s-semibold wc-error">{{ debit }}</span>
-          </div>
-          <div class="w-volume__item-bottom">
-            <v-progress-linear
-              :value="getProgress('debit')"
-              style="height: 4px"
-              rounded="rounded"
-              class="w-volume__progress"
-              background-color="#EBF1FF"
-              color="error"
-            />
-          </div>
-        </li>
-      </ul>
-    </template>
-  </widget-template>
+  </list-progress-frame>
 </template>
 
 <script>
-
-  import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
+  import ListProgressFrame from '@/views/widgets/frames/ListProgressFrame'
 
   export default {
-    components: { WidgetTemplate },
+    components: { ListProgressFrame },
     props: {
       widgetData: {
         type: Array,
@@ -130,6 +58,21 @@
       },
       balance () {
         return this.credit + (-1 * this.debit)
+      },
+      listProgressData () {
+        const data = []
+
+        const balance = isNaN(this.getProgress('balance')) ? 0 : this.getProgress('balance')
+        const credit = isNaN(this.getProgress('credit')) ? 0 : this.getProgress('credit')
+        const debit = isNaN(this.getProgress('debit')) ? 0 : this.getProgress('debit')
+
+        data.push(
+          { left: 'Баланс', right: this.balance, progress: balance },
+          { left: 'Начислено', right: { color: 'success', value: this.credit }, progress: { color: 'success', value: credit } },
+          { left: 'Списано', right: { color: 'error', value: this.debit }, progress: { color: 'error', value: debit } },
+        )
+
+        return data
       },
     },
     methods: {

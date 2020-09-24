@@ -1,9 +1,7 @@
 <template>
-  <circle-widget
+  <round-frame
     class="w-share-purchase"
-    data-title="Общая доля покупок"
-    data-sub-title-first="244 покупки по программе"
-    data-sub-title-second="344 покупки всего"
+    title="Общая доля покупок"
     :all-count="allCount"
     :current-count="currentCount"
     :percentage-difference="percentageDifference"
@@ -11,43 +9,51 @@
 </template>
 
 <script>
-  import CircleWidget from '@/views/widgets/frames/CircleWidget'
-  import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
+  import RoundFrame from '@/views/widgets/frames/RoundFrame'
 
   export default {
-    components: { CircleWidget },
-    mixins: [WidgetFunctions],
-    // props: {
-    //   widgetData: {
-    //     type: Array,
-    //     default () {
-    //       return [5].fill({
-    //         all_count: 0,
-    //         clients_count: 0,
-    //         client_increment: 0,
-    //         date_end: '2020-09-08',
-    //         date_start: '2020-09-08',
-    //       })
-    //     },
-    //   },
-    // },
+    components: { RoundFrame },
+    props: ['widgetData'],
     data () {
       return {
-        allCount: 200,
-        currentCount: 140,
+        chartData: {},
       }
     },
     computed: {
+      allCount () {
+        if (this.chartData && this.chartData.totalSum) {
+          return Number.parseInt(this.chartData.totalSum)
+        }
+        return 0
+      },
+      currentCount () {
+        if (this.chartData && this.chartData.byProgramSum) {
+          return Number.parseInt(this.chartData.byProgramSum)
+        }
+        return 0
+      },
       percentageDifference () {
-        return this.relativeChange(this.allCount, this.currentCount)
+        if (this.chartData && this.chartData.byProgramSumPrev && this.chartData && this.chartData.byProgramSum && this.chartData.byProgramSumPrev > 0) {
+          return Math.round(((Number.parseInt(this.chartData.byProgramSum) - Number.parseInt(this.chartData.byProgramSumPrev)) / this.chartData.byProgramSumPrev) * 100)
+        }
+        return 0
       },
     },
-    mounted () {},
+    watch: {
+      widgetData (v) {
+        console.log('watch data...')
+        console.log(v)
+        console.log('watch dadta...')
+
+        this.chartData = v
+      },
+    },
+    mounted () {
+      console.log('diget data...')
+      console.log(this.widgetData)
+      console.log('diget data...')
+
+      this.chartData = this.widgetData
+    },
   }
 </script>
-
-<style lang="scss">
-
-@import "@/styles/vuetify-preset-plus/light_theme/widgets/_share-purchase.scss";
-
-</style>
