@@ -1,20 +1,28 @@
-.title-xl-bold
+@mixin title-xl-bold
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: bold
+  font-size: 34px
+  line-height: 40px
+  //color: #000000
+
+.title-xl-bold
+  @include title-xl-bold
+  
+
+
+@mixin title-xl-regular
+  font-family: Gilroy, sans-serif
+  font-style: normal
+  font-weight: normal
   font-size: 34px
   line-height: 40px
   //color: #000000
 
 .title-xl-regular
-  font-family: Gilroy, sans-serif
-  font-style: normal
-  font-weight: normal
-  font-size: 34px
-  line-height: 40px
-  //color: #000000
+  @include title-xl-regular
 
-.title-l-bold
+@mixin title-l-bold
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: bold
@@ -22,7 +30,10 @@
   line-height: 34px
   //color: #000000
 
-.title-l-regular
+.title-l-bold
+  @include title-l-bold
+
+@mixin title-l-regular
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: normal
@@ -30,7 +41,10 @@
   line-height: 34px
   //color: #000000
 
-.title-m-bold
+.title-l-regular
+  @include title-l-regular
+
+@mixin title-m-bold
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: bold
@@ -39,7 +53,10 @@
   letter-spacing: -0.2px
   //color: #000000
 
-.title-m-regular
+.title-m-bold
+  @include title-m-bold
+
+@mixin title-m-regular
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: normal
@@ -47,7 +64,10 @@
   line-height: 26px
   //color: #000000
 
-.title-s-bold
+.title-m-regular
+  @include title-m-regular
+
+@mixin title-s-bold
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: bold
@@ -55,13 +75,20 @@
   line-height: 24px
   //color: #000000
 
-.title-s-regular
+.title-s-bold
+  @include title-s-bold
+
+@mixin title-s-regular
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: normal
   font-size: 20px
   line-height: 24px
   //color: #000000
+
+.title-s-regular
+  @include title-s-regular
+
 
 @mixin body-l-semibold
   font-family: Gilroy, sans-serif
@@ -75,7 +102,7 @@
 .body-l-semibold
   @include body-l-semibold
 
-.body-l-regular
+@mixin body-l-regular
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: normal
@@ -83,7 +110,10 @@
   line-height: 22px
   //color: #000000
 
-.body-m-semibold
+.body-l-regular
+  @include body-l-regular
+
+@mixin body-m-semibold
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: 600
@@ -92,8 +122,11 @@
   letter-spacing: 0.1px
   //color: #000000
 
+.body-m-semibold
+  @include body-m-semibold
 
-.body-m-medium
+
+@mixin body-m-medium
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: 500
@@ -101,13 +134,20 @@
   line-height: 21px
   //color: #000000
 
-.body-m-regular
+.body-m-medium
+  @include body-m-medium
+
+
+@mixin body-m-regular
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: normal
   font-size: 15px
   line-height: 21px
   //color: #000000
+
+.body-m-regular
+  @include body-m-regular
 
 @mixin body-s-semibold 
   font-family: Gilroy, sans-serif
@@ -121,7 +161,7 @@
 .body-s-semibold
   @include body-s-semibold 
 
-.body-s-regular
+@mixin body-s-regular
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: normal
@@ -129,7 +169,10 @@
   line-height: 17px
   //color: #000000
 
-.body-s-medium 
+.body-s-regular
+  @include body-s-regular
+
+@mixin body-s-medium 
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: 500
@@ -137,7 +180,10 @@
   line-height: 17px
   color: #000000
 
-.body-xs-semibold
+.body-s-medium 
+  @include body-s-medium 
+
+@mixin body-xs-semibold
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: 600
@@ -145,7 +191,10 @@
   line-height: 14px
   //color: #000000
 
-.body-xs-medium
+.body-xs-semibold
+  @include body-xs-semibold  
+
+@mixin body-xs-medium
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: 500
@@ -153,10 +202,16 @@
   line-height: 14px
   //color: #000000
 
-.body-xs-regular
+.body-xs-medium
+  @include body-xs-medium
+
+@mixin body-xs-regular
   font-family: Gilroy, sans-serif
   font-style: normal
   font-weight: normal
   font-size: 11px
   line-height: 14px
   //color: #000000
+
+.body-xs-regular
+  @include body-xs-regular

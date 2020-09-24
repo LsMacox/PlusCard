@@ -87,13 +87,23 @@ export default {
     },
 
     async GetCertList ({ commit }, programId) {
+      console.log('GetCertList this.programId', programId)
       const result = await ApiService.get(
-        '/api-cabinet/program/certificates/list',
-        {
-          program_id: programId,
+        '/api-cabinet/program/certificates/list', {
+          params: {
+            program_id: programId,
+          },
         },
       )
       commit('CERTIFICATES', result)
+    },
+
+    async ChangeActive ({ commit }, { id, active }) {
+      const result = ApiService.post('/api-cabinet/program/certificates/active', {
+        id, active,
+      })
+
+      commit('UPDATE_STATUS_CERTIFICATE', result)
     },
 
     async DeleteCert ({ commit }, cert) {

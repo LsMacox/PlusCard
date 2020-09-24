@@ -46,7 +46,8 @@ export const ICONIFY_ICONS = [
   { id: 'ion-logo-vk', component: () => import('@iconify/icons-ion/logo-vk') },
   { id: 'ion-logo-instagram', component: () => import('@iconify/icons-ion/logo-instagram') },
   { id: 'ion-location-outline', component: () => import('@iconify/icons-ion/location-outline') },
-
+  { id: 'ion-qr-code-outline', component: () => import('@iconify/icons-ion/qr-code-outline') },
+  
   // feather
   { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') },
   { id: 'feather-download', component: () => import('@iconify/icons-feather/download') },
@@ -64,6 +65,7 @@ export const ICONIFY_ICONS = [
   { id: 'feather-edit', component: () => import('@iconify/icons-feather/edit') },
   { id: 'feather-users', component: () => import('@iconify/icons-feather/users') },
   { id: 'feather-shopping-bag', component: () => import('@iconify/icons-feather/shopping-bag') },
+  { id: 'feather-copy', component: () => import('@iconify/icons-feather/copy') },
 
 
   // la
