@@ -232,12 +232,6 @@
     data () {
       return {
         loading: false,
-        sidePanelActive: false,
-        form: {
-          method: 'email',
-          login: null,
-          role_id: null,
-        },
         tableOptions: {
           page: 1,
           itemsPerPage: 25,
@@ -277,16 +271,17 @@
         ],
         wordStaff: ['сотрудник', 'сотрудника', 'сотрудников'],
         wordPages: ['странице', 'страницах', 'страницах'],
-      }
-    },
-    computed: {
-      defaultForm () {
-        return {
+        // side panel
+        sidePanelActive: false,
+        loadingCreate: false,
+        form: {
           method: 'email',
           login: null,
           role_id: null,
-        }
-      },
+        },
+      }
+    },
+    computed: {
       program () {
         return this.$store.getters['company/program/program']
       },
@@ -310,6 +305,14 @@
         this.tableOptions.page = 1
         return 1
       },
+      // side panel
+      defaultForm () {
+        return {
+          method: 'email',
+          login: null,
+          role_id: null,
+        }
+      },
     },
     watch: {
       program (v) {
@@ -321,6 +324,7 @@
       'tableOptions.itemsPerPage' (v) {
         if (v) this.fetchData()
       },
+      // side panel
       sidePanelActive (v) {
         if (!v) {
           this.form = JSON.parse(JSON.stringify(this.defaultForm))
@@ -349,8 +353,19 @@
           this.loading = false
         }
       },
-      inviteStaff () {
-        console.log(this.form)
+      async inviteStaff () {
+        try {
+          this.loadingCreate = true
+          const item = {
+            type: this.form.method,
+            login: this.form.login,
+            role_id: this.form.role_id,
+          }
+          console.log(item)
+          // await this.$store.dispatch('company/staff/create', item)
+        } finally {
+          this.loadingCreate = false
+        }
       },
     },
   }
