@@ -21,23 +21,20 @@
     },
     computed: {
       allCount () {
-        console.log('allCount')
-        console.log(this.chartData.total)
-        return this.chartData.total
+        if (this.chartData && this.chartData.totalSum) {
+          return Number.parseInt(this.chartData.totalSum)
+        }
+        return 0
       },
       currentCount () {
-        console.log('current')
-        console.log(this.chartData.current)
-        return this.chartData.current
-      },
-      prevCount () {
-        console.log('prev')
-        console.log(this.chartData.prev)
-        return this.chartData.prev
+        if (this.chartData && this.chartData.byProgramSum) {
+          return Number.parseInt(this.chartData.byProgramSum)
+        }
+        return 0
       },
       percentageDifference () {
-        if (this.prevCount && this.prevCount > 0 && this.currentCount && this.currentCount > 0) {
-          return Math.round(((this.currentCount - this.prevCount) / this.prevCount) * 100)
+        if (this.chartData && this.chartData.byProgramSumPrev && this.chartData && this.chartData.byProgramSum && this.chartData.byProgramSumPrev > 0) {
+          return Math.round(((Number.parseInt(this.chartData.byProgramSum) - Number.parseInt(this.chartData.byProgramSumPrev)) / this.chartData.byProgramSumPrev) * 100)
         }
         return 0
       },
@@ -46,7 +43,7 @@
       widgetData (v) {
         console.log('watch data...')
         console.log(v)
-        console.log('watch data...')
+        console.log('watch dadta...')
 
         this.chartData = v
       },

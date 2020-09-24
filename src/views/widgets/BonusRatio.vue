@@ -3,7 +3,7 @@
     class="w-bonus-ratio"
     title="Cоотношение бонусов"
     :sub-titles="['Начислено', 'Списано', 'Сгорело']"
-    :percentage-difference="[72, 22, 6]"
+    :percentage-difference="[creditPercent, debitPercent, expiredPercent]"
   />
 </template>
 
@@ -14,31 +14,28 @@
   export default {
     components: { VerticalProgressFrame },
     mixins: [WidgetFunctions],
-    props: {
-      widgetData: {
-        type: Array,
-        default () {
-          return [5].fill({
-            all_count: 0,
-            clients_count: 0,
-            clients_increment: 0,
-            date_end: '2020-09-08',
-            date_start: '2020-09-08',
-          })
-        },
-      },
-    },
+    props: ['widgetData'],
     data () {
-      return {}
+      return {
+        creditPercent: 0,
+        debitPercent: 0,
+        expiredPercent: 0,
+      }
     },
     computed: {
-      percentageDifference () {
-        if (this.widgetData && this.widgetData.length >= 2) {
-          if (this.widgetData[1].clients_count > 0) {
-            return this.relativeChange(this.widgetData[0].clients_count, this.widgetData[1].clients_count)
-          }
-        }
+      ratio () {
         return 0
+      },
+    },
+    watch: {
+      widgetData (v) {
+        if (v) {
+          this.credit = v.chart[0]
+          this.debit = v.chart[1]
+          this.expired = v.chart[2]
+          this.dateLabels = v.dateLabels
+          this.total = v.total
+        }
       },
     },
     mounted () {},

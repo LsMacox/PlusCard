@@ -26,7 +26,7 @@
       >
         <div :class="generateClassesByPrefix(widgetClasses, '__circular-progress__data')">
           <p class="title-m-bold">
-            {{ circlePercentageDifference }}
+            {{ share }}%
           </p>
           <p class="wc-success">
             {{ getPercentToDisplay(percentageDifference) }}
@@ -73,7 +73,10 @@
         return this.parentClass !== undefined ? this.parentClass + ' f-round' : 'f-round'
       },
       share () {
-        return Math.round((this.currentCount / this.allCount) * 100)
+        if (this.currentCount && this.allCount) {
+          return Math.round((this.currentCount / this.allCount) * 100)
+        }
+        return 0
       },
       circlePercentageDifference () {
         return this.relativeChange(this.allCount, this.currentCount)

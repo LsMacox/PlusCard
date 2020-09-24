@@ -58,10 +58,10 @@
         default: '#aaff00',
       },
       value: {
-        validator: function (value) {
-          // should be a number and less or equal than 100
-          return !Number.isNaN(Number(value)) && Number(value) <= 100
-        },
+        // validator: function (value) {
+        //   // should be a number and less or equal than 100
+        //   return !Number.isNaN(Number(value)) && Number(value) <= 100
+        // },
         default: '0',
       },
     },
