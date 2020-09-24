@@ -79,8 +79,8 @@
       baseGradient () {
         const cvs = document.createElement('canvas')
         const ctx = cvs.getContext('2d')
-        const gradient = ctx.createLinearGradient(0, 0, 0, 300)
-        gradient.addColorStop(0, 'rgba(71, 118, 230, 0.2)')
+        const gradient = ctx.createLinearGradient(0, 18, 0, 300)
+        gradient.addColorStop(0, 'rgba(71, 118, 230, 0.1)')
         gradient.addColorStop(0.1, 'rgba(71, 118, 230, 0)')
         return gradient
       },
@@ -241,7 +241,8 @@
     },
     mounted () {
     },
-    methods: {},
+    methods: {
+    },
   }
 </script>
 <style lang="scss" scoped>

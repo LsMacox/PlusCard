@@ -157,9 +157,6 @@
         if (this.intInterval) {
           clearInterval(this.intInterval)
         }
-        if (this.decInterval) {
-          clearInterval(this.decInterval)
-        }
       },
     },
   }

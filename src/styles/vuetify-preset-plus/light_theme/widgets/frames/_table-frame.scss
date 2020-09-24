@@ -1,0 +1,70 @@
+@import "../../_variables.sass";
+
+.f-table {
+    padding-bottom: 7px;
+    .f-table__body {
+        .f-table__table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 16px;
+            .f-table__table-head {
+                th {
+                    color: $neutral-600;
+                }
+            }
+            .f-table__table-body {
+                position: relative;
+                tr {
+                    position: relative;
+                    td {
+                        padding-top: 8px;
+                        padding-bottom: 11px;
+                        p {
+                            color: $neutral-900;
+                        }
+                        &:nth-child(1) {
+                            position: absolute;
+                            margin-left: -1px;
+                            p {
+                                display: inherit;
+                                padding: 4px 8px 4px 8px;
+                                border-radius: 4px;
+                                background: rgba(0, 196, 209, 0.15);
+                                font-weight: 600;
+                                line-height: 17px;
+                                font-size: 13px;
+                            }
+                        }
+                        &:nth-child(2) {
+                            padding-left: 140px;
+                        }
+                        &:not(:nth-child(1)) {
+                            p {
+                                font-weight: 500;
+                                padding-top: 5px;
+                            }
+                        }
+                        &:nth-last-child(1) {
+                            p {
+                                font-weight: 600!important;
+                            }
+                        }
+                    }  
+                    &:nth-child(1) {
+                        td {
+                            padding-top: 8px;
+                        }
+                    }
+
+                    &.f-table__table-hr {
+                        height: 1px;
+                        td {
+                            padding: 0!important;
+                        }
+                    }
+                }
+                
+            }
+        }
+    }
+}

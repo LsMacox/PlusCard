@@ -1,10 +1,12 @@
 <template>
-  <vertical-progress-frame
-    class="w-bonus-ratio"
-    title="Cоотношение бонусов"
-    :sub-titles="['Начислено', 'Списано', 'Сгорело']"
-    :percentage-difference="[72, 22, 6]"
-  />
+  <div>
+    <vertical-progress-frame
+      class="w-bonus-ratio"
+      title="Cоотношение бонусов"
+      :sub-titles="['Начислено', 'Списано', 'Сгорело']"
+      :percentage-differences="[46, 34, 21]"
+    />
+  </div>
 </template>
 
 <script>
