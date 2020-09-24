@@ -52,7 +52,7 @@
       chartOptions: function (val) {
         this.updateChart()
       },
-      chartData: function (val) {
+      data (val) {
         this.updateChart()
       },
     },

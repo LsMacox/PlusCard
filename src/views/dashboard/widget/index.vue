@@ -5,21 +5,21 @@
       :sm="6"
       :md="3"
     >
-      <client-program />
+      <client-program :widget-data="programClients" />
     </v-col>
     <v-col
       :cols="6"
       :sm="6"
       :md="6"
     >
-      <purchase />
+      <purchase :widget-data="purchases" />
     </v-col>
     <v-col
       :cols="6"
       :sm="6"
       :md="3"
     >
-      <share-purchase />
+      <share-purchase :widget-data="sharePurchase" />
     </v-col>
     <v-col
       :cols="6"
@@ -56,13 +56,69 @@
     props: {
     },
     data () {
-      return {}
+      return {
+        start_period: null,
+        end_period: null,
+      }
     },
     computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+      period () {
+        return this.$store.getters['widget/filter/period']
+      },
+      programClients () {
+        return this.$store.getters['dashboard/clients/widgetData']
+      },
+      purchases () {
+        return this.$store.getters['dashboard/purchase/widgetData']
+      },
+      sharePurchase () {
+        return this.$store.getters['dashboard/sharePurchase/widgetData']
+      },
+    },
+    watch: {
+      period (v) {
+        this.$store.dispatch('dashboard/clients/widget', {
+          program_id: this.program.id,
+          start_period: v.start,
+          end_period: v.end,
+        })
 
+        this.$store.dispatch('dashboard/purchase/widget', {
+          program_id: this.program.id,
+          start_period: v.start,
+          end_period: v.end,
+        })
+
+        this.$store.dispatch('dashboard/purchase/widget', {
+          program_id: this.program.id,
+          start_period: v.start,
+          end_period: v.end,
+        })
+      },
     },
     mounted () {
+      this.start_period = this.period.start
+      this.end_period = this.period.end
+      this.$store.dispatch('dashboard/clients/widget', {
+        program_id: this.program.id,
+        start_period: this.start_period,
+        end_period: this.end_period,
+      })
 
+      this.$store.dispatch('dashboard/purchase/widget', {
+        program_id: this.program.id,
+        start_period: this.start_period,
+        end_period: this.end_period,
+      })
+
+      this.$store.dispatch('dashboard/sharePurchase/widget', {
+        program_id: this.program.id,
+        start_period: this.start_period,
+        end_period: this.end_period,
+      })
     },
     methods: {
 

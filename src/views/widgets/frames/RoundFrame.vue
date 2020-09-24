@@ -22,7 +22,7 @@
         :stroke-color="theme['primary']"
         :radius="52"
         :transition-duration="400"
-        :value="circlePercentageDifference"
+        :value="share"
       >
         <div :class="generateClassesByPrefix(widgetClasses, '__circular-progress__data')">
           <p class="title-m-bold">
@@ -71,6 +71,9 @@
     computed: {
       widgetClasses () {
         return this.parentClass !== undefined ? this.parentClass + ' f-round' : 'f-round'
+      },
+      share () {
+        return Math.round((this.currentCount / this.allCount) * 100)
       },
       circlePercentageDifference () {
         return this.relativeChange(this.allCount, this.currentCount)
