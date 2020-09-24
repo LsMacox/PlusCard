@@ -4,7 +4,7 @@
     title="Общая доля покупок"
     :all-count="allCount"
     :current-count="currentCount"
-    :percentage-difference="32"
+    :percentage-difference="percentageDifference"
   />
 </template>
 
@@ -13,27 +13,50 @@
 
   export default {
     components: { RoundFrame },
-    // props: {
-    //   widgetData: {
-    //     type: Array,
-    //     default () {
-    //       return [5].fill({
-    //         all_count: 0,
-    //         clients_count: 0,
-    //         client_increment: 0,
-    //         date_end: '2020-09-08',
-    //         date_start: '2020-09-08',
-    //       })
-    //     },
-    //   },
-    // },
+    props: ['widgetData'],
     data () {
       return {
-        allCount: 200,
-        currentCount: 140,
+        chartData: {},
       }
     },
-    computed: {},
-    mounted () {},
+    computed: {
+      allCount () {
+        console.log('allCount')
+        console.log(this.chartData.total)
+        return this.chartData.total
+      },
+      currentCount () {
+        console.log('current')
+        console.log(this.chartData.current)
+        return this.chartData.current
+      },
+      prevCount () {
+        console.log('prev')
+        console.log(this.chartData.prev)
+        return this.chartData.prev
+      },
+      percentageDifference () {
+        if (this.prevCount && this.prevCount > 0 && this.currentCount && this.currentCount > 0) {
+          return Math.round(((this.currentCount - this.prevCount) / this.prevCount) * 100)
+        }
+        return 0
+      },
+    },
+    watch: {
+      widgetData (v) {
+        console.log('watch data...')
+        console.log(v)
+        console.log('watch data...')
+
+        this.chartData = v
+      },
+    },
+    mounted () {
+      console.log('diget data...')
+      console.log(this.widgetData)
+      console.log('diget data...')
+
+      this.chartData = this.widgetData
+    },
   }
 </script>

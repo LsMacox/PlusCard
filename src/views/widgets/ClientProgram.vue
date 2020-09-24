@@ -1,13 +1,13 @@
 <template>
   <double-diagram-frame
     class="w-client-program"
-    :diagram-data="[testWidgetData, testWidgetData]"
-    :diagram-labels="[testWidgetData, testWidgetData]"
+    :diagram-data="[newData, totalData]"
+    :diagram-labels="[newData, totalData]"
     :diagram-height="46"
     title="Клиенты программы"
     :sub-titles="['Новые', 'Всего']"
-    :counts="[currentCount, currentCount]"
-    :percentage-differences="[percentageDifference, percentageDifference]"
+    :counts="[newCount, totalCount]"
+    :percentage-differences="[newPercentageDifference, totalPercentageDifference]"
   />
 </template>
 
@@ -18,25 +18,13 @@
   export default {
     components: { DoubleDiagramFrame },
     mixins: [WidgetFunctions],
-    // props: {
-    //   widgetData: {
-    //     type: Array,
-    //     default () {
-    //       return [5].fill({
-    //         all_count: 0,
-    //         clients_count: 0,
-    //         client_increment: 0,
-    //         date_end: '2020-09-08',
-    //         date_start: '2020-09-08',
-    //       })
-    //     },
-    //   },
-    // },
+    props: ['widgetData'],
     data () {
       return {
-        testWidgetData: [0, 220, 330, 44],
+        newData: [0, 0, 0, 0],
+        totalData: [0, 0, 0, 0],
         diagramOptions: {
-          pointRadius: 4,
+          pointRadius: 43,
           pointBorderWidth: 2.5,
           tooltips: {
             display: false,
@@ -45,25 +33,44 @@
       }
     },
     computed: {
-      currentCount () {
-        return this.testWidgetData.length ? this.testWidgetData[this.testWidgetData.length - 1] : 0
+      newCount () {
+        return this.newData.length ? this.newData[this.newData.length - 1] : 0
       },
-      percentageDifference () {
-        if (this.testWidgetData && this.testWidgetData.length >= 2) {
-          if (this.testWidgetData[1] > 0) {
-            return this.relativeChange(this.testWidgetData[0], this.testWidgetData[1])
+      totalCount () {
+        return this.totalData.length ? this.totalData[this.newData.length - 1] : 0
+      },
+      newPercentageDifference () {
+        if (this.newData && this.newData.length >= 2) {
+          if (this.newData[1] > 0) {
+            return this.relativeChange(this.newData[this.newData.length - 1], this.newData[this.newData.length - 2])
           }
         }
         return 0
       },
-      // diagramData () {
-      //   return this.$_.map(this.widgetData, 'clients_count')
-      // },
+      totalPercentageDifference () {
+        if (this.totalData && this.totalData.length >= 2) {
+          if (this.totalData[1] > 0) {
+            return this.relativeChange(this.totalData[this.newData.length - 1], this.totalData[this.newData.length - 2])
+          }
+        }
+        return 0
+      },
       diagramLabels () {
-        return this.testWidgetData
+        return this.newData
       },
     },
-    mounted () {},
+    watch: {
+      widgetData (v) {
+        if (v && v[0] && v[1]) {
+          this.newData = v[0].reverse()
+          this.totalData = v[1].reverse()
+        }
+      },
+    },
+    mounted () {
+      this.newData = this.widgetData[0].reverse()
+      this.totalData = this.widgetData[1].reverse()
+    },
   }
 </script>
 

@@ -1,13 +1,13 @@
 <template>
   <double-diagram-frame
     class="w-purchase"
-    :diagram-data="[testWidgetData, testWidgetData]"
-    :diagram-labels="[testWidgetData, testWidgetData]"
+    :diagram-data="[totalWD, byProgramWD]"
+    :diagram-labels="[totalWD, byProgramWD]"
     :diagram-height="46"
     title="Покупки"
-    :sub-titles="['244 покупки по программе', '344 покупки всего']"
-    :counts="[currentCount, currentCount]"
-    :percentage-differences="[percentageDifference, percentageDifference]"
+    :sub-titles="subTitles()"
+    :counts="[totalPurchases, byProgramPurchases]"
+    :percentage-differences="[totalPD, byProgramPD]"
   />
 </template>
 
@@ -18,23 +18,11 @@
   export default {
     components: { DoubleDiagramFrame },
     mixins: [WidgetFunctions],
-    // props: {
-    //   widgetData: {
-    //     type: Array,
-    //     default () {
-    //       return [5].fill({
-    //         all_count: 0,
-    //         clients_count: 0,
-    //         client_increment: 0,
-    //         date_end: '2020-09-08',
-    //         date_start: '2020-09-08',
-    //       })
-    //     },
-    //   },
-    // },
+    props: ['widgetData'],
     data () {
       return {
-        testWidgetData: [0, 220, 330, 44, 34, 56, 124],
+        totalWD: [0, 0, 0, 0, 0, 0, 0],
+        byProgramWD: [0, 0, 0, 0, 0, 0, 0],
         diagramOptions: {
           pointRadius: 4,
           pointBorderWidth: 2.5,
@@ -45,25 +33,52 @@
       }
     },
     computed: {
-      currentCount () {
-        return this.testWidgetData.length ? this.testWidgetData[this.testWidgetData.length - 1] : 0
+      totalPurchases () {
+        return this.totalWD.length ? this.totalWD[this.totalWD.length - 1] : 0
       },
-      percentageDifference () {
-        if (this.testWidgetData && this.testWidgetData.length >= 2) {
-          if (this.testWidgetData[1] > 0) {
-            return this.relativeChange(this.testWidgetData[0], this.testWidgetData[1])
+      byProgramPurchases () {
+        return this.byProgramWD.length ? this.byProgramWD[this.byProgramWD.length - 1] : 0
+      },
+      totalPD () {
+        if (this.totalWD && this.totalWD.length >= 2) {
+          if (this.totalWD[1] > 0) {
+            return this.relativeChange(this.totalWD[this.totalWD.length - 1], this.totalWD[this.totalWD.length - 2])
           }
         }
         return 0
       },
-      // diagramData () {
-      //   return this.$_.map(this.widgetData, 'clients_count')
-      // },
+      byProgramPD () {
+        if (this.byProgramWD && this.byProgramWD.length >= 2) {
+          if (this.byProgramWD[1] > 0) {
+            return this.relativeChange(this.byProgramWD[this.byProgramWD.length - 1], this.byProgramWD[this.byProgramWD.length - 2])
+          }
+        }
+        return 0
+      },
       diagramLabels () {
-        return this.testWidgetData
+        return this.total
       },
     },
-    mounted () {},
+    watch: {
+      widgetData (v) {
+        if (v && v.chart[0] && v.chart[1]) {
+          this.byProgramWD = v.chart[0].reverse()
+          this.totalWD = v.chart[1].reverse()
+        }
+      },
+    },
+    mounted () {
+      this.byProgramWD = this.widgetData.chart[0].reverse()
+      this.totalWD = this.widgetData.chart[1].reverse()
+    },
+    methods: {
+      subTitles () {
+        return [
+          this.widgetData.byProgramCount + ' покупки по программе',
+          this.widgetData.totalCount + ' покупки всего',
+        ]
+      },
+    },
   }
 </script>
 
