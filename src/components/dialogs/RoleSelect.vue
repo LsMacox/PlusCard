@@ -1,10 +1,10 @@
 <template>
   <div class="app__date-select">
-    <div class="app__date-select-btn">
-      <div
-        class="app__date-select-btn-text"
-        @click="show = !show"
-      >
+    <div
+      class="app__date-select-btn"
+      @click.stop="show = !show"
+    >
+      <div class="app__date-select-btn-text">
         {{ getItemLabel(model) }}
       </div>
       <div>
@@ -12,13 +12,13 @@
           v-if="!show"
           class="app__date-select-btn-icon"
         >
-          $iconify_feather-chevron-down
+          $iconify_si-glyph-triangle-down
         </v-icon>
         <v-icon
           v-else
           class="app__date-select-btn-icon"
         >
-          $iconify_feather-chevron-up
+          $iconify_si-glyph-triangle-down
         </v-icon>
       </div>
     </div>
@@ -65,6 +65,19 @@
         show: false,
       }
     },
+    watch: {
+      model (v) {
+        console.log('changerole')
+        this.$emit('changerole')
+      },
+    },
+    created () {
+      document.addEventListener('click', () => {
+        if (this.show) {
+          this.show = !this.show
+        }
+      })
+    },
     methods: {
       getItemLabel (model) {
         if (model) {
@@ -101,8 +114,10 @@
   .app__date-select-btn {
     display: flex;
     align-items: center;
+    cursor: pointer;
 
     .app__date-select-btn-text {
+      width: 180px;
       font-style: normal;
       font-weight: 600;
       font-size: 13px;
@@ -112,8 +127,8 @@
 
     .app__date-select-btn-icon {
       position: relative;
-      top: 3px;
-      font-size: 24px;
+      top: 2px;
+      width: 12px;
       color: #4776E6;
     }
   }

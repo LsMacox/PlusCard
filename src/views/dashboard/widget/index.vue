@@ -1,68 +1,59 @@
 <template>
-  <div class="widget-line">
-    <v-row>
-      <v-col
-        style="max-width: 275px"
-        :cols="3"
-        :sm="3"
-        :md="3"
-      >
-        <client-program />
-      </v-col>
-      <v-col
-        style="min-width: 518px; max-width: 518px"
-        :cols="3"
-        :sm="3"
-        :md="3"
-      >
-        <purchase />
-      </v-col>
-      <v-col
-        style="max-width: 254px"
-        :cols="3"
-        :sm="3"
-        :md="3"
-      >
-        <share-purchase />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col
-        style="min-width: 794px;"
-        :cols="2"
-        :sm="2"
-        :md="2"
-      >
-        <movement-bonuses />
-      </v-col>
-      <v-col
-        style="max-width: 254px"
-        :cols="2"
-        :sm="2"
-        :md="2"
-      >
-        <bonus-ratio />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col
+  <v-row class="widget-line">
+    <v-col
+      :cols="6"
+      :sm="6"
+      :md="3"
+    >
+      <client-program :widget-data="programClients" />
+    </v-col>
+    <v-col
+      :cols="6"
+      :sm="6"
+      :md="6"
+    >
+      <purchase :widget-data="purchases" />
+    </v-col>
+    <v-col
+      :cols="6"
+      :sm="6"
+      :md="3"
+    >
+      <share-purchase :widget-data="purchases" />
+    </v-col>
+    <v-col
+      :cols="6"
+      :sm="9"
+      :md="9"
+    >
+      <movement-bonuses :widget-data="bonuses" />
+    </v-col>
+    <v-col
+      :cols="6"
+      :sm="3"
+      :md="3"
+    >
+      <bonus-ratio />
+    </v-col>
+  </v-row>
+  <v-row>
+    <v-col
         style="min-width: 554px; max-width: 600px"
         :cols="2"
         :sm="2"
         :md="2"
-      >
-        <customer-segment />
-      </v-col>
-      <v-col
+    >
+      <customer-segment />
+    </v-col>
+    <v-col
         style="min-width: 241px; max-width: 241px"
         :cols="2"
         :sm="2"
         :md="2"
-      >
-        <custom-actions />
-      </v-col>
-    </v-row>
-  </div>
+    >
+      <custom-actions />
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -87,13 +78,70 @@
     props: {
     },
     data () {
-      return {}
+      return {
+        start_period: null,
+        end_period: null,
+      }
     },
     computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+      period () {
+        return this.$store.getters['widget/filter/period']
+      },
+      programClients () {
+        return this.$store.getters['dashboard/clients/widgetData']
+      },
+      purchases () {
+        return this.$store.getters['dashboard/purchase/widgetData']
+      },
+      bonuses () {
+        return this.$store.getters['dashboard/bonuses/widgetData']
+      },
+    },
+    watch: {
+      period (v) {
+        this.$store.dispatch('dashboard/clients/widget', {
+          program_id: this.program.id,
+          start_period: v.start,
+          end_period: v.end,
+        })
 
+        this.$store.dispatch('dashboard/purchase/widget', {
+          program_id: this.program.id,
+          start_period: v.start,
+          end_period: v.end,
+        })
+
+        this.$store.dispatch('dashboard/bonuses/widget', {
+          program_id: this.program.id,
+          start_period: v.start,
+          end_period: v.end,
+        })
+      },
     },
     mounted () {
+      this.start_period = this.period.start
+      this.end_period = this.period.end
 
+      this.$store.dispatch('dashboard/clients/widget', {
+        program_id: this.program.id,
+        start_period: this.start_period,
+        end_period: this.end_period,
+      })
+
+      this.$store.dispatch('dashboard/purchase/widget', {
+        program_id: this.program.id,
+        start_period: this.start_period,
+        end_period: this.end_period,
+      })
+
+      this.$store.dispatch('dashboard/bonuses/widget', {
+        program_id: this.program.id,
+        start_period: this.start_period,
+        end_period: this.end_period,
+      })
     },
     methods: {
 

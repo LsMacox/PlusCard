@@ -160,6 +160,7 @@
     mixins: [FormatNumber, Routing],
     data () {
       return {
+        loadingList: false,
         tableOptions: {
           page: 1,
           itemsPerPage: 25,
