@@ -33,7 +33,7 @@
       :sm="3"
       :md="3"
     >
-      <bonus-ratio />
+      <bonus-ratio :widget-data="bonuses" />
     </v-col>
   </v-row>
 </template>

@@ -52,12 +52,12 @@
           />
           <v-progress-linear
             :rounded="true"
-            :value="percentageDifferences[0]"
+            :value="percentageDifferences[1]"
             color="warning"
           />
           <v-progress-linear
             :rounded="true"
-            :value="percentageDifferences[0]"
+            :value="percentageDifferences[2]"
             color="chart-500"
           />
         </div>
