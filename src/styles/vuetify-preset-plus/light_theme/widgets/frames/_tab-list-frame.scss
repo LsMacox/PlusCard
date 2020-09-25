@@ -1,0 +1,36 @@
+@import '../../_variables.sass';
+
+.f-tab-list {
+    .f-tab-list__body {
+        display: flex;
+        flex-direction: column;
+        .f-tab-list__tabs-head {
+            display: flex;
+            justify-content: space-around;
+            .f-tab-list__tabs-tab {
+                position: relative;
+                cursor: pointer;
+                p {
+                    transition: 0.1s ease-in-out;
+                }
+                &:after {
+                    content: '';
+                    transition: 0.1s ease-in-out;
+                    opacity: 0;
+                    position: absolute;
+                    width: 100%;
+                    height: 2px;
+                    background: $primary-base;
+                    border-radius: 100px;
+                    margin-top: 4px;
+                }
+                &.active {
+                    color: $primary-base;
+                    &:after {
+                        opacity: 1;
+                    }
+                }
+            }
+        }
+    }
+}

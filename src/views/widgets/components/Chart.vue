@@ -49,10 +49,10 @@
       }
     },
     watch: {
-      chartOptions: function (val) {
+      options: function (val) {
         this.updateChart()
       },
-      data (val) {
+      data: function (val) {
         this.updateChart()
       },
     },

@@ -35,6 +35,7 @@ import Notifications from 'vue-notification'
 import moment from 'moment'
 import VueMoment from 'vue-moment'
 import VueConstants from './plugins/vue-constants'
+import random from 'random'
 import VueUnderScore from 'vue-underscore'
 // import DateRangePicker from 'vue2-daterange-picker'
 import { IsDebugQuery } from './router/router-handler-log'
@@ -85,6 +86,8 @@ Vue.prototype.$IsDebugMode = function () {
 Vue.prototype.$sleep = function (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+Vue.prototype.$random = random
 
 if (process.env.NODE_ENV !== 'development') {
   console.info('mute console.log')

@@ -113,6 +113,13 @@ const getters = {
   program: state => state.program,
   programId: state => state.program ? state.program.id : null,
   programModel: state => state.programModel,
+  menu: state => {
+    return [
+      { name: 'Общая информация', route: `/company/${state.programModel.id}/info` },
+      { name: 'Точки продаж', route: `/company/${state.programModel.id}/shop` },
+      { name: 'Контактные данные', route: `/company/${state.programModel.id}/contact` },
+    ]
+  },
 }
 
 export default {

@@ -30,6 +30,7 @@
     "js-cookie": "^2.2.1",
     "lamejs": "^1.2.0",
     "moment": "^2.27.0",
+    "random": "^2.2.0",
     "sharp": "^0.25.4",
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",
