@@ -12,7 +12,7 @@
 // * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 import Vue from 'vue'
-import App from './App.vue'
+import AppComponent from './App.vue'
 import router from './router'
 import store from './store'
 import './plugins/base'
@@ -82,20 +82,29 @@ Object.keys(filters).forEach(key => {
 Vue.prototype.$IsDebugMode = function () {
   return IsDebugQuery(this.$route)
 }
+Vue.prototype.$sleep = function (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 if (process.env.NODE_ENV !== 'development') {
   console.info('mute console.log')
   window.console.log = () => { }
 }
 
-new Vue({
+const App = new Vue({
   router,
   store,
   vuetify,
-  i18n,
-  async created () {
+  i18n, 
+  async created () {    
     // устройство
     await this.$store.dispatch('auth/auth/InitDevice')
   },
-  render: h => h(App),
-}).$mount('#app')
+  render: h => h(AppComponent),
+})
+
+App.$mount('#app')
+
+
+Vue.prototype.$app = App
+

@@ -3,7 +3,6 @@
     fluid
     class="program-cert-block"
   >
-   
     <v-row>
       <v-col>
         <v-row>
@@ -97,12 +96,17 @@
                 :key="index"
               >
                 <v-col>
-                  <v-btn icon small :loading="itemMenu.loadingAction" @click="itemMenu.action(item)">
+                  <v-btn
+                    icon
+                    small
+                    :loading="itemMenu.loadingAction"
+                    @click="menuAction(itemMenu, item)"
+                  >
                     <v-icon
-                    color="neutral-500"                    
-                    v-text="itemMenu.icon"                    
-                  /></v-btn>
-                  
+                      color="neutral-500"
+                      v-text="itemMenu.icon"
+                    />
+                  </v-btn>
                 </v-col>
               </v-row>
             </v-col>
@@ -188,10 +192,10 @@
       },
       certMenuItems () {
         return [
-          { icon: '$iconify_feather-edit', action: this.editCert, loadingAction: true },
-          { icon: '$iconify_ion-qr-code-outline', action: this.getQRCode,  loadingAction: true },
-          { icon: '$iconify_feather-copy', action: this.copyLinkCert },
-          { icon: '$iconify_feather-trash', action: this.deleteCert },
+          { icon: '$iconify_feather-edit', action: this.editCert, loadingAction: false },
+          { icon: '$iconify_ion-qr-code-outline', action: this.getQRCode, loadingAction: false },
+          { icon: '$iconify_feather-copy', action: this.copyLinkCert, loadingAction: false },
+          { icon: '$iconify_feather-trash', action: this.deleteCert, loadingAction: false },
         ]
       },
       canCertPublish () {
@@ -199,10 +203,20 @@
       },
     },
     methods: {
-      editCert (cert) {},
-      getQRCode (cert) {},
-      copyLinkCert (cert) {},
-      deleteCert (cert) {
+      async menuAction (sender, cert) {
+        try {
+          sender.loadingAction = true
+          await sender.action(cert)
+        } catch (error) {
+          console.error(error)
+        } finally {
+          sender.loadingAction = false
+        }
+      },
+      async editCert (cert) {},
+     async  getQRCode (cert) {},
+      async copyLinkCert (cert) {},
+      async deleteCert (cert) {
         // this.$store.dispatch('certificates/certificate/DeleteCert', {})
       },
       deleteNominal (nominal) {

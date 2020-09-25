@@ -27,29 +27,10 @@
           :headers="headers"
           :items="tableData"
           :options="tableOptions"
-          :single-expand="true"
-          :expanded.sync="expanded"
           item-key="id"
-          show-expand
           class="plus-table"
           hide-default-footer
         >
-          <template v-slot:expanded-item="{ Headers, item }">
-            <td :colspan="headers.length">
-              More info about {{ item.id }}
-            </td>
-          </template>
-
-          <template v-slot:item.data-table-expand="{ expand, isExpanded }">
-            <v-icon
-              color="neutral-500"
-              style="width: 16px;"
-              @click="expand(!isExpanded)"
-            >
-              $iconify_ion-close
-            </v-icon>
-          </template>
-
           <template v-slot:item.name="{ item }">
             <div class="cell-avatar">
               <div style="display: inline-block;">
@@ -76,28 +57,32 @@
             </div>
           </template>
 
-          <template v-slot:item.team_name="{ item }">
-            <div class="cell-text">
-              {{ item.team_name }}
-            </div>
-          </template>
-
           <template v-slot:item.role_name="{ item }">
-            <div
-              v-if="!inRoles(item.role_id)"
-              class="cell-text-bold"
-            >
-              {{ item.role_name }}
-            </div>
+            <div style="display: flex;">
+              <div
+                v-if="!inRoles(item.role_id)"
+                class="cell-text-bold"
+              >
+                {{ item.role_name }}
+              </div>
 
-            <role-select
-              v-else
-              min-width="260px"
-              :items="roles"
-              :model.sync="item.role_id"
-              item-value="id"
-              item-label="display_name"
-            />
+              <role-select
+                v-else
+                min-width="260px"
+                :items="roles"
+                :model.sync="item.role_id"
+                item-value="id"
+                item-label="display_name"
+                @changerole="updateRole(item)"
+              />
+
+              <v-icon
+                color="neutral-500"
+                @click="deleteStaff(item)"
+              >
+                $iconify_ion-close
+              </v-icon>
+            </div>
           </template>
         </v-data-table>
       </v-col>
@@ -173,12 +158,25 @@
         </v-radio-group>
 
         <v-text-field
-          v-model="form.login"
-          :placeholder="form.method === 'email' ? 'Введите почту сотрудника' : 'Введите телефон сотрудника'"
-          class="auth-text-field"
+          v-if="form.method === 'email'"
+          key="email"
+          v-model="form.email"
+          placeholder="Введите почту сотрудника"
           outlined
           required
           validate-on-blur
+          :rules="emailRules"
+        />
+        <v-text-field
+          v-else
+          key="phone"
+          v-model="form.phone"
+          v-mask="'+7 (###) ###-##-##'"
+          placeholder="Введите телефон сотрудника"
+          outlined
+          required
+          validate-on-blur
+          :rules="phoneRules"
         />
       </div>
 
@@ -207,11 +205,14 @@
         <v-btn
           style="margin-top: 26px;"
           color="primary"
+          :loading="loadingCreate"
+          :disabled="!validateForm"
           @click="inviteStaff()"
         >
           <v-icon left>
             $iconify_plus-circle-outlined
-          </v-icon> Добавить сотрудника
+          </v-icon>
+          Добавить сотрудника
         </v-btn>
       </div>
     </side-panel>
@@ -219,6 +220,8 @@
 </template>
 
 <script>
+  import { mask } from 'vue-the-mask'
+  import { emailV } from '@/plugins/validate-rules'
   import SidePanel from '@/components/base/SidePanel.vue'
   import RoleSelect from '@/components/dialogs/RoleSelect'
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
@@ -229,6 +232,7 @@
       RoleSelect,
       SelectPageLimit,
     },
+    directives: { mask },
     data () {
       return {
         loading: false,
@@ -267,18 +271,27 @@
             text: 'Роль',
             value: 'role_name',
           },
-          { text: '', value: 'data-table-expand' },
         ],
         wordStaff: ['сотрудник', 'сотрудника', 'сотрудников'],
         wordPages: ['странице', 'страницах', 'страницах'],
         // side panel
         sidePanelActive: false,
         loadingCreate: false,
+        loadingUpdate: false,
+        loadingDelete: false,
         form: {
           method: 'email',
-          login: null,
+          email: null,
+          phone: null,
           role_id: null,
         },
+        phoneRules: [
+          v => !!v || 'Телефон обязателен',
+        ],
+        emailRules: [
+          v => !!v || 'Email обязателен',
+          v => emailV(v) || 'Поле email неверного формата',
+        ],
       }
     },
     computed: {
@@ -309,9 +322,14 @@
       defaultForm () {
         return {
           method: 'email',
-          login: null,
+          email: null,
+          phone: null,
           role_id: null,
         }
+      },
+      validateForm () {
+        if (!this.form.method || (!this.form.email && !this.form.phone) || !emailV(this.form.email) || !this.form.role_id) return false
+        return true
       },
     },
     watch: {
@@ -353,16 +371,42 @@
           this.loading = false
         }
       },
+      async deleteStaff (item) {
+        try {
+          this.loadingDelete = true
+          const user = {
+            id: item.id,
+          }
+          console.log(user)
+          await this.$store.dispatch('company/staff/delete', user)
+        } finally {
+          this.loadingDelete = false
+        }
+      },
+      async updateRole (item) {
+        try {
+          this.loadingUpdate = true
+          const user = {
+            user_id: item.id,
+            role_id: item.role_id,
+          }
+          console.log(user)
+          await this.$store.dispatch('company/staff/update', user)
+        } finally {
+          this.loadingUpdate = false
+        }
+      },
       async inviteStaff () {
         try {
           this.loadingCreate = true
           const item = {
             type: this.form.method,
-            login: this.form.login,
+            login: (this.form.method === 'email' ? this.form.email : this.form.phone),
             role_id: this.form.role_id,
           }
           console.log(item)
-          // await this.$store.dispatch('company/staff/create', item)
+          await this.$store.dispatch('company/staff/invite', item)
+          this.sidePanelActive = false
         } finally {
           this.loadingCreate = false
         }

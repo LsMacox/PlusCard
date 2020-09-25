@@ -106,12 +106,11 @@ export default {
       commit('UPDATE_STATUS_CERTIFICATE', result)
     },
 
-    async DeleteCert ({ commit }, cert) {
+    async DeleteCert ({ commit }, {id, force}) {
       await ApiService.delete('/api-cabinet/program/certificates/delete', {
-        id: cert.id,
-        force: cert.force ? 1 : 0,
+        id, force,
       })
-      commit('REMOVE_CERTIFICATES', cert.id)
+      commit('REMOVE_CERTIFICATES', id)
     },
 
     async CreateCertificate ({ commit }, certificate) {
