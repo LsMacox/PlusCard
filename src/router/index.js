@@ -169,10 +169,16 @@ export default new Router({
         },
         {
           path: '/loyalty',
-          component: () => import('@/views/loyalty/index'),
+          component: () => import('@/views/createLoyalty/index'),
           name: 'loyalty',
           meta: { auth: true },
         },
+        // {
+        //   path: '/loyalty',
+        //   component: () => import('@/views/loyalty/index'),
+        //   name: 'loyalty',
+        //   meta: { auth: true },
+        // },
         {
           path: '/ui_kit',
           component: () => import('@/views/ui_kit/Components.vue'),
