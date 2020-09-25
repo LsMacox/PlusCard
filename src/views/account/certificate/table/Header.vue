@@ -4,8 +4,8 @@
       {{ program.name }}
     </div>
     <v-menu
-      class="certificate-toolbar-select"
       v-model="chevronUp"
+      class="certificate-toolbar-select"
       :rounded="false"
       offset-y
     >
@@ -19,69 +19,75 @@
           v-on="on"
         >
           {{ archiveStatus.text }}
-          <v-icon class="archive-status-chevron">{{ !chevronUp ? 'fas fa-chevron-down' : 'fas fa-chevron-up' }}</v-icon>
+          <v-icon class="archive-status-chevron">
+            {{ !chevronUp ? 'fas fa-chevron-down' : 'fas fa-chevron-up' }}
+          </v-icon>
         </v-btn>
       </template>
-      <v-list
-      >
+      <v-list>
         <v-list-item
           v-for="(item, index) in archiveStatuses"
           :key="index"
-          @click="archiveStatusHandler(item)"
           class="archive-status-menu-item"
+          @click="archiveStatusHandler(item)"
         >
           <v-list-item-title>
             {{ item.text }}
             <div
-                v-if="archiveStatus.id === item.id"
-                class="archive-status-check-icon"
+              v-if="archiveStatus.id === item.id"
+              class="archive-status-check-icon"
             >
-              <span class="iconify" data-icon="bx:bx-check" data-inline="false"></span>
+              <span
+                class="iconify"
+                data-icon="bx:bx-check"
+                data-inline="false"
+              />
             </div>
           </v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
     <div class="app__spacer" />
-<!--      <div-->
-<!--        style="display: flex;"-->
-<!--      >-->
-<!--        <div-->
-<!--          class="loyalty-toolbar-text-btn"-->
-<!--          @click=""-->
-<!--        >-->
-<!--          <span-->
-<!--            class="iconify loyalty-toolbar-text-btn-icon"-->
-<!--            style="margin-right: 2px;"-->
-<!--            data-icon="ion:document-outline"-->
-<!--            data-inline="false"-->
-<!--          />-->
-<!--          Экспорт в XLS-->
-<!--        </div>-->
-<!--      </div>-->
-      <div
-        style="display: flex; margin-left: 16px;"
+    <!--      <div-->
+    <!--        style="display: flex;"-->
+    <!--      >-->
+    <!--        <div-->
+    <!--          class="loyalty-toolbar-text-btn"-->
+    <!--          @click=""-->
+    <!--        >-->
+    <!--          <span-->
+    <!--            class="iconify loyalty-toolbar-text-btn-icon"-->
+    <!--            style="margin-right: 2px;"-->
+    <!--            data-icon="ion:document-outline"-->
+    <!--            data-inline="false"-->
+    <!--          />-->
+    <!--          Экспорт в XLS-->
+    <!--        </div>-->
+    <!--      </div>-->
+    <div
+      style="display: flex; margin-left: 16px;"
+    >
+      <v-btn
+        color="secondary"
+        :to="{name:'ProgramCertificate'}"
       >
-        <v-btn
-          color="secondary"
-          @click="onMasterCreateCert"
-        >
-          <v-icon left>
-            $iconify_feather-settings
-          </v-icon> Настроить сертификаты
-        </v-btn>
-      </div>
-      <div
-        style="display: flex; margin-left: 16px;"
+        <v-icon left>
+          $iconify_feather-settings
+        </v-icon> Настроить сертификаты
+      </v-btn>
+    </div>
+    <div
+      style="display: flex; margin-left: 16px;"
+    >
+      <v-btn
+        color="primary"
+        :to="{name: 'ProgramCertificateMaster' }"
       >
-        <v-btn
-          color="primary"
-        >
-          <v-icon left>
-            $iconify_plus-circle-outlined
-          </v-icon> Создать новый сертификат
-        </v-btn>
-      </div>
+        <v-icon left>
+          $iconify_plus-circle-outlined
+        </v-icon> Создать новый сертификат
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -116,9 +122,7 @@
       },
     },
     methods: {
-      onMasterCreateCert () {
-        this.$router.push({ name: 'ProgramCertificateMaster' })
-      },
+
       archiveStatusHandler (item) {
         this.chevronUp = !this.chevronUp
         this.$store.commit('account/certificate/filter/archiveStatus', item)

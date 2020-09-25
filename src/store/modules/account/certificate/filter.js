@@ -13,7 +13,12 @@ const getDefaultState = () => {
             buyers: [],
             archiveStatus: { id: 'work', text: 'в работе' },
         },
-        filterDefault: {
+    }
+}
+
+const getDefaultFilter = () => {
+    return {
+        filter: {
             enable: false,
             certificates: [],
             issueDate: {
@@ -48,14 +53,14 @@ const mutations = {
 }
 
 const actions = {
-    filter ({ commit }) {
-        if (localStorage.getItem('certificateTableFilter')) {
-            const filterLocal = JSON.parse(localStorage.getItem('certificateTableFilter'))
-            if (filterLocal) {
-                commit('filter', filterLocal)
-            }
-        }
-    },
+    // filter ({ commit }) {
+    //     if (localStorage.getItem('certificateTableFilter')) {
+    //         const filterLocal = JSON.parse(localStorage.getItem('certificateTableFilter'))
+    //         if (filterLocal) {
+    //             commit('filter', filterLocal)
+    //         }
+    //     }
+    // },
     async filterPeriod ({ commit }) {
         const startPeriod = localStorage.getItem('startPeriodFilter')
         const endPeriod = localStorage.getItem('endPeriodFilter')
@@ -69,8 +74,8 @@ const getters = {
     endPeriod: (state) => state.endPeriod,
     filter: (state) => state.filter,
     filterDefault: () => {
-        const defaultState = Object.assign({}, getDefaultState())
-        return defaultState.filterDefault
+        const defaultFilter = getDefaultFilter()
+        return defaultFilter.filter
     },
     archiveStatus: (state) => state.filter.archiveStatus,
 }

@@ -1,0 +1,52 @@
+@import '../_variables.sass';
+
+.panel-operator {
+    .panel-operator__header {
+        margin-top: 45px;
+        margin-left: 35px;
+
+        .panel-operator__title {
+            color: $neutral-900;
+        }
+
+        .panel-operator__sub-title {
+            color: $neutral-700;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+    }
+
+    .panel-operator__body {
+        width: 415px;
+        margin-left: 34px;
+        margin-right: 34px;
+        margin-top: 25px;
+
+        .panel-operator__list {
+            padding: 0;
+            list-style: none;
+
+            .panel-operator__item {
+                margin-top: 24px;
+
+                .panel-operator__item-top {
+                    display: flex;
+                    justify-content: space-between;
+
+                    .panel-operator__name {
+                        margin-bottom: 0;
+                        color: $neutral-900;
+                    }
+
+                    .panel-operator__percent {
+                        color: $neutral-900;
+                    }
+                }
+
+                .panel-operator__item-bottom {
+                    margin-top: 4px;
+                }
+            }
+        }
+    }
+}

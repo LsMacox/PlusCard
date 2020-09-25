@@ -78,13 +78,13 @@
             Body L 17-22/Regular
           </div>
           <div class="body-m-semibold">
-            Body M 15-20/Semibold
+            Body M 15-21/Semibold
           </div>
           <div class="body-m-medium">
-            Body M 15-20/Medium
+            Body M 15-21/Medium
           </div>
           <div class="body-m-regular">
-            Body M 15-20/Regular
+            Body M 15-21/Regular
           </div>
           <div class="body-s-semibold">
             Body S 13-17/SemiBold

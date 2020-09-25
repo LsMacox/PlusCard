@@ -57,19 +57,37 @@
           icon: '$iconify_ant-design-gift-outlined',
           title: 'Сертификаты',
           to: '/account/certificates',
-          children: [
-            {
-              icon: '$iconify_ant-design-gift-outlined',
-              title: 'Сертификаты',
-              to: '/account/certificates',
-            },
+          alias: ['/program/certificate', '/certificate/master'],
+          // children: [
+          //   {
+          //     icon: '$iconify_ant-design-gift-outlined',
+          //     title: 'Сертификаты',
+          //     to: '/account/certificates',
+          //   },
 
-          ],
+          // ],
         },
         {
           icon: '$iconify_ion-funnel-outline',
           title: 'CRM',
-          to: '/crm',
+          children: [
+            {
+              icon: '$iconify_feather-users',
+              title: 'Клиенты',
+              to: '/program/accounts',
+            },
+            {
+              icon: '$iconify_carbon-diagram',
+              title: 'Сегменты',
+              to: '/program/segments',
+            },
+            {
+              icon: '$iconify_feather-shopping-bag',
+              title: 'Продажи',
+              to: '/program/sellings',
+            },
+          ],
+
         },
         {
           icon: '$iconify_ion-megaphone-outline',

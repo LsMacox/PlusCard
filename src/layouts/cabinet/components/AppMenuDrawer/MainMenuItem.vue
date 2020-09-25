@@ -6,8 +6,9 @@
       'item-mini': mini
     }"
     active-class="main-menu-item-active"
-    :to="item.to"
-    @click="$emit('click')"
+    
+    :input-value="active"
+    @click="itemClickHandler()"
   >
     <v-list-item-icon
       v-if="text"
@@ -105,6 +106,7 @@
           subtitle: undefined,
           title: undefined,
           to: undefined,
+          alias: undefined,
           badge: undefined,
           action_icon: undefined,
         }),
@@ -125,7 +127,9 @@
     }),
     computed: {
       active () {
-        return this.item.to === this.$route.path
+        return (this.item.to === this.$route.path) || (
+          this.item.alias && this.item.alias.includes(this.$route.path)
+        )
       },
       computedText () {
         if (!this.item || !this.item.title) return ''
@@ -141,6 +145,9 @@
     },
     methods: {
       itemClickHandler () {
+        if (this.item.to) {
+          this.$router.push(this.item.to)
+        }
         this.$emit('click')
       },
       hoverAction () {

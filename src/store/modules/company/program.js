@@ -83,8 +83,21 @@ const actions = {
   async updateShop ({ commit }, item) {
     // eslint-disable-next-line no-useless-catch
     try {
-      const result = await ApiService.put('/api-cabinet/company/info2', item)
-      // console.log('/api-cabinet/company/info2')
+      const result = await ApiService.put('/api-cabinet/company/shop', item)
+      console.log('/api-cabinet/company/shop')
+      console.log(result)
+      commit('SET_PROGRAM_MODEL', result)
+      commit('UPDATE_IN_PROGRAMS', result)
+    } catch (error) {
+      throw error
+    }
+  },
+
+  async updateContact ({ commit }, item) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const result = await ApiService.put('/api-cabinet/company/contact', item)
+      // console.log('/api-cabinet/company/contact')
       // console.log(result)
       commit('SET_PROGRAM_MODEL', result)
       commit('UPDATE_IN_PROGRAMS', result)

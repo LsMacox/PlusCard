@@ -1,0 +1,54 @@
+@import "../../_variables.sass";
+
+.f-double {
+    .f-double__body {
+
+        .f-double__box {
+            width: 100%;
+            .f-double__box-container {
+                justify-content: space-between;
+                margin-top: 20px;
+                
+                .f-double__box-info {
+                    .f-double__info-title {
+                        margin-bottom: 5px;
+                        p {
+                            margin-bottom: 0;
+                            color: $neutral-500;
+                        }
+                    }
+                }
+
+                &:nth-child(1) {
+                    .f-double__box-diagram {
+                        margin-top: -9px;
+                    }
+                }
+
+                &:nth-child(2) {
+                    margin-top: 18px;
+                    .f-double__box-diagram {
+                        opacity: 0.7;
+                    }
+                }
+
+                .f-double__info-statistics {
+                    .statistics__number {
+                        float: left;
+                        margin-right: 8px;
+                    }
+                    .statistics__percent {
+                        margin-top: 5px;
+                        display: inline-block;
+                    }
+                }
+
+                .f-double__box-diagram {
+                    margin-top: -2px;
+                    width: 100px;
+                    float: left;
+                }
+            }
+        }
+    }
+}

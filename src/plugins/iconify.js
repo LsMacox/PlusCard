@@ -4,6 +4,8 @@ import IconifyIcon from '@iconify/vue'
 // https://iconify.design/icon-sets/?query=plus-circle
 // npm i @iconify/icons-bx -D
 // npm i @iconify/icons-codicon -D
+// npm i @iconify/icons-ant-design -D
+// npm i @iconify/icons-entypo -D
 export const ICONIFY_ICONS = [
   // uil
   { id: 'plus-circle', component: () => import('@iconify/icons-uil/plus-circle') },
@@ -12,6 +14,12 @@ export const ICONIFY_ICONS = [
   { id: 'plus-circle-outlined', component: () => import('@iconify/icons-ant-design/plus-circle-outlined') },
   { id: 'search-outlined', component: () => import('@iconify/icons-ant-design/search-outlined') },
   { id: 'ant-design-gift-outlined', component: () => import('@iconify/icons-ant-design/gift-outlined') },
+  { id: 'ant-design-youtube-filled', component: () => import('@iconify/icons-ant-design/youtube-filled') },
+  { id: 'question-circle-outlined', component: () => import('@iconify/icons-ant-design/question-circle-outlined') },
+
+  // bi
+  { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
+  { id: 'bi-phone', component: () => import('@iconify/icons-bi/phone') },
 
   // bx
   { id: 'bx-check', component: () => import('@iconify/icons-bx/bx-check') },
@@ -23,6 +31,13 @@ export const ICONIFY_ICONS = [
   // jam
   { id: 'jam-close', component: () => import('@iconify/icons-jam/close') },
 
+  // carbon
+  { id: 'carbon-email', component: () => import('@iconify/icons-carbon/email') },
+  { id: 'carbon-diagram', component: () => import('@iconify/icons-carbon/diagram') },
+
+  // entypo
+  { id: 'chevron-right', component: () => import('@iconify/icons-entypo/chevron-right') },
+
   // ion
   { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
   { id: 'ion-stats-chart', component: () => import('@iconify/icons-ion/stats-chart') },
@@ -33,20 +48,40 @@ export const ICONIFY_ICONS = [
   { id: 'ion-exit-outline', component: () => import('@iconify/icons-ion/exit-outline') },
   { id: 'ion-color-fill-outline', component: () => import('@iconify/icons-ion/color-fill-outline') },
   { id: 'ion-checkmark-circle-outline', component: () => import('@iconify/icons-ion/checkmark-circle-outline') },
-
+  { id: 'ion-document-outline', component: () => import('@iconify/icons-ion/document-outline') },
+  { id: 'ion-logo-vk', component: () => import('@iconify/icons-ion/logo-vk') },
+  { id: 'ion-logo-instagram', component: () => import('@iconify/icons-ion/logo-instagram') },
+  { id: 'ion-location-outline', component: () => import('@iconify/icons-ion/location-outline') },
+  { id: 'ion-qr-code-outline', component: () => import('@iconify/icons-ion/qr-code-outline') },
+  
   // feather
   { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') },
   { id: 'feather-download', component: () => import('@iconify/icons-feather/download') },
   { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') },
   { id: 'feather-chevron-down', component: () => import('@iconify/icons-feather/chevron-down') },
   { id: 'feather-chevron-up', component: () => import('@iconify/icons-feather/chevron-up') },
-  { id: 'ion-document-outline', component: () => import('@iconify/icons-ion/document-outline') },
+  { id: 'feather-phone', component: () => import('@iconify/icons-feather/phone') },
+  { id: 'feather-mouse-pointer', component: () => import('@iconify/icons-feather/mouse-pointer') },
+  { id: 'feather-more-vertical', component: () => import('@iconify/icons-feather/more-vertical') },
+  { id: 'feather-calendar', component: () => import('@iconify/icons-feather/calendar') },
+  { id: 'feather-clock', component: () => import('@iconify/icons-feather/clock') },
+  { id: 'feather-coffee', component: () => import('@iconify/icons-feather/coffee') },
+  { id: 'feather-plus-circle', component: () => import('@iconify/icons-feather/plus-circle') },
+  { id: 'feather-trash', component: () => import('@iconify/icons-feather/trash') },
+  { id: 'feather-edit', component: () => import('@iconify/icons-feather/edit') },
+  { id: 'feather-users', component: () => import('@iconify/icons-feather/users') },
+  { id: 'feather-shopping-bag', component: () => import('@iconify/icons-feather/shopping-bag') },
+  { id: 'feather-copy', component: () => import('@iconify/icons-feather/copy') },
 
-  // bi
-  { id: 'arrow-left', component: () => import('@iconify/icons-bi/arrow-left') },
+  // la
+  { id: 'la-facebook-f', component: () => import('@iconify/icons-la/facebook-f') },
 
   // octicon
   { id: 'octicon-chevron-up-16', component: () => import('@iconify/icons-octicon/chevron-up-16') },
+
+  // si-glyph
+  { id: 'si-glyph-triangle-down', component: () => import('@iconify/icons-si-glyph/triangle-down') },
+
 ]
 
 ICONIFY_ICONS.forEach((icon) => {
