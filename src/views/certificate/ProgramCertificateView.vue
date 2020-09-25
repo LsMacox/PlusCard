@@ -18,14 +18,19 @@
         <v-row>
           <v-col>
             <base-text-field
-              v-model="search"
+              v-model.trim="search"
               :prepend-inner-icon="'$iconify_search-outlined'"
               placeholder="Поиск сертификатов"
+              style="min-width: 225px"
               hide-details
+              clearable
             />
           </v-col>
           <v-col cols="auto">
-            <v-btn color="primary">
+            <v-btn
+              color="primary"
+              @click="onMasterCreateCert()"
+            >
               <v-icon left>
                 fa-plus
               </v-icon> Создать новый сертификат
@@ -36,13 +41,14 @@
     </v-row>
     <v-row>
       <v-col
-        v-for="(item, index) in certificates"
+        v-for="(item, index) in filtered_certificates"
         :key="index"
         cols="6"
         sm="12"
         md="6"
       >
         <program-certificate-card
+          :id="item.id"
           :name="item.name"
           :description="item.short_description||item.description"
           :active.sync="item.active"
@@ -52,7 +58,7 @@
           :program="program"
         />
       </v-col>
-    </v-row>    
+    </v-row>
   </v-container>
 </template>
 
@@ -77,6 +83,21 @@
     computed: {
       ...mapGetters(['programId', 'program']),
       ...mapGetters('certificates/certificate', ['certificates']),
+      filtered_certificates () {
+        if (this.search_comp) {
+          return this.certificates.filter((item) =>
+            item.id === +this.search_comp ||
+            (item.name && item.name.toLowerCase().includes(this.search_comp)) ||
+            (item.short_description && item.short_description.toLowerCase().includes(this.search_comp)),
+
+          )
+        } else {
+          return this.certificates
+        }
+      },
+      search_comp () {
+        return this.search ? this.search.trim().toLowerCase() : ''
+      },
 
     },
     mounted () {
@@ -84,6 +105,8 @@
     },
     methods: {
       onMasterCreateCert () {
+        console.log('onMasterCreateCert', this.$confirm)
+        
         this.$router.push({ name: 'ProgramCertificateMaster' })
       },
       loadData () {

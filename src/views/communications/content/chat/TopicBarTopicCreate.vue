@@ -1,133 +1,168 @@
 <template>
-  <div>
-    <div class="modal-content">
-      <!-- новая тема -->
-      <!-- настройки темы -->
-      <v-input
-        class="input-field"
-        label="Название темы"
-        :value.sync="name"
-        type="text"
-        max-length="100"
-        hint=""
-        :error="nameErrors"
-        :validate.sync="$v.name"
-      />
-
-      <!-- получатели темы -->
-      <div style="display: flex;">
-        <div
-          class="check-all"
-          @click="setRecipientAll()"
+  <v-card>
+    <v-toolbar color="info">
+      <v-toolbar-title>Новая тема</v-toolbar-title>
+      <v-spacer />
+      <v-toolbar-items>
+        <v-btn
+          icon
+          @click="back()"
         >
-          <div
-            v-if="checkAll"
-            class="check-all-back"
-          >
-            <v-icon color="white">
-              check
-            </v-icon>
-          </div>
-        </div>
-        <div class="name-all">
-          Все участники чата
-        </div>
-      </div>
+          <v-icon>fa-arrow-left</v-icon>
+        </v-btn>
+      </v-toolbar-items>
+    </v-toolbar>
+    <!-- <v-card-title>
+        <span class="headline">Новый чат</span>
+      </v-card-title> -->
+    <v-divider />
+    <v-card-text>
+      <v-container>
+        <v-form
+          ref="form"
+          v-model="formValid"
+        >
+          <v-row>
+            <v-col>
+              <!-- настройки темы -->
+              <v-text-field
+                v-model="name"
+                :rules="nameRules"
+                placeholder="Название темы"
+                counter
+                outlined
+                clearable
+                minlength="1"
+                maxlength="100"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <!-- получатели темы -->
+              <div style="display: flex;">
+                <div
+                  class="check-all"
+                  @click="setRecipientAll()"
+                >
+                  <div
+                    v-if="checkAll"
+                    class="check-all-back"
+                  >
+                    <v-icon color="white">
+                      fa-check
+                    </v-icon>
+                  </div>
+                </div>
+                <div class="name-all">
+                  Все участники чата
+                </div>
+              </div>
+              <!-- список получателей -->
+              <div
+                v-for="(item, i) in members"
+                :key="i"
+                class="res-row"
+              >
+                <div class="line-h">
+                  <div class="line-v" />
+                </div>
 
-      <!-- список получателей -->
-      <div
-        v-for="(item, i) in members"
-        :key="i"
-        class="res-row"
+                <!-- выбор участника -->
+                <div
+                  v-if="item.id != chatUser.id"
+                  class="check"
+                  @click="setRecipient(item.id)"
+                >
+                  <div
+                    v-show="checkAll || isRecipient(item.id)"
+                    class="check-all-back"
+                  >
+                    <v-icon color="white">
+                      fa-check
+                    </v-icon>
+                  </div>
+                </div>
+                <div
+                  v-else
+                  class="check"
+                >
+                  <div class="check-all-back">
+                    <v-icon color="white">
+                      fa-check
+                    </v-icon>
+                  </div>
+                </div>
+
+                <!-- аватар и имя -->
+                <div
+                  class="avatar"
+                  :style="'background: url(' + item.avatar + ');'"
+                />
+                <div class="name">
+                  {{ item.name }}
+                </div>
+
+                <v-spacer />
+
+                <!-- выбор прав -->
+                <div
+                  v-if="item.id != chatUser.id"
+                  class="topic-rights"
+                >
+                  <div
+                    v-if="isRecipient(item.id)"
+                    :class="getCanWriteClass(item.id)"
+                    @click="setCanWrite(item.id)"
+                  />
+
+                  <div
+                    v-if="isRecipient(item.id)"
+                    :class="getCanWriteLabelClass(item.id)"
+                    @click="setCanWrite(item.id)"
+                  >
+                    Написание
+                  </div>
+                </div>
+                <div
+                  v-else
+                  class="topic-rights"
+                >
+                  <div class="topic-admin">
+                    администратор
+                  </div>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+        </v-form>
+      </v-container>
+    </v-card-text>
+    <v-divider />
+    <v-card-actions>
+      <v-btn
+        text
+        class="//close"
+        @click="back()"
       >
-        <div class="line-h">
-          <div class="line-v" />
-        </div>
-
-        <!-- выбор участника -->
-        <div
-          v-if="item.id != chatUser.id"
-          class="check"
-          @click="setRecipient(item.id)"
-        >
-          <div
-            v-show="checkAll || isRecipient(item.id)"
-            class="check-all-back"
-          >
-            <v-icon color="white">
-              check
-            </v-icon>
-          </div>
-        </div>
-        <div
-          v-else
-          class="check"
-        >
-          <div class="check-all-back">
-            <v-icon color="white">
-              check
-            </v-icon>
-          </div>
-        </div>
-
-        <!-- аватар и имя -->
-        <div
-          class="avatar"
-          :style="'background: url(' + item.avatar + ');'"
-        />
-        <div class="name">
-          {{ item.name }}
-        </div>
-
-        <v-spacer />
-
-        <!-- выбор прав -->
-        <div
-          v-if="item.id != chatUser.id"
-          class="topic-rights"
-        >
-          <div
-            v-if="isRecipient(item.id)"
-            :class="getCanWriteClass(item.id)"
-            @click="setCanWrite(item.id)"
-          />
-
-          <div
-            v-if="isRecipient(item.id)"
-            :class="getCanWriteLabelClass(item.id)"
-            @click="setCanWrite(item.id)"
-          >
-            Написание
-          </div>
-        </div>
-        <div
-          v-else
-          class="topic-rights"
-        >
-          <div class="topic-admin">
-            администратор
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="modal-action">
+        Отмена
+      </v-btn>
       <v-spacer />
 
       <!-- кнопка добавить тему -->
       <v-btn
-        class="box-button"
+        class="//box-button"
         color="success"
         :loading="topicCreateAction"
         :disabled="!validateTopic"
         @click="create()"
       >
         <v-icon left>
-          add
+          fa-plus
         </v-icon>Добавить
       </v-btn>
-    </div>
-  </div>
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
@@ -146,14 +181,14 @@
         checkAll: false,
         name: '',
         recipients: [],
+        nameRules: [
+          v => !!v || 'Введите название темы',
+          v => !this.nameExist || 'Тема с таким названием уже существует',
+        ],
+        formValid: false,
+        topicCreateAction:false,
 
       }
-    },
-    validations: {
-      name: {
-        // required,
-        // maxLength: maxLength(100)
-      },
     },
     computed: {
       loadingSend () {
@@ -180,23 +215,8 @@
       nameExist () {
         return this.$store.getters['chat/topic/nameExist']
       },
-      nameErrors () {
-        const errors = []
-        if (!this.$v.name.$dirty) return errors
-        !this.$v.name.required && errors.push('Поле "Название темы" обязательно')
-        !this.$v.name.maxLength &&
-          errors.push('Поле "Название темы" не может быть более 100 символов')
-        this.nameExist && errors.push('Тема с таким названием уже существует')
-        return errors
-      },
       validateTopic () {
-        if (
-          this.$v.name.required &&
-          this.$v.name.maxLength &&
-          this.checkRecipients() &&
-          !this.nameExist
-        ) { return true }
-        return false
+        return this.checkRecipients() && this.formValid
       },
     },
     watch: {
@@ -226,7 +246,7 @@
       back () {
         this.name = ''
         this.recipients = []
-        this.$v.$reset()
+        this.$refs.form.reset()
         this.$store.commit('chat/topic/nameExist', true)
         this.$emit('update:dialog', false)
       },

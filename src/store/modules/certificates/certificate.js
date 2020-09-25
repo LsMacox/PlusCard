@@ -98,20 +98,21 @@ export default {
       commit('CERTIFICATES', result)
     },
 
-    async ChangeActive ({ commit }, { id, active }) {
+    async ChangeActive ({ commit }, { id, active, programId }) {
       const result = ApiService.post('/api-cabinet/program/certificates/active', {
-        id, active,
+        id, active, program_id: programId,
       })
 
       commit('UPDATE_STATUS_CERTIFICATE', result)
     },
 
-    async DeleteCert ({ commit }, cert) {
+    async DeleteCert ({ commit }, { id, force }) {
       await ApiService.delete('/api-cabinet/program/certificates/delete', {
-        id: cert.id,
-        force: cert.force ? 1 : 0,
+        params: {
+          id, force: +force,
+        },
       })
-      commit('REMOVE_CERTIFICATES', cert.id)
+      commit('REMOVE_CERTIFICATE', id)
     },
 
     async CreateCertificate ({ commit }, certificate) {
