@@ -122,7 +122,7 @@
       prependInnerIcon: String,
       prependInnerIconColor: {
         type: String,
-        default: '#000000',
+        default: 'neutral-500',
       },
       readonly: Boolean,
       rules: Array,
