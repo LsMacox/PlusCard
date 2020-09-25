@@ -173,7 +173,7 @@
 
           <!--
           МАГАЗИН ФОРМА
-        -->
+          -->
 
           <div
             v-if="newShopActive || newShopEdit"
@@ -567,7 +567,6 @@
         },
         newShopActive: false,
         shop: { lat: '', lng: '' },
-        shops: [],
         newShop: {
           name: '',
           city: '',
@@ -612,6 +611,9 @@
       },
       programModel () {
         return this.$store.getters['company/program/programModel']
+      },
+      shops () {
+        return this.$store.getters['company/program/shops']
       },
       merchant_id () {
         return JSON.parse(localStorage.getItem('vue-session-key')).merchant_id
