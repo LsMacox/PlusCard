@@ -35,21 +35,20 @@
     >
       <bonus-ratio />
     </v-col>
-  </v-row>
-  <v-row>
+
     <v-col
-        style="min-width: 554px; max-width: 600px"
-        :cols="2"
-        :sm="2"
-        :md="2"
+      style="min-width: 554px; max-width: 600px"
+      :cols="2"
+      :sm="2"
+      :md="2"
     >
       <customer-segment />
     </v-col>
     <v-col
-        style="min-width: 241px; max-width: 241px"
-        :cols="2"
-        :sm="2"
-        :md="2"
+      style="min-width: 241px; max-width: 241px"
+      :cols="2"
+      :sm="2"
+      :md="2"
     >
       <custom-actions />
     </v-col>
