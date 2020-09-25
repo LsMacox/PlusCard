@@ -57,26 +57,29 @@
             </div>
           </template>
 
-          <template v-slot:item.role_name="{ item }">
-            <div style="display: flex;">
-              <div
-                v-if="!inRoles(item.role_id)"
-                class="cell-text-bold"
-              >
-                {{ item.role_name }}
-              </div>
+          <template v-slot:item.role_display_name="{ item }">
+            <div
+              v-if="!inRoles(item.role_id)"
+              class="cell-text-bold"
+            >
+              {{ item.role_display_name }}
+            </div>
 
-              <role-select
-                v-else
-                min-width="260px"
-                :items="roles"
-                :model.sync="item.role_id"
-                item-value="id"
-                item-label="display_name"
-                @changerole="updateRole(item)"
-              />
+            <role-select
+              v-else
+              min-width="260px"
+              :items="roles"
+              :model.sync="item.role_id"
+              item-value="id"
+              item-label="display_name"
+              @changerole="updateRole(item)"
+            />
+          </template>
 
+          <template v-slot:item.action="{ item }">
+            <div class="cell-text">
               <v-icon
+                v-if="item.role_name !== 'merchant-owner'"
                 color="neutral-500"
                 @click="deleteStaff(item)"
               >
@@ -264,12 +267,12 @@
             value: 'email',
           },
           {
-            text: 'Команда',
-            value: 'team_name',
+            text: 'Роль',
+            value: 'role_display_name',
           },
           {
-            text: 'Роль',
-            value: 'role_name',
+            text: '',
+            value: 'action',
           },
         ],
         wordStaff: ['сотрудник', 'сотрудника', 'сотрудников'],
@@ -377,7 +380,7 @@
           const user = {
             id: item.id,
           }
-          console.log(user)
+          // console.log(user)
           await this.$store.dispatch('company/staff/delete', user)
         } finally {
           this.loadingDelete = false
@@ -390,7 +393,7 @@
             user_id: item.id,
             role_id: item.role_id,
           }
-          console.log(user)
+          // console.log(user)
           await this.$store.dispatch('company/staff/update', user)
         } finally {
           this.loadingUpdate = false
@@ -404,7 +407,7 @@
             login: (this.form.method === 'email' ? this.form.email : this.form.phone),
             role_id: this.form.role_id,
           }
-          console.log(item)
+          // console.log(item)
           await this.$store.dispatch('company/staff/invite', item)
           this.sidePanelActive = false
         } finally {
