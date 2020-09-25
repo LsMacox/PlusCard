@@ -27,6 +27,7 @@ import './AuthGuard'
 import * as filters from './filters'
 
 import VueSession from './utils/session'
+import MessageBox from './components/message-box'
 import AppConfig from './config/config'
 
 import VueProgressBar from 'vue-progressbar'
@@ -55,6 +56,7 @@ Vue.use(Notifications)
 Vue.use(VueConstants)
 Vue.use(VueUnderScore)
 Vue.use(AppConfig)
+Vue.use(MessageBox)
 
 const options = {
   // color: '#bffaf3',
