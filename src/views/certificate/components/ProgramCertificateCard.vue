@@ -100,7 +100,7 @@
                     icon
                     small
                     :loading="itemMenu.loadingAction"
-                    @click="menuAction(itemMenu, item)"
+                    @click="menuAction(itemMenu)"
                   >
                     <v-icon
                       color="neutral-500"
@@ -176,6 +176,14 @@
         ChangeActiveAction: false,
         localActive: !!this.active,
         certAction: true,
+        certMenuItems:
+          [
+            { icon: '$iconify_feather-edit', action: this.editCert, loadingAction: false },
+            { icon: '$iconify_ion-qr-code-outline', action: this.getQRCode, loadingAction: false },
+            { icon: '$iconify_feather-copy', action: this.copyLinkCert, loadingAction: false },
+            { icon: '$iconify_feather-trash', action: this.deleteCert, loadingAction: false },
+          ],
+
       }
     },
     computed: {
@@ -190,35 +198,83 @@
           //  this.$emit('update:active', v)
         },
       },
-      certMenuItems () {
-        return [
-          { icon: '$iconify_feather-edit', action: this.editCert, loadingAction: false },
-          { icon: '$iconify_ion-qr-code-outline', action: this.getQRCode, loadingAction: false },
-          { icon: '$iconify_feather-copy', action: this.copyLinkCert, loadingAction: false },
-          { icon: '$iconify_feather-trash', action: this.deleteCert, loadingAction: false },
-        ]
-      },
+
       canCertPublish () {
         return this.moderationActive && this.program.active
       },
     },
     methods: {
-      async menuAction (sender, cert) {
+      async menuAction (sender) {
         try {
           sender.loadingAction = true
-          await sender.action(cert)
+          await sender.action()
         } catch (error) {
           console.error(error)
         } finally {
+          console.log('loadingAction false')
           sender.loadingAction = false
         }
       },
-      async editCert (cert) {},
-     async  getQRCode (cert) {},
-      async copyLinkCert (cert) {},
-      async deleteCert (cert) {
-        // this.$store.dispatch('certificates/certificate/DeleteCert', {})
+      async editCert () {},
+      async  getQRCode () {},
+      async copyLinkCert () {},
+      async deleteCertAction (force = false) {
+        await this.$store.dispatch('certificates/certificate/DeleteCert', {
+          id: this.id, force,
+        })
+        this.$notify({
+          title: this.name,
+          message: 'Сертификат успешно удален',
+          type: 'success',
+        })
       },
+      async deleteCert () {
+        // this.$store.dispatch('certificates/certificate/DeleteCert', {})
+        try {
+          await this.$confirm(
+            `Вы уверены, что хотите удалить сертификат ${this.name} в корзину?`,
+            'Удаление заказа сертификата в корзину',
+            {
+              confirmButtonText: 'Удалить',
+              cancelButtonText: 'Отмена',
+              type: 'warning',
+            },
+          )
+        } catch {
+          console.log('Cancel delete')
+          return
+        }
+
+        try {
+          await this.deleteCertAction(false)
+        } catch (error) {
+          if (
+            error &&
+            error.response &&
+            error.response.data &&
+            error.response.data.code === 101
+          ) {
+            await this.$confirm(
+              'У ваших клиентов есть сертификат, который вы удаляете (в корзинах или выпущенные). Если вы удалите данный сертификат, клиенты не смогут его покупать, но те, сертификаты, которые уже помещены в корзину или выпущены продолжат действовать. Все равно удалить сертификат?',
+              'Удаление сертификата',
+              {
+                confirmButtonText: 'Да',
+                cancelButtonText: 'Отмена',
+                type: 'warning',
+              },
+            )
+            await this.deleteCertAction(true)
+          }
+        }
+
+        // .then(() => {
+        //   console.log('then confirm')
+        // })
+        // .catch(() => {
+        //   console.log('Cancel delete')
+        // })
+      },
+
       deleteNominal (nominal) {
         console.log('deleteNominal')
       },

@@ -27,6 +27,7 @@ import './AuthGuard'
 import * as filters from './filters'
 
 import VueSession from './utils/session'
+import MessageBox from './components/message-box'
 import AppConfig from './config/config'
 
 import VueProgressBar from 'vue-progressbar'
@@ -35,6 +36,7 @@ import Notifications from 'vue-notification'
 import moment from 'moment'
 import VueMoment from 'vue-moment'
 import VueConstants from './plugins/vue-constants'
+
 import VueUnderScore from 'vue-underscore'
 // import DateRangePicker from 'vue2-daterange-picker'
 import { IsDebugQuery } from './router/router-handler-log'
@@ -54,6 +56,7 @@ Vue.use(Notifications)
 Vue.use(VueConstants)
 Vue.use(VueUnderScore)
 Vue.use(AppConfig)
+Vue.use(MessageBox)
 
 const options = {
   // color: '#bffaf3',
