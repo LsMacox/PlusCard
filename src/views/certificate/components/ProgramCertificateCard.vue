@@ -3,6 +3,7 @@
     fluid
     class="program-cert-block"
   >
+   
     <v-row>
       <v-col>
         <v-row>
@@ -26,22 +27,23 @@
             {{ description }}
           </v-col>
         </v-row>
-        <v-row>
+        <v-row style="min-height: 60px">
           <v-col>
             <v-switch
-             :input-value="internalActive"
+              v-show="moderationActive"
+              :input-value="internalActive"
+              :loading="ChangeActiveAction"
               :class="{
                 'program-cert-block_switch': true,
                 'program-cert-block_switch-active': internalActive,
               }"
-              :disabled="!moderationActive"
               hide-details
-              @change="activeChange"              
+              @change="activeChange"
             >
               <span
                 slot="label"
                 class="program-cert-block_switch_label"
-              >{{ internalActive ? 'Опубликован' : 'Не опубликован' }}</span>
+              >{{ internalActive ? 'Опубликован' : 'Не опубликован' }} {{ internalActive }}</span>
             </v-switch>
           </v-col>
         </v-row>
@@ -95,11 +97,12 @@
                 :key="index"
               >
                 <v-col>
-                  <v-icon
-                    color="neutral-500"
-                    @click="itemMenu.action(item)"
-                    v-text="itemMenu.icon"
-                  />
+                  <v-btn icon small :loading="itemMenu.loadingAction" @click="itemMenu.action(item)">
+                    <v-icon
+                    color="neutral-500"                    
+                    v-text="itemMenu.icon"                    
+                  /></v-btn>
+                  
                 </v-col>
               </v-row>
             </v-col>
@@ -112,6 +115,10 @@
 <script>
   export default {
     props: {
+      id: {
+        type: Number,
+        required: true,
+      },
       name: {
         type: String,
         default: '',
@@ -162,6 +169,9 @@
     data () {
       return {
         certMenuActive: false,
+        ChangeActiveAction: false,
+        localActive: !!this.active,
+        certAction: true,
       }
     },
     computed: {
@@ -170,44 +180,56 @@
           return this.active
         },
         set (v) {
-          // set active     
-            console.log('set internalActive', v)     
-          if (v !== this.active)  this.$emit('update:active', v)
+          // set active
+          console.log('set internalActive', v)
+          // if (v !== this.active)
+          //  this.$emit('update:active', v)
         },
       },
       certMenuItems () {
         return [
-          { icon: '$iconify_feather-edit', action: this.editCert },
-          { icon: '$iconify_ion-qr-code-outline', action: this.getQRCode },
+          { icon: '$iconify_feather-edit', action: this.editCert, loadingAction: true },
+          { icon: '$iconify_ion-qr-code-outline', action: this.getQRCode,  loadingAction: true },
           { icon: '$iconify_feather-copy', action: this.copyLinkCert },
           { icon: '$iconify_feather-trash', action: this.deleteCert },
         ]
+      },
+      canCertPublish () {
+        return this.moderationActive && this.program.active
       },
     },
     methods: {
       editCert (cert) {},
       getQRCode (cert) {},
       copyLinkCert (cert) {},
-      deleteCert (cert) {},
+      deleteCert (cert) {
+        // this.$store.dispatch('certificates/certificate/DeleteCert', {})
+      },
       deleteNominal (nominal) {
         console.log('deleteNominal')
       },
-      addNominal(){
+      addNominal () {
         // this.internalActive = !this.active
       },
       activeChange (value) {
         console.log('activeChange', value)
-        if (!this.program.active ) {
-          this.$notify({
-            type: 'error',
-            title: 'Ошибка',
-            text: 'Публикация невозможна: компания не опубликована',
+
+        // todo ChangeActive
+        this.ChangeActiveAction = true
+        this.$store.dispatch('certificates/certificate/ChangeActive', {
+          id: this.id,
+          active: value,
+          program_id: this.program.id,
+        }).then((res) => {
+          // this.internalActive = !value
+        }).catch(() => {
+          console.log('this.active', this.active)
+          this.$nextTick(() => {
+            this.internalActive = this.active
           })
-          
-
-        }
-
-        //todo ChangeActive
+        }).finally(() => {
+          this.ChangeActiveAction = false
+        })
       },
     },
 

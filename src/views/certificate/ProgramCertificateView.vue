@@ -21,6 +21,7 @@
               v-model="search"
               :prepend-inner-icon="'$iconify_search-outlined'"
               placeholder="Поиск сертификатов"
+              style="min-width: 225px"
               hide-details
             />
           </v-col>
@@ -43,6 +44,7 @@
         md="6"
       >
         <program-certificate-card
+          :id="item.id"
           :name="item.name"
           :description="item.short_description||item.description"
           :active.sync="item.active"

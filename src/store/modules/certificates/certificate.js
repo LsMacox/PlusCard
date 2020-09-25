@@ -98,9 +98,9 @@ export default {
       commit('CERTIFICATES', result)
     },
 
-    async ChangeActive ({ commit }, { id, active }) {
+    async ChangeActive ({ commit }, { id, active, program_id }) {
       const result = ApiService.post('/api-cabinet/program/certificates/active', {
-        id, active,
+        id, active, program_id
       })
 
       commit('UPDATE_STATUS_CERTIFICATE', result)
