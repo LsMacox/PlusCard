@@ -40,6 +40,8 @@ export const ICONIFY_ICONS = [
 
   // ion
   { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
+  { id: 'ion-close-circle-outline', component: () => import('@iconify/icons-ion/close-circle-outline') },
+  { id: 'ion-checkmark-circle-outline', component: () => import('@iconify/icons-ion/checkmark-circle-outline') },
   { id: 'ion-stats-chart', component: () => import('@iconify/icons-ion/stats-chart') },
   { id: 'ion-wallet-outline', component: () => import('@iconify/icons-ion/wallet-outline') },
   { id: 'ion-funnel-outline', component: () => import('@iconify/icons-ion/funnel-outline') },
@@ -53,7 +55,7 @@ export const ICONIFY_ICONS = [
   { id: 'ion-logo-instagram', component: () => import('@iconify/icons-ion/logo-instagram') },
   { id: 'ion-location-outline', component: () => import('@iconify/icons-ion/location-outline') },
   { id: 'ion-qr-code-outline', component: () => import('@iconify/icons-ion/qr-code-outline') },
-  
+
   // feather
   { id: 'feather-settings', component: () => import('@iconify/icons-feather/settings') },
   { id: 'feather-download', component: () => import('@iconify/icons-feather/download') },

@@ -1,34 +1,12 @@
 <template>
   <div>
-    <div class="stepper">
-      <div
-        class="stepper-block first-step body-l-semibold"
-        :style="'color: ' + getCurrentColor('first')+ ';cursor: pointer;'"
-        @click="toRoute(`/company/${programId}/info`)"
-      >
-        Общая информация
-      </div>
-      <v-icon class="stepper__icon">
-        mdi-chevron-right
-      </v-icon>
-      <div
-        class="stepper-block second-step body-l-semibold"
-        :style="'color: ' + getCurrentColor('second')+ ';cursor: pointer;'"
-        @click="toRoute(`/company/${programId}/shop`)"
-      >
-        Точки продаж
-      </div>
-      <v-icon class="stepper__icon">
-        mdi-chevron-right
-      </v-icon>
-      <div
-        class="stepper-block third-step body-l-semibold"
-        :style="'color: ' + getCurrentColor('third')+ ';cursor: pointer;'"
-        @click="toRoute(`/company/${programId}/contact`)"
-      >
-        Контактные данные
-      </div>
-    </div>
+    <form-menu
+      :menu="menu"
+      cancel-button-text="Отменить"
+      action-button-text="Сохранить"
+      @cancelbutton=""
+      @actionbutton=""
+    />
     <div
       v-if="!loading"
     >
@@ -38,7 +16,12 @@
 </template>
 
 <script>
+  import FormMenu from './FormMenu'
+
   export default {
+    components: {
+      FormMenu,
+    },
     data () {
       return {
         loading: false,
@@ -46,6 +29,13 @@
       }
     },
     computed: {
+      menu () {
+        return [
+          { name: 'Общая информация', route: `/company/${this.programId}/info` },
+          { name: 'Точки продаж', route: `/company/${this.programId}/shop` },
+          { name: 'Контактные данные', route: `/company/${this.programId}/contact` },
+        ]
+      },
     },
     async created () {
       const id = this.$route.params.program_id
