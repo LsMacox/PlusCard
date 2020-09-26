@@ -105,6 +105,14 @@ export default {
 
       commit('UPDATE_STATUS_CERTIFICATE', result)
     },
+    async GetQRCode (_, { id, fileName }) {
+      await ApiService.downloadFile(
+        '/api-cabinet/certificate/qrcode/generate',
+        { certificate_id: id },
+        `${fileName}.png`,
+      )
+      return true
+    },
 
     async DeleteCert ({ commit }, { id, force }) {
       await ApiService.delete('/api-cabinet/program/certificates/delete', {
@@ -113,6 +121,7 @@ export default {
         },
       })
       commit('REMOVE_CERTIFICATE', id)
+      return true
     },
 
     async CreateCertificate ({ commit }, certificate) {
@@ -130,14 +139,16 @@ export default {
       return result
     },
 
-    async DeleteCertificateNominal ({ commit }, nominal) {
+    async DeleteCertificateNominal ({ commit }, { nominal, force }) {
       await ApiService.delete(
         '/api-cabinet/program/certificate/nominal',
         {
-          nominal_id: nominal.id,
-          force: nominal.force,
+          params: {
+            nominal_id: nominal.id,
+            force: +force,
+          },
+          errorHandle: true,
         },
-        { errorHandle: false },
       )
       commit('REMOVE_CERTIFICATE_NOMINAL', nominal)
       return true

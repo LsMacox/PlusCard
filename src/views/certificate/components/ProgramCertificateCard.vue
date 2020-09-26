@@ -29,9 +29,11 @@
         <v-row style="min-height: 60px">
           <v-col>
             <v-switch
-              v-show="moderationActive"
-              :input-value="internalActive"
+              v-show="canCertPublish"
+              v-model="internalActive"
               :loading="ChangeActiveAction"
+              flat
+              inset
               :class="{
                 'program-cert-block_switch': true,
                 'program-cert-block_switch-active': internalActive,
@@ -42,7 +44,7 @@
               <span
                 slot="label"
                 class="program-cert-block_switch_label"
-              >{{ internalActive ? 'Опубликован' : 'Не опубликован' }} {{ internalActive }}</span>
+              >{{ internalActive ? 'Опубликован' : 'Не опубликован' }}</span>
             </v-switch>
           </v-col>
         </v-row>
@@ -55,7 +57,7 @@
               v-for="(nominal, index) in nominals"
               :key="index"
               label
-              close
+              :close="nominals.length>1"
               class="program-cert-nominal"
               @click:close="deleteNominal(nominal)"
             >
@@ -64,10 +66,11 @@
             <v-btn
               icon
               color="primary"
+              class="add-nominal-btn"
               small
               @click="addNominal()"
             >
-              <v-icon style="width:21px; height:21px">
+              <v-icon>
                 $iconify_feather-plus-circle
               </v-icon>
             </v-btn>
@@ -77,12 +80,23 @@
       <v-col cols="auto">
         <v-row>
           <v-col>
-            <v-icon
-              color="neutral-500"
-              @click="certMenuActive= !certMenuActive"
+            <base-tooltip
+              text="Меню действий сертификата"
+              right
             >
-              $iconify_feather-more-vertical
-            </v-icon>
+              <!-- <template v-slot:activator="{ on  }"></template> -->
+              <v-btn
+                icon
+                small
+                @click="certMenuActive= !certMenuActive"
+              >
+                <v-icon
+                  color="neutral-500"
+                >
+                  $iconify_feather-more-vertical
+                </v-icon>
+              </v-btn>
+            </base-tooltip>
           </v-col>
         </v-row>
         <v-expand-transition>
@@ -96,33 +110,62 @@
                 :key="index"
               >
                 <v-col>
-                  <v-btn
-                    icon
-                    small
-                    :loading="itemMenu.loadingAction"
-                    @click="menuAction(itemMenu)"
+                  <base-tooltip
+                    :text="itemMenu.tooltip"
+                    right
+                    :disabled="copyLinkComplite"
                   >
-                    <v-icon
-                      color="neutral-500"
-                      v-text="itemMenu.icon"
-                    />
-                  </v-btn>
+                    <v-btn
+                      :ref="itemMenu.ref"
+                      icon
+                      small
+                      :loading="itemMenu.loadingAction"
+                      @click="menuAction(itemMenu)"
+                    >
+                      <v-icon
+                        :color="menuIconColor(itemMenu)"
+                        v-text="itemMenu.icon"
+                      />
+                    </v-btn>
+                  </base-tooltip>
                 </v-col>
               </v-row>
+
+              <base-tooltip
+                v-model="copyLinkComplite"
+                right
+                color="primary"
+                :open-on-hover="false"
+                :activator="$refs.copyBtn ? $refs.copyBtn[0] : undefined"
+                :z-index="103"
+              >
+                <template v-slot:content>
+                  <span>
+                    Ссылка скопирована<br>в буфер обмена!
+                  </span>
+                </template>
+              </base-tooltip>
             </v-col>
           </v-row>
         </v-expand-transition>
       </v-col>
     </v-row>
+    <!-- copyLinkComplite = {{ copyLinkComplite }}
+    certMenuItems = {{ certMenuItems }} -->
+
+    <!-- internalActive= {{ internalActive }}
+    active= {{ active }} -->
   </v-container>
 </template>
 <script>
+
   export default {
     props: {
       id: {
         type: Number,
         required: true,
       },
+
       name: {
         type: String,
         default: '',
@@ -172,38 +215,44 @@
     },
     data () {
       return {
+        copyLinkComplite: false,
         certMenuActive: false,
         ChangeActiveAction: false,
-        localActive: !!this.active,
+        internalActive: !!this.active,
         certAction: true,
         certMenuItems:
           [
-            { icon: '$iconify_feather-edit', action: this.editCert, loadingAction: false },
-            { icon: '$iconify_ion-qr-code-outline', action: this.getQRCode, loadingAction: false },
-            { icon: '$iconify_feather-copy', action: this.copyLinkCert, loadingAction: false },
-            { icon: '$iconify_feather-trash', action: this.deleteCert, loadingAction: false },
+            { ref: 'editBtn', icon: '$iconify_feather-edit', tooltip: 'Редактировать', action: this.editCert, loadingAction: false },
+            { ref: 'qrBtn', icon: '$iconify_ion-qr-code-outline', tooltip: 'Скачать QR-код', action: this.getQRCode, loadingAction: false },
+            {
+              ref: 'copyBtn',
+              icon: '$iconify_feather-copy',
+              tooltip: 'Скопировать ссылку',
+              action: this.copyLinkCert,
+              loadingAction: false,
+            },
+            { ref: 'delBtn', icon: '$iconify_feather-trash', tooltip: 'Удалить', action: this.deleteCert, loadingAction: false },
           ],
 
       }
     },
     computed: {
-      internalActive: {
-        get () {
-          return this.active
-        },
-        set (v) {
-          // set active
-          console.log('set internalActive', v)
-          // if (v !== this.active)
-          //  this.$emit('update:active', v)
-        },
+      certLink () {
+        return `https://cert.onelink.me/MfUW?pid=QR_code&c=tabletens_scan_cert&is_retargeting=true&af_web_dp=http%3A%2F%2Fpluscards.ru%2Fcert-open&af_dp=pluscardsapp%3A%2F%2Fdeeplink%2Fcertificates%3Ftarget_id%3D${this.id}&af_channel=tabletens-cert&action=certificates&certificate_id=${this.id}`
       },
-
       canCertPublish () {
         return this.moderationActive && this.program.active
       },
     },
+    watch: {
+      active (v) {
+        this.internalActive = v
+      },
+    },
     methods: {
+      menuIconColor (itemMenu) {
+        return (itemMenu.ref === 'copyBtn' && this.copyLinkComplite) ? 'primary' : 'neutral-500'
+      },
       async menuAction (sender) {
         try {
           sender.loadingAction = true
@@ -216,15 +265,39 @@
         }
       },
       async editCert () {},
-      async  getQRCode () {},
-      async copyLinkCert () {},
+      async  getQRCode () {
+        await this.$store.dispatch('certificates/certificate/GetQRCode', {
+          id: this.id, fileName: this.name,
+        })
+      },
+
+      async copyLinkCert () {
+        this.$copyText(this.certLink).then((e) => {
+          setTimeout(() => {
+            this.copyLinkComplite = true
+          }, 100)
+
+          this.$notify({
+            title: 'Генератор ссылки',
+            text: 'Ссылка успешно скопирована!',
+            type: 'success',
+          })
+          console.log(e)
+        }).catch((e) => {
+          this.$notify({
+            title: 'Генератор ссылки',
+            text: 'Ошибка при копировании сслыки!',
+            type: 'error',
+          })
+        })
+      },
       async deleteCertAction (force = false) {
         await this.$store.dispatch('certificates/certificate/DeleteCert', {
           id: this.id, force,
         })
         this.$notify({
           title: this.name,
-          message: 'Сертификат успешно удален',
+          text: 'Сертификат успешно удален',
           type: 'success',
         })
       },
@@ -266,17 +339,55 @@
             await this.deleteCertAction(true)
           }
         }
-
-        // .then(() => {
-        //   console.log('then confirm')
-        // })
-        // .catch(() => {
-        //   console.log('Cancel delete')
-        // })
+      },
+      async deleteNominalAction (nominal, force = false) {
+        await this.$store.dispatch('certificates/certificate/DeleteCertificateNominal', {
+          nominal, force,
+        })
+        this.$notify({
+          title: this.name,
+          text: `Номинал "${nominal.nominal_name}" сертификата успешно удален`,
+          type: 'success',
+        })
       },
 
-      deleteNominal (nominal) {
-        console.log('deleteNominal')
+      async deleteNominal (nominal) {
+        try {
+          await this.$confirm(
+            `Вы уверены, что хотите удалить номинал "${nominal.nominal_name}" в корзину?`,
+            'Удаление в корзину',
+            {
+              confirmButtonText: 'Удалить',
+              cancelButtonText: 'Отмена',
+              type: 'warning',
+            },
+          )
+        } catch {
+          console.log('Cancel delete')
+          return
+        }
+
+        try {
+          await this.deleteNominalAction(nominal, false)
+        } catch (error) {
+          if (
+            error &&
+            error.response &&
+            error.response.data &&
+            error.response.data.code === 101
+          ) {
+            await this.$confirm(
+              'У ваших клиентов есть сертификаты номиналов, которые вы удаляете (в корзинах или выпущенные). Если вы удалите данный номинал сертификата, клиенты не смогут его выпускать, но те, сертификаты данного номинала, которые помещены в корзину или выпущены продолжат действовать. Все равно удалить номинал?',
+              'Удаление сертификата',
+              {
+                confirmButtonText: 'Да',
+                cancelButtonText: 'Отмена',
+                type: 'warning',
+              },
+            )
+            await this.deleteNominalAction(nominal, true)
+          }
+        }
       },
       addNominal () {
         // this.internalActive = !this.active
@@ -289,11 +400,10 @@
         this.$store.dispatch('certificates/certificate/ChangeActive', {
           id: this.id,
           active: value,
-          program_id: this.program.id,
+          programId: this.program.id,
         }).then((res) => {
           // this.internalActive = !value
         }).catch(() => {
-          console.log('this.active', this.active)
           this.$nextTick(() => {
             this.internalActive = this.active
           })
@@ -351,6 +461,9 @@
     border-radius: 6px;
     margin: 4px;
     height: 37px;
+  }
+  .add-nominal-btn{
+     margin: 4px;
   }
 
   .cert-moderation-status{
