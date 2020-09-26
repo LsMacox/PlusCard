@@ -41,6 +41,10 @@ import VueUnderScore from 'vue-underscore'
 // import DateRangePicker from 'vue2-daterange-picker'
 import { IsDebugQuery } from './router/router-handler-log'
 
+import VueClipboard from 'vue-clipboard2'
+ 
+
+
 //
 // Vue.use(DateRangePicker)
 
@@ -57,6 +61,7 @@ Vue.use(VueConstants)
 Vue.use(VueUnderScore)
 Vue.use(AppConfig)
 Vue.use(MessageBox)
+Vue.use(VueClipboard)
 
 const options = {
   // color: '#bffaf3',
