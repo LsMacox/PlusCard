@@ -26,6 +26,7 @@
         try {
           this.loading = true
           await this.$store.dispatch('company/program/read', { id: this.programId })
+          // await this.$store.dispatch('company/program/listShop', { id: this.programId })
         } finally {
           this.loading = false
         }
