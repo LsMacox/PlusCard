@@ -86,6 +86,17 @@ export default {
       commit('RESET_STATE')
     },
 
+    async GetCert (_, certId) {
+      const result = await ApiService.get(
+        '/api-cabinet/program/certificate', {
+          params: {
+            cert_id: certId,
+          },
+        },
+      )
+      return result
+    },
+
     async GetCertList ({ commit }, programId) {
       console.log('GetCertList this.programId', programId)
       const result = await ApiService.get(
@@ -105,6 +116,7 @@ export default {
 
       commit('UPDATE_STATUS_CERTIFICATE', result)
     },
+
     async GetQRCode (_, { id, fileName }) {
       await ApiService.downloadFile(
         '/api-cabinet/certificate/qrcode/generate',
