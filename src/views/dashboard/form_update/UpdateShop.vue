@@ -2,6 +2,7 @@
   <div>
     <top-menu
       :menu="menu"
+      :value="1"
       cancel-button-text="Отменить"
       action-button-text="Сохранить"
       :loading="loading"

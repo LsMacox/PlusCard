@@ -14,9 +14,9 @@ export default {
         },
         {
             path: '/program/sellings',
-            component: () => import('@/views/SkeletonPage'),
+            component: () => import('@/views/selling/index'),
             name: 'ProgramSellings',
-            meta: { auth: true, title: 'Клиенты', icon: 'dashboard' },
+            meta: { auth: true, title: 'Продажи', icon: 'dashboard' },
         },
     ],
 }

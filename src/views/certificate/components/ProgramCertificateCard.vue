@@ -264,7 +264,14 @@
           sender.loadingAction = false
         }
       },
-      async editCert () {},
+      async editCert () {
+        this.$router.push({
+          name: 'ProgramCertificateForm',
+          params: {
+            cert_id: this.id,
+          },
+        })
+      },
       async  getQRCode () {
         await this.$store.dispatch('certificates/certificate/GetQRCode', {
           id: this.id, fileName: this.name,
