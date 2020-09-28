@@ -94,6 +94,7 @@ const actions = {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.get(`/api-cabinet/company/list?program_id=${item.id}`)
+      console.log(`/api-cabinet/company/list?program_id=${item.id}`)
       console.log(result)
       commit('SET_SHOPS', result)
     } catch (error) {

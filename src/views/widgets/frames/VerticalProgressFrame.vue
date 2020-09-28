@@ -52,20 +52,12 @@
           />
           <v-progress-linear
             :rounded="true"
-<<<<<<< HEAD
-            :value="percentageDifferences[1]"
-=======
             :value="percent2"
->>>>>>> 8d133dd637de0ea3742b9e57c441cbc0807933c4
             color="warning"
           />
           <v-progress-linear
             :rounded="true"
-<<<<<<< HEAD
-            :value="percentageDifferences[2]"
-=======
             :value="percent3"
->>>>>>> 8d133dd637de0ea3742b9e57c441cbc0807933c4
             color="chart-500"
           />
         </div>
