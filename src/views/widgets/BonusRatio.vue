@@ -3,7 +3,7 @@
     class="w-bonus-ratio"
     title="Cоотношение бонусов"
     :sub-titles="['Начислено', 'Списано', 'Сгорело']"
-    :percentage-difference="[creditPercent, debitPercent, expiredPercent]"
+    :percentage-differences="[creditRatio, debitRatio, expiredRatio]"
   />
 </template>
 
@@ -17,9 +17,9 @@
     props: ['widgetData'],
     data () {
       return {
-        creditPercent: 0,
-        debitPercent: 0,
-        expiredPercent: 0,
+        creditRatio: 0,
+        debitRatio: 0,
+        expiredRatio: 0,
       }
     },
     computed: {
@@ -30,15 +30,22 @@
     watch: {
       widgetData (v) {
         if (v) {
-          this.credit = v.chart[0]
-          this.debit = v.chart[1]
-          this.expired = v.chart[2]
-          this.dateLabels = v.dateLabels
-          this.total = v.total
+          this.creditRatio = v.bonusRatio[0]
+          this.debitRatio = v.bonusRatio[1]
+          this.expiredRatio = v.bonusRatio[2]
         }
       },
     },
-    mounted () {},
+    mounted () {
+      console.log('bonus ratio')
+      console.log(this.widgetData)
+      console.log('bonus ratio')
+      if (this.widgetData && this.widgetData.bonusRatio) {
+        this.creditRatio = this.widgetData.bonusRatio[0]
+        this.debitRatio = this.widgetData.bonusRatio[1]
+        this.expiredRatio = this.widgetData.bonusRatio[2]
+      }
+    },
     methods: {},
   }
 </script>

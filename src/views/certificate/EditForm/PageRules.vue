@@ -110,22 +110,7 @@
               </v-col>
             </v-row>
           </template>
-        </BaseMasterFieldBlock>
-        <v-row>
-          <v-col>
-            <v-btn
-              color="primary"
-              :disabled="!formValid"
-              class="master-next-btn"
-              @click="onNextClick"
-            >
-              Далее
-              <v-icon right>
-                mdi-arrow-right
-              </v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
+        </BaseMasterFieldBlock>        
       </v-form>
     </v-row>
   </v-container>
@@ -166,6 +151,9 @@
     },
     created () {},
     methods: {
+      validate () {
+        return this.$refs.form.validate() && this.termsUserValidate()
+      },
       periodUnlimitChange () {
         this.cert.guaranteed_period = this.cert.guaranteed_period_unlimit
           ? null
@@ -174,13 +162,7 @@
       termsUserValidate () {
         this.termsUserValid = !!this.cert.terms_of_use
         return this.termsUserValid
-      },
-      onNextClick () {
-        if (this.$refs.form.validate()) {
-          if (!this.termsUserValidate()) return
-          this.$emit('continue', true)
-        }
-      },
+      },     
     },
   }
 </script>

@@ -187,10 +187,15 @@ export default new Router({
         },
         {
           path: '/program/certificate/:cert_id',
-          component: () => import('@/views/certificate/EditForm/index.vue'),
-          props: (route) => ({ certId: +route.params.cert_id }),
+          redirect: '/program/certificate/:cert_id/main',
           name: 'ProgramCertificateForm',
-          meta: {  auth: true, title: 'ui_kit', icon: 'ui_kit' },
+        },
+        {
+          path: '/program/certificate/:cert_id/:page',
+          component: () => import('@/views/certificate/EditForm/index.vue'),
+          props: (route) => ({ certId: +route.params.cert_id, startPage: route.params.page }),
+          name: 'ProgramCertificateFormPage',
+          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },         
         },
         {
           path: '/certificate/master',

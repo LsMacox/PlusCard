@@ -94,6 +94,7 @@ const actions = {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.get(`/api-cabinet/company/list?program_id=${item.id}`)
+      console.log(`/api-cabinet/company/list?program_id=${item.id}`)
       console.log(result)
       commit('SET_SHOPS', result)
     } catch (error) {
@@ -148,9 +149,9 @@ const getters = {
   programModel: state => state.programModel,
   menu: state => {
     return [
-      { name: 'Общая информация', route: `/company/${state.programModel.id}/info` },
-      { name: 'Точки продаж', route: `/company/${state.programModel.id}/shop` },
-      { name: 'Контактные данные', route: `/company/${state.programModel.id}/contact` },
+      { id: 'info', name: 'Общая информация', route: `/company/${state.programModel.id}/info` },
+      { id: 'shop', name: 'Точки продаж', route: `/company/${state.programModel.id}/shop` },
+      { id: 'contact', name: 'Контактные данные', route: `/company/${state.programModel.id}/contact` },
     ]
   },
   shops: state => state.shops,
