@@ -47,17 +47,17 @@
         <div :class="generateClassesByPrefix(widgetClasses, '__diagram-progress')">
           <v-progress-linear
             :rounded="true"
-            :value="percent1"
+            :value="percentageDifferences[0]"
             color="primary"
           />
           <v-progress-linear
             :rounded="true"
-            :value="percent2"
+            :value="percentageDifferences[1]"
             color="warning"
           />
           <v-progress-linear
             :rounded="true"
-            :value="percent3"
+            :value="percentageDifferences[2]"
             color="chart-500"
           />
         </div>

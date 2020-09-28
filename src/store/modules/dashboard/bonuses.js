@@ -33,7 +33,8 @@ export default {
             return state.loading
         },
         widgetData (state) {
-            const chartData = [[], [], []]
+            const chartData = [[0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0]]
+            const bonusRatio = [0, 0, 0]
 
             if (state.widgetData.credit) {
                 chartData[0] = state.widgetData.credit
@@ -47,28 +48,29 @@ export default {
                 chartData[2] = state.widgetData.expired
             }
 
-            console.log('movement')
+            if (state.widgetData.bonus_sum) {
+                if (state.widgetData.bonus_sum > 0) {
+                    bonusRatio[0] = Math.round(state.widgetData.credit[0] / state.widgetData.bonus_sum * 100)
+                    bonusRatio[1] = Math.round(state.widgetData.debit[0] / state.widgetData.bonus_sum * 100)
+                    bonusRatio[2] = Math.round(state.widgetData.expired[0] / state.widgetData.bonus_sum * 100)
+                }
+            }
+
+            console.log('movemsent')
             console.log({
                 total: state.widgetData.total,
-                dateLabels: state.widgetData.dateLabels,
+                dateLabels: state.widgetData.date_labels,
                 chart: chartData,
+                bonusRatio: bonusRatio,
             })
             console.log('movement')
 
             return {
                 total: state.widgetData.total,
-                dateLabels: state.widgetData.dateLabels,
+                dateLabels: state.widgetData.date_labels,
                 chart: chartData,
+                bonusRatio: bonusRatio,
             }
         },
-        bonusRation (state) {
-            if (state.widgetData) {
-                return {
-                    credit: 0,
-                    debit: 0,
-                    expired: 0,
-                }
-            }
-        }
     },
 }
