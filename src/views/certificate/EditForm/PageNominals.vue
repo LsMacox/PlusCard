@@ -140,23 +140,7 @@
             </div>
           </template>
         </BaseMasterFieldBlock>
-
-        <v-row>
-          <v-col>
-            <v-btn
-              :disabled="!valid"
-              :loading="createCertificateLoading"
-              color="primary"
-              class="master-next-btn"
-              @click="onEndClick"
-            >
-              Создать сертификат
-              <v-icon right>
-                mdi-arrow-right
-              </v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
+        
       </v-form>
     </v-row>
   </v-container>
@@ -201,6 +185,9 @@
       this.MAX_PRICE = MAX_PRICE
     },
     methods: {
+      validate () {
+        return this.$refs.form.validate()
+      },
       onBlurQuantity (item) {
         if (item.quantity < MIN_QUANTITY) {
           item.quantity = MIN_QUANTITY

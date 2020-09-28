@@ -106,22 +106,6 @@
             />
           </template>
         </BaseMasterFieldBlock>
-
-        <v-row>
-          <v-col>
-            <v-btn
-              :disabled="!valid"
-              color="primary"
-              class="master-next-btn"
-              @click="onNextClick"
-            >
-              Далее
-              <v-icon right>
-                mdi-arrow-right
-              </v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
       </v-form>
     </v-row>
   </v-container>
@@ -140,9 +124,11 @@
         type: Object,
         required: true,
       },
+
     },
     data () {
       return {
+        changed: false,
         tagSearch: null,
         valid: false,
         GetCategoryListLoading: false,
@@ -174,6 +160,12 @@
       this.loadData()
     },
     methods: {
+      change () {
+        this.$emit('change')
+      },
+      validate () {
+        return this.$refs.form.validate()
+      },
       loadData () {
         this.GetCategoryListLoading = true
         this.$store
@@ -187,12 +179,6 @@
           .finally(() => {
             this.GetTagsListLoading = false
           })
-      },
-      onNextClick () {
-        // this.value = null
-        if (this.$refs.form.validate()) {
-          this.$emit('continue', true)
-        }
       },
     },
   }

@@ -1,63 +1,80 @@
 <template>
-  <div class="form-menu">
-    <v-row no-gutters>
-      <v-col :cols="3">
-        <v-btn
-          v-if="showCancel"
-          class="form-menu__button-cancel"
-          :text="true"
-          :ripple="false"
-          color="neutral-500"
-          @click="cancel"
-        >
-          <v-icon left>
-            $iconify_ion-close-circle-outline
-          </v-icon>
-          <span class="">{{ cancelButtonText }}</span>
-        </v-btn>
-      </v-col>
+  <v-row no-gutters>
+    <v-row
+      class="form-menu"
+      no-gutters
+    >
+      <v-col>
+        <v-row no-gutters>
+          <v-col :cols="3">
+            <v-btn
+              v-if="showCancel"
+              class="form-menu__button-cancel"
+              :text="true"
+              :ripple="false"
+              color="neutral-500"
+              @click="cancel"
+            >
+              <v-icon left>
+                $iconify_ion-close-circle-outline
+              </v-icon>
+              <span class="">{{ cancelButtonText }}</span>
+            </v-btn>
+          </v-col>
 
-      <v-col :cols="6">
-        <div class="form-menu__item-block">
-          <div
-            v-for="(item, index) in menu"
-            :key="index"
-            :class="getItemClass(index)"
-            @click="menuItemClick(index)"
-          >
-            {{ item.name }}
-          </div>
-        </div>
-      </v-col>
-      <v-col :cols="3">
+          <v-col :cols="6">
+            <div class="form-menu__item-block">
+              <div
+                v-for="(item, index) in menu"
+                :key="index"
+                :class="getItemClass(index)"
+                @click="menuItemClick(index)"
+              >
+                {{ item.name }}
+              </div>
+            </div>
+          </v-col>
+          <v-col :cols="3">
+            <v-row
+              justify="end"
+              no-gutters
+            >
+              <v-btn
+                v-if="showAction"
+                class="form-menu__button-action"
+                :text="true"
+                :ripple="false"
+                :loading="loading"
+                color="primary"
+                @click="action"
+              >
+                <v-icon left>
+                  $iconify_ion-checkmark-circle-outline
+                </v-icon>
+                <span>{{ actionButtonText }}</span>
+              </v-btn>
+            </v-row>
+          </v-col>
+        </v-row>
         <v-row
-          justify="end"
+          v-if="false"
           no-gutters
         >
-          <v-btn
-            v-if="showAction"
-            class="form-menu__button-action"
-            :text="true"
-            :ripple="false"
-            :loading="loading"
-            color="primary"
-            @click="action"
-          >
-            <v-icon left>
-              $iconify_ion-checkmark-circle-outline
-            </v-icon>
-            <span>{{ actionButtonText }}</span>
-          </v-btn>
+          <v-divider />
         </v-row>
       </v-col>
     </v-row>
-  </div>
+    <v-row no-gutters>
+      <slot />
+    </v-row>
+  </v-row>
 </template>
 
 <script>
   import Routing from '@/mixins/routing'
 
   export default {
+    name: 'TopMenu',
     mixins: [Routing],
     model: {
       prop: 'value',
@@ -108,13 +125,17 @@
         },
       },
     },
-    methods: {
-      menuItemClick (index) {
+    watch: {
+      internalValue (index) {
         const item = this.menu[index]
-        this.internalValue = index
         if (item.route) {
           this.toRoute(item.route)
         }
+      },
+    },
+    methods: {
+      menuItemClick (index) {
+        this.internalValue = index
       },
       getItemClass (index) {
         return index === this.internalValue

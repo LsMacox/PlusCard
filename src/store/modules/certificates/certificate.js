@@ -40,7 +40,7 @@ export default {
     },
     UPDATE_CERTIFICATE (state, payload) {
       var index = state.certificates.findIndex(x => x.id === payload.id)
-      Vue.set(state.certificates, index, payload)
+      Vue.set(state.certificates, index, Object.assign(state.certificates[index], payload ) )
     },
     ADD_CERTIFICATE_NOMINAL (state, nominal) {
       var index = state.certificates.findIndex(
@@ -139,6 +139,14 @@ export default {
     async CreateCertificate ({ commit }, certificate) {
       const result = ApiService.post('/api-cabinet/program/certificates/create', certificate)
       commit('ADD_CERTIFICATE', result)
+      return result
+    },
+
+    async UpdateCertificate ({ commit }, certificate) {
+      console.log('UpdateCertificate', certificate)
+      return
+      const result = ApiService.post('/api-cabinet/program/certificates/update', certificate)
+      commit('UPDATE_CERTIFICATE', result)
       return result
     },
 
