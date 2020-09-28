@@ -69,7 +69,7 @@
     >
       <v-btn
         color="secondary"
-        :to="{name:'ProgramCertificate'}"
+        :to="{name:'ProgramCertificateList'}"
       >
         <v-icon left>
           $iconify_feather-settings

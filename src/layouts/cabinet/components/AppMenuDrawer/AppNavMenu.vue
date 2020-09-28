@@ -57,7 +57,7 @@
           icon: '$iconify_ant-design-gift-outlined',
           title: 'Сертификаты',
           to: '/account/certificates',
-          alias: ['/program/certificate', '/certificate/master'],
+          alias: ['/program/certificate/list', '/certificate/master'],
           // children: [
           //   {
           //     icon: '$iconify_ant-design-gift-outlined',
