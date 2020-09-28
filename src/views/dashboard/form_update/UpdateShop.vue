@@ -186,115 +186,21 @@
                 placeholder="Введите название точки"
               />
             </div>
-            <div>
-              <v-autocomplete
-                v-model="newShop.city"
-                :items="filtered_cities"
-                :search-input.sync="searchCity"
-                hide-details
-                hide-no-data
-                placeholder="Выберите город"
-                item-text="name"
-                item-value="id"
-                aria-autocomplete="none"
-                autocomplete="new-street-city"
-                @change="selectCity"
-              >
-                <template slot="prepend-inner">
-                  <div>
-                    <v-img src="@/assets/svg/building.svg" />
-                  </div>
-                </template>
+            <v-text-field
+              v-model="newShop.address"
+              placeholder="Введите адрес"
+              outlined
+              style="width: 380px"
+              :error-messages="addressErrors"
+              @input="getAddressHandler"
+            >
+              <template slot="prepend-inner">
+                <div>
+                  <v-img src="@/assets/svg/location-outline.svg" />
+                </div>
+              </template>
+            </v-text-field>
 
-                <template v-slot:item="data">
-                  <div style="display: flex; align-items: center;">
-                    <div
-                      v-if="data.attrs.inputValue"
-                      :key="data.item + 'active'"
-                      class="active"
-                    >
-                      <span
-                        class="iconify"
-                        data-icon="eva:checkmark-square-2-fill"
-                        data-inline="false"
-                      />
-                    </div>
-                    <div
-                      v-else
-                      :key="data.item + 'inactive'"
-                      class="inactive"
-                    >
-                      <span
-                        class="iconify"
-                        data-icon="eva:square-outline"
-                        data-inline="false"
-                      />
-                    </div>
-                    <span>{{ data.item.name }}</span>
-                  </div>
-                </template>
-              </v-autocomplete>
-            </div>
-            <div>
-              <v-text-field
-                v-if="markerGenerated"
-                v-model="newShop.address"
-              >
-                <template slot="prepend-inner">
-                  <div>
-                    <v-img src="@/assets/svg/location-outline.svg" />
-                  </div>
-                </template>
-              </v-text-field>
-              <v-autocomplete
-                v-if="!markerGenerated"
-                v-model="newShop.address"
-                :items="filtered_addresses"
-                :search-input.sync="searchString"
-                hide-details
-                hide-no-data
-                placeholder="Введите адрес"
-                item-text="name"
-                item-value="pos"
-                aria-autocomplete="none"
-                autocomplete="new-street-address"
-                @change="generate(newShop.address)"
-              >
-                <template slot="prepend-inner">
-                  <div>
-                    <v-img src="@/assets/svg/location-outline.svg" />
-                  </div>
-                </template>
-
-                <template v-slot:item="data">
-                  <div style="display: flex; align-items: center;">
-                    <div
-                      v-if="data.attrs.inputValue"
-                      :key="data.item + 'active'"
-                      class="active"
-                    >
-                      <span
-                        class="iconify"
-                        data-icon="eva:checkmark-square-2-fill"
-                        data-inline="false"
-                      />
-                    </div>
-                    <div
-                      v-else
-                      :key="data.item + 'inactive'"
-                      class="inactive"
-                    >
-                      <span
-                        class="iconify"
-                        data-icon="eva:square-outline"
-                        data-inline="false"
-                      />
-                    </div>
-                    <span>{{ data.item.name }}</span>
-                  </div>
-                </template>
-              </v-autocomplete>
-            </div>
             <div>
               <v-text-field
                 v-model="newShop.phone"
@@ -312,7 +218,7 @@
 
             <!--
             РАБОЧЕЕ ВРЕМЯ
-          -->
+            -->
 
             <div
               v-for="(worktime, globalIndex) in newShop.workTimes"
@@ -477,6 +383,8 @@
                   color="secondary"
                   small
                   style="width: 265px; margin-right: 0"
+                  :loading="loading"
+                  :disabled="!fullAddress"
                   @click="saveShop()"
                 >
                   Сохранить
@@ -484,7 +392,7 @@
               </div>
             </div>
           </div>
-          <div style="margin: 36px 0 0 0;">
+          <div style="margin: 36px 0 68px 0;">
             <v-btn
               color="primary"
               :text="true"
@@ -495,18 +403,6 @@
                 $iconify_feather-plus-circle
               </v-icon>
               Добавить точку продажи
-            </v-btn>
-          </div>
-          <div style="margin: 68px 0;">
-            <v-btn
-              color="primary"
-              :loading="loading"
-              @click="updateShop()"
-            >
-              <v-icon style="margin-right: 10px;">
-                $iconify_ion-checkmark-circle-outline
-              </v-icon>
-              Сохранить
             </v-btn>
           </div>
         </div>
@@ -542,11 +438,13 @@
         zoom: 16,
         //
         loading: false,
-        markerGenerated: false,
+        fullAddress: false, // метка полного адреса
+        newShopActive: false,
         newShopEdit: false,
+        getAddressTimerId: null,
+        addressErrors: [],
         resultAdr: '',
         addresses: [],
-        cities: [],
         searchCity: '',
         searchString: '',
         // markerIcon: {
@@ -565,7 +463,6 @@
           contentOffset: [0, 0],
           contentLayout: '<div class="classMarker" style="display: flex; align-self: center; align-content: center; justify-content:center; width: 150px; height: 50px; color: #FFFFFF; font-weight: bold; text-align: center; line-height: 50px">$[properties.iconContent]</div>',
         },
-        newShopActive: false,
         shop: { lat: '', lng: '' },
         newShop: {
           name: '',
@@ -612,6 +509,9 @@
       programModel () {
         return this.$store.getters['company/program/programModel']
       },
+      cities () {
+        return this.$store.getters['reference/city/cities']
+      },
       shops () {
         return this.$store.getters['company/program/shops']
       },
@@ -644,45 +544,88 @@
       },
 
     },
-    watch: {
-      'worktime.endTime' (v) {
-        // console.log('value', v)
-      },
-      searchString (v) {
-        if (v && v.length > 3) {
-          fetch('https://geocode-maps.yandex.ru/1.x/?apikey=e8c155ca-4721-4445-b3a0-0efb1215291b&format=json&geocode=' + encodeURIComponent(this.searchCity + ' ' + this.searchString))
-            .then(resp => resp.json())
-            .then(resp => {
-              this.addresses = resp.response.GeoObjectCollection.featureMember
-              var array = []
-              let i = 0
-              const regex = /[^a-zA-Zа-яА-Я0-9\s]/gm
-              for (i; i < this.addresses.length; i++) {
-                // console.log('item', this.addresses[i])
-                array.push({
-                  name: (this.addresses[i].GeoObject.name).replace(regex, ''),
-                  pos: this.addresses[i].GeoObject.Point.pos,
-                })
-              }
-              // console.log('output', array)
-              this.filtered_addr = array
-            })
-        }
-
-        // ApiService.get(`/api-cabinet/company/shops/search?query=${this.searchCity + ' ' + this.searchString}`).then(resp => {
-
-        // })
-      },
-    },
-    async mounted () {
-      const cities = await ApiService.get('/api-cabinet/company/shops/city/list')
-      this.cities = cities
-      // //console.log('cities', cities)
-    },
-    async created () {
-      // this.changeColor(this.program.bgcolor[0])
-    },
     methods: {
+      async setMarker (e) {
+        // не делаем запрос если
+        // не открыта карточка торговой точки
+        if (this.newShopActive || this.newShopEdit) {
+          this.coords = e.get('coords')
+          const queryCoords = this.coords[1] + ',' + this.coords[0]
+          const success = await ApiService.get(
+            `/api-cabinet/company/shops/search/coords?query=${queryCoords}`,
+          )
+          // массив геообъектов
+          const featureMembers = success.response.GeoObjectCollection.featureMember
+
+          if (featureMembers.length) {
+            const featureMember = featureMembers[0]
+            const kind = featureMember.GeoObject.metaDataProperty.GeocoderMetaData.kind
+            const address = featureMember.GeoObject.metaDataProperty.GeocoderMetaData.text
+            let city = null
+            if (kind === 'house') {
+              city = featureMember.GeoObject.metaDataProperty.GeocoderMetaData.Address.Components.find(item => item.kind === 'locality')
+              this.fullAddress = true
+              this.addressErrors = []
+            } else {
+              this.fullAddress = false
+              this.addressErrors = ['Введите полный адрес']
+            }
+            console.log(address)
+            console.log(city)
+
+            this.newShop.city = city ? city.name : null
+            this.newShop.address = address
+            this.newShop.lat = this.coords[0]
+            this.newShop.lng = this.coords[1]
+            this.newShop.coords = this.coords
+          }
+        }
+      },
+      getAddressHandler (v) {
+        if (this.getAddressTimerId) clearTimeout(this.getAddressTimerId)
+        this.getAddressTimerId = null
+        const timeout = 1500
+        this.getAddressTimerId = setTimeout(this.getAddress, timeout, v)
+      },
+      async getAddress (v) {
+        // поиск с 10 символа
+        if (v && v.length > 10) {
+          const success = await ApiService.get(
+            `/api-cabinet/company/shops/search?query=${v}`,
+          )
+          console.log(success)
+          // массив геообъектов
+          const featureMembers = success.response.GeoObjectCollection.featureMember
+
+          if (featureMembers.length) {
+            const featureMember = featureMembers[0]
+            const kind = featureMember.GeoObject.metaDataProperty.GeocoderMetaData.kind
+            let pos = featureMember.GeoObject.Point.pos
+            const address = featureMember.GeoObject.metaDataProperty.GeocoderMetaData.text
+            let city = null
+            if (kind === 'house') {
+              city = featureMember.GeoObject.metaDataProperty.GeocoderMetaData.Address.Components.find(item => item.kind === 'locality')
+              this.fullAddress = true
+              this.addressErrors = []
+            } else {
+              this.fullAddress = false
+              this.addressErrors = ['Введите полный адрес']
+            }
+            if (pos) {
+              pos = pos.split(' ')
+              this.coords = [pos[1], pos[0]]
+              this.newShop.lat = this.coords[0]
+              this.newShop.lng = this.coords[1]
+              this.newShop.coords = this.coords
+            }
+            console.log(address)
+            console.log(city)
+
+            this.newShop.city = city ? city.name : null
+            // this.newShop.address = address
+          }
+        }
+      },
       checkLength (label, index) {
         if (label === 'startTime') {
           if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 2) {
@@ -766,7 +709,6 @@
         const item = this.addresses.find(
           item => item.GeoObject.Point.pos === pos,
         )
-
         const city = this.cities.find(
           item => item.id === this.newShop.city,
         )
@@ -775,36 +717,6 @@
         const coordinates = item.GeoObject.Point.pos.split(' ')
         this.newShop.coords = [coordinates[1], coordinates[0]]
         this.coords = this.newShop.coords
-      },
-      saveShop () {
-        // console.log('shop', this.newShop)
-        this.newShop.address = this.resultAdr
-        let i = 0
-        let work = ''
-        for (i; i < this.newShop.workTimes.length; i++) {
-          // console.log('work item', this.getSelectedDays(this.newShop.workTimes[i].days))
-          if (this.newShop.workTimes[i].startTime.length === 2) {
-            this.newShop.workTimes[i].startTime += ':00'
-          }
-          if (this.newShop.workTimes[i].endTime.length === 2) {
-            this.newShop.workTimes[i].endTime += ':00'
-          }
-          if (this.newShop.workTimes[i].breakStart.length === 2) {
-            this.newShop.workTimes[i].breakStart += ':00'
-          }
-          if (this.newShop.workTimes[i].breakEnd.length === 2) {
-            this.newShop.workTimes[i].breakEnd += ':00'
-          }
-          work += this.getSelectedDays(this.newShop.workTimes[i].days) + ' ' + this.newShop.workTimes[i].startTime + '-' + this.newShop.workTimes[i].endTime + '|' + this.newShop.workTimes[i].breakStart + '-' + this.newShop.workTimes[i].breakEnd + '\n'
-        }
-        if (this.newShopEdit) this.newShopEdit = false
-        this.newShop.worktime = work
-        this.newShop.workTimes = this.sortById(this.newShop.workTimes)
-        this.newShop.worktime_json = JSON.stringify(this.newShop.workTimes)
-        this.shops.push(this.newShop)
-        console.log('this.shops.push(this.newShop)')
-        console.log(this.shops)
-        this.cancelShop()
       },
       async createProgram () {
         const program = Object.assign({}, this.program)
@@ -875,7 +787,6 @@
           this.newShopEdit = false
         }
         this.newShopActive = false
-        this.markerGenerated = false
         this.newShop = {
           name: '',
           city: '',
@@ -896,33 +807,7 @@
         }
       },
       addShop () {
-        console.log('addShop')
-        console.log(this.shops)
-        this.markerGenerated = false
         this.newShopActive = true
-      },
-      async setMarker (e) {
-        this.coords = e.get('coords')
-        const queryCoords = this.coords[1] + ',' + this.coords[0]
-        const success = await ApiService.get(
-          `/api-cabinet/company/shops/search/coords?query=${queryCoords}`,
-        )
-        // console.log(success.response.GeoObjectCollection)
-        const descr = success.response.GeoObjectCollection.featureMember[0].GeoObject
-          .description
-        const address =
-          success.response.GeoObjectCollection.featureMember[0].GeoObject
-            .name
-        const city = descr.split(',')[0]
-        const newCity = this.cities.filter(item => item.name === city)[0]
-        // console.log('city - ' + newCity, 'address - ' + address)
-        this.newShop.city = newCity.id
-        this.newShop.address = address
-        this.newShop.lat = this.coords[0]
-        this.newShop.lng = this.coords[1]
-        this.newShop.coords = this.coords
-        this.markerGenerated = true
-        // console.log('currentShop', this.newShop)
       },
       addWorkTime () {
         if (this.newShop.workTimes.length === 7) {
@@ -939,22 +824,53 @@
           )
         }
       },
-      async updateCompany () {
-        // console.log('merchant_id', this.merchant_id)
-        // await this.$store.dispatch("brand/company/updateDesign", program)
-        this.changeStep(2)
-      },
-      async updateShop () {
+      async saveShop () {
+        let work = ''
+        for (let i = 0; i < this.newShop.workTimes.length; i++) {
+          // console.log('work item', this.getSelectedDays(this.newShop.workTimes[i].days))
+          if (this.newShop.workTimes[i].startTime.length === 2) {
+            this.newShop.workTimes[i].startTime += ':00'
+          }
+          if (this.newShop.workTimes[i].endTime.length === 2) {
+            this.newShop.workTimes[i].endTime += ':00'
+          }
+          if (this.newShop.workTimes[i].breakStart.length === 2) {
+            this.newShop.workTimes[i].breakStart += ':00'
+          }
+          if (this.newShop.workTimes[i].breakEnd.length === 2) {
+            this.newShop.workTimes[i].breakEnd += ':00'
+          }
+          work += this.getSelectedDays(this.newShop.workTimes[i].days) + ' ' + this.newShop.workTimes[i].startTime + '-' + this.newShop.workTimes[i].endTime + '|' + this.newShop.workTimes[i].breakStart + '-' + this.newShop.workTimes[i].breakEnd + '\n'
+        }
+        if (this.newShopEdit) this.newShopEdit = false
+        this.newShop.worktime = work
+        this.newShop.workTimes = this.sortById(this.newShop.workTimes)
+        this.newShop.worktime_json = JSON.stringify(this.newShop.workTimes)
+
+        /*
+        this.shops.push(this.newShop)
+        console.log('this.shops.push(this.newShop)')
+        console.log(this.shops)
+        */
+
+        console.log(this.newShop)
+
         try {
           this.loading = true
           const item = {
-            id: this.program.id,
-            phone: this.program.phone,
-            website: this.program.website,
-            socials: this.program.socials,
+            program_id: this.programModel.id,
+            name: this.newShop.name,
+            city: this.newShop.city,
+            address: this.newShop.address,
+            phone: this.newShop.phone,
+            worktime_json: this.newShop.worktime_json,
+            lat: String(this.newShop.coords[0]),
+            lng: String(this.newShop.coords[1]),
           }
           console.log(item)
+          await this.$store.dispatch('company/program/createShop', item)
           // await this.$store.dispatch('company/program/updateShop', item)
+          this.cancelShop()
         } finally {
           this.loading = false
         }
