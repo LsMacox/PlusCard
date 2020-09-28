@@ -180,16 +180,23 @@ export default new Router({
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
         {
-          path: '/program/certificate',
+          path: '/program/certificate/list',
           component: () => import('@/views/certificate/ProgramCertificateView.vue'),
-          name: 'ProgramCertificate',
-          meta: { title: 'ui_kit', icon: 'ui_kit' },
+          name: 'ProgramCertificateList',
+          meta: {  auth: true, title: 'ui_kit', icon: 'ui_kit' },
+        },
+        {
+          path: '/program/certificate/:cert_id',
+          component: () => import('@/views/certificate/EditForm/index.vue'),
+          props: (route) => ({ certId: +route.params.cert_id }),
+          name: 'ProgramCertificateForm',
+          meta: {  auth: true, title: 'ui_kit', icon: 'ui_kit' },
         },
         {
           path: '/certificate/master',
           component: () => import('@/views/certificate/master/index.vue'),
           name: 'ProgramCertificateMaster',
-          meta: { title: 'ui_kit', icon: 'ui_kit' },
+          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
         },
         {
           path: '/account/certificates',

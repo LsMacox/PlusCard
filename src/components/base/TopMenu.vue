@@ -4,44 +4,51 @@
       <v-col :cols="3">
         <v-btn
           v-if="showCancel"
-          class="form-menu__button-cancel body-s-semibold"
+          class="form-menu__button-cancel"
           :text="true"
           :ripple="false"
+          color="neutral-500"
           @click="cancel"
         >
-          <v-icon>$iconify_ion-close-circle-outline</v-icon>
-          <span>{{ cancelButtonText }}</span>
+          <v-icon left>
+            $iconify_ion-close-circle-outline
+          </v-icon>
+          <span class="">{{ cancelButtonText }}</span>
         </v-btn>
       </v-col>
 
       <v-col :cols="6">
         <div class="form-menu__item-block">
           <div
-            v-for="(item, i) in menu"
-            :key="i"
-            :class="getActiveClass(item.route)"
-            @click="toRoute(item.route)"
+            v-for="(item, index) in menu"
+            :key="index"
+            :class="getItemClass(index)"
+            @click="menuItemClick(index)"
           >
             {{ item.name }}
           </div>
         </div>
       </v-col>
-
-      <v-col
-        :cols="3"
-        style="text-align: right;"
-      >
-        <v-btn
-          v-if="showAction"
-          class="form-menu__button-action body-s-semibold"
-          :text="true"
-          :ripple="false"
-          :loading="loading"
-          @click="action"
+      <v-col :cols="3">
+        <v-row
+          justify="end"
+          no-gutters
         >
-          <v-icon>$iconify_ion-checkmark-circle-outline</v-icon>
-          <span>{{ actionButtonText }}</span>
-        </v-btn>
+          <v-btn
+            v-if="showAction"
+            class="form-menu__button-action"
+            :text="true"
+            :ripple="false"
+            :loading="loading"
+            color="primary"
+            @click="action"
+          >
+            <v-icon left>
+              $iconify_ion-checkmark-circle-outline
+            </v-icon>
+            <span>{{ actionButtonText }}</span>
+          </v-btn>
+        </v-row>
       </v-col>
     </v-row>
   </div>
@@ -52,10 +59,14 @@
 
   export default {
     mixins: [Routing],
+    model: {
+      prop: 'value',
+      event: 'change',
+    },
     props: {
       menu: {
         type: Array,
-        default: [],
+        default: () => [],
       },
       showCancel: {
         type: Boolean,
@@ -77,16 +88,38 @@
         type: Boolean,
         default: false,
       },
+      value: {
+        type: Number,
+        default: 0,
+      },
     },
     data () {
-      return {
+      return {}
+    },
+    computed: {
+      internalValue: {
+        get () {
+          return this.value
+        },
+        set (val) {
+          if (val === this.value) return
 
-      }
+          this.$emit('change', val)
+        },
+      },
     },
     methods: {
-      getActiveClass (path) {
-        if (this.$route.path === path) return 'form-menu__item-active body-m-medium'
-        return 'form-menu__item body-m-medium'
+      menuItemClick (index) {
+        const item = this.menu[index]
+        this.internalValue = index
+        if (item.route) {
+          this.toRoute(item.route)
+        }
+      },
+      getItemClass (index) {
+        return index === this.internalValue
+          ? 'form-menu__item-active body-m-medium'
+          : 'form-menu__item body-m-medium'
       },
       cancel () {
         this.$emit('cancelbutton')
@@ -99,52 +132,63 @@
 </script>
 
 <style lang="scss" scoped>
-  .form-menu {
-    margin: -34px -34px 0 -34px;
-    padding: 42px 34px;
+@import "@/styles/variables.scss";
 
-    .form-menu__button-cancel {
-      display: inline-flex;
-      align-items: center;
-      color: #B5B5C4;
+.form-menu {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  margin-top: -$page-content-padding-size;
+  padding-top: $page-content-padding-size;
+  // margin: $page-content-padding-disable;
+  // padding: $page-content-padding;
+  background: $material-light-backgroung-color;
+  z-index: 200;
+  // margin: -34px -34px 0 -34px;
+  // padding: 42px 34px;
+
+  // .form-menu__button-cancel {
+  //   display: inline-flex;
+  //   align-items: center;
+  //   color: #B5B5C4;
+  //   cursor: pointer;
+
+  //   span {
+  //     margin: 4px 0 0 5px;
+  //   }
+  // }
+
+  // .form-menu__button-action {
+  //   display: inline-flex;
+  //   align-items: center;
+  //   color: #4776E6;
+  //   cursor: pointer;
+
+  //   span {
+  //     margin: 4px 0 0 5px;
+  //   }
+  // }
+
+  .form-menu__item-block {
+    display: flex;
+    align-items: center;
+    margin: 0 -10px;
+
+    .form-menu__item {
+      color: #b5b5c4;
+      margin: 0 10px;
+      padding: 0 0 6px 0;
+      border-bottom: 2px solid #ffffff;
       cursor: pointer;
-
-      span {
-        margin: 4px 0 0 5px;
-      }
     }
 
-    .form-menu__button-action {
-      display: inline-flex;
-      align-items: center;
-      color: #4776E6;
+    .form-menu__item-active {
+      color: #4776e6;
+      margin: 0 10px;
+      padding: 0 0 6px 0;
+      border-bottom: 2px solid #4776e6;
       cursor: pointer;
-
-      span {
-        margin: 4px 0 0 5px;
-      }
-    }
-
-    .form-menu__item-block {
-      display: flex;
-      align-items: center;
-      margin: 0 -10px;
-
-      .form-menu__item {
-        color: #B5B5C4;
-        margin: 0 10px;
-        padding: 0 0 6px 0;
-        border-bottom: 2px solid #FFFFFF;
-        cursor: pointer;
-      }
-
-      .form-menu__item-active {
-        color: #4776E6;
-        margin: 0 10px;
-        padding: 0 0 6px 0;
-        border-bottom: 2px solid #4776E6;
-        cursor: pointer;
-      }
     }
   }
+}
 </style>
