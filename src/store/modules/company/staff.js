@@ -17,6 +17,10 @@ const mutations = {
   SET_STAFF (state, payload) {
     state.staff = payload
   },
+  ADD_IN_STAFF (state, payload) {
+    const items = state.staff
+    items.push(payload)
+  },
   UPDATE_IN_STAFF (state, payload) {
       const items = state.staff
       items.forEach((item, index) => {
@@ -41,9 +45,9 @@ const actions = {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.post('/api-cabinet/staff', item)
-      console.log('/api-cabinet/staff')
-      console.log(result)
-      commit('UPDATE_IN_STAFF', result)
+      // console.log('/api-cabinet/staff')
+      // console.log(result)
+      commit('ADD_IN_STAFF', result)
 
       this._vm.$notify({
         type: 'success',
@@ -59,8 +63,8 @@ const actions = {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.get('/api-cabinet/staff/roles')
-      console.log('/api-cabinet/staff/roles')
-      console.log(result)
+      // console.log('/api-cabinet/staff/roles')
+      // console.log(result)
       commit('SET_ROLES', result)
     } catch (error) {
       throw error
@@ -71,8 +75,8 @@ const actions = {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.get('/api-cabinet/staff/list')
-      console.log('/api-cabinet/staff/list')
-      console.log(result)
+      // console.log('/api-cabinet/staff/list')
+      // console.log(result)
       commit('SET_STAFF', result)
     } catch (error) {
       throw error
@@ -83,8 +87,8 @@ const actions = {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.put('/api-cabinet/staff', item)
-      console.log('/api-cabinet/staff')
-      console.log(result)
+      // console.log('/api-cabinet/staff')
+      // console.log(result)
       commit('UPDATE_IN_STAFF', result)
 
       this._vm.$notify({

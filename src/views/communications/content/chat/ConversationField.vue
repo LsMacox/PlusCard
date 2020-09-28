@@ -579,7 +579,7 @@
           if (attachFile.size > 30720000) {
             this.$refs.attachFile.value = null
             this.$notify({
-              message: 'Размер файла превышает 30 МБ',
+              text: 'Размер файла превышает 30 МБ',
               type: 'error',
             })
           }
@@ -631,7 +631,7 @@
           this.filesPreview.push(this.attachFilePreview)
         } else {
           this.$notify({
-            message: 'Достигнуто предельное количество вложений - 10',
+            text: 'Достигнуто предельное количество вложений - 10',
             type: 'error',
           })
         }

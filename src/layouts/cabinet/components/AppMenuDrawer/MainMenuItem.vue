@@ -208,8 +208,8 @@
     }
     &.main-menu-item-active {
       color: $primary-base;
-      border-right: 2px solid $primary-base;
-      border-radius: 0;
+      border-right: 2px solid $primary-base;      
+      border-radius: 2px;
       .item-content {
         color: $primary-base;
       }

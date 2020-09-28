@@ -1,0 +1,36 @@
+@import '../_variables.sass';
+
+.custom-actions {
+    padding-top: 25px;
+    .custom-actions__tabs-body {
+        .custom-actions__list {
+            margin-top: 22px;
+            list-style: none;
+            padding-left: 9px;
+            .custom-actions__item {
+                display: flex;
+                margin-bottom: 20px;
+                &:nth-last-child(1) {
+                    margin-bottom: 0;
+                }
+                .custom-actions__item-img {
+                    img {
+
+                    }
+                }
+                .custom-actions__item-text {
+                    position: relative;
+                    margin-left: 8px;
+                    margin-top: 4px;
+                    p {
+
+                    }
+                    span {
+                        position: absolute;
+                        margin-top: -2px;
+                    }
+                }
+            }
+        }
+    }
+}

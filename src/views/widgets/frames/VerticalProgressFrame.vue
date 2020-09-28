@@ -47,17 +47,25 @@
         <div :class="generateClassesByPrefix(widgetClasses, '__diagram-progress')">
           <v-progress-linear
             :rounded="true"
-            :value="percentageDifferences[0]"
+            :value="percent1"
             color="primary"
           />
           <v-progress-linear
             :rounded="true"
+<<<<<<< HEAD
             :value="percentageDifferences[1]"
+=======
+            :value="percent2"
+>>>>>>> 8d133dd637de0ea3742b9e57c441cbc0807933c4
             color="warning"
           />
           <v-progress-linear
             :rounded="true"
+<<<<<<< HEAD
             :value="percentageDifferences[2]"
+=======
+            :value="percent3"
+>>>>>>> 8d133dd637de0ea3742b9e57c441cbc0807933c4
             color="chart-500"
           />
         </div>
@@ -94,15 +102,70 @@
       },
     },
     data () {
-      return {}
+      return {
+        transitionDuration: 100,
+        percent1: 0,
+        percent2: 0,
+        percent3: 0,
+      }
     },
     computed: {
       widgetClasses () {
         return this.parentClass !== undefined ? this.parentClass + ' f-vertical-progress' : 'f-vertical-progress'
       },
     },
+    watch: {
+      percentageDifferences: {
+        handler: function (v) {
+          this.clearHandlers()
+          for (let i = 0; i < v.length; i++) {
+            const n = Number(v[i])
+            if (Number.isNaN(n) || n === 0) {
+              return
+            }
+            this.countNumber(v[i], i + 1)
+          }
+        },
+        immediate: true,
+      },
+    },
     mounted () {},
-    methods: {},
+    methods: {
+      countNumber (number, ind) {
+        let counter = 0
+        const innerNum = parseInt(
+          this.findClosestNumber(this.transitionDuration / 10, number),
+        )
+        const interval = this.transitionDuration / innerNum
+        const handlerName = `percent${ind}Interval`
+
+        this[handlerName] = setInterval(() => {
+          if (counter === innerNum) {
+            // back to origin precision
+            this[`percent${ind - 1}`] = number
+            window.clearInterval(this[handlerName])
+          }
+          counter++
+        }, interval)
+      },
+      findClosestNumber (bound, value) {
+        if (value <= bound) {
+          return value
+        }
+        return this.findClosestNumber(bound, value / 10)
+      },
+      clearHandlers () {
+        if (this.percent1Interval) {
+          clearTimeout(this.percent1Interval)
+        }
+        if (this.percent2Interval) {
+          clearInterval(this.percent2Interval)
+        }
+        if (this.percent3Interval) {
+          clearInterval(this.percent3Interval)
+        }
+      },
+    },
   }
 </script>
 

@@ -98,20 +98,30 @@ export default {
       commit('CERTIFICATES', result)
     },
 
-    async ChangeActive ({ commit }, { id, active }) {
+    async ChangeActive ({ commit }, { id, active, programId }) {
       const result = ApiService.post('/api-cabinet/program/certificates/active', {
-        id, active,
+        id, active, program_id: programId,
       })
 
       commit('UPDATE_STATUS_CERTIFICATE', result)
     },
+    async GetQRCode (_, { id, fileName }) {
+      await ApiService.downloadFile(
+        '/api-cabinet/certificate/qrcode/generate',
+        { certificate_id: id },
+        `${fileName}.png`,
+      )
+      return true
+    },
 
-    async DeleteCert ({ commit }, cert) {
+    async DeleteCert ({ commit }, { id, force }) {
       await ApiService.delete('/api-cabinet/program/certificates/delete', {
-        id: cert.id,
-        force: cert.force ? 1 : 0,
+        params: {
+          id, force: +force,
+        },
       })
-      commit('REMOVE_CERTIFICATES', cert.id)
+      commit('REMOVE_CERTIFICATE', id)
+      return true
     },
 
     async CreateCertificate ({ commit }, certificate) {
@@ -129,14 +139,16 @@ export default {
       return result
     },
 
-    async DeleteCertificateNominal ({ commit }, nominal) {
+    async DeleteCertificateNominal ({ commit }, { nominal, force }) {
       await ApiService.delete(
         '/api-cabinet/program/certificate/nominal',
         {
-          nominal_id: nominal.id,
-          force: nominal.force,
+          params: {
+            nominal_id: nominal.id,
+            force: +force,
+          },
+          errorHandle: true,
         },
-        { errorHandle: false },
       )
       commit('REMOVE_CERTIFICATE_NOMINAL', nominal)
       return true

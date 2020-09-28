@@ -6,6 +6,7 @@ const getDefaultState = () => {
     programs: [], // компании продавца
     program: VueSession.get('program'), // сокращенная модель программы
     programModel: {}, // полная модель редактируемой программы
+    shops: [], // торговые точки
   }
 }
 
@@ -29,6 +30,9 @@ const mutations = {
         items[i] = payload
       }
     })
+  },
+  SET_SHOPS (state, payload) {
+    state.shops = payload
   },
 }
 
@@ -75,6 +79,23 @@ const actions = {
       // console.log(result)
       commit('SET_PROGRAM_MODEL', result)
       commit('UPDATE_IN_PROGRAMS', result)
+
+      this._vm.$notify({
+        type: 'success',
+        title: 'Компания обновлена',
+        text: 'Информация о компании успешно обновлена',
+      })
+    } catch (error) {
+      throw error
+    }
+  },
+
+  async listShop ({ commit }, item) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const result = await ApiService.get(`/api-cabinet/company/list?program_id=${item.id}`)
+      console.log(result)
+      commit('SET_SHOPS', result)
     } catch (error) {
       throw error
     }
@@ -88,6 +109,12 @@ const actions = {
       console.log(result)
       commit('SET_PROGRAM_MODEL', result)
       commit('UPDATE_IN_PROGRAMS', result)
+
+      this._vm.$notify({
+        type: 'success',
+        title: 'Компания обновлена',
+        text: 'Торговые точки компании успешно обновлены',
+      })
     } catch (error) {
       throw error
     }
@@ -101,6 +128,12 @@ const actions = {
       // console.log(result)
       commit('SET_PROGRAM_MODEL', result)
       commit('UPDATE_IN_PROGRAMS', result)
+
+      this._vm.$notify({
+        type: 'success',
+        title: 'Компания обновлена',
+        text: 'Контакты компании успешно обновлены',
+      })
     } catch (error) {
       throw error
     }
@@ -113,6 +146,14 @@ const getters = {
   program: state => state.program,
   programId: state => state.program ? state.program.id : null,
   programModel: state => state.programModel,
+  menu: state => {
+    return [
+      { name: 'Общая информация', route: `/company/${state.programModel.id}/info` },
+      { name: 'Точки продаж', route: `/company/${state.programModel.id}/shop` },
+      { name: 'Контактные данные', route: `/company/${state.programModel.id}/contact` },
+    ]
+  },
+  shops: state => state.shops,
 }
 
 export default {

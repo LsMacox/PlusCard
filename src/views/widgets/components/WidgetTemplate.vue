@@ -4,6 +4,7 @@
     class="widget-box"
   >
     <div
+      v-if="$slots['header-left'] !== undefined || $slots['header-right'] !== undefined"
       :class="generateClassesByPrefix(className, '__header')"
       class="widget-box__header"
     >
