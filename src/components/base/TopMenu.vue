@@ -111,30 +111,41 @@
       },
     },
     data () {
-      return {}
+      return {
+        internalValue: this.value,
+      }
     },
     computed: {
-      internalValue: {
-        get () {
-          return this.value
-        },
-        set (val) {
-          if (val === this.value) return
+      // internalValue: {
+      //   get () {
+      //     return this.value
+      //   },
+      //   set (val) {
+      //     if (val === this.value) return
 
-          this.$emit('change', val)
-        },
-      },
+      //     this.$emit('change', val)
+      //   },
+      // },
     },
     watch: {
-      internalValue (index) {
+      value (index) {
+        // console.log('change value', index)
+        if (index !== this.internalValue) this.internalValue = index
+      },
+      internalValue (index, oldIndex) {
+        // console.log('internalValue', index, oldIndex)
+        if (this.value !== index) this.$emit('change', index)
         const item = this.menu[index]
         if (item.route) {
-          this.toRoute(item.route)
+          console.log('push', item.route)
+          this.$router.push(item.route)
+          // this.toRoute(item.route)
         }
       },
     },
     methods: {
       menuItemClick (index) {
+        // console.log('menuItemClick', index)
         this.internalValue = index
       },
       getItemClass (index) {
