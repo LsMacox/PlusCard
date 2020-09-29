@@ -23,7 +23,7 @@
 <style lang="sass">
 
 #appView
-    z-index: 100
+    /*z-index: 100*/
     position: relative
     padding: $page-content-padding
     height: 100%

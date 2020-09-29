@@ -320,7 +320,8 @@
         this.toRoute(path)
       },
       toRoute (path) {
-        if (this.$route.path !== path) this.$router.push(path)
+        
+        if (this.$route.path !== path && ['ChatConversation', 'ChatType' , 'Chat'].includes(this.$route.name) ) this.$router.push(path)
       },
       async loadConversationList () {
         // загрузка списка чатов

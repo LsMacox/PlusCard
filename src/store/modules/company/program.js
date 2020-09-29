@@ -25,14 +25,23 @@ const mutations = {
     state.programModel = payload
   },
   UPDATE_IN_PROGRAMS (state, payload) {
-    state.programs.forEach((item, i, items) => {
-      if (item.id === payload.id) {
-        items[i] = payload
-      }
+    const items = state.programs
+    items.forEach((item, index) => {
+      if (item.id === payload.id) Object.assign(items[index], payload)
     })
   },
   SET_SHOPS (state, payload) {
     state.shops = payload
+  },
+  ADD_IN_SHOPS (state, payload) {
+    const items = state.shops
+    items.push(payload)
+  },
+  UPDATE_IN_SHOPS (state, payload) {
+    const items = state.shops
+    items.forEach((item, index) => {
+      if (item.id === payload.id) Object.assign(items[index], payload)
+    })
   },
 }
 
@@ -90,11 +99,29 @@ const actions = {
     }
   },
 
+  async createShop ({ commit }, item) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const result = await ApiService.post('/api-cabinet/company/shop', item)
+      console.log('/api-cabinet/company/shop')
+      console.log(result)
+      commit('ADD_IN_SHOPS', result)
+
+      this._vm.$notify({
+        type: 'success',
+        title: 'Компания обновлена',
+        text: 'Торговая точка компании успешно добавлена',
+      })
+    } catch (error) {
+      throw error
+    }
+  },
+
   async listShop ({ commit }, item) {
     // eslint-disable-next-line no-useless-catch
     try {
-      const result = await ApiService.get(`/api-cabinet/company/list?program_id=${item.id}`)
-      console.log(`/api-cabinet/company/list?program_id=${item.id}`)
+      const result = await ApiService.get(`/api-cabinet/company/shop/list?program_id=${item.id}`)
+      console.log(`/api-cabinet/company/shop/list?program_id=${item.id}`)
       console.log(result)
       commit('SET_SHOPS', result)
     } catch (error) {
@@ -108,13 +135,12 @@ const actions = {
       const result = await ApiService.put('/api-cabinet/company/shop', item)
       console.log('/api-cabinet/company/shop')
       console.log(result)
-      commit('SET_PROGRAM_MODEL', result)
-      commit('UPDATE_IN_PROGRAMS', result)
+      commit('UPDATE_IN_SHOPS', result)
 
       this._vm.$notify({
         type: 'success',
         title: 'Компания обновлена',
-        text: 'Торговые точки компании успешно обновлены',
+        text: 'Торговая точка успешно обновлена',
       })
     } catch (error) {
       throw error
@@ -149,9 +175,9 @@ const getters = {
   programModel: state => state.programModel,
   menu: state => {
     return [
-      { name: 'Общая информация', route: `/company/${state.programModel.id}/info` },
-      { name: 'Точки продаж', route: `/company/${state.programModel.id}/shop` },
-      { name: 'Контактные данные', route: `/company/${state.programModel.id}/contact` },
+      { id: 'info', name: 'Общая информация', route: `/company/${state.programModel.id}/info` },
+      { id: 'shop', name: 'Точки продаж', route: `/company/${state.programModel.id}/shop` },
+      { id: 'contact', name: 'Контактные данные', route: `/company/${state.programModel.id}/contact` },
     ]
   },
   shops: state => state.shops,
