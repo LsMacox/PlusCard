@@ -129,7 +129,8 @@
       internalValue (index) {
         const item = this.menu[index]
         if (item.route) {
-          this.toRoute(item.route)
+          // this.toRoute(item.route)
+          this.$router.push(item.route)
         }
       },
     },

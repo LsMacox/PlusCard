@@ -108,7 +108,7 @@
       },
       startPage: {
         type: String,
-        default: 'main',
+        default: '#main',
       },
     },
     constants: {
@@ -138,9 +138,9 @@
         GetCertAction: false,
         cert: null,
         pageList: [
-          { id: 'main', name: 'Общая информация', route: `/program/certificate/${this.certId}/main` },
-          { id: 'rules', name: 'Правила использования', route: `/program/certificate/${this.certId}/rules` },
-          { id: 'nominals', name: 'Номиналы', route: `/program/certificate/${this.certId}/nominals` },
+          { id: '#main', name: 'Общая информация', route: { hash: '#main' } }, // `/program/certificate/${this.certId}/main`
+          { id: '#rules', name: 'Правила использования', route: { hash: '#rules' } },
+          { id: '#nominals', name: 'Номиналы', route: { hash: '#nominals' } },
         ],
       }
     },
