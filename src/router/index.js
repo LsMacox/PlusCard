@@ -174,6 +174,12 @@ export default new Router({
           meta: { auth: true },
         },
         {
+          path: '/loyalty/setting',
+          component: () => import('@/views/createLoyalty/index'),
+          name: 'LoyaltySetting',
+          meta: { auth: true },
+        },
+        {
           path: '/ui_kit',
           component: () => import('@/views/ui_kit/Components.vue'),
           name: 'components',
@@ -183,7 +189,7 @@ export default new Router({
           path: '/program/certificate/list',
           component: () => import('@/views/certificate/ProgramCertificateView.vue'),
           name: 'ProgramCertificateList',
-          meta: {  auth: true, title: 'ui_kit', icon: 'ui_kit' },
+          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
         },
         {
           path: '/program/certificate/:cert_id',
@@ -195,7 +201,7 @@ export default new Router({
           component: () => import('@/views/certificate/EditForm/index.vue'),
           props: (route) => ({ certId: +route.params.cert_id, startPage: route.params.page }),
           name: 'ProgramCertificateFormPage',
-          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },         
+          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
         },
         {
           path: '/certificate/master',
