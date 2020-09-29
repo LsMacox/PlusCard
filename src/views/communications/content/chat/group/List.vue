@@ -1,84 +1,111 @@
 <template>
   <v-dialog
     v-model="dialog"
-    custom-class="app--modal"
+    max-width="500px"
+    persistent
+    scrollable
   >
-    <div class="modal">
-      <div class="header">
-        Список получателей
-      </div>
+    <v-card>
+      <v-toolbar color="info">
+        <v-toolbar-title>Список получателей</v-toolbar-title>
 
-      <div class="content">
+        <v-spacer />
+        <v-toolbar-items>
+          <v-btn
+            icon
+            @click="close()"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <v-divider />
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col>
+              <!-- список получателей -->
+              <div
+                v-for="(item, i) in groups"
+                :key="i"
+                class="res-row"
+              >
+                <div
+                  class="check"
+                  @click="setRecipient(item)"
+                >
+                  <div
+                    v-show="isSelected(item)"
+                    class="check-all-back"
+                  >
+                    <v-icon color="white">
+                      fa-check
+                    </v-icon>
+                  </div>
+                </div>
+
+                <div
+                  v-if="item.entity_type === 'USER'"
+                  class="avatar-user"
+                  :style="'background: url(' + item.avatar + ');'"
+                />
+                <div
+                  v-else
+                  class="avatar-group"
+                >
+                  {{ item.name.charAt(0) }}
+                </div>
+
+                <div class="name">
+                  {{ item.name }}
+                </div>
+                <div class="type">
+                  {{ getType(item.entity_type) }}
+                </div>
+                <v-spacer />
+                <div
+                  v-if="item.entity_type === 'GROUP'"
+                  class="update"
+                  @click="openUpdate(item)"
+                >
+                  <v-icon color="primary">
+                    fa-edit
+                  </v-icon>
+                </div>
+
+                <div
+                  v-if="item.entity_type === 'GROUP'"
+                  href="deleteBtn"
+                  class="delete"
+                  @click="openDelete(item)"
+                >
+                  <v-icon color="error">
+                    fa-trash
+                  </v-icon>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn
+                color="primary"
+                @click="openCreate()"
+              >
+                <v-icon left>
+                  fa-plus
+                </v-icon>
+                Новая группа
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-divider />
+      <v-card-actions>
         <v-btn
-          class="content-input"
-          color="primary"
-          @click="openCreate()"
-        >
-          <v-icon left>
-            el-icon-plus
-          </v-icon>
-          Новая группа
-        </v-btn>
-
-        <!-- список получателей -->
-        <div
-          v-for="(item, i) in groups"
-          :key="i"
-          class="res-row"
-        >
-          <div
-            class="check"
-            @click="setRecipient(item)"
-          >
-            <div
-              v-show="isSelected(item)"
-              class="check-all-back"
-            >
-              <v-icon color="white">
-                check
-              </v-icon>
-            </div>
-          </div>
-
-          <div
-            v-if="item.entity_type === 'USER'"
-            class="avatar-user"
-            :style="'background: url(' + item.avatar + ');'"
-          />
-          <div
-            v-else
-            class="avatar-group"
-          >
-            {{ item.name.charAt(0) }}
-          </div>
-
-          <div class="name">
-            {{ item.name }}
-          </div>
-          <div class="type">
-            {{ getType(item.entity_type) }}
-          </div>
-          <v-spacer />
-          <div
-            v-if="item.entity_type === 'GROUP'"
-            class="update"
-            @click="openUpdate(item)"
-          >
-            <i class="el-icon-edit" />
-          </div>
-          <div
-            v-if="item.entity_type === 'GROUP'"
-            class="delete"
-            @click="openDelete(item)"
-          >
-            <i class="el-icon-delete" />
-          </div>
-        </div>
-      </div>
-
-      <div class="action">
-        <v-btn
-          @click="close"
+          text
+          @click="close()"
         >
           Сброс и отмена
         </v-btn>
@@ -88,45 +115,44 @@
         <v-btn
           color="primary"
           :disabled="!recipients.length"
-          @click="save"
+          @click="save()"
         >
           Выбрать
         </v-btn>
-      </div>
+      </v-card-actions>
+    </v-card>
 
-      <create
-        v-if="createDialog"
-        :dialog.sync="createDialog"
-        :conversation-id="conversationId"
-      />
+    <create
+      v-if="createDialog"
+      :dialog.sync="createDialog"
+      :conversation-id="conversationId"
+    />
 
-      <update
-        v-if="updateDialog"
-        :dialog.sync="updateDialog"
-        :conversation-id="conversationId"
-        :item="editedItem"
-      />
+    <update
+      v-if="updateDialog"
+      :dialog.sync="updateDialog"
+      :conversation-id="conversationId"
+      :item="editedItem"
+    />
 
-      <delete
-        v-if="deleteDialog"
-        :dialog.sync="deleteDialog"
-        :item="editedItem"
-      />
-    </div>
+    <base-confirm-dialog
+      v-model="deleteDialog"
+      title="Удалить группу?"
+      :message=" 'Название: ' + editedItem.name "
+      confirm-button-text="Удалить"
+      @confirm="remove(editedItem.id)"
+    />
   </v-dialog>
 </template>
 
 <script>
   import Create from './Create'
   import Update from './Update'
-  import Delete from './Delete'
 
   export default {
     components: {
       Create,
       Update,
-      Delete,
-
     },
     props: {
       dialog: {
@@ -145,6 +171,7 @@
         deleteDialog: false,
         editedItem: {},
         selectedItem: [],
+        groupDeleteAction: false,
       }
     },
     computed: {
@@ -207,6 +234,19 @@
       },
     },
     methods: {
+
+      remove (groupId) {
+        const group = {
+          id: groupId,
+        }
+        /// /console.log(group)
+        this.groupDeleteAction = true
+        this.$store.dispatch('chat/group/delete', group).then(() => {
+          // this.close()
+        }).finally(() => {
+          this.groupDeleteAction = false
+        })
+      },
       close () {
         this.recipients = []
         this.selectedItem = []

@@ -6,7 +6,7 @@
   >
     <v-row class="ma-0">
       <v-col cols="auto">
-        <v-img 
+        <v-img
           :src="icon"
           height="47"
           width="47"
@@ -15,7 +15,7 @@
       </v-col>
       <v-col class="settings-block--content">
         <v-row>
-          <v-col class="body-l-semibold neutral-900--text">
+          <v-col class="settings-block__title body-l-semibold">
             {{ title }}
           </v-col>
         </v-row>
@@ -80,5 +80,16 @@
   .settings-block--content , .settings-block--chevron {
     margin-top: 2px;
   }
+
+  .settings-block__title{
+      color: $neutral-900;
+    }
+
+  &:hover {
+    .settings-block__title{
+      color: $primary-base;
+    }
+  }
+
 }
 </style>

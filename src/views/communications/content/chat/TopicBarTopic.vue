@@ -2,143 +2,135 @@
   <!-- Диалог тем -->
   <v-dialog
     v-model="dialog"
-    max-width="550"
+    width="500px"
     persistent
+    scrollable
   >
-    <v-card
-      class="modal-card"
-      style="min-height: 400px;"
-    >
-      <div
-        class="modal-header"
-        v-html="getTopicHeader()"
-      />
-
-      <!-- кнопка новая тема -->
-      <div
-        v-if="!dialogTopicCreate && !dialogTopicUpdate"
-        class="topics-btn-add"
-        @click="dialogTopicCreate = true"
-      >
-        <v-icon
-          color="white"
-          style="font-size: 36px;"
-        >
-          add
-        </v-icon>
-      </div>
-
-      <!-- кнопка назад -->
-      <div
-        v-else
-        class="topics-btn-add"
-        @click="back()"
-      >
-        <v-icon
-          color="white"
-          style="font-size: 36px;"
-        >
-          arrow_back
-        </v-icon>
-      </div>
-
-      <!-- новая тема -->
-      <app-topic-bar-topic-create
-        v-if="dialogTopicCreate"
-        :dialog.sync="dialogTopicCreate"
-        :conversation-id="conversationId"
-      />
-
-      <app-topic-bar-topic-update
-        v-if="dialogTopicUpdate"
-        :dialog.sync="dialogTopicUpdate"
-        :conversation-id="conversationId"
-        :topic-id="updatedTopicId"
-      />
-
-      <div
-        v-if="!dialogTopicCreate && !dialogTopicUpdate"
-      >
-        <div class="modal-content">
-          <!-- список пуст -->
-          <div
-            v-if="!topics.length"
-            class="topic-empty"
+    <!-- новая тема -->
+    <app-topic-bar-topic-create
+      v-if="dialogTopicCreate"
+      :dialog.sync="dialogTopicCreate"
+      :conversation-id="conversationId"
+    />
+    <!-- Редактирвоание -->
+    <app-topic-bar-topic-update
+      v-else-if="dialogTopicUpdate"
+      :dialog.sync="dialogTopicUpdate"
+      :conversation-id="conversationId"
+      :topic-id="updatedTopicId"
+    />
+    <!-- Выбор темы -->
+    <v-card v-else>
+      <v-toolbar color="info">
+        <v-toolbar-title>Список тем</v-toolbar-title>
+        <v-spacer />
+        <v-toolbar-items>
+          <v-btn
+            icon
+            @click="close()"
           >
-            Добавьте тему для беседы
-          </div>
-
-          <!-- список тем -->
-          <div
-            v-else
-          >
-            <div
-              v-for="(item, i) in topics"
-              :key="i"
-              class="topic-row"
-            >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <!-- <v-card-title>
+        <span class="headline">Новый чат</span>
+      </v-card-title> -->
+      <v-divider />
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col>
+              <!-- список пуст -->
               <div
-                :class="getSelectTopicClass(item.id)"
-                @click="selectTopic(item.id)"
-              />
+                v-if="!topics.length"
+                class="topic-empty"
+              >
+                Добавьте тему для беседы
+              </div>
 
-              <div class="topic-row-line">
+              <!-- список тем -->
+              <div
+                v-else
+              >
                 <div
-                  class="topic-name"
+                  v-for="(item, i) in topics"
+                  :key="i"
+                  class="topic-row"
                 >
-                  {{ item.name }}
-                </div>
+                  <div
+                    :class="getSelectTopicClass(item.id)"
+                    @click="selectTopic(item.id)"
+                  />
 
-                <v-spacer />
+                  <div class="topic-row-line">
+                    <div
+                      class="topic-name"
+                    >
+                      {{ item.name }}
+                    </div>
 
-                <div
-                  v-if="item.owner_id == chatUser.id"
-                  class="topic-admin"
-                >
-                  (ред.)
-                </div>
+                    <v-spacer />
 
-                <div
-                  class="topic-members"
-                >
-                  {{ item.members.length }} участников
-                </div>
-                <div class="topic-icon-box">
-                  <v-icon
-                    class="topic-icon"
-                    @click="openTopicUpdate(item.id)"
-                  >
-                    error
-                  </v-icon>
+                    <div
+                      v-if="item.owner_id == chatUser.id"
+                      class="topic-admin"
+                    >
+                      (ред.)
+                    </div>
+
+                    <div
+                      class="topic-members"
+                    >
+                      {{ item.members.length }} участников
+                    </div>
+                    <div class="topic-icon-box">
+                      <v-icon
+                        class="topic-icon"
+                        @click="openTopicUpdate(item.id)"
+                      >
+                        fa-edit
+                      </v-icon>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-btn
+                
+                color="primary"
+                @click="dialogTopicCreate = true"
+              >
+                <v-icon left>
+                  fa-plus-circle
+                </v-icon>Создать новую тему
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-divider />
+      <v-card-actions>
+        <v-btn
+          text
+          class="//close"
+          @click="close()"
+        >
+          Отмена
+        </v-btn>
+        <v-spacer />
 
-        <div class="modal-action">
-          <div>
-            <div
-              class="close"
-              @click="close()"
-            >
-              Отмена
-            </div>
-          </div>
-
-          <v-spacer />
-
-          <!-- кнопка выбор темы -->
-          <v-btn
-            class="box-button"
-            icon="check"
-            :disabled="!(topics.length && validateTopics)"
-            @click="save()"
-          >
-            Выбрать
-          </v-btn>
-        </div>
-      </div>
+        <v-btn
+          color="primary"          
+          :disabled="!(topics.length && validateTopics)"
+          @click="save()"
+        >
+          Выбрать
+        </v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>

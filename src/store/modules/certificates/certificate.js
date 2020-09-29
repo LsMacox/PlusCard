@@ -40,7 +40,7 @@ export default {
     },
     UPDATE_CERTIFICATE (state, payload) {
       var index = state.certificates.findIndex(x => x.id === payload.id)
-      Vue.set(state.certificates, index, payload)
+      Vue.set(state.certificates, index, Object.assign(state.certificates[index], payload ) )
     },
     ADD_CERTIFICATE_NOMINAL (state, nominal) {
       var index = state.certificates.findIndex(
@@ -86,6 +86,17 @@ export default {
       commit('RESET_STATE')
     },
 
+    async GetCert (_, certId) {
+      const result = await ApiService.get(
+        '/api-cabinet/program/certificate', {
+          params: {
+            cert_id: certId,
+          },
+        },
+      )
+      return result
+    },
+
     async GetCertList ({ commit }, programId) {
       console.log('GetCertList this.programId', programId)
       const result = await ApiService.get(
@@ -98,25 +109,44 @@ export default {
       commit('CERTIFICATES', result)
     },
 
-    async ChangeActive ({ commit }, { id, active }) {
+    async ChangeActive ({ commit }, { id, active, programId }) {
       const result = ApiService.post('/api-cabinet/program/certificates/active', {
-        id, active,
+        id, active, program_id: programId,
       })
 
       commit('UPDATE_STATUS_CERTIFICATE', result)
     },
 
-    async DeleteCert ({ commit }, cert) {
+    async GetQRCode (_, { id, fileName }) {
+      await ApiService.downloadFile(
+        '/api-cabinet/certificate/qrcode/generate',
+        { certificate_id: id },
+        `${fileName}.png`,
+      )
+      return true
+    },
+
+    async DeleteCert ({ commit }, { id, force }) {
       await ApiService.delete('/api-cabinet/program/certificates/delete', {
-        id: cert.id,
-        force: cert.force ? 1 : 0,
+        params: {
+          id, force: +force,
+        },
       })
-      commit('REMOVE_CERTIFICATES', cert.id)
+      commit('REMOVE_CERTIFICATE', id)
+      return true
     },
 
     async CreateCertificate ({ commit }, certificate) {
       const result = ApiService.post('/api-cabinet/program/certificates/create', certificate)
       commit('ADD_CERTIFICATE', result)
+      return result
+    },
+
+    async UpdateCertificate ({ commit }, certificate) {
+      console.log('UpdateCertificate', certificate)
+      return
+      const result = ApiService.post('/api-cabinet/program/certificates/update', certificate)
+      commit('UPDATE_CERTIFICATE', result)
       return result
     },
 
@@ -129,14 +159,16 @@ export default {
       return result
     },
 
-    async DeleteCertificateNominal ({ commit }, nominal) {
+    async DeleteCertificateNominal ({ commit }, { nominal, force }) {
       await ApiService.delete(
         '/api-cabinet/program/certificate/nominal',
         {
-          nominal_id: nominal.id,
-          force: nominal.force,
+          params: {
+            nominal_id: nominal.id,
+            force: +force,
+          },
+          errorHandle: true,
         },
-        { errorHandle: false },
       )
       commit('REMOVE_CERTIFICATE_NOMINAL', nominal)
       return true
