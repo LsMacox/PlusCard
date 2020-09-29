@@ -56,14 +56,14 @@
       },
       period: {
         get () {
-          return this.$store.getters['widget/filter/period']
+          return this.$store.getters['selling/filter/period']
         },
         set (v) {
-          this.$store.commit('widget/filter/period', v)
+          this.$store.commit('selling/filter/period', v)
         },
       },
       filter () {
-        return this.$store.getters['widget/filter/filter']
+        return this.$store.getters['selling/filter/filter']
       },
     },
     watch: {

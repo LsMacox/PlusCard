@@ -28,12 +28,12 @@
               style="width: 16px;"
               @click="expand(!isExpanded)"
             >
-              $iconify_ion-chatbox-outline
+              fas fa-chevron-right
             </v-icon>
           </template>
 
           <template v-slot:item.date="{ item }">
-            <div class="cell-text">
+            <div class="body-s-medium">
               {{ getDate(item.created_at) }}
             </div>
             <div
@@ -48,33 +48,34 @@
               <img
                 class="cell-avatar"
                 style="position: relative; top: -5px;"
-                :src="item.user.avatar"
+                v-if="item.account && item.account.user"
+                :src="item.account.user.avatar"
               >
               <div>
                 <div
-                  class="cell-text-bold"
+                  class="body-s-medium"
                   style="cursor: pointer;"
-                  @click.stop="toRoute(`/accounts/client/${item.user.id}`)"
+                  @click.stop="toRoute(`/accounts/client/${item.account.user.id}`)"
                 >
-                  {{ item.user.name }} {{ item.user.lastname }}
+                  {{ item.account.user.name }} {{ item.account.user.lastname }}
                 </div>
                 <div
                   class="cell-hint"
                 >
-                  {{ getLastActivity(item.user.last_activity) }}
+                  {{ getLastActivity(item.account.user.last_activity) }}
                 </div>
               </div>
             </div>
           </template>
 
           <template v-slot:item.contacts="{ item }">
-            <div class="cell-text">
-              {{ item.user && item.user.phone ? item.user.phone : '-'}}
+            <div class="body-s-medium">
+              {{ item.account && item.account.user.phone ? item.account.user.phone : '-'}}
             </div>
             <div
                 class="cell-hint"
             >
-              {{ item.user && item.user.email ? item.user.email : '-' }}
+              {{ item.account.user && item.account.user.email ? item.account.user.email : '-' }}
             </div>
           </template>
 
@@ -83,27 +84,33 @@
               <img
                 class="cell-avatar"
                 :style="`background-color: ${program.bgcolor1};`"
-                :src="(item.tran_group && item.tran_group.operator_type === 'users')
-                  ? item.tran_group.operator.avatar
+                :src="item.user
+                  ? item.user.avatar
                   : program.logo_short"
               >
-              <div class="cell-text">
-                {{ item.tran_group && item.tran_group.operator ? (item.tran_group.operator.name ? item.tran_group.operator.name : '') + ' ' + (item.tran_group.operator.lastname ? item.tran_group.operator.lastname : '' ) : program.name }}
+              <div class="body-s-medium">
+                {{ item && item.user ? (item.user.name ? item.user.name : '') + ' ' + (item.user.lastname ? item.user.lastname : '' ) : program.name }}
               </div>
             </div>
           </template>
 
           <template v-slot:item.check="{ item }">
             <div style="display: flex; align-items: center">
-              <div class="cell-text">
-                {{ formatNumberString(item.value) }} &#8381
+              <div class="body-s-medium">
+                {{ formatNumberString(item.value / 100) }} &#8381
               </div>
             </div>
           </template>
           <template v-slot:item.bonuses="{ item }">
-            <div style="display: flex; align-items: center">
-              <div class="cell-text">
-                {{ item.tran_group && item.tran_group.abst_view ? item.tran_group.abst_view[0].value : '-' }}
+            <div  style="display: flex; align-items: center">
+              <div v-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value > 0" class="body-s-semibold cell-text-success">
+                {{ '+'+item.tran_group.abst_view[0].value }}
+              </div>
+              <div v-else-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value < 0" class="body-s-semibold cell-text-error">
+                {{ item.tran_group.abst_view[0].value }}
+              </div>
+              <div v-else class="body-s-semibold">
+                -
               </div>
             </div>
           </template>
@@ -215,7 +222,7 @@
         return this.$store.getters['selling/table/tableData']
       },
       totalCount () {
-        return this.$store.getters['selling/table/count']
+        return this.$store.getters['selling/table/totalCount']
       },
       pagesCount () {
         const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)

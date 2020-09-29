@@ -34,10 +34,10 @@
     },
     computed: {
       totalPurchases () {
-        return this.totalWD.length ? this.totalWD[this.totalWD.length - 1] : 0
+        return this.totalWD.length ? this.totalWD[this.totalWD.length - 1] / 100 : 0
       },
       byProgramPurchases () {
-        return this.byProgramWD.length ? this.byProgramWD[this.byProgramWD.length - 1] : 0
+        return this.byProgramWD.length ? this.byProgramWD[this.byProgramWD.length - 1] / 100 : 0
       },
       totalPD () {
         if (this.totalWD && this.totalWD.length >= 2) {
