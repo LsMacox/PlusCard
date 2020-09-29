@@ -18,6 +18,7 @@
                 <v-col>
                   <v-switch
                     v-model="cert.quantity_unlimit"
+                    :disabled="true"
                     label="Бесконечное количество сертификатов"
                     @change="quantityUnlimitChange"
                   />
@@ -26,6 +27,7 @@
               <v-row
                 v-for="(item, index) in cert.nominals"
                 :key="index"
+                align="baseline"                
               >
                 <v-col>
                   <v-text-field
@@ -55,6 +57,8 @@
                   <v-text-field
                     v-if="!cert.quantity_unlimit"
                     v-model.number="item.quantity"
+                    :disabled="!!item.id"
+                    :rules="quantityRules"
                     :style="{width: '154px'}"
                     class="text-align-center"
                     placeholder="∞"
@@ -63,20 +67,28 @@
                     @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"
                   >
                     <template v-slot:prepend>
-                      <v-icon
-                        color="primary"
+                      <v-btn
+                        v-if="!item.id"
+                        small
+                        icon
                         @click="item.quantity = (item.quantity > 0 ? item.quantity - 1 : 0)"
                       >
-                        mdi-minus
-                      </v-icon>
+                        <v-icon color="primary">
+                          mdi-minus
+                        </v-icon>
+                      </v-btn>
                     </template>
                     <template v-slot:append-outer>
-                      <v-icon
-                        color="primary"
+                      <v-btn
+                        v-if="!item.id"
+                        small
+                        icon
                         @click="item.quantity = (item.quantity === null? 1 : item.quantity + 1)"
                       >
-                        mdi-plus
-                      </v-icon>
+                        <v-icon color="primary">
+                          mdi-plus
+                        </v-icon>
+                      </v-btn>
                     </template>
                   </v-text-field>
                 </v-col>
@@ -86,29 +98,20 @@
                     fab
                     x-small
                     color="secondary"
-                    :style="{'margin-top': '12px'}"
                     @click="onRemoveNominalClick(item, index)"
                   >
-                    <span
-                      class="iconify trash_icon"
-                      data-icon="feather:trash"
-                      data-inline="false"
-                    />
+                    <v-icon>$iconify_feather-trash</v-icon>
                   </v-btn>
                   <v-btn
                     v-else
-                    :disabled="isEmptyNominal(cert.nominals[0])"
+                    :disabled="isEmptyNominal(cert.nominals[0]) || !!cert.nominals[0].id"
                     fab
                     x-small
                     color="secondary"
-                    :style="{'margin-top': '12px'}"
+
                     @click="onClearNominalClick(item, index)"
                   >
-                    <span
-                      class="iconify trash_icon"
-                      data-icon="feather:trash"
-                      data-inline="false"
-                    />
+                    <v-icon>$iconify_feather-trash</v-icon>
                   </v-btn>
                 </v-col>
                 <!-- <v-col v-if="!cert.quantity_unlimit">
@@ -121,6 +124,7 @@
               <v-row>
                 <v-col>
                   <v-btn
+                    v-show="cert.nominals.length<10"
                     color="secondary"
                     :text="true"
                     :ripple="false"
@@ -140,7 +144,6 @@
             </div>
           </template>
         </BaseMasterFieldBlock>
-        
       </v-form>
     </v-row>
   </v-container>
@@ -167,13 +170,19 @@
     },
     data () {
       return {
+        deleteNominalAction: false,
         createCertificateLoading: false,
         valid: false,
         nominalNameRules: [
           (v) => !!v || 'Введите название номинала',
+          (v) => (!!v && v.length <= 20) || 'Название не должно превышать 20 символов',
         ],
         sellingPriceRules: [
           (v) => (!!v && v > 0) || 'Введите стоимость',
+        ],
+        quantityRules: [
+          (v) => (v === null || v === '' || +v > 0) || 'Введите',
+          (v) => (v <= MAX_QUANTITY) || '< 1000000',
         ],
       }
     },
@@ -183,6 +192,12 @@
     created () {
       this.MAX_QUANTITY = MAX_QUANTITY
       this.MAX_PRICE = MAX_PRICE
+      // map nominals
+      // if (this.cert && this.cert.nominals){
+      //   for (let index = 0; index < this.cert.nominals.length; index++) {
+      //       Vue.set(this.cert.nominals[index], 'removeAction', false)
+      //     }
+      // }
     },
     methods: {
       validate () {
@@ -242,8 +257,12 @@
           quantity: null,
         })
       },
-      onRemoveNominalClick (nominal, index) {
-        this.cert.nominals.splice(index, 1)
+      async onRemoveNominalClick (nominal, index) {
+        if (nominal.id) {
+          await this.$store.dispatch('certificates/certificate/DeleteCertificateNominalDialog', { nominal })
+        } else {
+          this.cert.nominals.splice(index, 1)
+        }
       },
       quantityUnlimitChange () {
         if (this.cert.quantity_unlimit) {
