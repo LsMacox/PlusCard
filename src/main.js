@@ -87,6 +87,10 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
+Object.copy = (obj) => {
+  return JSON.parse(JSON.stringify(obj))
+}
+
 Vue.prototype.$IsDebugMode = function () {
   return IsDebugQuery(this.$route)
 }

@@ -191,17 +191,17 @@ export default new Router({
           name: 'ProgramCertificateList',
           meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
         },
+        // {
+        //   path: '/program/certificate/:cert_id',
+        //   redirect: '/program/certificate/:cert_id/main',
+        //   name: 'ProgramCertificateForm',
+        // },
         {
           path: '/program/certificate/:cert_id',
-          redirect: '/program/certificate/:cert_id/main',
-          name: 'ProgramCertificateForm',
-        },
-        {
-          path: '/program/certificate/:cert_id/:page',
           component: () => import('@/views/certificate/EditForm/index.vue'),
-          props: (route) => ({ certId: +route.params.cert_id, startPage: route.params.page }),
-          name: 'ProgramCertificateFormPage',
-          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
+          props: (route) => ({ certId: +route.params.cert_id, startPage: route.hash || '#main' }),
+          name: 'ProgramCertificateForm',
+          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },         
         },
         {
           path: '/certificate/master',

@@ -36,12 +36,12 @@
                 }"
               />
               <v-alert
-                v-show="!termsUserValid"
+                v-show="!!termsUserError"
                 type="error"
                 dense
                 text
               >
-                Правила использования обязательно для заполнения
+                {{ termsUserError }}
               </v-alert>
             </div>
           </template>
@@ -83,17 +83,18 @@
               </v-col>
               <v-col cols="auto">
                 <v-text-field
-                  v-show="!cert.guaranteed_period_unlimit"
+                  v-if="!cert.guaranteed_period_unlimit"
                   :value="cert.guaranteed_period + ' мес'"
                   :style="{width: '136px', 'margin-left': '20px'}"
                   type="text"
+                  :rules="guaranteedPeriodRules"
                   outlined
                   readonly
                 >
                   <template v-slot:prepend>
                     <v-icon
                       color="primary"
-                      @click="cert.guaranteed_period = (cert.guaranteed_period > 0 ? cert.guaranteed_period-1 : 0)"
+                      @click="cert.guaranteed_period = (cert.guaranteed_period > 1 ? cert.guaranteed_period-1 : 1)"
                     >
                       mdi-minus
                     </v-icon>
@@ -110,7 +111,7 @@
               </v-col>
             </v-row>
           </template>
-        </BaseMasterFieldBlock>        
+        </BaseMasterFieldBlock>
       </v-form>
     </v-row>
   </v-container>
@@ -135,23 +136,30 @@
     },
     data () {
       return {
-        termsUserValid: true,
+        // termsUserValid: true,
+        termsUserError: '',
         valid: false,
+        guaranteedPeriodRules: [
+          (v) => (this.cert.guaranteed_period > 0) || '>0',
+        ],
       }
     },
     computed: {
       formValid () {
         return this.valid && this.termsUserValid
       },
+
     },
     watch: {
       'cert.terms_of_use': function (v) {
-        if (v) this.termsUserValid = true
+        // if (v) this.termsUserValid = true
       },
     },
     created () {},
     methods: {
+
       validate () {
+        console.log('validate', this.$refs.form.validate(), this.termsUserValidate())
         return this.$refs.form.validate() && this.termsUserValidate()
       },
       periodUnlimitChange () {
@@ -159,10 +167,15 @@
           ? null
           : 1
       },
+      termsUserErrorEval () {
+        if (!this.cert.terms_of_use) return 'Правила использования обязательно для заполнения'
+        if (this.cert.terms_of_use.length > 1024) return 'Правила использования не превышают 1024 символов'
+        return null
+      },
       termsUserValidate () {
-        this.termsUserValid = !!this.cert.terms_of_use
-        return this.termsUserValid
-      },     
+        this.termsUserError = this.termsUserErrorEval()
+        return !this.termsUserError
+      },
     },
   }
 </script>

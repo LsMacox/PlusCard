@@ -138,7 +138,7 @@
         const item = this.menu[index]
         if (item.route) {
           console.log('push', item.route)
-          this.$router.push(item.route)
+          this.$router.replace(item.route)
           // this.toRoute(item.route)
         }
       },
