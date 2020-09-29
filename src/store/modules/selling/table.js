@@ -5,6 +5,7 @@ export default {
     state: {
         loading: false,
         tableData: [],
+        totalCount: 0,
     },
     mutations: {
         clearState (state) {
@@ -17,6 +18,9 @@ export default {
         tableData (state, payload) {
             state.tableData = payload
         },
+        totalCount (state, payload) {
+            state.totalCount = payload
+        },
     },
     actions: {
         async table ({ commit }, table) {
@@ -26,7 +30,8 @@ export default {
             console.log('table data.......')
             console.log(result)
             console.log('table data.......')
-            commit('tableData', result)
+            commit('tableData', result.table)
+            commit('totalCount', result.total_count)
             commit('loading', false)
         },
 
@@ -37,6 +42,9 @@ export default {
         },
         tableData (state) {
             return state.tableData
+        },
+        totalCount (state) {
+            return state.totalCount
         },
     },
 }

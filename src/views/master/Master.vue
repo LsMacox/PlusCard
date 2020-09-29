@@ -1391,6 +1391,7 @@ line-height: 17px;"
         this.newShop.workTimes = this.sortById(this.newShop.workTimes)
         this.newShop.worktime_json = JSON.stringify(this.newShop.workTimes)
         this.shops.push(this.newShop)
+        console.log(this.newShop)
         this.cancelShop()
       },
       async createProgram () {

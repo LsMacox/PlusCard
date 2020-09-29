@@ -26,7 +26,7 @@
               v-for="(item, idx) in shops"
               :key="idx"
               :marker-id="idx"
-              :coords="item.coords"
+              :coords="[item.lat, item.lng]"
               :icon="{
                 layout: 'default#imageWithContent',
                 imageHref: require('@/assets/svg/Bottom-tail.svg'),
@@ -189,7 +189,7 @@
             </div>
             <v-text-field
               v-model="newShop.address"
-              placeholder="Введите адрес"
+              placeholder="Город, улица, дом"
               outlined
               style="width: 380px"
               :error-messages="addressErrors"
@@ -520,10 +520,12 @@
         return JSON.parse(localStorage.getItem('vue-session-key')).merchant_id
       },
       selectedDays () {
-        let array = []
+        const array = []
+        /*
         this.newShop.workTimes.forEach(item => {
           array = [...array, ...item.days]
         })
+        */
         // console.log('selectedDays', array)
         return array
       },
@@ -825,6 +827,112 @@
           )
         }
       },
+      setWorkTime (workJson) {
+        //
+        const wt = JSON.parse(workJson)
+        const wtNew = {}
+
+        // определение рабочих дней
+        wt.forEach(period => {
+          period.days.forEach(day => {
+            switch (day) {
+              case 0:
+                wtNew.mondey = {
+                  type: 'MONDEY',
+                  start: period.startTime,
+                  finish: period.endTime,
+                  isWorkDay: true,
+                  pause_start: period.breakStart,
+                  pause_finish: period.breakEnd,
+                }
+                break
+
+              case 1:
+                wtNew.tuesday = {
+                  type: 'TUESDAY',
+                  start: period.startTime,
+                  finish: period.endTime,
+                  isWorkDay: true,
+                  pause_start: period.breakStart,
+                  pause_finish: period.breakEnd,
+                }
+                break
+
+              case 2:
+                wtNew.wednesday = {
+                  type: 'WEDNESDAY',
+                  start: period.startTime,
+                  finish: period.endTime,
+                  isWorkDay: true,
+                  pause_start: period.breakStart,
+                  pause_finish: period.breakEnd,
+                }
+                break
+
+              case 3:
+                wtNew.thursday = {
+                  type: 'THURSDAY',
+                  start: period.startTime,
+                  finish: period.endTime,
+                  isWorkDay: true,
+                  pause_start: period.breakStart,
+                  pause_finish: period.breakEnd,
+                }
+                break
+
+              case 4:
+                wtNew.friday = {
+                  type: 'FRIDAY',
+                  start: period.startTime,
+                  finish: period.endTime,
+                  isWorkDay: true,
+                  pause_start: period.breakStart,
+                  pause_finish: period.breakEnd,
+                }
+                break
+
+              case 5:
+                wtNew.saturday = {
+                  type: 'SATURDAY',
+                  start: period.startTime,
+                  finish: period.endTime,
+                  isWorkDay: true,
+                  pause_start: period.breakStart,
+                  pause_finish: period.breakEnd,
+                }
+                break
+
+              case 6:
+                wtNew.sunday = {
+                  type: 'SUNDAY',
+                  start: period.startTime,
+                  finish: period.endTime,
+                  isWorkDay: true,
+                  pause_start: period.breakStart,
+                  pause_finish: period.breakEnd,
+                }
+                break
+            }
+          })
+        })
+
+        // определение нерабочих дней
+        const days = ['mondey', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        days.forEach(day => {
+          if (!Object.keys(wtNew).includes(day)) {
+            wtNew[day] = {
+              type: day.toUpperCase(),
+              start: null,
+              finish: null,
+              isWorkDay: false,
+              pause_start: null,
+              pause_finish: null,
+            }
+          }
+        })
+
+        return wtNew
+      },
       async saveShop () {
         let work = ''
         for (let i = 0; i < this.newShop.workTimes.length; i++) {
@@ -864,9 +972,9 @@
             city: this.newShop.city,
             address: this.newShop.address,
             phone: this.newShop.phone,
-            worktime_json: this.newShop.worktime_json,
-            lat: String(this.newShop.coords[0]),
-            lng: String(this.newShop.coords[1]),
+            worktime_json: this.setWorkTime(this.newShop.worktime_json),
+            lat: String(Number(this.newShop.coords[0]).toFixed(6)),
+            lng: String(Number(this.newShop.coords[1]).toFixed(6)),
           }
           console.log(item)
           await this.$store.dispatch('company/program/createShop', item)

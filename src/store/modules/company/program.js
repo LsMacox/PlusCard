@@ -33,6 +33,10 @@ const mutations = {
   SET_SHOPS (state, payload) {
     state.shops = payload
   },
+  ADD_IN_SHOPS (state, payload) {
+    const items = state.shops
+    items.push(payload)
+  },
   UPDATE_IN_SHOPS (state, payload) {
     const items = state.shops
     items.forEach((item, index) => {
@@ -101,7 +105,7 @@ const actions = {
       const result = await ApiService.post('/api-cabinet/company/shop', item)
       console.log('/api-cabinet/company/shop')
       console.log(result)
-      commit('UPDATE_IN_SHOPS', result)
+      commit('ADD_IN_SHOPS', result)
 
       this._vm.$notify({
         type: 'success',
@@ -136,7 +140,7 @@ const actions = {
       this._vm.$notify({
         type: 'success',
         title: 'Компания обновлена',
-        text: 'Торговая точка компании успешно обновлены',
+        text: 'Торговая точка успешно обновлена',
       })
     } catch (error) {
       throw error
