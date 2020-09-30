@@ -1,11 +1,34 @@
 <template>
-  <div class="b-segment">
+  <div class="crm b-segment">
+    <div
+      v-if="Boolean(segmentsData.length)"
+      class="crm__header b-segment__header"
+    >
+      <p class="crm__header-title title-m-bold neutral-900--text">
+        Сигменты
+      </p>
+      <v-btn
+        class="crm__header_new-btn"
+        color="primary"
+        @click="createSidePanel"
+      >
+        <iconify-icon
+          icon="plus-circle"
+          width="21"
+        />
+        <p
+          class="body-m-semibold neutral-100--text"
+        >
+          Новый сигмент
+        </p>
+      </v-btn>
+    </div>
     <empty-segment
       v-if="!segmentsData.length"
       :side-panel-status.sync="sidePanelStatus"
     />
     <base-table
-      v-if="segmentsData.length"
+      v-if="Boolean(segmentsData.length)"
       class-name="table-segment"
       :headers="tableHeaders"
       :data="segmentsData"
@@ -101,6 +124,11 @@
     },
     mounted () {},
     methods: {
+      createSidePanel (item) {
+        this.sidePanelStatus.mode = 'create'
+        this.sidePanelStatus.data = null
+        this.sidePanelStatus.active = true
+      },
       editSidePanel (item) {
         this.sidePanelStatus.mode = 'edit'
         this.sidePanelStatus.data = item
@@ -112,6 +140,6 @@
 
 <style lang="scss" scoped>
 
-@import "@/styles/vuetify-preset-plus/light_theme/crm/_segment.scss";
+@import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 
 </style>

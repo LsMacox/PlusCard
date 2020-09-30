@@ -198,6 +198,7 @@
         colorPickerShow: false,
         createData: this.getDefaultCreateData(),
         editData: this.getDefaultEditData(),
+        btnCreateShow: false,
         rules: {
           name: [v => !!v || 'Заполните поле'],
           description: [v => !!v || 'Заполните поле'],
@@ -205,14 +206,6 @@
       }
     },
     computed: {
-      btnCreateShow () {
-        let isShow = false
-
-        if (this.mode === 'edit') isShow = true
-        else if (this._isMounted) isShow = this.$refs['panel-segment__form'].validate()
-
-        return isShow
-      },
       segmentData () {
         let data
 
@@ -237,6 +230,9 @@
         this.editData = this.getDefaultEditData()
         this.$emit('changeState', this.state)
       },
+      mode () {
+        if (this.mode === 'edit') this.btnCreateShow = true
+      },
     },
     created () {
       document.addEventListener('click', (e) => {
@@ -251,7 +247,19 @@
         if (isClose) this.closePicker()
       })
     },
-    mounted () {},
+    mounted () {
+      if (this.mode === 'edit') this.btnCreateShow = true
+
+      this.$watch(
+        () => {
+          return this.$refs['panel-segment__form'].validate()
+        },
+        (isValid) => {
+          if (this.mode === 'create' && isValid) this.btnCreateShow = true
+          else if (this.mode === 'create' && !isValid) this.btnCreateShow = false
+        },
+      )
+    },
     methods: {
       changeColor (str) {
         if (this.mode === 'create') {

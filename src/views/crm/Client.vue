@@ -100,6 +100,6 @@
 
 <style lang="scss" scoped>
 
-@import "@/styles/vuetify-preset-plus/light_theme/crm/_segment.scss";
+@import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 
 </style>
