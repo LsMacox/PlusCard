@@ -7,7 +7,7 @@
     </v-row>
 
     <v-row>
-      <v-list class="merchant-select">
+      <v-list class="merchant-select-box app__scroll-y" >
         <v-list-item
           v-for="(item, i) in merchants"
           :key="i"
