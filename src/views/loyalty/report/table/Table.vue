@@ -235,6 +235,7 @@
       },
     },
     watch: {
+      /*
       program (v) {
         if (v) this.fetchData()
       },
@@ -244,6 +245,7 @@
       period (v) {
         if (v) this.fetchData()
       },
+      */
       'tableOptions.page' (v) {
         if (v) this.fetchData()
       },
@@ -252,7 +254,7 @@
       },
     },
     created () {
-      this.fetchData()
+      // this.fetchData()
     },
     methods: {
       getDate (date) {
