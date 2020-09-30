@@ -19,13 +19,20 @@
 
   export default {
     components: { TableFrame },
-    props: {},
-    data () {
-      return {
-
-      }
+    props: {
+      // widgetData: {
+      //   type: Array,
+      //   default () {
+      //     return []
+      //   },
+      // },
     },
-    computed: {},
-    mounted () {},
+    data () {
+      return {}
+    },
+    computed: {
+    },
+    mounted () {
+    },
   }
 </script>

@@ -14,7 +14,6 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@iconify/icons-la": "^1.0.0",
     "@riophae/vue-treeselect": "github:riophae/vue-treeselect",
     "@tinymce/tinymce-vue": "^3.2.2",
     "array-sort": "^1.0.0",
@@ -61,6 +60,9 @@
     "@iconify/icons-feather": "^1.0.9",
     "@iconify/icons-ion": "^1.0.13",
     "@iconify/icons-jam": "^1.0.5",
+    "@iconify/icons-la": "^1.0.0",
+    "@iconify/icons-ls": "^1.0.3",
+    "@iconify/icons-mdi": "^1.0.139",
     "@iconify/icons-octicon": "^1.0.8",
     "@iconify/icons-si-glyph": "^1.0.5",
     "@iconify/icons-uil": "^1.0.14",

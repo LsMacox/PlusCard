@@ -1,0 +1,25 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "./components/_table-segment.scss";
+
+.b-segment {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+
+    .b-segment__empty {
+        margin-top: -65px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        .b-segment__btn-create {
+            width: 198px;
+            height: 53px;
+            margin-top: 34px;
+            .icon-dashboard {
+                margin-right: 8px;
+            }
+        }
+    }
+}

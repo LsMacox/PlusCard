@@ -1,27 +1,39 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass"
+
 .v-data-table.plus-table.theme--light
+  .v-data-table__wrapper 
+    padding-bottom: 15px
+  table 
+    border-spacing: 0 12px !important
   thead
     tr
-      i
-        padding-left: 8px
       th
-        font-family: Gilroy
-        font-style: normal
-        font-weight: 500
-        font-size: 13px
-        line-height: 17px
-        color: #9191A1
+        height: 30px !important
         border: none!important
-      td
-        font-family: Gilroy
-        font-style: normal
-        font-weight: 600
-        font-size: 13px
-        line-height: 17px
+        .icon
+          margin-left: 8px
+          color: $neutral-500 
+          padding-top: 1px
+
+        &.active 
+          span
+            color: $neutral-700 !important
+          i 
+            color: $neutral-600 
+
+        span 
+          font-family: Gilroy
+          font-style: normal
+          font-weight: 500
+          font-size: 13px
+          line-height: 17px
+          color: $neutral-600
 
 .v-data-table.plus-table.theme--light
   table
     tbody
       tr
+        height: 57px !important
         box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1)
       td:nth-child(3)
         width: 250px
