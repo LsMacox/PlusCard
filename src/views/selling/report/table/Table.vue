@@ -120,10 +120,10 @@
           <template v-slot:item.bonuses="{ item }">
             <div  style="display: flex; align-items: center">
               <div v-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value > 0" class="body-s-semibold cell-text-success">
-                {{ '+'+item.tran_group.abst_view[0].value }}
+                {{ '+'+formatNumberString(item.tran_group.abst_view[0].value) }}
               </div>
               <div v-else-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value < 0" class="body-s-semibold cell-text-error">
-                {{ item.tran_group.abst_view[0].value }}
+                {{ formatNumberString(item.tran_group.abst_view[0].value) }}
               </div>
               <div v-else class="body-s-semibold">
                 -
