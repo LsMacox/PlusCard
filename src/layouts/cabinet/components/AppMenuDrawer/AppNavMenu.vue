@@ -136,7 +136,7 @@
           return this.$store.getters['company/program/program']
         },
         set (v) {
-          this.$store.commit('widget/filter/RESET_STATE') // сброс фильтра бонусных операций
+          this.$store.commit('widget/filter/RESET_FILTER') // сброс фильтра бонусных операций
           this.$store.commit('company/program/SET_PROGRAM', v)
         },
       },

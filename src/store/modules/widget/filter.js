@@ -18,6 +18,11 @@ const getDefaultFilter = () => {
 const state = getDefaultState()
 
 const mutations = {
+    RESET_FILTER: (state) => {
+        const defaultFilter = getDefaultFilter()
+        localStorage.setItem('loyaltyFilter', JSON.stringify(defaultFilter.filter))
+        state.filter = defaultFilter.filter
+    },
     RESET_STATE: (state) => {
         const defaultFilter = getDefaultFilter()
         localStorage.setItem('loyaltyFilterPeriod', JSON.stringify(defaultFilter.period))

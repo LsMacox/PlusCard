@@ -43,7 +43,7 @@
       },
     },
     watch: {
-      program (v) {
+      'program.id' (v) {
         if (v) {
           this.fetchData()
         }
@@ -73,8 +73,6 @@
             start_period: this.period.start,
             end_period: this.period.end,
             filter: this.filter,
-            offset: 0,
-            limit: 25,
           }
           // console.log('load_data', widget)
           // console.log('load_data', this.period)
@@ -86,7 +84,7 @@
           await this.$store.dispatch('widget/operations/widget', widget)
           await this.$store.dispatch('widget/operators/widget', widget)
           await this.$store.dispatch('widget/bonuses/widget', widget)
-          await this.$store.dispatch('widget/table/widget', widget)
+          // await this.$store.dispatch('widget/table/widget', widget)
         } finally {
           this.loading = false
         }
