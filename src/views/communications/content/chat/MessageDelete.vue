@@ -1,5 +1,56 @@
 <template>
   <v-dialog
+    v-model="internalDialog"
+    max-width="420"
+  >
+    <v-card>
+      <v-toolbar>
+        <v-toolbar-title>Удалить сообщение?</v-toolbar-title>
+        <v-spacer />
+        <v-toolbar-items>
+          <v-btn
+            icon
+            @click="close()"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar-items>
+      </v-toolbar>
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col>
+              <v-checkbox
+                v-if="showDeleteAll"
+                v-model="deleteForAll"
+                label="Удалить сообщение у всех"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-divider />
+      <v-card-actions>
+        <v-btn
+          text
+          @click="close()"
+        >
+          Отмена
+        </v-btn>
+        <v-spacer />
+        <v-btn
+
+          color="success"
+          :loading="messageDeleteLoading"
+          @click="remove()"
+        >
+          Удалить
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
+
+  <!-- <v-dialog
     v-model="dialog"
     max-width="350"
     hide-overlay
@@ -43,7 +94,7 @@
         </v-btn>
       </div>
     </v-card>
-  </v-dialog>
+  </v-dialog> -->
 </template>
 
 <script>
@@ -67,14 +118,22 @@
       }
     },
     computed: {
-
+      internalDialog: {
+        get () {
+          return this.dialog
+        },
+        set (val) {
+          if (val === this.dialog) return
+          this.$emit('update:dialog', val)
+        },
+      },
     },
     created () {
 
     },
     methods: {
       close () {
-        this.$emit('update:dialog', false)
+        this.internalDialog = false
       },
       async remove () {
         const message = {
@@ -84,13 +143,13 @@
         this.messageDeleteLoading = true
         if (this.deleteForAll) {
           this.$store.dispatch('chat/message/deleteAll', message).then(() => {
-            this.$emit('update:dialog', false)
+            this.internalDialog = false
           }).finally(() => {
             this.messageDeleteLoading = false
           })
         } else {
           this.$store.dispatch('chat/message/delete', message).then(() => {
-            this.$emit('update:dialog', false)
+            this.internalDialog = false
           }).finally(() => {
             this.messageDeleteLoading = false
           })
@@ -101,53 +160,5 @@
 </script>
 
 <style scoped>
-    .modal-header {
-        margin-bottom: 20px;
-        font-size: 24px;
-        color: #687983;
-        text-align: center;
-    }
 
-    .modal-content {
-        margin: 50px 11px 45px 11px;
-    }
-
-    .modal-action {
-        display: flex;
-    }
-
-    .close {
-        margin: 11px 0 0 11px;
-        font-size: 13px;
-        line-height: 16px;
-        color: rgba(51, 51, 51, .6);
-        border-bottom: 1px dotted rgba(51, 51, 51, .6);
-        cursor: pointer;
-    }
-
-    /* MEDIA */
-    /* EXTRA SMALL */
-    @media (max-width: 600px) {
-
-    }
-
-    /* SMALL */
-    @media (min-width: 600px) and (max-width: 959.8px) {
-
-    }
-
-    /* MEDIUM */
-    @media (min-width: 960px) and (max-width: 1263.8px) {
-
-    }
-
-    /* LARGE */
-    @media (min-width: 1264px) and (max-width: 1903.8px) {
-
-    }
-
-    /* X LARGE */
-    @media (min-width: 1904px) {
-
-    }
 </style>

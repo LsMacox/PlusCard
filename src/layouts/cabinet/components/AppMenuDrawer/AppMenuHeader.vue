@@ -109,8 +109,9 @@
 
 .main-logo-row,
 .main-logo-row-mini {
-  margin-top: 34px;
-  margin-bottom: 34px;
+  margin-top: 33px;
+  margin-bottom: 33px;
+  height: 32px;
 }
 
 .main-logo-row-mini {

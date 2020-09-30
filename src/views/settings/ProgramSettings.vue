@@ -60,7 +60,7 @@
             icon: require('@/assets/settings/Bag-On.png'),
             title: 'Сертификаты',
             description: 'Редактирование выпущенных сертификатов и создание новых.',
-            to: '/program/certificate',
+            to: '/program/certificate/list',
           },
           {
             icon: require('@/assets/settings/Lego-On.png'),

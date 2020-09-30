@@ -40,7 +40,7 @@ export default {
     },
     UPDATE_CERTIFICATE (state, payload) {
       var index = state.certificates.findIndex(x => x.id === payload.id)
-      Vue.set(state.certificates, index, payload)
+      Vue.set(state.certificates, index, Object.assign({}, state.certificates[index], payload))
     },
     ADD_CERTIFICATE_NOMINAL (state, nominal) {
       var index = state.certificates.findIndex(
@@ -86,6 +86,17 @@ export default {
       commit('RESET_STATE')
     },
 
+    async GetCert (_, certId) {
+      const result = await ApiService.get(
+        '/api-cabinet/program/certificate', {
+          params: {
+            cert_id: certId,
+          },
+        },
+      )
+      return result
+    },
+
     async GetCertList ({ commit }, programId) {
       console.log('GetCertList this.programId', programId)
       const result = await ApiService.get(
@@ -98,25 +109,43 @@ export default {
       commit('CERTIFICATES', result)
     },
 
-    async ChangeActive ({ commit }, { id, active }) {
+    async ChangeActive ({ commit }, { id, active, programId }) {
       const result = ApiService.post('/api-cabinet/program/certificates/active', {
-        id, active,
+        id, active, program_id: programId,
       })
 
       commit('UPDATE_STATUS_CERTIFICATE', result)
     },
 
-    async DeleteCert ({ commit }, cert) {
+    async GetQRCode (_, { id, fileName }) {
+      await ApiService.downloadFile(
+        '/api-cabinet/certificate/qrcode/generate',
+        { certificate_id: id },
+        `${fileName}.png`,
+      )
+      return true
+    },
+
+    async DeleteCert ({ commit }, { id, force }) {
       await ApiService.delete('/api-cabinet/program/certificates/delete', {
-        id: cert.id,
-        force: cert.force ? 1 : 0,
+        params: {
+          id, force: +force,
+        },
       })
-      commit('REMOVE_CERTIFICATES', cert.id)
+      commit('REMOVE_CERTIFICATE', id)
+      return true
     },
 
     async CreateCertificate ({ commit }, certificate) {
       const result = ApiService.post('/api-cabinet/program/certificates/create', certificate)
       commit('ADD_CERTIFICATE', result)
+      return result
+    },
+
+    async UpdateCertificate ({ commit }, certificate) {
+      console.log('UpdateCertificate', certificate)
+      const result = ApiService.post('/api-cabinet/program/certificates/update', certificate)
+      commit('UPDATE_CERTIFICATE', result)
       return result
     },
 
@@ -129,16 +158,69 @@ export default {
       return result
     },
 
-    async DeleteCertificateNominal ({ commit }, nominal) {
+    async DeleteCertificateNominalDialog ({ dispatch }, { nominal }) {
+      try {
+        await this._vm.$confirm(
+          `Вы уверены, что хотите удалить номинал "${nominal.nominal_name}" в корзину?`,
+          'Удаление в корзину',
+          {
+            confirmButtonText: 'Удалить',
+            cancelButtonText: 'Отмена',
+            type: 'warning',
+          },
+        )
+      } catch {
+        console.log('Cancel delete')
+        return
+      }
+
+      try {
+        await dispatch('DeleteCertificateNominal', {
+          nominal, force: false,
+        })
+      } catch (error) {
+        if (
+          error &&
+          error.response &&
+          error.response.data &&
+          error.response.data.code === 101
+        ) {
+          await this._vm.$confirm(
+            'У ваших клиентов есть сертификаты номиналов, которые вы удаляете (в корзинах или выпущенные). Если вы удалите данный номинал сертификата, клиенты не смогут его выпускать, но те, сертификаты данного номинала, которые помещены в корзину или выпущены продолжат действовать. Все равно удалить номинал?',
+            'Удаление сертификата',
+            {
+              confirmButtonText: 'Да',
+              cancelButtonText: 'Отмена',
+              type: 'warning',
+            },
+          )
+          await dispatch('DeleteCertificateNominal', {
+            nominal, force: true,
+          })
+        }
+      }
+    },
+
+    async DeleteCertificateNominal ({ commit }, { nominal, force }) {
       await ApiService.delete(
         '/api-cabinet/program/certificate/nominal',
         {
-          nominal_id: nominal.id,
-          force: nominal.force,
+          params: {
+            nominal_id: nominal.id,
+            force: +force,
+          },
+          errorHandle: true,
         },
-        { errorHandle: false },
       )
+
       commit('REMOVE_CERTIFICATE_NOMINAL', nominal)
+
+      this._vm.$notify({
+        title: 'Удаление номинала',
+        text: `Номинал "${nominal.nominal_name}" сертификата успешно удален`,
+        type: 'success',
+      })
+
       return true
     },
 

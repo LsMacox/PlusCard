@@ -24,7 +24,6 @@
 </template>
 
 <script>
-
   export default {
     name: 'AppMenuDrawer',
     components: {
@@ -33,11 +32,8 @@
       AppMenuFooter: () => import('./AppMenuFooter'),
     },
 
-    data: () => ({
-
-    }),
+    data: () => ({}),
     computed: {
-
       drawer: {
         get () {
           return this.$store.getters.drawer
@@ -46,27 +42,27 @@
           this.$store.dispatch('app/changeDrawer', val)
         },
       },
-
     },
     mounted () {},
-    methods: {
-
-    },
+    methods: {},
   }
 </script>
 
 <style lang="scss" >
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 
-#AppMenuDrawer .v-navigation-drawer__content{
+//scrollbar
+#AppMenuDrawer .v-navigation-drawer__content {
   &::-webkit-scrollbar {
-    width: 2px;
+    width: 4px;
+    background: $neutral-250;
+    border-radius: 2px;
   }
-    
+
   &::-webkit-scrollbar-thumb {
-    background: $primary-base;
-    border-radius: 20px;
+    background: $neutral-400;
+    border-radius: 2px;
+    width: 4px;
   }
-    
 }
 </style>

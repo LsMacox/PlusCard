@@ -48,6 +48,7 @@ const actions = {
 
   async loadingApp ({ dispatch }) {
     await dispatch('auth/merchant/read', null, { root: true })
+    await dispatch('reference/city/list', null, { root: true })
     await dispatch('profile/profile/read', null, { root: true })
     await dispatch('company/program/list', null, { root: true })
   },

@@ -1,6 +1,7 @@
 // https://vuetifyjs.com/en/customization/sass-variables/#sass-variables
 $body-font-family: Gilroy, sans-serif;
 
+//grid
 $spacer: 4px; //4px !default;
 $grid-gutter: 20px; //$spacer * 6 !default;
 $container-padding-x: $grid-gutter / 2; //$grid-gutter / 2 !default;
@@ -10,11 +11,27 @@ $sheet-border-radius: 4px;
 $list-item-title-font-size: 0.929rem;
 $list-item-dense-title-font-size: 0.929rem;
 $list-item-dense-title-font-weight: initial;
-$fab-icon-sizes: ( small: 20 );
+//icons https://vuetifyjs.com/en/components/icons/#icons
+$icon-size: 21px; //24px !default;
+$icon-size-dense: 17px; //20px !default;
+
+//btn https://vuetifyjs.com/en/components/buttons/
+$fab-sizes: ( x-small: 31, small: 40, default: 45 );
+$fab-icon-sizes: ( x-small: 15, small: 21, default: 24 );
+
+
 $btn-font-sizes: ( default: 1rem, large: 1rem );
-$btn-sizes: ( default: 41, large: 54 );
+
+$btn-sizes: ( x-small: 31, small: 40, default: 45, large: 54 ); 
+
 $btn-letter-spacing: 0;
 $btn-font-weight: 400;
+
+//tooltip https://vuetifyjs.com/en/components/tooltips/#tooltips
+$tooltip-background-color: rgba(97,97,97, 1); // rgba(map-get($grey, 'darken-2'), 0.9) !default;
+$tooltip-border-radius: 8px;//$border-radius-root !default;
+// $tooltip-text-color: map-get($shades, 'white') !default;
+//card
 $card-text-font-size: 16px;
 
 //Base colors

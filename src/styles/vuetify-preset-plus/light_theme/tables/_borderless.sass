@@ -1,3 +1,4 @@
+@import '../variables'
 .v-data-table.plus-table.theme--light
     table
       border-collapse: separate
@@ -20,9 +21,16 @@
               border-left: none!important
               border-top-right-radius: 12px
               border-bottom-right-radius: 12px
+            .cell-text-error
+              color: $error
+            .cell-text-success
+              color: $success
 
 .theme--light.v-data-table
   .v-data-table__wrapper
     table > tbody > tr:not(:last-child)
       td:not(.v-data-table__mobile-row)
         border-bottom: none!important
+
+
+

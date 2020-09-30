@@ -2,6 +2,23 @@ import axios from 'axios'
 // import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 
+// const NEW_LINE = '&#13'
+const NEW_LINE = '<br/>'
+
+function ParseValidationError (validation) {
+  let resStr = '<ul style="margin-left: 2em;">'
+  for (const fieldName in validation) {
+    if (Object.prototype.hasOwnProperty.call(validation, fieldName)) {
+      const fieldErrors = validation[fieldName]
+      fieldErrors.forEach(element => {
+        resStr += `<li>${element}</li>`
+      })
+    }
+  }
+  resStr += '</ul>'
+  return resStr
+}
+
 const ACCESS_TOKEN_KEY = process.env.ACCESS_TOKEN_KEY || 'Authorization'
 
 const service = axios.create({
@@ -56,6 +73,9 @@ service.interceptors.response.use(
           error.response.data.message
         ) {
           errorMessage = error.response.data.message
+          if (error.response.data.error === 'Illuminate\\Validation\\ValidationException' && error.response.data.validation) {
+            errorMessage += ':' + NEW_LINE + ParseValidationError(error.response.data.validation)
+          }
         }
 
         store._vm.$notify({
@@ -93,7 +113,7 @@ service.interceptors.response.use(
 )
 
 service.downloadFile = function (route, params, fileName = '') {
-    return this.post(route, params, {
+    return this.get(route, { params }, {
         responseType: 'blob', // important
     }).then((response) => {
         // const serverFileName = response.headers['x-suggested-filename']

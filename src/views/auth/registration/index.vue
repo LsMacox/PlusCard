@@ -124,29 +124,35 @@
           </template>
         </v-text-field>
 
-        <div class="auth-checkbox">
+        <v-row
+          class="auth-checkbox"
+          no-gutters
+          align="baseline"
+        >
           <v-checkbox
             v-model="accept"
+            dense
           />
-          <div class="auth-checkbox-text">
-            Принимаю <span>партнерское соглашение</span>
+          <div class="body-m-medium neutral-900--text auth-checkbox-text">
+            Принимаю <span
+              class="primary--text"
+              @click="showPartnerDocClick()"
+            >партнерское соглашение</span>
           </div>
-        </div>
+        </v-row>
 
         <div class="auth-form-action">
           <v-btn
             color="primary"
-            style="width: 100%;"
+
+            block
             :loading="loading"
             :disabled="!valid && !accept"
             @click="submit()"
           >
-            <span
-              class="iconify"
-              style="margin-right: 8px;"
-              data-icon="feather:users"
-              data-inline="false"
-            />
+            <v-icon left>
+              $iconify_feather-users
+            </v-icon>            
             Создать аккаунт
           </v-btn>
         </div>
@@ -161,6 +167,15 @@
       @verify="registration"
       @expired="onCaptchaExpired"
     />
+
+    <message-box
+      v-model="showPartnerDoc"
+      scrollable
+      title="Партнерское соглашение"
+      max-width="80%"
+    >
+      <policy-text />
+    </message-box>
   </div>
 </template>
 
@@ -172,6 +187,8 @@
   export default {
     components: {
       VueRecaptcha,
+      MessageBox: () => import('@/components/message-box/MessageBox.vue'),
+      PolicyText: () => import('@/views/auth/components/PolicyText.vue'),
     },
     directives: { mask },
     data () {
@@ -181,6 +198,7 @@
           phone: null,
           password: null,
         },
+        showPartnerDoc: false,
         valid: true,
         visible1: false,
         visible2: false,
@@ -214,6 +232,10 @@
       this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
+      showPartnerDocClick () {
+        // this.$alert('sdfsdf')
+        this.showPartnerDoc = true
+      },
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },

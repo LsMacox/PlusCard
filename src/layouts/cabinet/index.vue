@@ -1,6 +1,7 @@
 <template>
   <v-app
     v-if="!loadingApp"
+    id="vApp"
   >
     <app-menu-drawer />
     <app-view />

@@ -44,6 +44,7 @@
         <v-btn
           color="secondary"
           small
+          @click="toRoute('/loyalty/setting')"
         >
           <v-icon style="width: 15px; height: 15px; margin-right: 8px;">
             $iconify_feather-settings
@@ -58,11 +59,13 @@
 <script>
   import ApiService from '@/api/api-client'
   import DateRangeSelect from '@/components/dialogs/DateRangeSelect'
+  import Routing from '@/mixins/routing'
 
   export default {
     components: {
       DateRangeSelect,
     },
+    mixins: [Routing],
     props: {
     },
     data () {
