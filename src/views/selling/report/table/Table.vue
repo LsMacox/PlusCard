@@ -56,13 +56,29 @@
                   class="body-s-medium"
                   style="cursor: pointer;"
                   @click.stop="toRoute(`/accounts/client/${item.account.user.id}`)"
+                  v-if="item && item.account && item.account.user"
                 >
                   {{ item.account.user.name }} {{ item.account.user.lastname }}
                 </div>
                 <div
+                    class="body-s-medium"
+                    style="cursor: pointer;"
+                    @click.stop="toRoute(`/accounts/client/${item.account.user.id}`)"
+                    v-else
+                >
+                  -
+                </div>
+                <div
                   class="cell-hint"
+                  v-if="item && item.account && item.account.user"
                 >
                   {{ getLastActivity(item.account.user.last_activity) }}
+                </div>
+                <div
+                    class="cell-hint"
+                    v-else
+                >
+                  -
                 </div>
               </div>
             </div>
@@ -75,7 +91,7 @@
             <div
                 class="cell-hint"
             >
-              {{ item.account.user && item.account.user.email ? item.account.user.email : '-' }}
+              {{ item.account && item.account.user && item.account.user.email ? item.account.user.email : '-' }}
             </div>
           </template>
 
@@ -104,10 +120,10 @@
           <template v-slot:item.bonuses="{ item }">
             <div  style="display: flex; align-items: center">
               <div v-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value > 0" class="body-s-semibold cell-text-success">
-                {{ '+'+item.tran_group.abst_view[0].value }}
+                {{ '+'+formatNumberString(item.tran_group.abst_view[0].value) }}
               </div>
               <div v-else-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value < 0" class="body-s-semibold cell-text-error">
-                {{ item.tran_group.abst_view[0].value }}
+                {{ formatNumberString(item.tran_group.abst_view[0].value) }}
               </div>
               <div v-else class="body-s-semibold">
                 -
@@ -226,6 +242,9 @@
       },
       pagesCount () {
         const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
+        console.log('COUNT')
+        console.log(count)
+        console.log('COUNT')
         if (count) {
           if (this.tableOptions.page > count) {
             this.tableOptions.page = count
@@ -256,9 +275,11 @@
         if (v) this.fetchData()
       },
       'tableOptions.page' (v) {
+        console.log(this.tableOptions)
         if (v) this.fetchData()
       },
       'tableOptions.itemsPerPage' (v) {
+        console.log(this.tableOptions)
         if (v) this.fetchData()
       },
     },

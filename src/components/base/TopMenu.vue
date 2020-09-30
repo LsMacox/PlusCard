@@ -57,10 +57,12 @@
           </v-col>
         </v-row>
         <v-row
-          v-if="false"
+          v-if="true"
+          class="top-menu__divider-row"
+          
           no-gutters
         >
-          <v-divider />
+          <v-divider  class="top-menu__divider"/>
         </v-row>
       </v-col>
     </v-row>
@@ -171,7 +173,12 @@
   top: 0;
   width: 100%;
   margin-top: -$page-content-padding-size;
-  padding-top: $page-content-padding-size;
+  margin-left: -$page-content-padding-size;
+  margin-right: -$page-content-padding-size;
+
+  padding-top: calc( #{ $page-content-padding-size } + 5px);
+  padding-left: $page-content-padding-size;
+  padding-right: $page-content-padding-size;
   // margin: $page-content-padding-disable;
   // padding: $page-content-padding;
   background: $material-light-backgroung-color;
@@ -212,6 +219,7 @@
       padding: 0 0 6px 0;
       border-bottom: 2px solid #ffffff;
       cursor: pointer;
+      text-align: center;
     }
 
     .form-menu__item-active {
@@ -220,7 +228,13 @@
       padding: 0 0 6px 0;
       border-bottom: 2px solid #4776e6;
       cursor: pointer;
+      text-align: center;
     }
+  }
+  .top-menu__divider-row{
+     margin-top: 30px;
+  margin-left: -$page-content-padding-size;
+  margin-right: -$page-content-padding-size;
   }
 }
 </style>

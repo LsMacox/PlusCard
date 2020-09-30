@@ -13,7 +13,7 @@
           justify="center"
           class="cert-master-row"
           no-gutters
-        >         
+        >
           <v-col :cols="8">
             <v-skeleton-loader
               :loading="GetCertAction"
@@ -159,7 +159,7 @@
           description: this.cert.description,
           category_id_list: this.cert.category_id_list,
           // nominals: this.filterNominals, todo
-          tags: this.cert.tags,
+          tags: this.cert.tags_list,
           nominals: this.cert.nominals,
           terms_of_use: this.cert.terms_of_use,
           certificate_usage_type: this.cert.certificate_usage_type,
@@ -249,6 +249,13 @@
           //   const element = array[index];
 
           // }
+          Vue.set(this.cert, 'category_id_list', this.cert.categories.map(item => {
+            return item.id
+          }))
+          Vue.set(this.cert, 'tags_list', this.cert.tags.map(item => {
+            return item.name
+          }))          
+
           this.originalCert = Object.copy(this.cert) // JSON.parse(JSON.stringify(this.cert) )
           console.log('cert=', this.cert)
         } finally {
