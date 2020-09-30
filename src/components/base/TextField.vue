@@ -61,6 +61,12 @@
         name="prepend-inner"
       />
     </template>
+    <template v-slot:append>
+      <v-icon
+        v-if="prependInnerIcon"
+        :color="prependInnerIconColor"
+      > plus-icon-warning-outline</v-icon>
+    </template>
   </v-text-field>
 </template>
 
