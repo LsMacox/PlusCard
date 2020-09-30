@@ -27,11 +27,12 @@
               <v-row
                 v-for="(item, index) in cert.nominals"
                 :key="index"
-                align="baseline"                
+                align="baseline"
               >
                 <v-col>
-                  <v-text-field
+                  <base-text-field
                     v-model="item.nominal_name"
+                    :disabled="!!item.id"
                     :rules="nominalNameRules"
                     placeholder="Введите название номинала"
                     counter="20"
@@ -43,6 +44,7 @@
                   <!--  :value="formatSellingPrice(item.selling_price)" -->
                   <v-text-field
                     v-model.number="item.selling_price"
+                    :disabled="!!item.id"
                     :rules="sellingPriceRules"
                     :style="{width: '154px'}"
                     placeholder="Стоимость"
@@ -54,65 +56,65 @@
                   />
                 </v-col>
                 <v-col :cols="'auto'">
-                  <v-text-field
-                    v-if="!cert.quantity_unlimit"
-                    v-model.number="item.quantity"
-                    :disabled="!!item.id"
-                    :rules="quantityRules"
-                    :style="{width: '154px'}"
-                    class="text-align-center"
-                    placeholder="∞"
-                    type="number"
-                    outlined
-                    @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"
-                  >
-                    <template v-slot:prepend>
-                      <v-btn
-                        v-if="!item.id"
-                        small
-                        icon
-                        @click="item.quantity = (item.quantity > 0 ? item.quantity - 1 : 0)"
-                      >
-                        <v-icon color="primary">
-                          mdi-minus
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-btn
-                        v-if="!item.id"
-                        small
-                        icon
-                        @click="item.quantity = (item.quantity === null? 1 : item.quantity + 1)"
-                      >
-                        <v-icon color="primary">
-                          mdi-plus
-                        </v-icon>
-                      </v-btn>
-                    </template>
-                  </v-text-field>
+                  <v-row no-gutters>
+                    <v-btn
+                      v-if="!item.id"
+                      small
+                      icon
+                      @click="item.quantity = (item.quantity > 0 ? item.quantity - 1 : 0)"
+                    >
+                      <v-icon color="primary">
+                        mdi-minus
+                      </v-icon>
+                    </v-btn>
+
+                    <v-text-field
+                      v-if="!cert.quantity_unlimit"
+                      v-model.number="item.quantity"
+                      :disabled="!!item.id"
+                      :rules="quantityRules"
+                      :style="{width: '72px'}"
+                      class="text-align-center"
+                      placeholder="∞"
+                      type="number"
+                      outlined
+                      @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"
+                    />
+                    <v-btn
+                      v-if="!item.id && true"
+                      small
+                      icon
+                      @click="item.quantity = (item.quantity === null? 1 : item.quantity + 1)"
+                    >
+                      <v-icon color="primary">
+                        mdi-plus
+                      </v-icon>
+                    </v-btn>
+                  </v-row>
                 </v-col>
                 <v-col :cols="'auto'">
-                  <v-btn
-                    v-if="cert.nominals.length>1"
-                    fab
-                    x-small
-                    color="secondary"
-                    @click="onRemoveNominalClick(item, index)"
-                  >
-                    <v-icon>$iconify_feather-trash</v-icon>
-                  </v-btn>
-                  <v-btn
-                    v-else
-                    :disabled="isEmptyNominal(cert.nominals[0]) || !!cert.nominals[0].id"
-                    fab
-                    x-small
-                    color="secondary"
+                  <v-row no-gutters>
+                    <v-btn
+                      v-if="cert.nominals.length>1"
+                      fab
+                      x-small
+                      color="secondary"
+                      @click="onRemoveNominalClick(item, index)"
+                    >
+                      <v-icon>$iconify_feather-trash</v-icon>
+                    </v-btn>
+                    <v-btn
+                      v-else
+                      :disabled="isEmptyNominal(cert.nominals[0]) || !!cert.nominals[0].id"
+                      fab
+                      x-small
+                      color="secondary"
 
-                    @click="onClearNominalClick(item, index)"
-                  >
-                    <v-icon>$iconify_feather-trash</v-icon>
-                  </v-btn>
+                      @click="onClearNominalClick(item, index)"
+                    >
+                      <v-icon>$iconify_feather-trash</v-icon>
+                    </v-btn>
+                  </v-row>
                 </v-col>
                 <!-- <v-col v-if="!cert.quantity_unlimit">
 
