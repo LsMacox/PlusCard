@@ -73,6 +73,8 @@
             start_period: this.period.start,
             end_period: this.period.end,
             filter: this.filter,
+            offset: 0,
+            limit: 25,
           }
           // console.log('load_data', widget)
           // console.log('load_data', this.period)
