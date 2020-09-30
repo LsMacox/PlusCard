@@ -7,6 +7,9 @@ const getDefaultState = () => {
     program: VueSession.get('program'), // сокращенная модель программы
     programModel: {}, // полная модель редактируемой программы
     shops: [], // торговые точки
+    // -2 все окна закрыты
+    // -1 открыто окно новой торговой точки
+    shopIndex: -2, // индекс открытого окна торговой точки
   }
 }
 
@@ -14,9 +17,8 @@ const state = getDefaultState()
 
 const mutations = {
   RESET_STATE: (state) => Object.assign(state, getDefaultState()),
-  SET_PROGRAMS (state, payload) {
-    state.programs = payload
-  },
+  SET_PROGRAMS: (state, payload) => state.programs = payload,
+  SET_SHOP_INDEX: (state, payload) => state.shopIndex = payload,
   SET_PROGRAM (state, payload) {
     state.program = payload
     VueSession.set('program', payload)
@@ -41,6 +43,12 @@ const mutations = {
     const items = state.shops
     items.forEach((item, index) => {
       if (item.id === payload.id) Object.assign(items[index], payload)
+    })
+  },
+  REMOVE_IN_SHOPS (state, payload) {
+    const items = state.shops
+    items.forEach((item, index) => {
+      if (item.id === payload.id) items.splice(index, 1)
     })
   },
 }
@@ -147,6 +155,24 @@ const actions = {
     }
   },
 
+  async deleteShop ({ commit }, item) {
+    // eslint-disable-next-line no-useless-catch
+    try {
+      const result = await ApiService.delete(`/api-cabinet/company/shop?id=${item.id}`)
+      console.log(`/api-cabinet/company/shop?id=${item.id}`)
+      console.log(result)
+      commit('REMOVE_IN_SHOPS', result)
+
+      this._vm.$notify({
+        type: 'success',
+        title: 'Компания обновлена',
+        text: 'Торговая точка успешно удалена',
+      })
+    } catch (error) {
+      throw error
+    }
+  },
+
   async updateContact ({ commit }, item) {
     // eslint-disable-next-line no-useless-catch
     try {
@@ -181,6 +207,7 @@ const getters = {
     ]
   },
   shops: state => state.shops,
+  shopIndex: state => state.shopIndex,
 }
 
 export default {

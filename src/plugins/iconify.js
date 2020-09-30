@@ -24,6 +24,7 @@ export const ICONIFY_ICONS = [
   // bx
   { id: 'bx-check', component: () => import('@iconify/icons-bx/bx-check') },
   { id: 'arrow-back', component: () => import('@iconify/icons-bx/bx-arrow-back') },
+  { id: 'bx-bx-building-house', component: () => import('@iconify/icons-bx/bx-building-house') },
 
   // codicon
   { id: 'chrome-close', component: () => import('@iconify/icons-codicon/chrome-close') },
