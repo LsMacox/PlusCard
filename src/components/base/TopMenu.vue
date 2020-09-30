@@ -219,6 +219,7 @@
       padding: 0 0 6px 0;
       border-bottom: 2px solid #ffffff;
       cursor: pointer;
+      text-align: center;
     }
 
     .form-menu__item-active {
@@ -227,6 +228,7 @@
       padding: 0 0 6px 0;
       border-bottom: 2px solid #4776e6;
       cursor: pointer;
+      text-align: center;
     }
   }
   .top-menu__divider-row{
