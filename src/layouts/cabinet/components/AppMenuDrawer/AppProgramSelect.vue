@@ -11,6 +11,7 @@
         top
         offset-x
         offset-y
+        z-index="500"
       >
         <template v-slot:activator="{ on}">
           <v-list>
@@ -176,7 +177,7 @@
 
 }
 
-#app {
+#vApp {
   .app-program-select-menu {
   border-radius:  0px 12px 12px 0px !important;
   }

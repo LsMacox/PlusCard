@@ -148,9 +148,13 @@
   top: 0;
   width: 100%;
   margin-top: -$page-content-padding-size;
+  margin-left: -$page-content-padding-size;
+  margin-right: -$page-content-padding-size;
+
   padding-top: $page-content-padding-size;
-  // margin: $page-content-padding-disable;
-  // padding: $page-content-padding;
+  padding-left: $page-content-padding-size;
+  padding-right: $page-content-padding-size;
+ 
   background: $material-light-backgroung-color;
   z-index: 200;
 

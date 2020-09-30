@@ -1,6 +1,5 @@
 
 <template>
-
   <v-text-field
     :id="id"
     v-model="internalValue"
@@ -153,6 +152,9 @@
       isRequiredText () {
         return !!this.minlength && !this.isFilledText
       },
+      isMaxText () {
+        return !!this.maxlength && !!this.value && this.value.length > this.maxlength
+      },
       isFilledText () {
         return !!this.value && this.value.length >= this.minlength
       },
@@ -163,7 +165,7 @@
         return {
           'v-input--counter': !!this.counter,
           'v-input--counter-success-text': this.isSuccessText,
-          'v-input--counter-error-text': this.isRequiredText,
+          'v-input--counter-error-text': this.isRequiredText || this.isMaxText,
         }
       },
 
