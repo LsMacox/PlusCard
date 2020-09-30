@@ -152,7 +152,9 @@
           >
             <v-icon left>
               $iconify_feather-users
-            </v-icon>            
+            </v-icon>   
+             <v-icon      
+      > icon-warning-outline</v-icon>         
             Создать аккаунт
           </v-btn>
         </div>

@@ -3,6 +3,7 @@ import Vuetify from 'vuetify/lib'
 
 import i18n from '@/i18n'
 import '@fortawesome/fontawesome-free/css/all.css' // Ensure you are using css-loader
+
 import '@/styles/main.sass'
 
 import { ICONIFY_ICONS } from '@/plugins/iconify'
