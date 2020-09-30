@@ -254,7 +254,7 @@
       },
     },
     created () {
-      this.fetchData()
+      // this.fetchData()
     },
     methods: {
       getDate (date) {
