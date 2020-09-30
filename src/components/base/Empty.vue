@@ -1,26 +1,36 @@
 <template>
-    <div class="b-empty">
-        <div class="b-empty__img">
-            <img src="@/assets/png/loyalty-dummy.png" alt="">
-        </div>
-        <div class="b-empty__text">
-            <p class="b-empty__text-title title-s-bold">Здесь пока ничего нет :’(</p>
-            <p v-if="subText" class="b-empty__text-sub-title body-m-regular">{{ subText }}</p>
-        </div>
+  <div class="b-empty">
+    <div class="b-empty__img">
+      <img
+        src="@/assets/png/loyalty-dummy.png"
+        alt=""
+      >
     </div>
+    <div class="b-empty__text">
+      <p class="b-empty__text-title title-s-bold">
+        Здесь пока ничего нет :’(
+      </p>
+      <p
+        v-if="subText"
+        class="b-empty__text-sub-title body-m-regular"
+      >
+        {{ subText }}
+      </p>
+    </div>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: 'Empty',
-        props: {
-            subText: {
-                type: String,
-                default: '',
-            }
-        },
-        mounted() {},
-    }
+  export default {
+    name: 'Empty',
+    props: {
+      subText: {
+        type: String,
+        default: '',
+      },
+    },
+    mounted () {},
+  }
 </script>
 
 <style lang="scss" scoped>
