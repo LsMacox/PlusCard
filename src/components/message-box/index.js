@@ -237,6 +237,7 @@ const merge = Object.assign
         MessageBox.setDefaults(settings)
     }
 
+    Vue.prototype.$alert = MessageBox.alert
     Vue.prototype.$confirm = MessageBox.confirm
   }
 

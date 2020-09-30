@@ -1,8 +1,10 @@
 <template>
   <v-dialog
-    v-model="dialog"    
-    :fullscreen="false"
-    max-width="420"
+    v-model="dialog"
+    :fullscreen="fullscreen"
+    :max-width="maxWidth"
+
+    :scrollable="scrollable"
   >
     <v-card>
       <v-toolbar>
@@ -22,13 +24,14 @@
           {{ message }}
         </v-container>
         <v-container v-else>
-          <slot name="content" />
+          <slot />
         </v-container>
       </v-card-text>
       <v-divider />
       <v-card-actions>
         <v-btn
           ref="cancel"
+          v-if="showCancelButton"
           text
           @click.native="handleAction('cancel')"
           @keydown.enter="handleAction('cancel')"
@@ -60,6 +63,10 @@
     vuetify,
     name: 'MessageBox',
     components: { VDialog },
+    model: {
+      prop: 'value',
+      event: 'change',
+    },
     props: {
       type: {
         type: String,
@@ -73,6 +80,10 @@
         type: String,
         default: '',
       },
+      showCancelButton: {
+        type: Boolean,
+        default: false,
+      },
       cancelButtonText: {
         type: String,
         default: 'Отмена',
@@ -80,10 +91,24 @@
       confirmButtonText: {
         type: String,
         default: 'ОК',
-      },      
+      },
       closeOnHashChange: {
         type: Boolean,
         default: true,
+      },
+      value: {
+        type: Boolean,
+        default: false,
+      },
+      $type: {
+        type: String,
+        default: 'alert',
+      },
+      scrollable: Boolean,
+      fullscreen: Boolean,
+      maxWidth: {
+        type: [String, Number],
+        default: 420,
       },
 
     },
@@ -91,15 +116,20 @@
       return {
         uid: 1,
         action: '',
-        confirmAction: false,        
+        confirmAction: false,
         dialog: false,
       }
     },
     computed: {
-      
+
     },
     watch: {
+      value (v) {
+        console.log('update:pDialog', v)        
+        this.dialog = v
+      },
       dialog (val) {
+        console.log('update:dialog', val)
         if (val) {
           this.uid++
           if (this.$type === 'alert' || this.$type === 'confirm') {
@@ -109,6 +139,7 @@
           }
           // this.focusAfterClosed = document.activeElement
           // messageBox = new Dialog(this.$el, this.focusAfterClosed, this.getFirstFocus())
+          
         }
 
         // prompt
@@ -123,6 +154,7 @@
         //   this.editorErrorMessage = ''
         //   removeClass(this.getInputElement(), 'invalid')
         // }
+        if (this.value !== val) this.$emit('change', val)
       },
     },
     mounted () {
