@@ -13,7 +13,14 @@
 
   export default {
     components: { RoundFrame },
-    props: ['widgetData'],
+    props: {
+      widgetData: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
+    },
     data () {
       return {
         chartData: {},

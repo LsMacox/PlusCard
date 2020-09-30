@@ -95,7 +95,7 @@
         .back__icon {
           position: absolute;
           left: -25px;
-          top: -1px;
+          top: 0px;
           color: $primary-base;
           cursor: pointer;
         }

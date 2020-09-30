@@ -19,7 +19,14 @@
   export default {
     components: { TrippleFilledDiagramFrame },
     mixins: [WidgetFunctions],
-    props: ['widgetData'],
+    props: {
+      widgetData: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
+    },
     data () {
       return {
         credit: [],
@@ -53,16 +60,16 @@
         let debitDiff = 0
         let expireDiff = 0
 
-        if (this.credit && this.credit[1] > 0) {
-          creditDiff = Math.round(((this.credit[0] - this.credit[1]) / this.credit[1]) * 100)
+        if (this.credit) {
+          creditDiff = this.relativeChange(this.credit[0], this.credit[1])
         }
 
-        if (this.debit && this.debit[1] > 0) {
-          debitDiff = Math.round(((this.debit[0] - this.debit[1]) / this.debit[1]) * 100)
+        if (this.debit) {
+          debitDiff = this.relativeChange(this.debit[0], this.debit[1])
         }
 
-        if (this.expired && this.expired[1] > 0) {
-          expireDiff = Math.round(((this.expired[0] - this.expired[1]) / this.expired[1]) * 100)
+        if (this.expired) {
+          expireDiff = this.relativeChange(this.expired[0], this.expired[1])
         }
 
         return [creditDiff, debitDiff, expireDiff]

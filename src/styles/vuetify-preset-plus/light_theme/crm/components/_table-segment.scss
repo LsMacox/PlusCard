@@ -1,0 +1,8 @@
+::v-deep .table-segment {
+    // vue-loader css-scoped
+    tbody {
+        tr {
+            cursor: pointer!important;
+        }
+    }
+}

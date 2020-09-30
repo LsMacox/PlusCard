@@ -18,7 +18,14 @@
   export default {
     components: { DoubleDiagramFrame },
     mixins: [WidgetFunctions],
-    props: ['widgetData'],
+    props: {
+      widgetData: {
+        type: Array,
+        default () {
+          return []
+        },
+      },
+    },
     data () {
       return {
         newData: [0, 0, 0, 0],
