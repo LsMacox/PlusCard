@@ -69,7 +69,9 @@
       },
     },
     async created () {
-      await this.$store.dispatch('widget/operators/operators', this.program.id)
+      if (this.program.id) {
+        await this.$store.dispatch('widget/operators/operators', this.program.id)
+      }
       await this.fetchData()
     },
     methods: {
