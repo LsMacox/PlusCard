@@ -6,14 +6,14 @@
         :menu="pageList"
         :loading="saveAction"
         :show-action="!GetCertAction"
-        @cancelbutton="$router.back()"
+        @cancelbutton="cancelEdit()"
         @actionbutton="globalSave()"
       >
         <v-row
           justify="center"
           class="cert-master-row"
           no-gutters
-        >
+        >         
           <v-col :cols="8">
             <v-skeleton-loader
               :loading="GetCertAction"
@@ -108,7 +108,7 @@
       },
       startPage: {
         type: String,
-        default: 'main',
+        default: '#main',
       },
     },
     constants: {
@@ -136,16 +136,20 @@
         saveAction: false,
         currentPage: 0,
         GetCertAction: false,
+        originalCert: null,
         cert: null,
         pageList: [
-          { id: 'main', name: 'Общая информация', route: `/program/certificate/${this.certId}/main` },
-          { id: 'rules', name: 'Правила использования', route: `/program/certificate/${this.certId}/rules` },
-          { id: 'nominals', name: 'Номиналы', route: `/program/certificate/${this.certId}/nominals` },
+          { id: '#main', name: 'Общая информация', route: { hash: '#main' } }, // `/program/certificate/${this.certId}/main`
+          { id: '#rules', name: 'Правила использования', route: { hash: '#rules' } },
+          { id: '#nominals', name: 'Номиналы', route: { hash: '#nominals' } },
         ],
       }
     },
     computed: {
       ...mapGetters('company/program', ['program']),
+      hasChanges () {
+        return JSON.stringify(this.cert) !== JSON.stringify(this.originalCert)
+      },
       saveCertData () {
         return {
           id: this.cert.id,
@@ -156,12 +160,14 @@
           category_id_list: this.cert.category_id_list,
           // nominals: this.filterNominals, todo
           tags: this.cert.tags,
+          nominals: this.cert.nominals,
           terms_of_use: this.cert.terms_of_use,
           certificate_usage_type: this.cert.certificate_usage_type,
           guaranteed_period: this.cert.guaranteed_period_unlimit
             ? null
             : this.cert.guaranteed_period,
 
+          allow_digital_use: true,
         }
       },
     },
@@ -172,6 +178,23 @@
       this.init()
     },
     methods: {
+      async cancelEdit () {
+        try {
+          if (this.hasChanges) {
+            await this.$confirm(
+              'Имеются не сохраненные изменения. Закрыть без сохранения?',
+              'Редактирование сертификата',
+              {
+                confirmButtonText: 'Закрыть',
+                cancelButtonText: 'Отмена',
+                type: 'warning',
+              })
+          }
+          this.$router.back()
+        } catch (error) {
+
+        }
+      },
       setItemById (id) {
         const index = this.pageList.findIndex(x => x.id === id)
         this.currentPage = (index >= 0 ? index : 0)
@@ -183,33 +206,36 @@
           // TODO run save
           if (!this.$refs.PageMain.validate()) {
             console.log('invalid PageMain')
-            this.setItemById('main')
+            this.setItemById('#main')
             return
           }
           console.log('this.$refs.PageRules', this.$refs.PageRules)
           if (!this.$refs.PageRules.validate()) {
             console.log('invalid PageRules')
-            this.setItemById('rules')
+            this.setItemById('#rules')
             return
           }
           console.log('this.$refs.PageNominals', this.$refs.PageNominals)
           if (!this.$refs.PageNominals.validate()) {
             console.log('invalid PageNominals')
-            this.setItemById('nominals')
+            this.setItemById('#nominals')
             return
           }
 
           console.log('valid ')
-          await this.$store.dispatch('certificates/certificate/UpdateCertificate', this.saveCertData)
+          const result = await this.$store.dispatch('certificates/certificate/UpdateCertificate', this.saveCertData)
           // await this.$sleep(1000)
+          console.log('result update', result)
 
           this.$notify({
             title: 'Обновление сертификата',
             text: 'Изменения отправлены на модерацию',
             type: 'success',
           })
-        } catch (error) {
 
+          this.$router.back()
+        } catch (error) {
+          console.error(error)
         } finally {
           this.saveAction = false
         }
@@ -219,6 +245,11 @@
           this.GetCertAction = true
           this.cert = await this.$store.dispatch('certificates/certificate/GetCert', this.certId)
           Vue.set(this.cert, 'guaranteed_period_unlimit', this.guaranteed_period == null)
+          // for (let index = 0; index < this.cert.nominals.length; index++) {
+          //   const element = array[index];
+
+          // }
+          this.originalCert = Object.copy(this.cert) // JSON.parse(JSON.stringify(this.cert) )
           console.log('cert=', this.cert)
         } finally {
           this.GetCertAction = false

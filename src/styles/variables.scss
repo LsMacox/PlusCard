@@ -16,12 +16,13 @@ $icon-size: 21px; //24px !default;
 $icon-size-dense: 17px; //20px !default;
 
 //btn https://vuetifyjs.com/en/components/buttons/
-$fab-sizes: ( small: 25, default: 28 );
-$fab-icon-sizes: ( small: 21, default: 24 );
+$fab-sizes: ( x-small: 31, small: 40, default: 45 );
+$fab-icon-sizes: ( x-small: 15, small: 21, default: 24 );
+
 
 $btn-font-sizes: ( default: 1rem, large: 1rem );
 
-$btn-sizes: ( small: 25, default: 45, large: 54 ); 
+$btn-sizes: ( x-small: 31, small: 40, default: 45, large: 54 ); 
 
 $btn-letter-spacing: 0;
 $btn-font-weight: 400;

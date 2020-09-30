@@ -357,47 +357,19 @@
           type: 'success',
         })
       },
-
       async deleteNominal (nominal) {
-        try {
-          await this.$confirm(
-            `Вы уверены, что хотите удалить номинал "${nominal.nominal_name}" в корзину?`,
-            'Удаление в корзину',
-            {
-              confirmButtonText: 'Удалить',
-              cancelButtonText: 'Отмена',
-              type: 'warning',
-            },
-          )
-        } catch {
-          console.log('Cancel delete')
-          return
-        }
-
-        try {
-          await this.deleteNominalAction(nominal, false)
-        } catch (error) {
-          if (
-            error &&
-            error.response &&
-            error.response.data &&
-            error.response.data.code === 101
-          ) {
-            await this.$confirm(
-              'У ваших клиентов есть сертификаты номиналов, которые вы удаляете (в корзинах или выпущенные). Если вы удалите данный номинал сертификата, клиенты не смогут его выпускать, но те, сертификаты данного номинала, которые помещены в корзину или выпущены продолжат действовать. Все равно удалить номинал?',
-              'Удаление сертификата',
-              {
-                confirmButtonText: 'Да',
-                cancelButtonText: 'Отмена',
-                type: 'warning',
-              },
-            )
-            await this.deleteNominalAction(nominal, true)
-          }
-        }
+        await this.$store.dispatch('certificates/certificate/DeleteCertificateNominalDialog', { nominal })
       },
+      
       addNominal () {
         // this.internalActive = !this.active
+        this.$router.push({
+          name: 'ProgramCertificateForm',
+          params: {
+            cert_id: this.id,
+          },
+          hash: '#nominals',
+        })
       },
       activeChange (value) {
         console.log('activeChange', value)
