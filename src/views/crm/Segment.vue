@@ -5,7 +5,7 @@
       class="crm__header b-segment__header"
     >
       <p class="crm__header-title title-m-bold neutral-900--text">
-        Сигменты
+        Сегменты
       </p>
       <v-btn
         class="crm__header_new-btn"
@@ -19,7 +19,7 @@
         <p
           class="body-m-semibold neutral-100--text"
         >
-          Новый сигмент
+          Новый сегмент
         </p>
       </v-btn>
     </div>
