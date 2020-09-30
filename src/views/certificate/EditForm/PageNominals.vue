@@ -58,12 +58,13 @@
                 <v-col :cols="'auto'">
                   <v-row no-gutters>
                     <v-btn
-                      v-if="!item.id"
+                      :disabled="!!item.id"
                       small
                       icon
+                      color="primary"
                       @click="item.quantity = (item.quantity > 0 ? item.quantity - 1 : 0)"
                     >
-                      <v-icon color="primary">
+                      <v-icon>
                         mdi-minus
                       </v-icon>
                     </v-btn>
@@ -81,12 +82,13 @@
                       @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"
                     />
                     <v-btn
-                      v-if="!item.id && true"
+                      :disabled="!!item.id"
                       small
                       icon
+                      color="primary"
                       @click="item.quantity = (item.quantity === null? 1 : item.quantity + 1)"
                     >
-                      <v-icon color="primary">
+                      <v-icon>
                         mdi-plus
                       </v-icon>
                     </v-btn>

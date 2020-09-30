@@ -32,7 +32,9 @@
         <BaseMasterFieldBlock title="Категория">
           <span
             slot="description"
-          >Выберите до 3-х категорий сертификата, в которых он будет отображаться в приложении</span>
+          >Выберите до 3-х категорий сертификата, в которых он будет отображаться в приложении
+          </span>
+
           <template v-slot:input>
             <v-autocomplete
               v-model="cert.category_id_list"
@@ -53,10 +55,11 @@
           <span slot="description">
             Введите ключевые слова, по которым можно будет искать ваш сертификат.
             Клиенты ищут не только по названию компании, но и по ключевым словам
+            {{cert.tags_list}}
           </span>
           <template v-slot:input>
             <v-combobox
-              v-model="cert.tags"
+              v-model="cert.tags_list"
               placeholder="Выберите ключевые слова"
               :items="tags_id_list"
               :rules="tagsRules"

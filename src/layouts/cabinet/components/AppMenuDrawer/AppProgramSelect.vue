@@ -177,7 +177,7 @@
 
 }
 
-#app {
+#vApp {
   .app-program-select-menu {
   border-radius:  0px 12px 12px 0px !important;
   }
