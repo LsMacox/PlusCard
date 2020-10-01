@@ -31,6 +31,7 @@
       </div>
       <accrual-writing
         v-if="switchBagOn"
+        v-on="$listeners"       
         @saveChangeAccrual="saveChangeAccrual"
       />
     </div>
@@ -181,6 +182,9 @@
         }),
       saveChangeAccrual (val) {
         this.switchBagOn = val
+      },
+      openBonusUnitDialog (bonusUnit) {
+        this.$emit('bonus-unit-dialog', bonusUnit)
       },
     },
     watch: {

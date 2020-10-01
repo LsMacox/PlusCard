@@ -13,14 +13,14 @@
           :text="true"
           :ripple="false"
           class="btn-with-img"
-          @click="hideNavigationRigth"
+          @click="close"
         >
           <img src="@/icons/svg/arrowBack.svg">
           Назад
         </v-btn>
       </div>
       <div class="navigation-title">
-        <h1>Новая бонусная валюта</h1>
+        <h1>{{ isNew ? 'Новая бонусная валюта': 'Редактирование бонусной валюты' }} </h1>
       </div>
       <div class="name-currency">
         <div class="title-currency">
@@ -33,7 +33,7 @@
         </div>
         <div>
           <input
-            v-model="nameBonuses"
+            v-model="bonusUnitInternal.name"
             type="text"
             class="input-lg input-bonuses"
             placeholder="Например, бонусы"
@@ -51,19 +51,19 @@
         </div>
         <div class="input-box">
           <input
-            v-model="bonusesFirst"
+            v-model="bonusUnitInternal.unit_name_ending_first"
             type="text"
             placeholder="1 бонус"
             class="input-sm-x input-bonuses"
           >
           <input
-            v-model="bonusesSecond"
+            v-model="bonusUnitInternal.unit_name_ending_second"
             type="text"
             placeholder="2 бонуса"
             class="input-sm-x input-bonuses"
           >
           <input
-            v-model="bonusesThird"
+            v-model="bonusUnitInternal.unit_name_ending_third"
             type="text"
             placeholder="5 бонусов"
             class="input-sm-x input-bonuses"
@@ -81,7 +81,7 @@
         </div>
         <div class="allow-transfer-currency">
           <v-switch
-            v-model="switch1"
+            v-model="bonusUnitInternal.can_transfer"
             inset
             class="custom-switch"
           />
@@ -89,23 +89,23 @@
         </div>
       </div>
       <div
-        v-if="nameBonuses && bonusesFirst && bonusesSecond && bonusesThird"
         class="save-currency"
       >
         <v-btn
           small
-          class="custom-gradient-bg"
-          max-width="185px"
-          width="100%"
-          max-height="45px"
-          height="100%"
-          @click="setCreateBonuses"
+          :disabled="!valid"
+          color="primary"
+          @click="confirmClick"
         >
-          <img
+          <v-icon left>
+            $iconify_ion-checkmark-circle-outline
+          </v-icon>
+
+          <!-- <img
             src="@/icons/svg/checkmark-circle-outline.svg"
             class="img-circle"
-          >
-          Создать валюту
+          > -->
+          {{ isNew ? 'Создать валюту' : 'Сохранить' }}
         </v-btn>
       </div>
     </div>
@@ -115,11 +115,21 @@
 <script>
   import { mapGetters, mapMutations } from 'vuex'
   export default {
-    name: 'NavigationDrawersRight',
+    name: 'BonusUnitDialog',
+    model:{
+      prop: 'value',
+      event: 'change',
+    },
+    props: {
+      value: Boolean,
+      bonusUnit: {
+        type: Object,
+        default: undefined,
+      },
+    },
     data () {
       return {
-        switch1: true,
-        drawer: false,
+
         nameBonuses: '',
         bonusesFirst: '',
         bonusesSecond: '',
@@ -127,6 +137,16 @@
         update: false,
         idUpdate: 0,
         allBonusesItems: [],
+
+        bonusUnitInternal: {
+          name: '',
+          unit_name_ending_first: '',
+          unit_name_ending_second: '',
+          unit_name_ending_third: '',
+          can_transfer: false,
+          cert_pay_available: false,
+          is_main: false,
+        },
       }
     },
     computed: {
@@ -135,6 +155,25 @@
         getBonusesItems: 'createBonusesCurrency/create_bonuses_currency/getBonusesItems',
         getUpdateBonusesItem: 'createBonusesCurrency/create_bonuses_currency/getUpdateBonusesItem',
       }),
+      isNew () {
+        return !this.bonusUnit
+      },
+      valid () {
+        return this.bonusUnitInternal.name &&
+          this.bonusUnitInternal.unit_name_ending_first &&
+          this.bonusUnitInternal.unit_name_ending_second &&
+          this.bonusUnitInternal.unit_name_ending_third
+      },
+      drawer: {
+        get () {
+          return this.value
+        },
+        set (val) {
+          if (val === this.value) return
+          this.$emit('change', val)
+        },
+      },
+
     },
     watch: {
       getOpenNavigationCreateBonuses (val) {
@@ -158,6 +197,7 @@
       getBonusesItems (val) {
         this.allBonusesItems = val
       },
+      
     },
     methods: {
       ...mapMutations({
@@ -239,8 +279,13 @@
           this.updateBonusesItem({})
         }
       },
-      hideNavigationRigth () {
-        this.clearNavigationRight()
+      createBonusUnit () {},
+      updateBonusUnit () {},
+      confirmClick () {
+
+      },
+      close () {
+        this.drawer = false
       },
     },
   }

@@ -157,7 +157,7 @@ export default new Router({
         },
         {
           path: '/program/bonus/settings',
-          component: () => import('@/views/SkeletonPage'),
+          component: () => import('@/views/createLoyalty'),
           name: 'ProgramBonusSetting',
           meta: { title: 'ProgramBonusSetting', icon: 'ui_kit' },
         },

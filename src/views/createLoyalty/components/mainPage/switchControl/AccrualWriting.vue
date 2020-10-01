@@ -19,8 +19,9 @@
               вариантов начисления - добавьте еще одну операцию.
             </p>
           </div>
+
           <div
-            v-if="items.length === 0"
+            v-if="bonusUnits.length === 0"
             class="select-input-wrap"
           >
             <input
@@ -48,83 +49,35 @@
             </v-btn>
           </div>
           <div
-            v-for="(accrual, accrualIndex) in itemsAccrual"
-            :key="accrual.id"
+            v-for="(accrual, accrualIndex) in buyBonusResSource"
+            :key="accrualIndex"
             class="select-input-accrual-bonuses"
           >
             <div class="wrap-input">
               <input
-                v-model="accrual.countBy"
+                v-model="accrual.rules.percent"
                 type="text"
                 class="input-bonuses shopping-inp input-sm"
                 placeholder="% от покупки"
                 @input="accrual.countBy = checkMathRound($event.target.value)"
               >
-              <v-menu offset-y>
-                <template v-slot:activator="{ on, attrs }">
-                  <button
-                    v-bind="attrs"
-                    class="custom-drop-down"
-                    :class="attrs['aria-expanded'] === 'true' ? 'border-bottom-not-round' : ''"
-                    v-on="on"
-                  >
-                    <span :class="attrs['aria-expanded'] === 'true' ? '' : 'hide-img'">Выберите валюту</span>
-                    <span :class="attrs['aria-expanded'] === 'false' ? '' : 'hide-img'">{{ accrual.selectName }}</span>
-                    <img
-                      :class="attrs['aria-expanded'] === 'false' ? '' : 'hide-img'"
-                      src="@/icons/svg/triangle-down.svg"
-                    >
-                    <img
-                      :class="attrs['aria-expanded'] === 'true' ? '' : 'hide-img'"
-                      src="@/icons/svg/triangle-up.svg"
-                    >
-                  </button>
-                </template>
-                <v-list class="list-own-padding">
-                  <v-list-item
-                    v-for="(item, index) in items"
-                    :key="index"
-                    @click="selectBonuses(item, accrual, 'itemsAccrual')"
-                    @mouseover="checkSelectAndHover(item, accrual, 'itemsAccrual')"
-                    @mouseleave="checkSelectAndHoverLeave(item, accrual, 'itemsAccrual')"
-                  >
-                    <v-list-item-title>
-                      <div class="item-select">
-                        {{ item.nameBonuses }} <img
-                          v-if="item.nameBonuses === accrual.selectName && !accrual.setting"
-                          src="@/icons/svg/check.svg"
-                        >
-                        <img
-                          v-if="item.nameBonuses === accrual.selectName && accrual.setting"
-                          src="@/icons/svg/settings.svg"
-                          @click="changeBonuses(item)"
-                        >
-                      </div>
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
-                <v-list class="list-own-padding">
-                  <div
-                    class="btn-inside-select"
-                    @click="createBonusesCurrency"
-                  >
-                    <img
-                      src="@/icons/svg/plus-circle.svg"
-                    >
-                    Добавить новую валюту
-                  </div>
-                </v-list>
-              </v-menu>
+
+              <bonus-unit-select
+                v-model="accrual.bonus_score.units_id"
+                :bonus-unit-list="bonusUnits"
+                v-on="$listeners"
+              />
+
               <div class="wrap-circle">
                 <div
-                  v-if="(accrual.nameOperation === '' || accrual.nameOperation !== '') && accrual.id >= 2"
+                  v-if="buyBonusResSource.length > 1"
                   class="simple-circle mines-right"
                   @click="deleteAccrualOrMagazine(accrualIndex, 'itemsAccrual')"
                 >
                   <img src="@/icons/svg/mines.svg">
                 </div>
                 <div
-                  v-if="accrual.nameOperation === '' || accrual.nameOperation !== ''"
+                  v-if="true || accrual.nameOperation === '' || accrual.nameOperation !== ''"
                   class="simple-circle mines-right"
                   @click="createNewAccrual(accrual.selectName)"
                 >
@@ -134,8 +87,8 @@
             </div>
             <div>
               <input
-                v-if="accrual.nameOperation !== undefined"
-                v-model="accrual.nameOperation"
+                v-if="buyBonusResSource.length > 1"
+                v-model="accrual.title"
                 type="text"
                 class="input-bonuses input-big-name input-lg-l"
                 placeholder="Введите название операции, чтобы не запутаться"
@@ -350,6 +303,9 @@
   import { mapMutations, mapGetters } from 'vuex'
   export default {
     name: 'Basic',
+    components: {
+      BonusUnitSelect: () => import('../../BonusUnitSelect'),
+    },
     data () {
       return {
         inputShow: '',
@@ -364,15 +320,33 @@
         itemsAccrual: [],
         itemsMagazine: [],
         nameSelectNeedGet: '',
+        newBuyBonusRes: [],
       }
     },
     computed: {
+      ...mapGetters({
+        bonusUnits: 'company/bonus_units/bonusUnits',
+      }),
+      ...mapGetters({
+        dbBuyBonusRes: 'company/bonus_resources/buyBonusRes',
+      }),
       ...mapGetters({
         getBonusesItems: 'createBonusesCurrency/create_bonuses_currency/getBonusesItems',
         getAccrualBonuses: 'createBonusesCurrency/create_bonuses_currency/getAccrualBonuses',
         getMagazineBonuses: 'createBonusesCurrency/create_bonuses_currency/getMagazineBonuses',
         getWhatSelect: 'createBonusesCurrency/create_bonuses_currency/getWhatSelect',
       }),
+
+      buyBonusRes () {
+        return this.dbBuyBonusRes.concat(this.newBuyBonusRes)
+      },
+      buyBonusResSource () {
+        return this.buyBonusRes.filter(this.isSourceFilter)
+      },
+      buyBonusResTarget () {
+        return this.buyBonusRes.filter(this.isTargetFilter)
+      },
+
       checkValidInput () {
         const notValid = this.itemsAccrual.filter(item => {
           return (item.nameOperation !== '' || item.nameOperation === undefined) && item.countBy !== ''
@@ -387,6 +361,12 @@
           updateBonusesItem: 'createBonusesCurrency/create_bonuses_currency/updateBonusesItem',
           resetState: 'createBonusesCurrency/create_bonuses_currency/resetState',
         }),
+      isSourceFilter (item) {
+        return item.resource_type_enum === 'TYPE_SOURCE'
+      },
+      isTargetFilter (item) {
+        return item.resource_type_enum === 'TYPE_TARGET'
+      },
       selectBonuses (itemSelect, currentElement, setName) {
         const nameArr = setName
         let arr = []
@@ -423,7 +403,8 @@
         this.openNavigationRight(true)
       },
       createBonusesCurrency () {
-        this.openNavigationRight(true)
+        this.$emit('bonus-unit-dialog', null)
+        // this.openNavigationRight(true)
       },
       createNewAccrual (nameSelect) {
         if (!('nameOperation' in this.itemsAccrual[0])) {

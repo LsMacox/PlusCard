@@ -1,4 +1,5 @@
 import ApiService from '@/api/api-client'
+import Vue from 'vue'
 
 export default {
     namespaced: true,
@@ -35,26 +36,10 @@ export default {
         },
     },
     actions: {
-        async get_list ({ commit }, id) {
-            ApiService
-                .get(
-                    `/api-cabinet/program/bonus_resources/list?program_id=${id}`,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    },
-                )
-                .then((response) => {
-                    /// /console.log('brand/bonus_resources/get_list')
-                    /// /console.log(response.data.data)
-                    commit('bonusResources', response.data.data)
-                })
-                .catch((error) => {
-                    if (error.response) {
-                        /// /console.log(JSON.stringify(error.response.data));
-                    }
-                })
+        async GetList ({ commit }, programId) {
+            const result = await ApiService.get(`/api-cabinet/program/bonus_resources/list?program_id=${programId}`)
+
+            commit('bonusResources', result)
         },
         async get_active_list ({ commit }, id) {
             ApiService
@@ -81,6 +66,10 @@ export default {
     getters: {
         bonusResources (state) {
             return state.bonusResources
+        },
+        buyBonusRes (state) {            
+            return state.bonusResources.filter(item => item.rules &&
+                item.rules.event === 'App\\Events\\AccountBuyEvent')
         },
         activeBonusResources (state) {
             return state.activeBonusResources
