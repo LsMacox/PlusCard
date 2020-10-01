@@ -1,7 +1,7 @@
 <template>
   <div
     class="shop-form"
-    style="margin: 36px 0 0 0; padding-top: 24px;"
+    style="margin: 36px 0; padding-top: 24px;"
   >
     <v-text-field
       v-model="newShop.name"
