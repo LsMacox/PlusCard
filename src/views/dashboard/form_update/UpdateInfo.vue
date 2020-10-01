@@ -21,7 +21,25 @@
         >
           <info :program="program" />
         </v-form>
-        <div style="margin: 68px 0;">
+
+        <v-row
+          style="margin: 68px 0;"
+          justify="space-between"          
+          align="baseline"
+        >
+          <v-btn
+            v-if="!!program.id"
+            color="error"
+            text
+            :loading="loading"
+            @click="deleteCompany()"
+          >
+            <v-icon left>
+              $iconify_feather-trash
+            </v-icon>
+            Удалить компанию
+          </v-btn>
+
           <v-btn
             color="primary"
             :loading="loading"
@@ -33,7 +51,7 @@
             </v-icon>
             Сохранить
           </v-btn>
-        </div>
+        </v-row>
       </v-col>
     </v-row>
   </div>
@@ -74,6 +92,26 @@
       this.program = JSON.parse(JSON.stringify(this.programModel))
     },
     methods: {
+      async deleteCompany () {
+        try {
+          this.loading = true
+          await this.$confirm(
+            `Вы уверены, что хотите удалить компанию ${this.program.name}?`,
+            'Удаление компании',
+            {
+              confirmButtonText: 'Удалить',
+              cancelButtonText: 'Отмена',
+              type: 'warning',
+            },
+          )
+          await this.$store.dispatch('company/program/Delete', this.program.id)
+          this.toRoute('/dashboard')
+        } catch (error) {
+          console.log('deleteCompany', error)
+        } finally {
+          this.loading = false
+        }
+      },
       async updateCompany () {
         try {
           this.loading = true
