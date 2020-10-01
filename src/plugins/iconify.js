@@ -46,6 +46,9 @@ export const ICONIFY_ICONS = [
     id: "arrow-back",
     component: () => import("@iconify/icons-bx/bx-arrow-back"),
   },
+  { id: 'bx-check', component: () => import('@iconify/icons-bx/bx-check') },
+  { id: 'arrow-back', component: () => import('@iconify/icons-bx/bx-arrow-back') },
+  { id: 'bx-bx-building-house', component: () => import('@iconify/icons-bx/bx-building-house') },
 
   // codicon
   {

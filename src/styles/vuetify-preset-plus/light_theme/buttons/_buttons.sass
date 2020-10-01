@@ -1,5 +1,7 @@
 @import '../variables'
+
 @import '@/styles/_typography'
+@import '@/styles/variables.scss'
 
 @import disabled
 @import primary
@@ -8,7 +10,7 @@
 
 .v-btn.v-btn--contained.v-size--x-small
   @include body-s-semibold 
-  height: 32px
+  // height: 32px
 
   // .v-btn--fab.v-size--small
 
@@ -49,6 +51,9 @@
 
   &.v-size--x-small
     .v-btn__content
+      .v-icon--is-component               
+        width: map-get($fab-icon-sizes, 'x-small') + px
+        height: map-get($fab-icon-sizes, 'x-small') + px     
       .iconify
         width: 15px
         height: 15px

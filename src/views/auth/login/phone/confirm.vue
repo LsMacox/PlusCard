@@ -87,42 +87,23 @@
         </div>
       </v-form>
     </div>
-    <div
+    <select-merchant
       v-else
-      class="auth-content-box"
-    >
-      <div class="merchant-select-header">
-        Продолжить работу:
-      </div>
-      <div class="merchant-select-box app__scroll-y">
-        <div
-          v-for="(item, i) in merchants"
-          :key="i"
-          class="merchant-select-block"
-          @click="login(item.id)"
-        >
-          <v-img
-            src="@/assets/svg/plus_logo_sm.svg"
-            max-width="46px"
-            height="46px"
-          />
-          <div class="merchant-select-block-text">
-            {{ item.name }}
-          </div>
-        </div>
-      </div>
-    </div>
+      :merchants="merchants"
+      @select="login"
+    />
   </div>
 </template>
 
 <script>
-  import BackButton from '@/views/auth/components/BackButton'
+
   import { mask } from 'vue-the-mask'
   import { mapGetters } from 'vuex'
 
   export default {
     components: {
-      BackButton,
+      BackButton: () => import('@/views/auth/components/BackButton'),
+      SelectMerchant: () => import('@/views/auth/components/SelectMerchant'),
     },
     directives: { mask },
     data () {
