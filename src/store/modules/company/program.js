@@ -10,6 +10,24 @@ const getDefaultState = () => {
     // -2 все окна закрыты
     // -1 открыто окно новой торговой точки
     shopIndex: -2, // индекс открытого окна торговой точки
+    editedShop: { // редактируемая торговая точка
+      name: '',
+      city: '',
+      address: '',
+      phone: '',
+      coords: [],
+      lat: '',
+      lng: '',
+      workTimes: [
+        {
+          startTime: '',
+          endTime: '',
+          days: [],
+          breakStart: '',
+          breakEnd: '',
+        },
+      ],
+    },
   }
 }
 
@@ -19,6 +37,7 @@ const mutations = {
   RESET_STATE: (state) => Object.assign(state, getDefaultState()),
   SET_PROGRAMS: (state, payload) => state.programs = payload,
   SET_SHOP_INDEX: (state, payload) => state.shopIndex = payload,
+  SET_EDITED_SHOP: (state, payload) => state.editedShop = payload,
   SET_PROGRAM (state, payload) {
     state.program = payload
     VueSession.set('program', payload)
@@ -208,6 +227,11 @@ const getters = {
   },
   shops: state => state.shops,
   shopIndex: state => state.shopIndex,
+  editedShop: state => state.editedShop,
+  defaultShop: () => {
+    const defState = getDefaultState()
+    return defState.editedShop
+  },
 }
 
 export default {
