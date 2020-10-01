@@ -307,6 +307,15 @@
     },
     methods: {
       cancel () {
+        // сброс модели при отмене редактирования
+        this.shops.forEach((item, i) => {
+          if (i === this.shopIndex) {
+            this.shops[i] = JSON.parse(JSON.stringify(this.copyModel))
+          }
+        })
+        this.close()
+      },
+      close () {
         this.editedShop = {
           name: '',
           city: '',
@@ -325,15 +334,6 @@
             },
           ],
         }
-        // сброс модели при отмене редактирования
-        this.shops.forEach((item, i) => {
-          if (i === this.shopIndex) {
-            this.shops[i] = JSON.parse(JSON.stringify(this.copyModel))
-          }
-        })
-        this.close()
-      },
-      close () {
         this.$emit('close')
       },
       /*
