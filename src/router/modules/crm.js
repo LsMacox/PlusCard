@@ -8,7 +8,7 @@ export default {
         },
         {
             path: '/program/segments',
-            component: () => import('@/views/SkeletonPage'),
+            component: () => import('@/views/crm/Segment'),
             name: 'ProgramSegments',
             meta: { auth: true, title: 'Сегменты', icon: 'dashboard' },
         },

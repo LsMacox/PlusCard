@@ -1,0 +1,158 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+
+.panel-segment {
+    .panel-segment__header {
+        margin-top: 50px;
+        margin-left: 34px;
+    }
+
+    .panel-segment__body {
+        margin-left: 34px;
+        margin-right: 34px;
+        margin-top: 34px;
+
+        .panel-segment__form {
+            .panel-segment__form-block {
+                margin-top: 8px;
+                display: flex;
+                flex-direction: column;
+
+                .panel-segment__form-labels {
+                    p {
+                        &:nth-child(2) {
+                            color: $neutral-700;
+                        }
+                    }
+
+                    .labels__sub-label {
+                        margin-top: -8px;
+                        margin-bottom: 20px;
+                    }
+                }
+
+                .panel-segment__form-input {
+                    border-radius: 10px;
+
+                    // vue-loader css-scoped
+                    ::v-deep {
+                        .v-input__slot {
+                            margin-bottom: 5px !important;
+                        }
+
+                        .v-text-field__details {
+                            padding-left: 5px !important;
+                        }
+
+                        input,
+                        textarea {
+                            font-family: 'Gilroy' !important;
+                            font-weight: 500 !important;
+                            color: $neutral-900 !important;
+                            font-size: 15px !important;
+                            line-height: 21px !important;
+
+                            &::placeholder {
+                                color: $neutral-600 !important;
+                            }
+                        }
+                    }
+                }
+
+                .panel-segment__form-textarea {
+                    position: relative;
+                    width: 100%;
+
+                    textarea {
+                        width: inherit;
+                        resize: vertical;
+                    }
+
+                    .textarea---angle {
+                        position: absolute;
+                        width: 13px;
+                        height: 1.4px;
+                        background: $neutral-500;
+                        bottom: 39px;
+                        right: 4px;
+                        transform: rotate(139deg);
+                        border-radius: 50px;
+                        z-index: 22;
+
+                        &:before {
+                            content: "";
+                            position: absolute;
+                            width: 7px;
+                            height: 1.4px;
+                            margin-top: -4px;
+                            margin-left: 2.5px;
+                            border-radius: 10px;
+                            background: $neutral-500;
+                        }
+                    }
+                }
+
+
+                .labels__color-picker {
+                    display: inline-block;
+                    position: relative;
+                    background-color: transparent;
+
+                    .labels__color-box {
+                        display: inline-block;
+                        width: 24px;
+                        height: 24px;
+                        border-radius: 50px;
+                        background-color: $success;
+                        cursor: pointer;
+                    }
+
+                    .colorPickerWrapper {
+                        position: relative;
+                        padding: 0px 7px 0px 0px;
+                        position: absolute;
+                        margin-top: -349px;
+                        margin-left: -5px;
+                        border-radius: 6px;
+                        background: #fff;
+                        border: 3px solid #f6f6f6;
+
+                        &:before {
+                            content: '';
+                            position: absolute;
+                            left: 4px;
+                            bottom: -20px;
+                            border: 10px solid transparent;
+                            border-top: 10px solid #f6f6f6;
+                        }
+                    }
+                }
+            }
+
+            
+
+            .b-segment__btns {
+                display: flex;
+                align-items: center;
+                margin-top: 42px;
+                justify-content: space-between;
+                .b-segment__btn-create {
+                    .icon-check-circle {
+                        margin-right: 10px;
+                    }
+                }
+                .b-segment__btn-delete {
+                    cursor: pointer;
+                    display: flex;
+                    .icon-feather-trash {
+                        margin-right: 4px;
+                        color: $error;
+                    }
+                    p {
+                        margin-bottom: 0;
+                        margin-top: 2px;
+                    }
+                }
+            }
+        }
+    }
+}

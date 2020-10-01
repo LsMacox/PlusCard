@@ -66,3 +66,13 @@ export function toThousandFilter (num) {
 export function uppercaseFirst (string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+/**
+ * Spaces between numbers
+ * @param {Number} num
+ */
+export function spacesBetweenNumbers (num) {
+  var n = num.toString()
+  var separator = ' '
+  return n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, '$1' + separator)
+}

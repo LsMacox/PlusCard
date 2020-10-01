@@ -152,7 +152,7 @@
           >
             <v-icon left>
               $iconify_feather-users
-            </v-icon>            
+            </v-icon>                       
             Создать аккаунт
           </v-btn>
         </div>

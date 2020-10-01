@@ -34,7 +34,7 @@ module.exports = {
   },
   chainWebpack: config => {
     config.plugin('VuetifyLoaderPlugin').tap(args => [{
-      //https://github.com/vuetifyjs/vuetify-loader
+      // https://github.com/vuetifyjs/vuetify-loader
       progressiveImages: false,
       // progressiveImages: {
       //   size: 9, // Use higher-resolution previews  Default: 9

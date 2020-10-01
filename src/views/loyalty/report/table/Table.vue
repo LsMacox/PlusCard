@@ -16,7 +16,7 @@
           class="plus-table"
           hide-default-footer
         >
-          <template v-slot:expanded-item="{ Headers, item }">
+          <template v-slot:expanded-item="{ headers, item }">
             <td :colspan="headers.length">
               More info about {{ item.bsid }}
             </td>
@@ -235,6 +235,7 @@
       },
     },
     watch: {
+      /*
       program (v) {
         if (v) this.fetchData()
       },
@@ -244,6 +245,7 @@
       period (v) {
         if (v) this.fetchData()
       },
+      */
       'tableOptions.page' (v) {
         if (v) this.fetchData()
       },
@@ -252,7 +254,7 @@
       },
     },
     created () {
-      this.fetchData()
+      // this.fetchData()
     },
     methods: {
       getDate (date) {

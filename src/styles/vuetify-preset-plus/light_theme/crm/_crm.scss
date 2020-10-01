@@ -1,0 +1,21 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "./segment";
+@import "./client";
+
+.crm {
+    display: flex;
+    flex-direction: column;
+    .crm__header {
+        display: flex;
+        justify-content: space-between;
+        .crm__header-title {
+            margin-left: 5px;
+        }
+        .crm__header_new-btn {
+            p {
+                margin-left: 10px;
+                margin-bottom: 0;
+            }
+        }
+    }
+}
