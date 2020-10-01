@@ -222,6 +222,12 @@ export default new Router({
           meta: { title: 'Certificates', icon: 'certificates' },
         },
         {
+          path: 'actions',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Actions',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        {
           path: 'sendings',
           component: () => import('@/views/SkeletonPage'),
           name: 'Sendings',

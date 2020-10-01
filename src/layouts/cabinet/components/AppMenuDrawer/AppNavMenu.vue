@@ -91,6 +91,11 @@
         },
         {
           icon: '$iconify_ion-megaphone-outline',
+          title: 'Акции',
+          to: '/actions',
+        },
+        {
+          icon: '$iconify_ion-mail-outline',
           title: 'Рассылки',
           to: '/sendings',
         },
