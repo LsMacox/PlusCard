@@ -2,6 +2,7 @@
 <template>
   <v-text-field
     :id="id"
+    ref="vTextField"
     v-model="internalValue"
     :append-icon="appendIcon"
     :append-outer-icon="appendOuterIcon"
@@ -48,6 +49,7 @@
     :validate-on-blur="validateOnBlur"
     :class="getClass"
     :maxlength="maxlength"
+    @update:error="updateError"
   >
     <template v-slot:prepend-inner>
       <v-icon
@@ -62,10 +64,41 @@
       />
     </template>
     <template v-slot:append>
-      <v-icon
-        v-if="prependInnerIcon"
-        :color="prependInnerIconColor"
-      > plus-icon-warning-outline</v-icon>
+      <v-row
+        no-gutters
+        align="baseline"
+      >
+        <v-col><slot name="append" /></v-col>
+        <v-col>
+          <v-counter
+            v-if="!!counter"
+            :value="computedCounterValue"
+            :max="computedMaxCounter"
+            :class="{
+              'error--text': isRequiredText,
+            }"
+          />
+        </v-col>
+        <v-col>
+          <base-tooltip
+            v-model="showError"
+            text="Меню действий сертификата"
+            color="error"
+            right
+          >
+            <v-icon
+              v-if="hasErrors"
+              color="error"
+              @click="showError = !showError"
+            >
+              $iconify_ion-warning
+            </v-icon>
+            <template v-slot:content>
+              <v-messages v-model="errorMessagesToDisplay" />
+            </template>
+          </base-tooltip>
+        </v-col>
+      </v-row>
     </template>
   </v-text-field>
 </template>
@@ -76,8 +109,13 @@
  * todo  counter + clearable
  */
 
+  import { VTextField } from 'vuetify/lib'
+  import { VInput } from 'vuetify/lib'
+  import Validatable from 'vuetify/lib/mixins/validatable'
+
   export default {
     name: 'Textfield',
+    mixins: [VTextField, VInput, Validatable],
     model: {
       prop: 'value',
       event: 'input',
@@ -108,7 +146,10 @@
       flat: Boolean,
       fullWidth: Boolean,
       height: [Number, String],
-      hideDetails: Boolean,
+      hideDetails: {
+        type: Boolean,
+        default: true,
+      },
       hint: String,
       id: String,
       label: String,
@@ -145,16 +186,31 @@
         default: 0,
       },
     },
+    data () {
+      return {
+        showError: false,
+        // computedCounterValue: 0,
+      }
+    },
     computed: {
-      internalValue: {
-        get () {
-          return this.value
-        },
-        set (val) {
-          if (val === this.value) return
-          this.$emit('input', val)
-        },
+      hasErrors () {
+        return this.errorMessagesToDisplay.length > 0
       },
+      // computedCounterValue () {
+      //   return this.$refs.vTextField ? this.$refs.vTextField.computedCounterValue : 0
+      // },
+      computedMaxCounter () {
+        return this.counter === true ? this.maxlength : this.counter
+      },
+      errorMessagesToDisplay () {
+        console.log('this.validations', this.validations)
+        
+        return this.validations.map(validation => {
+          if (typeof validation === 'string') return validation
+          const validationResult = validation(this.internalValue)
+          return typeof validationResult === 'string' ? validationResult : ''
+        }).filter(message => message !== '')
+      },      
       isRequiredText () {
         return !!this.minlength && !this.isFilledText
       },
@@ -182,7 +238,13 @@
       },
     },
     mounted () {
-      // console.log('getClass', this.getClass)
+      console.log('this.$refs.vTextField', this.$refs.vTextField)
+      // this.computedCounterValue = this.$refs.vTextField.computedCounterValue
+    },
+    methods: {
+      updateError (e) {
+        console.log(e)
+      },
     },
   }
 </script>
