@@ -58,6 +58,7 @@
                 <v-col :cols="'auto'">
                   <v-row no-gutters>
                     <v-btn
+                      v-if="!cert.quantity_unlimit"
                       :disabled="!!item.id"
                       small
                       icon
@@ -82,6 +83,7 @@
                       @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"
                     />
                     <v-btn
+                      v-if="!cert.quantity_unlimit"
                       :disabled="!!item.id"
                       small
                       icon

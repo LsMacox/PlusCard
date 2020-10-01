@@ -42,6 +42,21 @@ const mutations = {
     state.program = payload
     VueSession.set('program', payload)
   },
+  SET_FRIST_PROGRAM (state) {
+    let program = null
+    if (state.programs && state.programs.length > 0) {
+      program = state.programs[0]
+    }
+
+    state.program = program
+    VueSession.set('program', program)
+  },
+  DELETE_PROGRAM (state, id) {
+    const index = state.programs.findIndex(x => x.id === id)
+    if (index >= 0) {
+      state.programs.splice(index, 1)
+    }
+  },
   SET_PROGRAM_MODEL (state, payload) {
     state.programModel = payload
   },
@@ -105,6 +120,23 @@ const actions = {
     } catch (error) {
       throw error
     }
+  },
+
+  async Delete ({ commit }, programId) {
+     await ApiService.delete('/api-cabinet/company/delete', {
+        params: {
+          program_id: programId,
+        },
+      })
+
+      commit('DELETE_PROGRAM', programId)
+      commit('SET_FRIST_PROGRAM')
+
+      this._vm.$notify({
+        type: 'success',
+        title: 'Удаление компании',
+        text: 'Компания успешно удалена',
+      })
   },
 
   async updateInfo ({ commit }, item) {
