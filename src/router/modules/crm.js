@@ -2,7 +2,7 @@ export default {
     children: [
         {
             path: '/program/accounts',
-            component: () => import('@/views/SkeletonPage'),
+            component: () => import('@/views/crm/Client'),
             name: 'ProgramAccounts',
             meta: { auth: true, title: 'Клиенты', icon: 'dashboard' },
         },

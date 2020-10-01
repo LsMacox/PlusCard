@@ -87,7 +87,7 @@
 
 <script>
   import EmptySegment from './components/EmptySegment'
-  import SidePanelSegment from './components/SidePanelSegment'
+  import SidePanelSegment from './components/SidePanel/SidePanelSegment'
   import BaseTable from '@/components/base/BaseTable'
   import Convertor from '@/mixins/convertor'
 
@@ -138,7 +138,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 

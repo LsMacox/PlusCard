@@ -28,7 +28,13 @@
                   :key="header.text"
                   role="columnheader"
                   scope="col"
-                  :class="['sortable', header.value === pagination.sortBy ? pagination.descending === 'ascending' ? 'ask' : 'desc' : '', header.value === pagination.sortBy ? 'active' : '', i >= 2 ? 'text-end' : '']"
+                  :class="[
+                    {
+                      active: isValEqualSort = (header.value === pagination.sortBy),
+                      'text-end': i >= 2,
+                    },
+                    isValEqualSort ? (pagination.descending === 'descending' ? 'desc' : 'ask') : ''
+                  ]"
                   :aria-sort="header.value === pagination.sortBy ? pagination.descending : 'none'"
                   @click="changeSort(header.value)"
                 >
@@ -212,7 +218,7 @@
         return 1
       },
       inputListeners () {
-        var vm = this
+        var _this = this
         // `Object.assign` объединяет объекты вместе, чтобы получить новый объект
         return Object.assign({},
                              // Мы добавляем все слушатели из родителя
@@ -222,7 +228,7 @@
                              {
                                // Это обеспечит, что будет работать v-model на компоненте
                                input: function (event) {
-                                 vm.$emit('input', event.target.value)
+                                 _this.$emit('input', event.target.value)
                                },
                              },
         )

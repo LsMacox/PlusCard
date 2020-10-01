@@ -1,5 +1,5 @@
 <template>
-  <div class="b-segment__empty">
+  <div class="crm__empty b-segment__empty">
     <empty
       sub-text="Сегментируйте ваших клиентов, чтобы эффективнее управлять
      их вовлечением в вашу программу лояльности."
@@ -38,5 +38,5 @@
 </script>
 
 <style lang="scss" scoped>
-    @import "@/styles/vuetify-preset-plus/light_theme/crm/components/_empty-segment.scss";
+    @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 </style>

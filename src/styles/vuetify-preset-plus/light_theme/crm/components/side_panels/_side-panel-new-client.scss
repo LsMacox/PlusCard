@@ -1,0 +1,39 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+
+.panel-crm_new_client {
+    .panel-crm_new_client__form {
+        .panel-crm_segment__form-labels {
+            margin-left: 5px;
+            p {
+                margin-bottom: 6px;
+            }
+            .labels__sub-label {
+                margin-bottom: 20px;
+            }
+        }
+        .v-input__control {
+            position: relative;
+            .v-input__slot {
+                margin-bottom: 0 !important;
+            }
+
+            .v-text-field__details {
+                position: absolute;
+                top: -14px;
+                padding-left: 10px !important;
+            }
+        }
+    }
+    .panel-crm_new_client__switch {
+        margin-top: 8px;
+    }
+    .panel-crm_new_client__btn-add-client {
+        margin-top: 27px;
+        .icon-check-circle {
+            color: $neutral-100;
+        }
+        p {
+            margin: 0 0 0 10px;
+        }
+    }
+}
