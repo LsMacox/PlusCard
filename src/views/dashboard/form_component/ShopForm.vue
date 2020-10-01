@@ -25,10 +25,7 @@
       placeholder="Город, улица, дом"
       outlined
       style="width: 380px"
-      :rules="[
-        v => !!v || 'Адрес точки продаж обязателен',
-        v => v.length <= 250 || 'Адрес должен быть не более 250 символов',
-      ]"
+      :error-messages="addressErrors"
       @input="getAddressHandler"
     >
       <template slot="prepend-inner">
@@ -351,9 +348,11 @@
           const success = await ApiService.get(
             `/api-cabinet/company/shops/search?query=${v}`,
           )
+          console.log('GEO search string')
           console.log(success)
           // массив геообъектов
           const featureMembers = success.response.GeoObjectCollection.featureMember
+          console.log(featureMembers)
 
           if (featureMembers.length) {
             const featureMember = featureMembers[0]
@@ -367,14 +366,16 @@
               this.addressErrors = []
             } else {
               this.fullAddress = false
-              this.addressErrors = ['Введите полный адрес']
+              this.addressErrors = ['Укажите полный адрес']
             }
             if (pos) {
               pos = pos.split(' ')
-              this.coords = [pos[1], pos[0]]
-              this.editedShop.lat = this.coords[0]
-              this.editedShop.lng = this.coords[1]
-              this.editedShop.coords = this.coords
+              const coords = [pos[1], pos[0]]
+              this.editedShop.lat = coords[0]
+              this.editedShop.lng = coords[1]
+              this.editedShop.coords = coords
+
+              this.$store.commit('company/program/SET_MAP_CENTER', coords)
             }
             console.log(address)
             console.log(city)

@@ -28,6 +28,7 @@ const getDefaultState = () => {
         },
       ],
     },
+    mapCenter: [53.757592, 87.136173],
   }
 }
 
@@ -38,6 +39,7 @@ const mutations = {
   SET_PROGRAMS: (state, payload) => state.programs = payload,
   SET_SHOP_INDEX: (state, payload) => state.shopIndex = payload,
   SET_EDITED_SHOP: (state, payload) => state.editedShop = payload,
+  SET_MAP_CENTER: (state, payload) => state.mapCenter = payload,
   SET_PROGRAM (state, payload) {
     state.program = payload
     VueSession.set('program', payload)
@@ -262,8 +264,9 @@ const getters = {
   editedShop: state => state.editedShop,
   defaultShop: () => {
     const defState = getDefaultState()
-    return defState.editedShop
+    return JSON.parse(JSON.stringify(defState.editedShop))
   },
+  mapCenter: state => state.mapCenter,
 }
 
 export default {

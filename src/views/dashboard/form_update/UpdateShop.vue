@@ -157,7 +157,6 @@
           coordorder: 'latlong',
           version: '2.1',
         },
-        coords: [53.757592, 87.136173],
         zoom: 16,
         //
         loading: false,
@@ -256,6 +255,14 @@
           this.$store.commit('company/program/SET_SHOP_INDEX', v)
         },
       },
+      coords: {
+        get () {
+          return this.$store.getters['company/program/mapCenter']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_MAP_CENTER', v)
+        },
+      },
     },
     watch: {
       shopIndex (v) {
@@ -315,8 +322,6 @@
                 }
               })
             }
-
-            console.log(this.editedShop)
           }
         }
       },
@@ -414,7 +419,8 @@
         return wtNew
       },
       addShop () {
-        this.editedShop = this.$store.getters['company/program/defaultShop']
+        const shop = JSON.parse(JSON.stringify(this.$store.getters['company/program/defaultShop']))
+        this.editedShop = shop
         this.shopIndex = -1
       },
     },
