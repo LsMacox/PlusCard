@@ -67,8 +67,32 @@
       :key="globalIndex"
     >
       <div class="shop-form-control">
-        <div class="shop-form-label body-m-semibold">
-          Рабочие дни
+        <div
+          class="shop-form-label"
+          style="display: flex; align-items: center;"
+        >
+          <div class="body-m-semibold">
+            Рабочие дни
+          </div>
+          <div class="app__spacer" />
+          <div>
+            <v-btn
+              v-if="editedShop.workTimes.length > 1 && globalIndex !== 0"
+              color="#EA4C2A"
+              text
+              :ripple="false"
+              @click="removeWorkTime(globalIndex)"
+            >
+              <v-icon
+                width="18px"
+                heigth="18px"
+                style="margin-right: 5px;"
+              >
+                $iconify_feather-trash
+              </v-icon>
+              удалить
+            </v-btn>
+          </div>
         </div>
         <v-select
           v-model="worktime.days"
@@ -423,6 +447,9 @@
             },
           )
         }
+      },
+      removeWorkTime (i) {
+        if (this.editedShop.workTimes.length > 1) this.editedShop.workTimes.splice(i, 1)
       },
       getSelectedDays (array) {
         let str = ''
