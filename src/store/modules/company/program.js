@@ -10,6 +10,27 @@ const getDefaultState = () => {
     // -2 все окна закрыты
     // -1 открыто окно новой торговой точки
     shopIndex: -2, // индекс открытого окна торговой точки
+    editedShop: { // редактируемая торговая точка
+      name: '',
+      city: '',
+      address: '',
+      phone: '',
+      coords: [],
+      lat: '',
+      lng: '',
+      workTimes: [
+        {
+          startTime: '',
+          endTime: '',
+          days: [],
+          breakStart: '',
+          breakEnd: '',
+        },
+      ],
+    },
+    mapCenter: [53.757592, 87.136173],
+    fullAddress: false,
+    addressErrors: [],
   }
 }
 
@@ -19,6 +40,10 @@ const mutations = {
   RESET_STATE: (state) => Object.assign(state, getDefaultState()),
   SET_PROGRAMS: (state, payload) => state.programs = payload,
   SET_SHOP_INDEX: (state, payload) => state.shopIndex = payload,
+  SET_EDITED_SHOP: (state, payload) => state.editedShop = payload,
+  SET_MAP_CENTER: (state, payload) => state.mapCenter = payload,
+  SET_FULL_ADDRESS: (state, payload) => state.fullAddress = payload,
+  SET_ADDRESS_ERRORS: (state, payload) => state.addressErrors = payload,
   SET_PROGRAM (state, payload) {
     state.program = payload
     VueSession.set('program', payload)
@@ -240,6 +265,14 @@ const getters = {
   },
   shops: state => state.shops,
   shopIndex: state => state.shopIndex,
+  editedShop: state => state.editedShop,
+  defaultShop: () => {
+    const defState = getDefaultState()
+    return JSON.parse(JSON.stringify(defState.editedShop))
+  },
+  mapCenter: state => state.mapCenter,
+  fullAddress: state => state.fullAddress,
+  addressErrors: state => state.addressErrors,
 }
 
 export default {

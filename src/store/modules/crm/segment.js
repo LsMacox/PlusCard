@@ -3,39 +3,8 @@ import ApiService from '@/api/api-client'
 export default {
     namespaced: true,
     state: {
-        segments: 
-            [
-                {
-                    id: 1234,
-                    name: 'М 18-25 Выше среднего Москва',
-                    client_count: 12243,
-                    profit: 26328398,
-                    average_check: 8345,
-                    label_color: '#4776e6',
-                    client_cost: 314,
-                    description: 'Какое-то описание'
-                }, 
-                {
-                    id: 1236,
-                    name: 'Новые',
-                    client_count: 12243,
-                    profit: 26328398,
-                    average_check: 8345,
-                    label_color: '#95C5DA',
-                    client_cost: 314,
-                    description: 'Какое-то описание'
-                },
-                {
-                    id: 1233,
-                    name: 'Не лояльные',
-                    client_count: 12243,
-                    profit: 26328398,
-                    average_check: 8345,
-                    label_color: '#FFA338',
-                    client_cost: 314,
-                    description: 'Какое-то описание'
-                },
-            ]
+        loading: false,
+        segments: [],
     },
     mutations: {
         segments (state, payload) {
@@ -43,56 +12,70 @@ export default {
         },
 
         // === this mutator is for example === //
-        segmentUpdateById(state, payload) {
-            let editDataIndex = this._vm.$_.findIndex(state.segments, (o) => {
-                return o.id == payload.id
+        segmentUpdateById (state, payload) {
+            const editDataIndex = this._vm.$_.findIndex(state.segments, (o) => {
+                return o.id === payload.id
             })
-            Object.assign(state.segments[editDataIndex], payload.data)
+
+            Object.assign(state.segments[editDataIndex], payload)
         },
-        segmentDeleteById(state, id) {
-            let editDataIndex = this._vm.$_.findIndex(state.segments, (o) => {
-                return o.id == id
+        segmentDeleteById (state, payload) {
+            const deleteDataIndex = this._vm.$_.findIndex(state.segments, (o) => {
+                return o.id === payload.id
             })
-            state.segments.splice(editDataIndex, 1)
+            console.log('deleteDataIndex')
+            console.log(deleteDataIndex)
+            console.log('deleteDataIndex')
+            state.segments.splice(deleteDataIndex, 1)
         },
-        segmentCreate(state, payload) {
-            state.segments.push({
-                id: this._vm.$random.int(1000, 9999),
-                name: payload.name,
-                client_count: 12243,
-                profit: 26328398,
-                average_check: 8345,
-                client_cost: 314,
-                label_color: payload.color,
-                description: payload.description
-            })
-        }
+        segmentCreate (state, payload) {
+            console.log('mutation')
+            console.log(payload)
+            console.log('mutation')
+            state.segments.push(payload)
+        },
+        loading (state, payload) {
+            state.loading = payload
+        },
     },
     actions: {
-        async createSegment({ commit }, payload) {
-            // const result = await ApiService.post('/api-cabinet/crm/segment/create', segment)
+        async segments ({ commit }, payload) {
+            commit('loading', true)
+            console.log('table data.......')
 
-            // ==== Example ==== //
-            commit('segmentCreate', payload) // this mutator is for example
-            // ==== Example ==== // 
-
+            const result = await ApiService.get('/api-cabinet/program/client/segment/list', {
+                params: payload,
+            })
+            console.log('table data.......')
+            console.log(result)
+            console.log('table data.......')
             commit('segments', result)
+            commit('loading', false)
         },
-        async editSegment({ commit }, payload) {
-            // const result = await ApiService.putch('/api-cabinet/crm/segment/edit', segment)
+        async createSegment ({ commit }, payload) {
+            const result = await ApiService.post('/api-cabinet/program/client/segment/create', payload)
 
-            // ==== Example ==== //
-            commit('segmentUpdateById', payload) // this mutator is for example
-            // ==== Example ==== // 
+            commit('segmentCreate', result)
+        },
+        async editSegment ({ commit }, payload) {
+            console.log('editSegm')
+            console.log(payload)
+            console.log('editSegm')
+            const result = await ApiService.post('/api-cabinet/program/client/segment/update', payload)
+
+            commit('segmentUpdateById', result) // this mutator is for example
         },
 
-        async deleteSegment({ commit }, id) {
-            // const result = await ApiService.delete(`/api-cabinet/crm/segment/delete`, id)
+        async deleteSegment ({ commit }, payload) {
+            console.log('DELETE')
+            console.log(payload)
+            console.log('DELETE')
+            const result = await ApiService.delete('/api-cabinet/program/client/segment/delete', { params: payload })
 
-            // ==== Example ==== //
-            commit('segmentDeleteById', id) // this mutator is for example
-            // ==== Example ==== // 
-        }
+            if (result) {
+                commit('segmentDeleteById', result)
+            }
+        },
     },
     getters: {
         segments (state) {
