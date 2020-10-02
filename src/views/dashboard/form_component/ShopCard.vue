@@ -148,6 +148,8 @@
         }
       },
       updateShop () {
+        const item = JSON.parse(JSON.stringify(this.item))
+        this.$store.commit('company/program/SET_EDITED_SHOP', item)
         this.$emit('open')
       },
     },

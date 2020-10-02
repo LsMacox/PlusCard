@@ -1,12 +1,17 @@
 <template>
-  <div
+  <v-form
+    v-model="valid"
     class="shop-form"
     style="margin: 36px 0; padding-top: 24px;"
   >
     <v-text-field
-      v-model="newShop.name"
+      v-model="editedShop.name"
       placeholder="Введите название точки"
       outlined
+      :rules="[
+        v => !!v || 'Название точки продаж обязательно',
+        v => v.length <= 250 || 'Название должно быть не более 250 символов',
+      ]"
       style="width: 380px"
     >
       <template slot="prepend-inner">
@@ -16,11 +21,15 @@
       </template>
     </v-text-field>
     <v-text-field
-      v-model="newShop.address"
+      v-model="editedShop.address"
       placeholder="Город, улица, дом"
       outlined
       style="width: 380px"
       :error-messages="addressErrors"
+      :rules="[
+        v => !!v || 'Адрес точки продаж обязателен',
+        v => v.length <= 250 || 'Адрес должен быть не более 100 символов',
+      ]"
       @input="getAddressHandler"
     >
       <template slot="prepend-inner">
@@ -32,10 +41,14 @@
 
     <div>
       <v-text-field
-        v-model="newShop.phone"
+        v-model="editedShop.phone"
         placeholder="Введите телефон"
         outlined
         style="width: 380px"
+        :rules="[
+          v => !!v || 'Телефон точки продаж обязателен',
+          v => v.length <= 100 || 'Телефон должен быть не более 100 символов',
+        ]"
       >
         <template slot="prepend-inner">
           <div>
@@ -50,12 +63,36 @@
       -->
 
     <div
-      v-for="(worktime, globalIndex) in newShop.workTimes"
+      v-for="(worktime, globalIndex) in editedShop.workTimes"
       :key="globalIndex"
     >
       <div class="shop-form-control">
-        <div class="shop-form-label body-m-semibold">
-          Рабочие дни
+        <div
+          class="shop-form-label"
+          style="display: flex; align-items: center;"
+        >
+          <div class="body-m-semibold">
+            Рабочие дни
+          </div>
+          <div class="app__spacer" />
+          <div>
+            <v-btn
+              v-if="editedShop.workTimes.length > 1 && globalIndex !== 0"
+              color="#EA4C2A"
+              text
+              :ripple="false"
+              @click="removeWorkTime(globalIndex)"
+            >
+              <v-icon
+                width="18px"
+                heigth="18px"
+                style="margin-right: 5px;"
+              >
+                $iconify_feather-trash
+              </v-icon>
+              удалить
+            </v-btn>
+          </div>
         </div>
         <v-select
           v-model="worktime.days"
@@ -213,14 +250,14 @@
           small
           style="width: 265px; margin-right: 0"
           :loading="loading"
-          :disabled="!fullAddress"
+          :disabled="!valid || !fullAddress"
           @click="saveShop()"
         >
           Сохранить
         </v-btn>
       </div>
     </div>
-  </div>
+  </v-form>
 </template>
 
 <script>
@@ -229,22 +266,99 @@
 
   export default {
     directives: { mask },
-    props: {
-      item: {
-        type: Object,
-        default: {},
-      },
-    },
     data () {
       return {
+        valid: true,
         loading: false,
-        fullAddress: false, // метка полного адреса
-        newShopActive: false,
-        newShopEdit: false,
+        editedShopActive: false,
+        editedShopEdit: false,
         getAddressTimerId: null,
         actionsShow: false,
         openUpdate: false,
-        newShop: {
+        newWorkTime: [],
+        newBreakTime: [],
+        days: [
+          { id: 0, shortName: 'ПН', fullName: 'Понедельник' },
+          { id: 1, shortName: 'ВТ', fullName: 'Вторник' },
+          { id: 2, shortName: 'СР', fullName: 'Среда' },
+          { id: 3, shortName: 'ЧТ', fullName: 'Четверг' },
+          { id: 4, shortName: 'ПТ', fullName: 'Пятница' },
+          { id: 5, shortName: 'СБ', fullName: 'Суббота' },
+          { id: 6, shortName: 'ВС', fullName: 'Воскресенье' },
+        ],
+        copyModel: {},
+      }
+    },
+    computed: {
+      programModel () {
+        return this.$store.getters['company/program/programModel']
+      },
+      shops () {
+        return this.$store.getters['company/program/shops']
+      },
+      editedShop: {
+        get () {
+          return this.$store.getters['company/program/editedShop']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_EDITED_SHOP', v)
+        },
+      },
+      shopIndex () {
+        return this.$store.getters['company/program/shopIndex']
+      },
+      fullAddress: {
+        get () {
+          return this.$store.getters['company/program/fullAddress']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_FULL_ADDRESS', v)
+        },
+      },
+      addressErrors: {
+        get () {
+          return this.$store.getters['company/program/addressErrors']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_ADDRESS_ERRORS', v)
+        },
+      },
+      selectedDays () {
+        const array = []
+        /*
+        this.editedShop.workTimes.forEach(item => {
+          array = [...array, ...item.days]
+        })
+        */
+        // console.log('selectedDays', array)
+        return array
+      },
+      sorted_work_array () {
+        return this.sortById(this.editedShop.workTimes)
+      },
+    },
+    created () {
+      // обновление state
+      this.fullAddress = false
+      this.addressErrors = []
+      // есть id города
+      if (typeof this.editedShop.city_id === 'number') this.fullAddress = true
+      console.log(this.editedShop)
+      // копия редактируемой модели
+      this.copyModel = JSON.parse(JSON.stringify(this.editedShop))
+    },
+    methods: {
+      cancel () {
+        // сброс модели при отмене редактирования
+        this.shops.forEach((item, i) => {
+          if (i === this.shopIndex) {
+            this.shops[i] = JSON.parse(JSON.stringify(this.copyModel))
+          }
+        })
+        this.close()
+      },
+      close () {
+        this.editedShop = {
           name: '',
           city: '',
           address: '',
@@ -261,47 +375,7 @@
               breakEnd: '',
             },
           ],
-        },
-        newWorkTime: [],
-        newBreakTime: [],
-        addressErrors: [],
-        days: [
-          { id: 0, shortName: 'ПН', fullName: 'Понедельник' },
-          { id: 1, shortName: 'ВТ', fullName: 'Вторник' },
-          { id: 2, shortName: 'СР', fullName: 'Среда' },
-          { id: 3, shortName: 'ЧТ', fullName: 'Четверг' },
-          { id: 4, shortName: 'ПТ', fullName: 'Пятница' },
-          { id: 5, shortName: 'СБ', fullName: 'Суббота' },
-          { id: 6, shortName: 'ВС', fullName: 'Воскресенье' },
-        ],
-      }
-    },
-    computed: {
-      programModel () {
-        return this.$store.getters['company/program/programModel']
-      },
-      selectedDays () {
-        const array = []
-        /*
-        this.newShop.workTimes.forEach(item => {
-          array = [...array, ...item.days]
-        })
-        */
-        // console.log('selectedDays', array)
-        return array
-      },
-      sorted_work_array () {
-        return this.sortById(this.newShop.workTimes)
-      },
-    },
-    created () {
-      this.newShop = JSON.parse(JSON.stringify(this.item))
-      // есть id города
-      if (typeof this.newShop.city_id === 'number') this.fullAddress = true
-      console.log(this.newShop)
-    },
-    methods: {
-      cancel () {
+        }
         this.$emit('close')
       },
       /*
@@ -319,9 +393,11 @@
           const success = await ApiService.get(
             `/api-cabinet/company/shops/search?query=${v}`,
           )
+          console.log('GEO search string')
           console.log(success)
           // массив геообъектов
           const featureMembers = success.response.GeoObjectCollection.featureMember
+          console.log(featureMembers)
 
           if (featureMembers.length) {
             const featureMember = featureMembers[0]
@@ -335,20 +411,22 @@
               this.addressErrors = []
             } else {
               this.fullAddress = false
-              this.addressErrors = ['Введите полный адрес']
+              this.addressErrors = ['Укажите полный адрес']
             }
             if (pos) {
               pos = pos.split(' ')
-              this.coords = [pos[1], pos[0]]
-              this.newShop.lat = this.coords[0]
-              this.newShop.lng = this.coords[1]
-              this.newShop.coords = this.coords
+              const coords = [pos[1], pos[0]]
+              this.editedShop.lat = coords[0]
+              this.editedShop.lng = coords[1]
+              this.editedShop.coords = coords
+
+              this.$store.commit('company/program/SET_MAP_CENTER', coords)
             }
             console.log(address)
             console.log(city)
 
-            this.newShop.city_id = city ? city.name : null
-            // this.newShop.address = address
+            this.editedShop.city_id = city ? city.name : null
+            // this.editedShop.address = address
           }
         }
       },
@@ -356,10 +434,10 @@
        * рабочее время
        */
       addWorkTime () {
-        if (this.newShop.workTimes.length === 7) {
+        if (this.editedShop.workTimes.length === 7) {
           return false
         } else {
-          this.newShop.workTimes.push(
+          this.editedShop.workTimes.push(
             {
               startTime: '',
               endTime: '',
@@ -369,6 +447,9 @@
             },
           )
         }
+      },
+      removeWorkTime (i) {
+        if (this.editedShop.workTimes.length > 1) this.editedShop.workTimes.splice(i, 1)
       },
       getSelectedDays (array) {
         let str = ''
@@ -400,31 +481,31 @@
       },
       checkLength (label, index) {
         if (label === 'startTime') {
-          if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 2) {
-            this.newShop.workTimes[index].startTime += ':00'
-          } else if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 1) {
-            this.newShop.workTimes[index].startTime = '0' + this.newShop.workTimes[index].startTime + ':00'
+          if (this.editedShop.workTimes[index].startTime && this.editedShop.workTimes[index].startTime.length === 2) {
+            this.editedShop.workTimes[index].startTime += ':00'
+          } else if (this.editedShop.workTimes[index].startTime && this.editedShop.workTimes[index].startTime.length === 1) {
+            this.editedShop.workTimes[index].startTime = '0' + this.editedShop.workTimes[index].startTime + ':00'
           }
         }
         if (label === 'endTime') {
-          if (this.newShop.workTimes[index].endTime && this.newShop.workTimes[index].endTime.length === 2) {
-            this.newShop.workTimes[index].endTime += ':00'
-          } else if (this.newShop.workTimes[index].endTime && this.newShop.workTimes[index].endTime.length === 1) {
-            this.newShop.workTimes[index].endTime = '0' + this.newShop.workTimes[index].endTime + ':00'
+          if (this.editedShop.workTimes[index].endTime && this.editedShop.workTimes[index].endTime.length === 2) {
+            this.editedShop.workTimes[index].endTime += ':00'
+          } else if (this.editedShop.workTimes[index].endTime && this.editedShop.workTimes[index].endTime.length === 1) {
+            this.editedShop.workTimes[index].endTime = '0' + this.editedShop.workTimes[index].endTime + ':00'
           }
         }
         if (label === 'breakStart') {
-          if (this.newShop.workTimes[index].breakStart && this.newShop.workTimes[index].breakStart.length === 2) {
-            this.newShop.workTimes[index].breakStart += ':00'
-          } else if (this.newShop.workTimes[index].breakStart && this.newShop.workTimes[index].breakStart.length === 1) {
-            this.newShop.workTimes[index].breakStart = '0' + this.newShop.workTimes[index].breakStart + ':00'
+          if (this.editedShop.workTimes[index].breakStart && this.editedShop.workTimes[index].breakStart.length === 2) {
+            this.editedShop.workTimes[index].breakStart += ':00'
+          } else if (this.editedShop.workTimes[index].breakStart && this.editedShop.workTimes[index].breakStart.length === 1) {
+            this.editedShop.workTimes[index].breakStart = '0' + this.editedShop.workTimes[index].breakStart + ':00'
           }
         }
         if (label === 'breakEnd') {
-          if (this.newShop.workTimes[index].breakEnd && this.newShop.workTimes[index].breakEnd.length === 2) {
-            this.newShop.workTimes[index].breakEnd += ':00'
-          } else if (this.newShop.workTimes[index].breakEnd && this.newShop.workTimes[index].breakEnd.length === 1) {
-            this.newShop.workTimes[index].breakEnd = '0' + this.newShop.workTimes[index].breakEnd + ':00'
+          if (this.editedShop.workTimes[index].breakEnd && this.editedShop.workTimes[index].breakEnd.length === 2) {
+            this.editedShop.workTimes[index].breakEnd += ':00'
+          } else if (this.editedShop.workTimes[index].breakEnd && this.editedShop.workTimes[index].breakEnd.length === 1) {
+            this.editedShop.workTimes[index].breakEnd = '0' + this.editedShop.workTimes[index].breakEnd + ':00'
           }
         }
       },
@@ -579,52 +660,52 @@
       },
       async saveShop () {
         let work = ''
-        for (let i = 0; i < this.newShop.workTimes.length; i++) {
-          // console.log('work item', this.getSelectedDays(this.newShop.workTimes[i].days))
-          if (this.newShop.workTimes[i].startTime && this.newShop.workTimes[i].startTime.length === 2) {
-            this.newShop.workTimes[i].startTime += ':00'
+        for (let i = 0; i < this.editedShop.workTimes.length; i++) {
+          // console.log('work item', this.getSelectedDays(this.editedShop.workTimes[i].days))
+          if (this.editedShop.workTimes[i].startTime && this.editedShop.workTimes[i].startTime.length === 2) {
+            this.editedShop.workTimes[i].startTime += ':00'
           }
-          if (this.newShop.workTimes[i].endTime && this.newShop.workTimes[i].endTime.length === 2) {
-            this.newShop.workTimes[i].endTime += ':00'
+          if (this.editedShop.workTimes[i].endTime && this.editedShop.workTimes[i].endTime.length === 2) {
+            this.editedShop.workTimes[i].endTime += ':00'
           }
-          if (this.newShop.workTimes[i].breakStart && this.newShop.workTimes[i].breakStart.length === 2) {
-            this.newShop.workTimes[i].breakStart += ':00'
+          if (this.editedShop.workTimes[i].breakStart && this.editedShop.workTimes[i].breakStart.length === 2) {
+            this.editedShop.workTimes[i].breakStart += ':00'
           }
-          if (this.newShop.workTimes[i].breakEnd && this.newShop.workTimes[i].breakEnd.length === 2) {
-            this.newShop.workTimes[i].breakEnd += ':00'
+          if (this.editedShop.workTimes[i].breakEnd && this.editedShop.workTimes[i].breakEnd.length === 2) {
+            this.editedShop.workTimes[i].breakEnd += ':00'
           }
-          work += this.getSelectedDays(this.newShop.workTimes[i].days) + ' ' + this.newShop.workTimes[i].startTime + '-' + this.newShop.workTimes[i].endTime + '|' + this.newShop.workTimes[i].breakStart + '-' + this.newShop.workTimes[i].breakEnd + '\n'
+          work += this.getSelectedDays(this.editedShop.workTimes[i].days) + ' ' + this.editedShop.workTimes[i].startTime + '-' + this.editedShop.workTimes[i].endTime + '|' + this.editedShop.workTimes[i].breakStart + '-' + this.editedShop.workTimes[i].breakEnd + '\n'
         }
-        if (this.newShopEdit) this.newShopEdit = false
-        this.newShop.worktime = work
-        this.newShop.workTimes = this.sortById(this.newShop.workTimes)
-        this.newShop.worktime_json = JSON.stringify(this.newShop.workTimes)
+        if (this.editedShopEdit) this.editedShopEdit = false
+        this.editedShop.worktime = work
+        this.editedShop.workTimes = this.sortById(this.editedShop.workTimes)
+        this.editedShop.worktime_json = JSON.stringify(this.editedShop.workTimes)
 
         /*
-        this.shops.push(this.newShop)
-        console.log('this.shops.push(this.newShop)')
+        this.shops.push(this.editedShop)
+        console.log('this.shops.push(this.editedShop)')
         console.log(this.shops)
         */
 
-        console.log(this.newShop)
+        console.log(this.editedShop)
 
         try {
           this.loading = true
           const item = {
-            id: this.newShop.id,
+            id: this.editedShop.id,
             program_id: this.programModel.id,
-            name: this.newShop.name,
-            city_id: this.newShop.city_id,
-            address: this.newShop.address,
-            phone: this.newShop.phone,
-            worktime_json: this.setWorkTime(this.newShop.worktime_json),
-            lat: String(Number(this.newShop.coords[0]).toFixed(6)),
-            lng: String(Number(this.newShop.coords[1]).toFixed(6)),
+            name: this.editedShop.name,
+            city_id: this.editedShop.city_id,
+            address: this.editedShop.address,
+            phone: this.editedShop.phone,
+            worktime_json: this.setWorkTime(this.editedShop.worktime_json),
+            lat: String(Number(this.editedShop.coords[0]).toFixed(6)),
+            lng: String(Number(this.editedShop.coords[1]).toFixed(6)),
           }
           console.log(item)
           if (item.id) await this.$store.dispatch('company/program/updateShop', item)
           else await this.$store.dispatch('company/program/createShop', item)
-          this.cancel()
+          this.close()
         } finally {
           this.loading = false
         }
