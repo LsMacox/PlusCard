@@ -20,6 +20,8 @@ import './plugins/base'
 import vuetify from './plugins/vuetify'
 import './plugins/iconify'
 
+import VueMaskDirective from './plugins/mask'
+
 import i18n from './i18n'
 
 import './AuthGuard'
@@ -42,8 +44,9 @@ import VueUnderScore from 'vue-underscore'
 import { IsDebugQuery } from './router/router-handler-log'
 
 import VueClipboard from 'vue-clipboard2'
- 
 
+// Vue mask
+Vue.directive('mask', VueMaskDirective)
 
 //
 // Vue.use(DateRangePicker)
@@ -109,8 +112,8 @@ const App = new Vue({
   router,
   store,
   vuetify,
-  i18n, 
-  async created () {    
+  i18n,
+  async created () {
     // устройство
     await this.$store.dispatch('auth/auth/InitDevice')
   },
@@ -119,6 +122,4 @@ const App = new Vue({
 
 App.$mount('#app')
 
-
 Vue.prototype.$app = App
-

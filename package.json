@@ -32,6 +32,7 @@
     "sharp": "^0.25.4",
     "style-loader": "^1.2.1",
     "url-loader": "^4.1.0",
+    "v-mask": "^2.2.3",
     "vue": "^2.6.12",
     "vue-clipboard2": "^0.3.1",
     "vue-i18n": "^8.15.3",
