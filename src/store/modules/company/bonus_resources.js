@@ -1,4 +1,5 @@
 import ApiService from '@/api/api-client'
+import Vue from 'vue'
 
 export default {
     namespaced: true,
@@ -20,47 +21,76 @@ export default {
         activeBonusResourcesShort (state, payload) {
             state.activeBonusResourcesShort = payload
         },
-        updateBonusResources (state, newItem) {
+        UPDATE_BONUS_RESOURCE (state, newItem) {
             const index = state.bonusResources.findIndex(
                 (x) => x.id === newItem.id,
             )
             Vue.set(state.bonusResources, index, newItem)
         },
-        addBonusResources (state, newItem) {
+        ADD_BONUS_RESOURCE (state, newItem) {
             state.bonusResources.push(newItem)
         },
-        removeBonusResources (state, id) {
+        REMOVE_BONUS_RESOURCE (state, id) {
             const index = state.bonusResources.findIndex((x) => x.id === id)
             state.bonusResources.splice(index, 1)
         },
     },
     actions: {
-        async get_list ({ commit }, id) {
-            ApiService
-                .get(
-                    `/api-cabinet/program/bonus_resources/list?program_id=${id}`,
-                    {
-                        headers: {
-                            'Content-Type': 'multipart/form-data',
-                        },
-                    },
-                )
-                .then((response) => {
-                    /// /console.log('brand/bonus_resources/get_list')
-                    /// /console.log(response.data.data)
-                    commit('bonusResources', response.data.data)
+        async GetList ({ commit }, programId) {
+            const result = await ApiService.get(
+                `/api-cabinet/program/bonus_resources/list?program_id=${programId}`,
+            )
+
+            commit('bonusResources', result)
+        },
+
+        async DeleteBonusRes ({ commit }, id) {
+            await ApiService.delete(
+                `/api-cabinet/program/bonus_resources/delete?id=${id}`,
+            )
+
+            commit('REMOVE_BONUS_RESOURCE', id)
+
+            this._vm.$notify({
+                title: 'Удаление бонусной операции',
+                text: 'Бонусная операция успешно удалена',
+                type: 'success',
+            })
+        },
+        async CreateBonusRes ({ commit }, { bonusRes, silent }) {
+            const result = await ApiService.post(
+                '/api-cabinet/program/bonus_resources/add',
+                bonusRes,
+            )
+
+            commit('ADD_BONUS_RESOURCE', result)
+            if (!silent) {
+                this._vm.$notify({
+                    title: 'Создание бонусной операции',
+                    text: `Бонусная операция "${result.title}" успешно создана`,
+                    type: 'success',
                 })
-                .catch((error) => {
-                    if (error.response) {
-                        /// /console.log(JSON.stringify(error.response.data));
-                    }
+            }
+        },
+        async UpdateBonusRes ({ commit }, { bonusRes, silent }) {
+            const result = await ApiService.post(
+                '/api-cabinet/program/bonus_resources/update',
+                bonusRes,
+            )
+
+            commit('UPDATE_BONUS_RESOURCE', result)
+            if (!silent) {
+                this._vm.$notify({
+                    title: 'Обновление бонусной операции',
+                    text: `Бонусная операция "${result.title}" успешно обновлена`,
+                    type: 'success',
                 })
+            }
         },
         async get_active_list ({ commit }, id) {
-            ApiService
-                .get(
-                    `/api-cabinet/program/bonus_resources/list?program_id=${id}&active=1`,
-                )
+            ApiService.get(
+                `/api-cabinet/program/bonus_resources/list?program_id=${id}&active=1`,
+            )
                 .then((response) => {
                     commit('activeBonusResources', response.data.data)
                 })
@@ -71,17 +101,36 @@ export default {
                 })
         },
         async GetActiveShortList ({ commit }, id) {
-          const response = await ApiService.get('/api-cabinet/program/bonus/resource/list/short?program_id=' + id)
-          // console.log('GetActiveShortList')
-          // console.log(response)
-          commit('activeBonusResourcesShort', response)
-          return response
-      },
+            const response = await ApiService.get(
+                '/api-cabinet/program/bonus/resource/list/short?program_id=' +
+                    id,
+            )
+            // console.log('GetActiveShortList')
+            // console.log(response)
+            commit('activeBonusResourcesShort', response)
+            return response
+        },
     },
     getters: {
         bonusResources (state) {
             return state.bonusResources
         },
+        buyBonusRes (state) {
+            return state.bonusResources.filter(
+                (item) =>
+                    item.rules &&
+                    item.rules.event === 'App\\Events\\AccountBuyEvent',
+            )
+        },
+        buyBonusResActive (state, getters) {
+            return getters.buyBonusRes.filter(
+                (item) => item.bonus_score && item.bonus_score.active,
+            )
+        },
+        existsBuyBonusResActive (state, getters) {
+            return getters.buyBonusResActive.length > 0
+        },
+        //
         activeBonusResources (state) {
             return state.activeBonusResources
         },

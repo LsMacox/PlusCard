@@ -38,15 +38,15 @@
               }"
             />
             <ymap-marker
-              v-if="newShop.name && newShop.coords"
+              v-if="shopIndex === -1"
               :marker-id="shops.length"
-              :coords="newShop.coords"
+              :coords="editedShop.coords"
               :icon="{
                 layout: 'default#imageWithContent',
                 imageHref: require('@/assets/svg/Bottom-tail.svg'),
                 imageSize: [150, 55],
                 imageOffset: [-75, -50],
-                content: newShop.name,
+                content: editedShop.name,
                 contentOffset: [0, 0],
                 contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
               }"
@@ -104,7 +104,6 @@
             style="margin: 36px 0 0 0;"
           >
             <shop-form
-              :item="newShop"
               @close="shopIndex = -2"
             />
           </div>
@@ -117,7 +116,7 @@
               color="primary"
               :text="true"
               style="padding: 0 !important;"
-              @click="shopIndex = -1"
+              @click="addShop()"
             >
               <v-icon style="margin-right: 5px;">
                 $iconify_feather-plus-circle
@@ -158,7 +157,6 @@
           coordorder: 'latlong',
           version: '2.1',
         },
-        coords: [53.757592, 87.136173],
         zoom: 16,
         //
         loading: false,
@@ -241,6 +239,14 @@
       merchant_id () {
         return JSON.parse(localStorage.getItem('vue-session-key')).merchant_id
       },
+      editedShop: {
+        get () {
+          return this.$store.getters['company/program/editedShop']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_EDITED_SHOP', v)
+        },
+      },
       shopIndex: {
         get () {
           return this.$store.getters['company/program/shopIndex']
@@ -248,6 +254,40 @@
         set (v) {
           this.$store.commit('company/program/SET_SHOP_INDEX', v)
         },
+      },
+      coords: {
+        get () {
+          return this.$store.getters['company/program/mapCenter']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_MAP_CENTER', v)
+        },
+      },
+      fullAddress: {
+        get () {
+          return this.$store.getters['company/program/fullAddress']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_FULL_ADDRESS', v)
+        },
+      },
+      addressErrors: {
+        get () {
+          return this.$store.getters['company/program/addressErrors']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_ADDRESS_ERRORS', v)
+        },
+      },
+    },
+    watch: {
+      shopIndex (v) {
+        if (v >= 0) {
+          const shop = this.shops.find((item, i) => i === v)
+          if (shop) {
+            this.coords = [shop.lat, shop.lng]
+          }
+        }
       },
     },
     created () {
@@ -258,7 +298,7 @@
       async setMarker (e) {
         // не делаем запрос если
         // не открыта карточка торговой точки
-        if (this.openCreateForm || this.newShopEdit) {
+        if (this.shopIndex !== -2) {
           this.coords = e.get('coords')
           const queryCoords = this.coords[1] + ',' + this.coords[0]
           const success = await ApiService.get(
@@ -283,11 +323,21 @@
             console.log(address)
             console.log(city)
 
-            this.newShop.city = city ? city.name : null
-            this.newShop.address = address
-            this.newShop.lat = this.coords[0]
-            this.newShop.lng = this.coords[1]
-            this.newShop.coords = this.coords
+            this.editedShop.city_id = city ? city.name : null
+            this.editedShop.address = address
+            this.editedShop.lat = this.coords[0]
+            this.editedShop.lng = this.coords[1]
+            this.editedShop.coords = this.coords
+
+            // обновление координат при редактировании магазина
+            if (this.shopIndex >= 0) {
+              this.shops.forEach((item, i) => {
+                if (i === this.shopIndex) {
+                  item.lat = this.coords[0]
+                  item.lng = this.coords[1]
+                }
+              })
+            }
           }
         }
       },
@@ -382,9 +432,12 @@
           }
         }
 
-        console.log(wtNew)
-
         return wtNew
+      },
+      addShop () {
+        const shop = JSON.parse(JSON.stringify(this.$store.getters['company/program/defaultShop']))
+        this.editedShop = shop
+        this.shopIndex = -1
       },
     },
   }

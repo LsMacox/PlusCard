@@ -19,8 +19,9 @@
               вариантов начисления - добавьте еще одну операцию.
             </p>
           </div>
+
           <div
-            v-if="items.length === 0"
+            v-if="bonusUnits.length === 0"
             class="select-input-wrap"
           >
             <input
@@ -48,85 +49,40 @@
             </v-btn>
           </div>
           <div
-            v-for="(accrual, accrualIndex) in itemsAccrual"
-            :key="accrual.id"
+            v-for="(accrual, accrualIndex) in buyBonusResSource"
+            :key="accrualIndex"
             class="select-input-accrual-bonuses"
           >
             <div class="wrap-input">
               <input
-                v-model="accrual.countBy"
+                v-model="accrual.rules.percent"
                 type="text"
                 class="input-bonuses shopping-inp input-sm"
                 placeholder="% от покупки"
-                @input="accrual.countBy = checkMathRound($event.target.value)"
+                @input="accrual.rules.percent = checkMathRound($event.target.value)"
               >
-              <v-menu offset-y>
-                <template v-slot:activator="{ on, attrs }">
-                  <button
-                    v-bind="attrs"
-                    class="custom-drop-down"
-                    :class="attrs['aria-expanded'] === 'true' ? 'border-bottom-not-round' : ''"
-                    v-on="on"
-                  >
-                    <span :class="attrs['aria-expanded'] === 'true' ? '' : 'hide-img'">Выберите валюту</span>
-                    <span :class="attrs['aria-expanded'] === 'false' ? '' : 'hide-img'">{{ accrual.selectName }}</span>
-                    <img
-                      :class="attrs['aria-expanded'] === 'false' ? '' : 'hide-img'"
-                      src="@/icons/svg/triangle-down.svg"
-                    >
-                    <img
-                      :class="attrs['aria-expanded'] === 'true' ? '' : 'hide-img'"
-                      src="@/icons/svg/triangle-up.svg"
-                    >
-                  </button>
-                </template>
-                <v-list class="list-own-padding">
-                  <v-list-item
-                    v-for="(item, index) in items"
-                    :key="index"
-                    @click="selectBonuses(item, accrual, 'itemsAccrual')"
-                    @mouseover="checkSelectAndHover(item, accrual, 'itemsAccrual')"
-                    @mouseleave="checkSelectAndHoverLeave(item, accrual, 'itemsAccrual')"
-                  >
-                    <v-list-item-title>
-                      <div class="item-select">
-                        {{ item.nameBonuses }} <img
-                          v-if="item.nameBonuses === accrual.selectName && !accrual.setting"
-                          src="@/icons/svg/check.svg"
-                        >
-                        <img
-                          v-if="item.nameBonuses === accrual.selectName && accrual.setting"
-                          src="@/icons/svg/settings.svg"
-                          @click="changeBonuses(item)"
-                        >
-                      </div>
-                    </v-list-item-title>
-                  </v-list-item>
-                </v-list>
-                <v-list class="list-own-padding">
-                  <div
-                    class="btn-inside-select"
-                    @click="createBonusesCurrency"
-                  >
-                    <img
-                      src="@/icons/svg/plus-circle.svg"
-                    >
-                    Добавить новую валюту
-                  </div>
-                </v-list>
-              </v-menu>
+
+              <bonus-unit-select
+                v-model="accrual.bonus_score.units_id"
+                :disabled="!accrual.isNew"
+                :bonus-unit-list="bonusUnits"
+                v-on="$listeners"
+              />
+
               <div class="wrap-circle">
-                <div
-                  v-if="(accrual.nameOperation === '' || accrual.nameOperation !== '') && accrual.id >= 2"
+                <v-btn
+                  v-if="buyBonusResSource.length > 1"
+                  icon
                   class="simple-circle mines-right"
-                  @click="deleteAccrualOrMagazine(accrualIndex, 'itemsAccrual')"
+                  :loading="accrual.deleteAction"
+                  @click="deleteBonusRes(accrual)"
                 >
                   <img src="@/icons/svg/mines.svg">
-                </div>
+                </v-btn>
                 <div
-                  v-if="accrual.nameOperation === '' || accrual.nameOperation !== ''"
+                  v-if="true"
                   class="simple-circle mines-right"
-                  @click="createNewAccrual(accrual.selectName)"
+                  @click="addNewBonusRes('TYPE_SOURCE')"
                 >
                   <img src="@/icons/svg/plus.svg">
                 </div>
@@ -134,13 +90,13 @@
             </div>
             <div>
               <input
-                v-if="accrual.nameOperation !== undefined"
-                v-model="accrual.nameOperation"
+                v-model="accrual.title"
                 type="text"
                 class="input-bonuses input-big-name input-lg-l"
                 placeholder="Введите название операции, чтобы не запутаться"
               >
             </div>
+
             <div class="time-bonuses">
               <div class="first-step-switch">
                 <v-switch
@@ -183,12 +139,32 @@
                 </div>
               </div>
             </div>
+            <div class="first-step-switch">
+              <v-switch
+                v-model="accrual.can_app_usage"
+                inset
+                class="custom-switch"
+              />
+              <div v-if="accrual.can_app_usage">
+                <h3 class="desc-15">
+                  Разрешить использование менеджером
+                </h3>
+              </div>
+              <div
+                v-else
+                class="container-input-counter"
+              >
+                <p class="desc-15">
+                  Запрещено использование менеджером
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <div
         class="magazine-wrap"
-        :class="[itemsMagazine.length === 0 ? 'disabled-block' : '']"
+        :class="[(dbBuyBonusRes.length === 0 && false) ? 'disabled-block' : '']"
       >
         <div class="step">
           2
@@ -206,7 +182,7 @@
             </p>
           </div>
           <div
-            v-if="itemsMagazine.length === 0"
+            v-if="(dbBuyBonusRes.length === 0 && false) "
             class="select-input-wrap"
           >
             <input
@@ -225,85 +201,39 @@
           </div>
           <template v-else>
             <div
-              v-for="(magazine, magazineIndex) in itemsMagazine"
-              :key="magazine.id"
+              v-for="(magazine, magazineIndex) in buyBonusResTarget"
+              :key="magazineIndex"
               class="select-input-accrual-bonuses"
             >
               <div class="wrap-input">
                 <input
-                  v-model="magazine.countBy"
-                  type="text"
+                  v-model.number="magazine.rules.percent"
+                  type="number"
                   class="input-bonuses shopping-inp input-sm"
                   placeholder="% от покупки"
-                  @input="magazine.countBy = checkMathRound($event.target.value)"
                 >
-                <v-menu offset-y>
-                  <template v-slot:activator="{ on, attrs }">
-                    <button
-                      v-bind="attrs"
-                      class="custom-drop-down"
-                      :class="attrs['aria-expanded'] === 'true' ? 'border-bottom-not-round' : ''"
-                      v-on="on"
-                    >
-                      <span :class="attrs['aria-expanded'] === 'true' ? '' : 'hide-img'">Выберите валюту</span>
-                      <span :class="attrs['aria-expanded'] === 'false' ? '' : 'hide-img'">{{ magazine.selectName }}</span>
-                      <img
-                        :class="attrs['aria-expanded'] === 'false' ? '' : 'hide-img'"
-                        src="@/icons/svg/triangle-down.svg"
-                      >
-                      <img
-                        :class="attrs['aria-expanded'] === 'true' ? '' : 'hide-img'"
-                        src="@/icons/svg/triangle-up.svg"
-                      >
-                    </button>
-                  </template>
-                  <v-list class="list-own-padding">
-                    <v-list-item
-                      v-for="(item, index) in items"
-                      :key="index"
-                      @click="selectBonuses(item, magazine, 'itemsMagazine')"
-                      @mouseover="checkSelectAndHover(item, magazine, 'itemsMagazine')"
-                      @mouseleave="checkSelectAndHoverLeave(item, magazine, 'itemsMagazine')"
-                    >
-                      <v-list-item-title>
-                        <div class="item-select">
-                          {{ item.nameBonuses }} <img
-                            v-if="item.nameBonuses === magazine.selectName && !magazine.setting"
-                            src="@/icons/svg/check.svg"
-                          >
-                          <img
-                            v-if="item.nameBonuses === magazine.selectName && magazine.setting"
-                            src="@/icons/svg/settings.svg"
-                            @click="changeBonuses(item)"
-                          >
-                        </div>
-                      </v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                  <v-list class="list-own-padding">
-                    <div
-                      class="btn-inside-select"
-                      @click="createBonusesCurrency"
-                    >
-                      <img
-                        src="@/icons/svg/plus-circle.svg"
-                      >
-                      Добавить новую валюту
-                    </div>
-                  </v-list>
-                </v-menu>
+                <!-- @input="magazine.rules.percent = checkMathRound($event.target.value)" -->
+                <bonus-unit-select
+                  v-model="magazine.bonus_score.units_id"
+                  :disabled="!magazine.isNew"
+                  :bonus-unit-list="bonusUnits"
+                  v-on="$listeners"
+                />
+
                 <div class="wrap-circle">
-                  <div
-                    v-if="(magazine.nameOperation === '' || magazine.nameOperation !== '') && magazine.id >= 2"
+                  <v-btn
+                    v-if="buyBonusResTarget.length > 1"
+                    icon
+                    :loading="magazine.deleteAction"
                     class="simple-circle mines-right"
-                    @click="deleteAccrualOrMagazine(magazineIndex, 'itemsMagazine')"
+                    @click="deleteBonusRes(magazine)"
                   >
                     <img src="@/icons/svg/mines.svg">
-                  </div>
+                  </v-btn>
                   <div
                     v-if="magazine.nameOperation === '' || magazine.nameOperation !== ''"
                     class="simple-circle mines-right"
-                    @click="createNewMagazine(magazine.selectName)"
+                    @click="addNewBonusRes('TYPE_TARGET')"
                   >
                     <img src="@/icons/svg/plus.svg">
                   </div>
@@ -311,34 +241,53 @@
               </div>
               <div>
                 <input
-                  v-if="magazine.nameOperation !== undefined"
-                  v-model="magazine.nameOperation"
+                  v-model="magazine.title"
                   type="text"
                   class="input-bonuses input-big-name input-lg-l"
                   placeholder="Введите название операции, чтобы не запутаться"
                 >
+              </div>
+              <div class="first-step-switch">
+                <v-switch
+                  v-model="magazine.can_app_usage"
+                  inset
+                  class="custom-switch"
+                />
+                <div v-if="magazine.can_app_usage">
+                  <h3 class="desc-15">
+                    Разрешить использование менеджером
+                  </h3>
+                </div>
+                <div
+                  v-else
+                  class="container-input-counter"
+                >
+                  <p class="desc-15">
+                    Запрещено использование менеджером
+                  </p>
+                </div>
               </div>
             </div>
           </template>
         </div>
       </div>
       <div
-        v-if="checkValidInput"
+        v-if="hasChanges && valid"
         class="save-currency"
       >
         <v-btn
-          small
-          class="custom-gradient-bg"
-          max-width="305px"
-          width="100%"
-          max-height="45px"
-          height="100%"
-          @click="saveChange"
+
+          color="primary"
+          :loading="saveChangesActive"
+          @click="saveChanges"
         >
-          <img
+          <!-- <img
             src="@/icons/svg/checkmark-circle-outline.svg"
             class="img-circle"
-          >
+          > -->
+          <v-icon left>
+            $iconify_ion-checkmark-circle-outline
+          </v-icon>
           Сохранить настройки механики
         </v-btn>
       </div>
@@ -348,8 +297,13 @@
 
 <script>
   import { mapMutations, mapGetters } from 'vuex'
+  import Vue from 'vue'
+
   export default {
     name: 'Basic',
+    components: {
+      BonusUnitSelect: () => import('../../BonusUnitSelect'),
+    },
     data () {
       return {
         inputShow: '',
@@ -364,20 +318,75 @@
         itemsAccrual: [],
         itemsMagazine: [],
         nameSelectNeedGet: '',
+        // -
+        buyBonusResInternal: [],
+        saveChangesActive: false,
       }
     },
+
     computed: {
+      ...mapGetters({
+        bonusUnits: 'company/bonus_units/bonusUnits',
+        dbBuyBonusRes: 'company/bonus_resources/buyBonusRes',
+      }),
+      programId () {
+        return this.$store.getters.programId
+      },
       ...mapGetters({
         getBonusesItems: 'createBonusesCurrency/create_bonuses_currency/getBonusesItems',
         getAccrualBonuses: 'createBonusesCurrency/create_bonuses_currency/getAccrualBonuses',
         getMagazineBonuses: 'createBonusesCurrency/create_bonuses_currency/getMagazineBonuses',
         getWhatSelect: 'createBonusesCurrency/create_bonuses_currency/getWhatSelect',
       }),
+
+      buyBonusRes () {
+        return this.buyBonusResInternal.map(item => {
+          Vue.set(item, 'deleteAction', false)
+          return item
+        })
+      },
+      buyBonusResSource () {
+        return this.buyBonusRes.filter(this.isSourceFilter)
+      },
+      buyBonusResTarget () {
+        return this.buyBonusRes.filter(this.isTargetFilter)
+      },
+
       checkValidInput () {
         const notValid = this.itemsAccrual.filter(item => {
           return (item.nameOperation !== '' || item.nameOperation === undefined) && item.countBy !== ''
         })
         return (this.itemsAccrual.length === notValid.length) && (this.itemsAccrual.length >= 1)
+      },
+      hasChanges () {
+        return JSON.stringify(this.dbBuyBonusRes.map(this.getEditedObject)) !==
+          JSON.stringify(this.buyBonusResInternal.map(this.getEditedObject))
+      },
+      valid () {
+        return true
+      },
+    },
+    watch: {
+      getBonusesItems (val) {
+        this.items = val
+      },
+      getAccrualBonuses (val) {
+        this.itemsAccrual = val
+      },
+      getMagazineBonuses (val) {
+        this.itemsMagazine = val
+      },
+      getWhatSelect (val) {
+        for (let i = 0; i < this.itemsAccrual.length; i++) {
+          if (this.itemsAccrual[i].selectName === this.nameSelectNeedGet) {
+            this.itemsAccrual[i].selectName = val.nameBonuses
+          }
+        }
+        for (let i = 0; i < this.itemsMagazine.length; i++) {
+          if (this.itemsMagazine[i].selectName === this.nameSelectNeedGet) {
+            this.itemsMagazine[i].selectName = val.nameBonuses
+          }
+        }
       },
     },
     methods: {
@@ -387,6 +396,52 @@
           updateBonusesItem: 'createBonusesCurrency/create_bonuses_currency/updateBonusesItem',
           resetState: 'createBonusesCurrency/create_bonuses_currency/resetState',
         }),
+
+      async deleteBonusRes (bonusRes) {
+        try {
+          bonusRes.deleteAction = true
+          const index = this.buyBonusResInternal.findIndex(x => x.id === bonusRes.id)
+          if (index >= 0) {
+            const item = this.buyBonusResInternal[index]
+            if (!item.isNew) {
+              await this.$store.dispatch('company/bonus_resources/DeleteBonusRes', bonusRes.id)
+            }
+            this.buyBonusResInternal.splice(index, 1)
+          }
+        } catch (error) {
+          console.error(error)
+        } finally {
+          bonusRes.deleteAction = false
+        }
+      },
+
+      addNewBonusRes (type = 'TYPE_SOURCE') {
+        console.log('addNewBonusRes')
+        this.buyBonusResInternal.push({
+          id: this.$uuid(),
+          isNew: true,
+          program_id: this.programId,
+          title: '',
+          description: '',
+          resource_type_enum: type,
+          bonus_score: {
+            units_id: null,
+          },
+          can_app_usage: false,
+          rules: {
+            event: 'App\\Events\\AccountBuyEvent',
+            percent: null,
+            expired_days: null,
+          },
+        })
+      },
+
+      isSourceFilter (item) {
+        return item.resource_type_enum === 'TYPE_SOURCE'
+      },
+      isTargetFilter (item) {
+        return item.resource_type_enum === 'TYPE_TARGET'
+      },
       selectBonuses (itemSelect, currentElement, setName) {
         const nameArr = setName
         let arr = []
@@ -423,7 +478,8 @@
         this.openNavigationRight(true)
       },
       createBonusesCurrency () {
-        this.openNavigationRight(true)
+        this.$emit('bonus-unit-dialog', null)
+        // this.openNavigationRight(true)
       },
       createNewAccrual (nameSelect) {
         if (!('nameOperation' in this.itemsAccrual[0])) {
@@ -487,45 +543,107 @@
         }
       },
       checkMathRound (item) {
-        const numEl = item.match(/^-?\d*\.?\d*$/)
-        if (numEl > 100) {
-          return 100
-        } else if (numEl === null) {
-          return ''
-        } else if (numEl[0] === '') {
-          return ''
-        } else {
-          return numEl
+        console.log('checkMathRound', item)
+        // TODO
+        // return (+item) || 0
+        // const num = +item
+        // return (num != NaN)
+
+        // const numEl = item.match(/^-?\d*\.?\d*$/)
+        // if (numEl > 100) {
+        //   return 100
+        // } else if (numEl === null) {
+        //   return ''
+        // } else if (numEl[0] === '') {
+        //   return ''
+        // } else {
+        //   return numEl
+        // }
+      },
+      getEditedObject (bonusRes) {
+        return {
+          id: bonusRes.id,
+          title: bonusRes.title,
+          description: bonusRes.description,
+          bonus_score: bonusRes.bonus_score,
+          can_app_usage: bonusRes.can_app_usage,
+          rules: bonusRes.rules,
+
         }
       },
-      saveChange () {
-        this.$emit('saveChangeAccrual', false)
-        this.resetState()
+      async saveChanges () {
+        try {
+          this.saveChangesActive = true
+
+          for (let index = 0; index < this.buyBonusResInternal.length; index++) {
+            const element = this.buyBonusResInternal[index]
+
+            const originalIndex = this.dbBuyBonusRes.findIndex(x => x.id === element.id)
+            if (originalIndex >= 0) {
+              const originalItem = this.dbBuyBonusRes[originalIndex]
+              console.log('element', this.getEditedObject(element))
+              console.log('originalItem', this.getEditedObject(originalItem))
+              if (JSON.stringify(this.getEditedObject(element)) === JSON.stringify(this.getEditedObject(originalItem))) continue
+            }
+
+            const bonusRes = {
+              program_id: this.programId,
+              resource_type_enum: element.resource_type_enum,
+              title: element.title,
+              description: element.description,
+              units_id: element.bonus_score.units_id,
+              can_app_usage: element.can_app_usage,
+              // max_value: element.max_value,
+              // expire_at: element.expire_date,
+              rules: element.rules,
+            }
+
+            if (element.isNew) {
+              // Create
+
+              await this.$store.dispatch('company/bonus_resources/CreateBonusRes', {
+                bonusRes,
+                silent: false,
+              })
+            } else {
+              // Update
+              bonusRes.id = element.id
+
+              await this.$store.dispatch('company/bonus_resources/UpdateBonusRes', {
+                bonusRes,
+                silent: false,
+              })
+            }
+          }
+
+          this.$notify({
+            title: 'Настройка бонусной системы',
+            text: 'Бонусные операции начисления/списния обновлены',
+            type: 'success',
+          })
+
+          this.init()
+        } catch (error) {
+          console.log(error)
+        } finally {
+          this.saveChangesActive = false
+        }
+      },
+      init () {
+        this.buyBonusResInternal = Object.copy(this.dbBuyBonusRes)
+
+        if (this.buyBonusRes.length === 0) {
+          this.addNewBonusRes('TYPE_SOURCE')
+          this.addNewBonusRes('TYPE_TARGET')
+        }
       },
     },
-    watch: {
-      getBonusesItems (val) {
-        this.items = val
-      },
-      getAccrualBonuses (val) {
-        this.itemsAccrual = val
-      },
-      getMagazineBonuses (val) {
-        this.itemsMagazine = val
-      },
-      getWhatSelect (val) {
-        for (let i = 0; i < this.itemsAccrual.length; i++) {
-          if (this.itemsAccrual[i].selectName === this.nameSelectNeedGet) {
-            this.itemsAccrual[i].selectName = val.nameBonuses
-          }
-        }
-        for (let i = 0; i < this.itemsMagazine.length; i++) {
-          if (this.itemsMagazine[i].selectName === this.nameSelectNeedGet) {
-            this.itemsMagazine[i].selectName = val.nameBonuses
-          }
-        }
-      },
+
+    // eslint-disable-next-line vue/order-in-components
+    created () {
+      this.init()
     },
+
   }
 </script>
 

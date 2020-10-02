@@ -3,8 +3,8 @@
     v-model="dialog"
     :fullscreen="fullscreen"
     :max-width="maxWidth"
-
     :scrollable="scrollable"
+    @click:outside="handleClose"
   >
     <v-card>
       <v-toolbar>

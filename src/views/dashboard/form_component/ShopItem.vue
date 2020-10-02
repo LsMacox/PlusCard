@@ -7,7 +7,6 @@
     />
     <shop-form
       v-else
-      :item="item"
       @close="shopIndex = -2"
     />
   </div>

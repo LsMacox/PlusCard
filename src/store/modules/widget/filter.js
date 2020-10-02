@@ -2,7 +2,7 @@ import ApiService from '@/api/api-client'
 
 const getDefaultState = () => {
     return {
-        period: localStorage.getItem('loyaltyFilterPeriod') ? JSON.parse(localStorage.getItem('loyaltyFilterPeriod')) : { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
+        period: localStorage.getItem('loyaltyFilterPeriod') ? JSON.parse(localStorage.getItem('loyaltyFilterPeriod')) : { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
         filter: localStorage.getItem('loyaltyFilter') ? JSON.parse(localStorage.getItem('loyaltyFilter')) : { enable: false, query: null, pbr: [], bu: [], client: [], operator: [] },
         foundClients: [],
     }
@@ -10,7 +10,7 @@ const getDefaultState = () => {
 
 const getDefaultFilter = () => {
     return {
-        period: { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
+        period: { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
         filter: { enable: false, query: null, pbr: [], bu: [], client: [], operator: [] },
     }
 }
@@ -18,6 +18,11 @@ const getDefaultFilter = () => {
 const state = getDefaultState()
 
 const mutations = {
+    RESET_FILTER: (state) => {
+        const defaultFilter = getDefaultFilter()
+        localStorage.setItem('loyaltyFilter', JSON.stringify(defaultFilter.filter))
+        state.filter = defaultFilter.filter
+    },
     RESET_STATE: (state) => {
         const defaultFilter = getDefaultFilter()
         localStorage.setItem('loyaltyFilterPeriod', JSON.stringify(defaultFilter.period))
