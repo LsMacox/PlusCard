@@ -5,6 +5,7 @@
     temporary
     right
     width="483px"
+    permanent
   >
     <div class="navigation-drawers-wrap">
       <div>
@@ -88,13 +89,32 @@
           Разрешить передавать валюту
         </div>
       </div>
-      <div
+      <div class="transfer-currency">
+        <div class="title-currency">
+          <h3 class="title-h3">
+            Основная валюта
+          </h3>
+          <p class="desc-15">
+            Основная валюта отображается на карте в приложении, используется для построения всех графиков и диаграмм.
+          </p>
+        </div>
+        <div class="allow-transfer-currency">
+          <v-switch
+            v-model="bonusUnitInternal.is_main"
+            inset
+            class="custom-switch"
+          />
+          Использовать как основную
+        </div>
+      </div>
+      <v-row
         class="save-currency"
       >
         <v-btn
           small
           :disabled="!valid"
           color="primary"
+          :loading="confirmAction"
           @click="confirmClick"
         >
           <v-icon left>
@@ -107,7 +127,20 @@
           > -->
           {{ isNew ? 'Создать валюту' : 'Сохранить' }}
         </v-btn>
-      </div>
+        <v-spacer />
+        <v-btn
+          v-if="!isNew"
+          text
+          color="error"
+          :loading="deleteAction"
+          @click="deleteClick"
+        >
+          <v-icon left>
+            $iconify_feather-trash
+          </v-icon>
+          <span>Удалить валюту</span>
+        </v-btn>
+      </v-row>
     </div>
   </v-navigation-drawer>
 </template>
@@ -116,7 +149,7 @@
   import { mapGetters, mapMutations } from 'vuex'
   export default {
     name: 'BonusUnitDialog',
-    model:{
+    model: {
       prop: 'value',
       event: 'change',
     },
@@ -125,6 +158,10 @@
       bonusUnit: {
         type: Object,
         default: undefined,
+      },
+      programId: {
+        type: Number,
+        required: true,
       },
     },
     data () {
@@ -138,8 +175,12 @@
         idUpdate: 0,
         allBonusesItems: [],
 
+        confirmAction: false,
+        deleteAction: false,
         bonusUnitInternal: {
           name: '',
+          type_enum: 'INTEGER',
+          max_value: null,
           unit_name_ending_first: '',
           unit_name_ending_second: '',
           unit_name_ending_third: '',
@@ -197,8 +238,9 @@
       getBonusesItems (val) {
         this.allBonusesItems = val
       },
-      
+
     },
+
     methods: {
       ...mapMutations({
         openNavigationRight: 'createBonusesCurrency/create_bonuses_currency/openNavigationCreateBonuses',
@@ -279,14 +321,66 @@
           this.updateBonusesItem({})
         }
       },
-      createBonusUnit () {},
-      updateBonusUnit () {},
-      confirmClick () {
+      // ---
+      async deleteClick () {
+        try {
+          this.deleteAction = true
+          await this.$store.dispatch('company/bonus_units/deleteBonusUnit', this.bonusUnit.id)
+          this.close()
+        } catch (error) {
+          console.error(error)
+        } finally {
+          this.deleteAction = false
+        }
+      },
 
+      async confirmClick () {
+        try {
+          this.confirmAction = true
+
+          const postData = {
+            program_id: this.programId,
+            max_value: this.bonusUnitInternal.max_value,
+            name: this.bonusUnitInternal.name,
+            type_enum: this.bonusUnitInternal.type_enum,
+            unit_name_ending: {
+              first: this.bonusUnitInternal.unit_name_ending_first,
+              second: this.bonusUnitInternal.unit_name_ending_second,
+              third: this.bonusUnitInternal.unit_name_ending_third,
+            },
+            cert_pay_available: this.bonusUnitInternal.cert_pay_available,
+            can_transfer: this.bonusUnitInternal.can_transfer,
+            is_main: this.bonusUnitInternal.is_main,
+          }
+
+          if (this.isNew) {
+            await this.$store.dispatch('company/bonus_units/createBonusUnit', postData)
+          } else {
+            postData.id = this.bonusUnit.id
+            await this.$store.dispatch('company/bonus_units/updateBonusUnit', postData)
+          }
+          this.close()
+        } catch (error) {
+          console.error(error)
+        } finally {
+          this.confirmAction = false
+        }
       },
       close () {
         this.drawer = false
       },
+      init (bonusUnit) {
+        console.log('init', bonusUnit)
+        this.bonusUnitInternal = Object.assign(this.bonusUnitInternal, bonusUnit)
+        if (bonusUnit.unit_name_ending) {
+          this.bonusUnitInternal.unit_name_ending_first = bonusUnit.unit_name_ending.first
+          this.bonusUnitInternal.unit_name_ending_second = bonusUnit.unit_name_ending.second
+          this.bonusUnitInternal.unit_name_ending_third = bonusUnit.unit_name_ending.third
+        }
+      },
+    },
+    created () {
+      if (this.bonusUnit) this.init(this.bonusUnit)
     },
   }
 </script>

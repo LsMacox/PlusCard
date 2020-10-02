@@ -6,6 +6,7 @@
           v-bind="attrs"
           class="custom-drop-down"
           :class="attrs['aria-expanded'] === 'true' ? 'border-bottom-not-round' : ''"
+          :disabled="disabled"
           v-on="on"
         >
           <span>{{ selectedItem ? selectedItem.name : 'Выберите валюту' }}</span>
@@ -73,6 +74,7 @@
         type: Array,
         default: () => [],
       },
+      disabled: Boolean,
     },
     data () {
       return {
@@ -101,7 +103,7 @@
     },
     methods: {
       createBonusesCurrency () {
-          this.openBonusUnitDialog(null)
+        this.openBonusUnitDialog(null)
       },
       openBonusUnitDialog (bonusUnit) {
         this.$emit('bonus-unit-dialog', bonusUnit)
