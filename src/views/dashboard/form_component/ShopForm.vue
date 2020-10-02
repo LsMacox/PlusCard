@@ -26,6 +26,10 @@
       outlined
       style="width: 380px"
       :error-messages="addressErrors"
+      :rules="[
+        v => !!v || 'Адрес точки продаж обязателен',
+        v => v.length <= 250 || 'Адрес должен быть не более 100 символов',
+      ]"
       @input="getAddressHandler"
     >
       <template slot="prepend-inner">
@@ -222,7 +226,7 @@
           small
           style="width: 265px; margin-right: 0"
           :loading="loading"
-          :disabled="!valid"
+          :disabled="!valid || !fullAddress"
           @click="saveShop()"
         >
           Сохранить
@@ -242,7 +246,6 @@
       return {
         valid: true,
         loading: false,
-        fullAddress: false, // метка полного адреса
         editedShopActive: false,
         editedShopEdit: false,
         getAddressTimerId: null,
@@ -250,7 +253,6 @@
         openUpdate: false,
         newWorkTime: [],
         newBreakTime: [],
-        addressErrors: [],
         days: [
           { id: 0, shortName: 'ПН', fullName: 'Понедельник' },
           { id: 1, shortName: 'ВТ', fullName: 'Вторник' },
@@ -281,6 +283,22 @@
       shopIndex () {
         return this.$store.getters['company/program/shopIndex']
       },
+      fullAddress: {
+        get () {
+          return this.$store.getters['company/program/fullAddress']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_FULL_ADDRESS', v)
+        },
+      },
+      addressErrors: {
+        get () {
+          return this.$store.getters['company/program/addressErrors']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_ADDRESS_ERRORS', v)
+        },
+      },
       selectedDays () {
         const array = []
         /*
@@ -296,6 +314,9 @@
       },
     },
     created () {
+      // обновление state
+      this.fullAddress = false
+      this.addressErrors = []
       // есть id города
       if (typeof this.editedShop.city_id === 'number') this.fullAddress = true
       console.log(this.editedShop)

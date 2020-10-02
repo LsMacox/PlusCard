@@ -29,6 +29,8 @@ const getDefaultState = () => {
       ],
     },
     mapCenter: [53.757592, 87.136173],
+    fullAddress: false,
+    addressErrors: [],
   }
 }
 
@@ -40,6 +42,8 @@ const mutations = {
   SET_SHOP_INDEX: (state, payload) => state.shopIndex = payload,
   SET_EDITED_SHOP: (state, payload) => state.editedShop = payload,
   SET_MAP_CENTER: (state, payload) => state.mapCenter = payload,
+  SET_FULL_ADDRESS: (state, payload) => state.fullAddress = payload,
+  SET_ADDRESS_ERRORS: (state, payload) => state.addressErrors = payload,
   SET_PROGRAM (state, payload) {
     state.program = payload
     VueSession.set('program', payload)
@@ -267,6 +271,8 @@ const getters = {
     return JSON.parse(JSON.stringify(defState.editedShop))
   },
   mapCenter: state => state.mapCenter,
+  fullAddress: state => state.fullAddress,
+  addressErrors: state => state.addressErrors,
 }
 
 export default {

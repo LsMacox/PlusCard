@@ -263,6 +263,22 @@
           this.$store.commit('company/program/SET_MAP_CENTER', v)
         },
       },
+      fullAddress: {
+        get () {
+          return this.$store.getters['company/program/fullAddress']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_FULL_ADDRESS', v)
+        },
+      },
+      addressErrors: {
+        get () {
+          return this.$store.getters['company/program/addressErrors']
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_ADDRESS_ERRORS', v)
+        },
+      },
     },
     watch: {
       shopIndex (v) {
