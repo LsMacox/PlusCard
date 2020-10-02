@@ -124,8 +124,13 @@
       program () {
         return this.$store.getters['company/program/program']
       },
-      segmentsData () {
-        return this.$store.getters['crm/segment/segments']
+      segmentsData: {
+        get: function () {
+          return this.$store.getters['crm/segment/segments']
+        },
+        set: function (newValue) {
+          this.segmentsData = newValue
+        },
       },
     },
     watch: {
@@ -134,7 +139,7 @@
       },
     },
     created () {
-      this.segmentsData = this.$store.getters['crm/segment/segments']
+      // this.segmentsData = this.$store.getters['crm/segment/segments']
     },
     mounted () {
       this.fetchData()
