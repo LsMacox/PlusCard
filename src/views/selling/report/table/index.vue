@@ -1,6 +1,8 @@
 <template>
   <div class="table-block">
+    <!--
     <app-filter />
+    -->
     <app-table v-show="tableData.length" />
     <div
       v-show="!tableData.length"

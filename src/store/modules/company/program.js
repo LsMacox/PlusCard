@@ -64,6 +64,14 @@ const mutations = {
     }
   },
   SET_PROGRAM_MODEL (state, payload) {
+    if (payload.current_moderations && payload.current_moderations.length) {
+      payload.current_moderations.forEach(moderation => {
+        moderation.fields.forEach(field => {
+          if (field.name === 'socials') payload[field.name] = JSON.parse(field.new)
+          else payload[field.name] = field.new
+        })
+      })
+    }
     state.programModel = payload
   },
   UPDATE_IN_PROGRAMS (state, payload) {
