@@ -64,12 +64,14 @@
           </div>
 
           <div
-            v-if="shops.length >= 5"
-            class="content-block__search"
+            v-if="shopsCount >= 5"
+            class="shop-search"
           >
             <v-text-field
+              v-model="shopSearch"
               placeholder="Поиск по названию, городу, улице"
               outlined
+              hide-details
             >
               <template slot="prepend-inner">
                 <span
@@ -218,6 +220,7 @@
           counter: value => value.length <= 20 || 'Max 20 characters',
         },
         filtered_addr: [],
+        shopSearch: null,
       }
     },
     computed: {
@@ -227,8 +230,20 @@
       programModel () {
         return this.$store.getters['company/program/programModel']
       },
+      shopsCount () {
+        return this.$store.getters['company/program/shops'].length
+      },
       shops () {
-        const shops = this.$store.getters['company/program/shops']
+        let shops = []
+        if (this.shopSearch) {
+          const search = String(this.shopSearch).toLocaleLowerCase()
+          shops = this.$store.getters['company/program/shops'].filter(item => {
+            if (item.name && item.name.toLocaleLowerCase().indexOf(search) !== -1) return item
+            if (item.address && item.address.toLocaleLowerCase().indexOf(search) !== -1) return item
+          })
+        } else {
+          shops = this.$store.getters['company/program/shops']
+        }
         // мапинг рабочего времени
         shops.forEach(item => {
           item.workTimes = this.getWorkTime(item.worktime_json)
