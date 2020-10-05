@@ -1,0 +1,18 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+
+.panel-crm_edit_client {
+    .panel-crm_edit_client__header {
+        .panel-crm_edit_client__tabs {
+            .panel-crm_edit_client__tabs-btn {
+                height: 33px !important;
+                &:nth-child(1) {
+                    border-radius: 10px 0px 0px 10px;
+                } 
+                &:nth-child(2) {
+                    border-radius: 0px 10px 10px 0px;
+                    color: $primary-base;
+                }
+            }
+        }
+    }
+}

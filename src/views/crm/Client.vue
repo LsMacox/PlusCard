@@ -1,12 +1,26 @@
 <template>
   <div class="crm b-segment">
     <div
-      v-if="Boolean(segmentsData.length)"
       class="crm__header b-segment__header"
     >
       <p class="crm__header-title title-m-bold neutral-900--text">
         Клиенты Metro Cash & Carry
       </p>
+      <v-btn
+        class="crm__header_new-btn"
+        color="primary"
+        @click="sidePanelEditClient.status = true"
+      >
+        <iconify-icon
+          icon="plus-circle"
+          width="21"
+        />
+        <p
+          class="body-m-semibold neutral-100--text"
+        >
+          Редактирование клиента
+        </p>
+      </v-btn>
       <v-btn
         class="crm__header_new-btn"
         color="primary"
@@ -23,37 +37,41 @@
         </p>
       </v-btn>
     </div>
-    <empty-client
-      v-if="!segmentsData.length"
-    />
     <side-panel-new-client
       v-model="sidePanelNewClientStatus"
+    />
+    <side-panel-edit-client
+      v-model="sidePanelEditClient.status"
+      :client-data="sidePanelEditClient.data"
     />
   </div>
 </template>
 
 <script>
-  import EmptyClient from './components/EmptyClient'
   import SidePanelNewClient from './components/SidePanel/SidePanelNewClient'
+  import SidePanelEditClient from './components/SidePanel/SidePanelEditClient'
   import Convertor from '@/mixins/convertor'
 
   export default {
     components: {
-      EmptyClient,
       SidePanelNewClient,
+      SidePanelEditClient,
     },
     mixins: [Convertor],
     data () {
       return {
-        segmentsData: null,
+        clientData: null,
         sidePanelNewClientStatus: false,
-        sidePanelEditClientStatus: false,
+        sidePanelEditClient: {
+          status: false,
+          data: null,
+        },
       }
     },
     computed: {},
     watch: {},
     created () {
-      this.segmentsData = this.$store.getters['crm/segment/segments']
+      this.clientData = this.$store.getters['crm/client/clients']
     },
     mounted () {},
     methods: {

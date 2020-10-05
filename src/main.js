@@ -20,7 +20,7 @@ import './plugins/base'
 import vuetify from './plugins/vuetify'
 import './plugins/iconify'
 
-import VueMaskDirective from './plugins/mask'
+import VueMask from 'v-mask'
 
 import i18n from './i18n'
 
@@ -46,7 +46,7 @@ import { IsDebugQuery } from './router/router-handler-log'
 import VueClipboard from 'vue-clipboard2'
 
 // Vue mask
-Vue.directive('mask', VueMaskDirective)
+Vue.use(VueMask)
 
 //
 // Vue.use(DateRangePicker)
