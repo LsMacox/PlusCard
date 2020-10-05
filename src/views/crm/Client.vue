@@ -55,7 +55,7 @@
 </template>
 
 <script>
-  import ClientTable from '@/views/crm/components/ClientTable'
+  import ClientTable from '@/views/crm/client/ClientTable'
   import SidePanelNewClient from './components/SidePanel/SidePanelNewClient'
   import SidePanelEditClient from './components/SidePanel/SidePanelEditClient'
 

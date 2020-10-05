@@ -31,7 +31,7 @@
                   :class="[
                     {
                       active: isValEqualSort = (header.value === pagination.sortBy),
-                      'text-end': i >= 2,
+                      // 'text-end': i >= 2,
                     },
                     isValEqualSort ? (pagination.descending === 'descending' ? 'desc' : 'ask') : ''
                   ]"
