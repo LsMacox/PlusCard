@@ -1,36 +1,13 @@
 <template>
-  <div class="crm b-segment">
-    <div
-      v-if="segmentsData.length"
-      class="crm__header b-segment__header"
-    >
-      <p class="crm__header-title title-m-bold neutral-900--text">
-        Сегменты
-      </p>
-      <v-btn
-        class="crm__header_new-btn"
-        color="primary"
-        @click="createSidePanel"
-      >
-        <iconify-icon
-          icon="plus-circle"
-          width="21"
-        />
-        <p
-          class="body-m-semibold neutral-100--text"
-        >
-          Новый сегмент
-        </p>
-      </v-btn>
-    </div>
+  <div>
     <empty-client
       v-if="!clients.length"
     />
     <base-table
-      v-if="segmentsData.length"
+      v-if="clients.length"
       class-name="table-segment"
       :headers="tableHeaders"
-      :data="segmentsData"
+      :data="clients"
       @click:row="editSidePanel"
     >
       <template v-slot:[`item.id`]="{ item }">
@@ -79,7 +56,7 @@
         </v-icon>
       </template>
     </base-table>
-    <side-panel-segment
+    <side-panel-edit-client
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"
       :table-data="sidePanelStatus.data"
@@ -88,17 +65,15 @@
 </template>
 
 <script>
-  import EmptyClient from './components/EmptyClient'
-  import EmptySegment from './components/EmptySegment'
-  import SidePanelSegment from './components/SidePanel/SidePanelSegment'
+  import EmptyClient from '@/views/crm/components/EmptyClient'
+  import SidePanelEditClient from './SidePanel/SidePanelEditClient'
   import BaseTable from '@/components/base/BaseTable'
   import Convertor from '@/mixins/convertor'
 
   export default {
     components: {
       EmptyClient,
-      EmptySegment,
-      SidePanelSegment,
+      SidePanelEditClient,
       BaseTable,
     },
     mixins: [Convertor],
@@ -156,9 +131,8 @@
         const payload = {
           program_id: this.program.id,
         }
-
         try {
-          this.$store.dispatch('crm/segment/segments', payload)
+          this.$store.dispatch('crm/client/list', payload)
         } finally {
           this.loadingList = false
         }

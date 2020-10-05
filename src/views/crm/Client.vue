@@ -28,14 +28,7 @@
         Для списания или начисления бонусов найдите клиента используя поле ниже. Вводите любые данные клиента: ФИО, номер карты, штрих-код, электронная почта, номер телефона.
       </div>
     </div>
-    <div
-      v-if="Boolean(clients.length)"
-    >
-      /////
-    </div>
-    <empty-client
-      v-else
-    />
+    <client-table />
     <side-panel-new-client
       v-model="openCreate"
     />
@@ -43,33 +36,23 @@
 </template>
 
 <script>
-  import EmptyClient from './components/EmptyClient'
+  import ClientTable from '@/views/crm/components/ClientTable'
   import SidePanelNewClient from './components/SidePanel/SidePanelNewClient'
-  import Convertor from '@/mixins/convertor'
 
   export default {
     components: {
-      EmptyClient,
+      ClientTable,
       SidePanelNewClient,
     },
-    mixins: [Convertor],
     data () {
       return {
         openCreate: false,
-        openUpdate: false,
       }
     },
     computed: {
       program () {
         return this.$store.getters['company/program/program']
       },
-    },
-    watch: {},
-    created () {
-    },
-    mounted () {},
-    methods: {
-
     },
   }
 </script>
