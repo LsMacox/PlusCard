@@ -2,110 +2,27 @@
   <side-panel
     v-model="state"
     :width="483"
-    class="panel-crm panel-crm_new_client"
+    class="panel-crm panel-crm_edit_client"
   >
-    <div class="panel-crm__header panel-crm_new_client__header">
-      <h1 class="panel-crm__header-title panel-crm_new_client__title title-m-bold">
-        Новый клиент
-      </h1>
+    <div class="panel-crm__header panel-crm_edit_client__header">
+      <div class="panel-crm_edit_client__tabs">
+        <v-btn
+          class="panel-crm_edit_client__tabs-btn"
+          color="primary"
+          @click="mode = false"
+        >
+          Обычный
+        </v-btn>
+        <v-btn
+          class="panel-crm_edit_client__tabs-btn"
+          color="primary-100"
+          @click="mode = true"
+        >
+          Расширенный
+        </v-btn>
+      </div>
     </div>
-    <div class="panel-crm__body panel-crm_new_client__body">
-      <v-form
-        ref="panel-crm_new_client__form"
-        class="panel-crm_new_client__form"
-      >
-        <div class="panel-crm_segment__form-labels">
-          <p class="body-l-semibold">
-            Персональные данные клиента
-          </p>
-          <p class="labels__sub-label body-m-regular">
-            Укажите пресональные данные клиента, которые вы
-            знаете для наиболее полного заполнения профиля.
-          </p>
-        </div>
-        <div class="panel-crm_segment__form-block">
-          <v-row>
-            <v-col
-              cols="6"
-              style="height: 65px"
-            >
-              <v-text-field
-                :rules="rules.name"
-                class="panel-crm__form-input panel-crm_new_client__form-input"
-                type="text"
-                placeholder="Имя"
-                outlined
-              />
-            </v-col>
-            <v-col
-              cols="6"
-              style="height: 65px"
-            >
-              <v-text-field
-                :rules="rules.name"
-                class="panel-crm__form-input panel-crm_new_client__form-input"
-                type="text"
-                placeholder="Фамилия"
-                outlined
-              />
-            </v-col>
-            <v-col
-              cols="6"
-              style="height: 65px"
-            >
-              <v-text-field
-                :rules="rules.name"
-                class="panel-crm__form-input panel-crm_new_client__form-input"
-                type="text"
-                placeholder="Номер телефона"
-                outlined
-              />
-            </v-col>
-            <v-col
-              cols="6"
-              style="height: 65px"
-            >
-              <v-text-field
-                :rules="rules.name"
-                class="panel-crm__form-input panel-crm_new_client__form-input"
-                type="text"
-                placeholder="Дата рождения"
-                outlined
-              />
-            </v-col>
-            <v-col cols="12">
-              <v-switch
-                v-model="isInviteCheckbox"
-                class="panel-crm_new_client__switch"
-                :input-value="internalActive"
-                hide-details
-                @change="activeChange"
-              >
-                <span
-                  slot="label"
-                  class="panel-crm_new_client__switch-text body-m-medium neutral-900--text"
-                >Отправить смс-приглашение</span>
-              </v-switch>
-            </v-col>
-            <v-col cols="12">
-              <v-btn
-                class="panel-crm_new_client__btn-add-client"
-                color="primary"
-              >
-                <iconify-icon
-                  class="icon-check-circle"
-                  icon="check-circle"
-                  height="21"
-                />
-                <p class="body-m-semibold neutral-100--text">
-                  Добавить клиента
-                </p>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </div>
-      </v-form>
-    </div>
+    <div class="panel-crm__body panel-crm_edit_client__body" />
   </side-panel>
 </template>
 
@@ -126,14 +43,30 @@
       active: {
         type: Boolean,
       },
+      clientData: {
+        type: Object,
+        default: () => {
+          return {
+            id: '103112',
+            gender: true,
+            date_of_birth: '10.03.1990',
+            city: 'Новокузнецк',
+            name: 'Константин',
+            surname: 'Константинопольский',
+            online: '02.08.2020 04:32',
+            phone: '79832525202',
+            email: 'rs.bikeev@yandex.ru',
+            code: '1640000000145437',
+            card: '432156',
+            img_avatar: '@/assets/png/custom/beardedman.png',
+          }
+        },
+      },
     },
     data () {
       return {
-        isInviteCheckbox: false,
+        mode: false, // false = usual, true = extended
         state: this.active,
-        rules: {
-          name: [v => !!v || 'Заполните поле'],
-        },
       }
     },
     computed: {},
@@ -154,8 +87,8 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
-@import "@/styles/vuetify-preset-plus/light_theme/crm/components/side_panels/_side-panel-new-client.scss";
+@import "@/styles/vuetify-preset-plus/light_theme/crm/components/side_panels/_side-panel-edit-client.scss";
 
 </style>

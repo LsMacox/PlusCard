@@ -16,7 +16,9 @@
     }
     .crm__header {
         display: flex;
+        align-items: center;
         justify-content: space-between;
+
         .crm__header-title {
             margin-left: 5px;
         }
@@ -27,7 +29,7 @@
             }
         }
     }
-    
+
     .panel-crm {
         .panel-crm__header {
             margin-top: 50px;

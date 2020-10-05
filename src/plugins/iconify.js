@@ -152,6 +152,10 @@ export const ICONIFY_ICONS = [
         id: 'ion-mail-outline',
         component: () => import('@iconify/icons-ion/mail-outline'),
     },
+    {
+      id: 'ion-warning',
+      component: () => import('@iconify/icons-ion/warning'),
+    },
 
     // feather
     {
