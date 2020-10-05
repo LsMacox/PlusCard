@@ -1,6 +1,7 @@
 <template>
   <v-tooltip
     v-model="isActive"
+    :value="isActive"
     :activator="activator"
     :open-delay="openDelay"
     :top="top"
