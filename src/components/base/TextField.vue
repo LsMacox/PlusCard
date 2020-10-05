@@ -50,6 +50,8 @@
     :class="getClass"
     :maxlength="maxlength"
     @update:error="updateError"
+    @blur="onBlur"
+    @focus="onFocus"
   >
     <template v-slot:prepend-inner>
       <v-icon
@@ -66,35 +68,60 @@
     <template v-slot:append>
       <v-row
         no-gutters
-        align="baseline"
+        class="append-slot-row"
+        align="center"
       >
-        <v-col><slot name="append" /></v-col>
-        <v-col>
-          <v-counter
-            v-if="!!counter"
-            :value="computedCounterValue"
-            :max="computedMaxCounter"
-            :class="{
-              'error--text': isRequiredText,
-            }"
-          />
+        <v-col
+          v-if="false"
+          class="append-slot-row__col"
+        >
+          <slot name="append" />
+          <!-- hasError={{ hasError }} -->
         </v-col>
-        <v-col>
+
+        <v-col
+          cols="auto"
+          class="append-slot-row__col body-xs-semibold"
+        >
+          <span
+            v-if="!!counter"
+            :class="{
+              'error--text': isRequired || isGreater,
+              'success--text': !(isRequired || isGreater),
+              'base-counter': true,
+            }"
+          >
+            {{ computedMaxCounter ? `${computedCounterValue} / ${computedMaxCounter}` : String(computedCounterValue) }}
+          </span>
+        </v-col>
+        <v-col
+          cols="auto"
+          class="append-slot-row__col"
+        >
           <base-tooltip
-            v-model="showError"
-            text="Меню действий сертификата"
+            v-if="hasDispayErrors"
+            :value="true"
+            text=""
             color="error"
-            right
+            :top="validationPlacement === 'top'"
+            :right="validationPlacement === 'right'"
+            :left="validationPlacement === 'left'"
+            :bottom="validationPlacement === 'bottom'"
           >
             <v-icon
-              v-if="hasErrors"
+              v-show="hasDispayErrors"
               color="error"
               @click="showError = !showError"
             >
               $iconify_ion-warning
             </v-icon>
             <template v-slot:content>
-              <v-messages v-model="errorMessagesToDisplay" />
+              <div
+                v-for="(error, index) in errorMessagesToDisplay"
+                :key="index"
+              >
+                {{ error }}
+              </div>
             </template>
           </base-tooltip>
         </v-col>
@@ -109,23 +136,32 @@
  * todo  counter + clearable
  */
 
-  import { VTextField } from 'vuetify/lib'
-  import { VInput } from 'vuetify/lib'
+  import { VTextField, VInput } from 'vuetify/lib'
   import Validatable from 'vuetify/lib/mixins/validatable'
 
   export default {
     name: 'Textfield',
-    mixins: [VTextField, VInput, Validatable],
+    mixins: [
+      VTextField,
+      // VInput,
+      Validatable,
+    ],
     model: {
       prop: 'value',
       event: 'input',
     },
     props: {
+      //
       maxlength: [String, Number],
-      value: {
-        type: [String, Number],
-        default: null,
+      validationPlacement: {
+        type: String,
+        default: 'right',
+
       },
+      // value: {
+      //   type: [String, Number],
+      //   default: null,
+      // },
 
       appendIcon: String,
       appendOuterIcon: String,
@@ -140,8 +176,8 @@
       dense: Boolean,
       disabled: Boolean,
       error: Boolean,
-      errorCount: [Number, String],
-      errorMessages: [String, Array],
+      // errorCount: [Number, String],
+      // errorMessages: [String, Array],
       filled: Boolean,
       flat: Boolean,
       fullWidth: Boolean,
@@ -156,7 +192,7 @@
       light: Boolean,
       loaderHeight: [Number, String],
       loading: [Boolean, String],
-      messages: [String, Array],
+      // messages: [String, Array],
       outlined: {
         type: Boolean,
         default: true,
@@ -170,15 +206,15 @@
         type: String,
         default: 'neutral-500',
       },
-      readonly: Boolean,
-      rules: Array,
+      // readonly: Boolean,
+      // rules: Array,
       shaped: Boolean,
       singleLine: Boolean,
-      success: Boolean,
-      successMessages: [Array, String],
+      // success: Boolean,
+      // successMessages: [Array, String],
       suffix: String,
       type: String,
-      validateOnBlur: Boolean,
+      // validateOnBlur: Boolean,
 
       // New
       minlength: {
@@ -190,10 +226,11 @@
       return {
         showError: false,
         // computedCounterValue: 0,
+        computedCounterValue2: 0,
       }
     },
     computed: {
-      hasErrors () {
+      hasDispayErrors () {
         return this.errorMessagesToDisplay.length > 0
       },
       // computedCounterValue () {
@@ -203,24 +240,33 @@
         return this.counter === true ? this.maxlength : this.counter
       },
       errorMessagesToDisplay () {
-        console.log('this.validations', this.validations)
-        
+        // console.log('this.onFocus', this.onFocus)
+        // console.log('this.form', this.form)
+        // console.log('this.isDisabled', this.isDisabled)
+        // console.log('this.validateOnBlur', this.validateOnBlur)
+        // console.log('this.hasFocused && !this.isFocused ', this.hasFocused, !this.isFocused)
+        // console.log('this.shouldValidate', this.shouldValidate)
+        // console.log('this.errorBucket', this.errorBucket)
+
+        // console.log('this.validationTarget', this.validationTarget)
+        // console.log('this.validations', this.validations)
+
         return this.validations.map(validation => {
           if (typeof validation === 'string') return validation
           const validationResult = validation(this.internalValue)
           return typeof validationResult === 'string' ? validationResult : ''
         }).filter(message => message !== '')
-      },      
-      isRequiredText () {
-        return !!this.minlength && !this.isFilledText
       },
-      isMaxText () {
-        return !!this.maxlength && !!this.value && this.value.length > this.maxlength
+      isRequired () {
+        return !!this.minlength && this.computedCounterValue < this.minlength
+      },
+      isGreater () {
+        return !!this.computedMaxCounter && this.computedCounterValue > this.maxlength
       },
       isFilledText () {
         return !!this.value && this.value.length >= this.minlength
       },
-      isSuccessText () {
+      isSuccess () {
         return !!this.minlength && this.isFilledText
       },
       getClass () {
@@ -236,15 +282,53 @@
       value (v) {
         // console.log('v.l', this.value.length, this.minlength)
       },
+
     },
     mounted () {
-      console.log('this.$refs.vTextField', this.$refs.vTextField)
-      // this.computedCounterValue = this.$refs.vTextField.computedCounterValue
+      // console.log('this.$refs.vTextField', this.$refs.vTextField)
+
     },
     methods: {
       updateError (e) {
         console.log(e)
       },
+      onFocus (e) {
+        if (!this.$refs.vTextField) return
+
+        // if (document.activeElement !== this.$refs.input) {
+        //   return this.$refs.input.focus();
+        // }
+
+        if (!this.isFocused) {
+          this.isFocused = true
+          e && this.$emit('focus', e)
+        }
+      },
+      onBlur (e) {
+        this.isFocused = false
+        e && this.$nextTick(() => this.$emit('blur', e))
+      },
+      onClick () {
+      // if (this.isFocused || this.isDisabled || !this.$refs.vTextField) return;
+      // this.$refs.input.focus();
+      },
+
     },
   }
 </script>
+
+<style lang="scss" scoped>
+@import "@/styles/_typography";
+
+.append-slot-row {
+  min-height: calc(45px - 12px - 12px);
+  width: max-content;
+  .append-slot-row__col{
+    margin-left: 8px;;
+  }
+  .base-counter {
+     @include body-xs-semibold;
+     white-space: nowrap;
+  }
+}
+</style>
