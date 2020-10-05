@@ -99,8 +99,9 @@
           class="append-slot-row__col"
         >
           <base-tooltip
-            v-if="hasDispayErrors"
+            v-if="hasDispayErrors && !disabled"
             :value="true"
+            :disabled="disabled"
             text=""
             color="error"
             :top="validationPlacement === 'top'"

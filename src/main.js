@@ -20,6 +20,8 @@ import './plugins/base'
 import vuetify from './plugins/vuetify'
 import './plugins/iconify'
 
+import VueMaskDirective from './plugins/mask'
+
 import i18n from './i18n'
 
 import './AuthGuard'
@@ -34,6 +36,7 @@ import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'
 
 import moment from 'moment'
+import { v4 as uuidv4 } from 'uuid'
 import VueMoment from 'vue-moment'
 import VueConstants from './plugins/vue-constants'
 import random from 'random'
@@ -42,8 +45,10 @@ import VueUnderScore from 'vue-underscore'
 import { IsDebugQuery } from './router/router-handler-log'
 
 import VueClipboard from 'vue-clipboard2'
- 
 
+
+// Vue mask
+Vue.directive('mask', VueMaskDirective)
 
 //
 // Vue.use(DateRangePicker)
@@ -98,6 +103,8 @@ Vue.prototype.$sleep = function (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+Vue.prototype.$uuid = uuidv4
+
 Vue.prototype.$random = random
 
 if (process.env.NODE_ENV !== 'development') {
@@ -109,8 +116,8 @@ const App = new Vue({
   router,
   store,
   vuetify,
-  i18n, 
-  async created () {    
+  i18n,
+  async created () {
     // устройство
     await this.$store.dispatch('auth/auth/InitDevice')
   },
@@ -119,6 +126,4 @@ const App = new Vue({
 
 App.$mount('#app')
 
-
 Vue.prototype.$app = App
-

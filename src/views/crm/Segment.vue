@@ -1,7 +1,7 @@
 <template>
   <div class="crm b-segment">
     <div
-      v-if="Boolean(segmentsData.length)"
+      v-if="segmentsData.length"
       class="crm__header b-segment__header"
     >
       <p class="crm__header-title title-m-bold neutral-900--text">
@@ -28,7 +28,7 @@
       :side-panel-status.sync="sidePanelStatus"
     />
     <base-table
-      v-if="Boolean(segmentsData.length)"
+      v-if="segmentsData.length"
       class-name="table-segment"
       :headers="tableHeaders"
       :data="segmentsData"
@@ -43,29 +43,32 @@
         <p
           class="body-s-semibold mb-0"
           style="display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
-          :style="item.label_color != undefined ? `color: ${item.label_color}; background: ${hexToRgbA(item.label_color, '0.15')}` : ''"
+          :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
         >
           {{ item.name }}
         </p>
       </template>
       <template v-slot:[`item.client`]="{ item }">
         <p class="body-s-medium mb-0">
-          {{ item.client_count | spacesBetweenNumbers }}
+          {{ item.clients_count ? item.clients_count : 0 }}
         </p>
       </template>
       <template v-slot:[`item.profit`]="{ item }">
         <p class="body-s-medium mb-0">
-          {{ item.profit | spacesBetweenNumbers }} ₽
+<!--          {{ item.profit | spacesBetweenNumbers }} ₽-->
+          -
         </p>
       </template>
       <template v-slot:[`item.average-check`]="{ item }">
         <p class="body-s-medium mb-0">
-          {{ item.average_check | spacesBetweenNumbers }} ₽
+<!--          {{ item.average_check | spacesBetweenNumbers }} ₽-->
+          -
         </p>
       </template>
       <template v-slot:[`item.client-cost`]="{ item }">
         <p class="body-s-medium mb-0">
-          {{ item.client_cost | spacesBetweenNumbers }} ₽
+<!--          {{ item.client_cost | spacesBetweenNumbers }} ₽-->
+          -
         </p>
       </template>
       <template v-slot:[`item.data-table-expand`]>
@@ -87,7 +90,7 @@
 
 <script>
   import EmptySegment from './components/EmptySegment'
-  import SidePanelSegment from './components/SidePanelSegment'
+  import SidePanelSegment from './components/SidePanel/SidePanelSegment'
   import BaseTable from '@/components/base/BaseTable'
   import Convertor from '@/mixins/convertor'
 
@@ -100,7 +103,7 @@
     mixins: [Convertor],
     data () {
       return {
-        segmentsData: null,
+        loadingList: false,
         sidePanelStatus: {
           active: false,
           mode: 'create',
@@ -117,12 +120,30 @@
         ],
       }
     },
-    computed: {},
-    watch: {},
-    created () {
-      this.segmentsData = this.$store.getters['crm/segment/segments']
+    computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+      segmentsData: {
+        get: function () {
+          return this.$store.getters['crm/segment/segments']
+        },
+        set: function (newValue) {
+          this.segmentsData = newValue
+        },
+      },
     },
-    mounted () {},
+    watch: {
+      program (v) {
+        if (v) this.fetchData()
+      },
+    },
+    created () {
+      // this.segmentsData = this.$store.getters['crm/segment/segments']
+    },
+    mounted () {
+      this.fetchData()
+    },
     methods: {
       createSidePanel (item) {
         this.sidePanelStatus.mode = 'create'
@@ -134,11 +155,23 @@
         this.sidePanelStatus.data = item
         this.sidePanelStatus.active = true
       },
+      fetchData () {
+        this.loadingList = true
+        const payload = {
+          program_id: this.program.id,
+        }
+
+        try {
+          this.$store.dispatch('crm/segment/segments', payload)
+        } finally {
+          this.loadingList = false
+        }
+      },
     },
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 

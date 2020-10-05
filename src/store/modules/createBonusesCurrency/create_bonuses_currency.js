@@ -1,10 +1,12 @@
 
+import ApiService from '@/api/api-client'
+
 const getDefaultState = () => {
   return {
     openNavigationBonuses: false,
     bonusesItems: [],
     bonusesItem: {},
-    accrualBonuses: [],
+    accrualBonuses: [], // BonusUnits
     magazineBonuses: [],
     updateWhatSelectItem: {},
   }
@@ -35,7 +37,9 @@ export default {
       Object.assign(state, getDefaultState())
     },
   },
-  actions: {},
+  actions: {
+    
+  },
   getters: {
     getBonusesItems (state) {
       return state.bonusesItems

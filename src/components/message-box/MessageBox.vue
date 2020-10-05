@@ -3,8 +3,8 @@
     v-model="dialog"
     :fullscreen="fullscreen"
     :max-width="maxWidth"
-
     :scrollable="scrollable"
+    @click:outside="handleClose"
   >
     <v-card>
       <v-toolbar>
@@ -30,8 +30,8 @@
       <v-divider />
       <v-card-actions>
         <v-btn
-          ref="cancel"
           v-if="showCancelButton"
+          ref="cancel"
           text
           @click.native="handleAction('cancel')"
           @keydown.enter="handleAction('cancel')"
@@ -125,7 +125,7 @@
     },
     watch: {
       value (v) {
-        console.log('update:pDialog', v)        
+        console.log('update:pDialog', v)
         this.dialog = v
       },
       dialog (val) {
@@ -139,7 +139,6 @@
           }
           // this.focusAfterClosed = document.activeElement
           // messageBox = new Dialog(this.$el, this.focusAfterClosed, this.getFirstFocus())
-          
         }
 
         // prompt

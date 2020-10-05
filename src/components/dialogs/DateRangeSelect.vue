@@ -101,7 +101,7 @@
         <!--        </template>-->
 
         <template
-          #input="picker"
+          @input="picker"
           style="min-width: 350px;"
         >
           <div class="custom" />

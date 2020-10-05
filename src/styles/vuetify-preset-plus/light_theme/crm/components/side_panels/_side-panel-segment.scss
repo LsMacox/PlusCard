@@ -1,23 +1,15 @@
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 
-.panel-segment {
-    .panel-segment__header {
-        margin-top: 50px;
-        margin-left: 34px;
-    }
+.panel-crm_segment {
 
-    .panel-segment__body {
-        margin-left: 34px;
-        margin-right: 34px;
-        margin-top: 34px;
-
-        .panel-segment__form {
-            .panel-segment__form-block {
+    .panel-crm_segment__body {
+        .panel-crm_segment__form {
+            .panel-crm_segment__form-block {
                 margin-top: 8px;
                 display: flex;
                 flex-direction: column;
 
-                .panel-segment__form-labels {
+                .panel-crm_segment__form-labels {
                     p {
                         &:nth-child(2) {
                             color: $neutral-700;
@@ -30,35 +22,7 @@
                     }
                 }
 
-                .panel-segment__form-input {
-                    border-radius: 10px;
-
-                    // vue-loader css-scoped
-                    ::v-deep {
-                        .v-input__slot {
-                            margin-bottom: 5px !important;
-                        }
-
-                        .v-text-field__details {
-                            padding-left: 5px !important;
-                        }
-
-                        input,
-                        textarea {
-                            font-family: 'Gilroy' !important;
-                            font-weight: 500 !important;
-                            color: $neutral-900 !important;
-                            font-size: 15px !important;
-                            line-height: 21px !important;
-
-                            &::placeholder {
-                                color: $neutral-600 !important;
-                            }
-                        }
-                    }
-                }
-
-                .panel-segment__form-textarea {
+                .panel-crm_segment__form-textarea {
                     position: relative;
                     width: 100%;
 
@@ -130,17 +94,17 @@
 
             
 
-            .b-segment__btns {
+            .panel-crm_segment__btns {
                 display: flex;
                 align-items: center;
                 margin-top: 42px;
                 justify-content: space-between;
-                .b-segment__btn-create {
+                .panel-crm_segment__btn-create {
                     .icon-check-circle {
                         margin-right: 10px;
                     }
                 }
-                .b-segment__btn-delete {
+                .panel-crm_segment__btn-delete {
                     cursor: pointer;
                     display: flex;
                     .icon-feather-trash {

@@ -4,18 +4,8 @@
     <app-table v-show="tableData.length" />
     <div
       v-show="!tableData.length"
-      class="dummy-screen"
     >
-      <v-img
-        class="dummy-screen-img"
-        src="@//assets/png/loyalty-dummy.png"
-      />
-      <div class="dummy-screen-header title-s-bold">
-        Здесь пока ничего нет :’(
-      </div>
-      <div class="dummy-screen-text body-m-regular">
-        Здесь отобрается информация по операциям програмы лояльности. По текущим настройкам фильтра или периода данных нет.
-      </div>
+      <dummy-screen />
     </div>
   </div>
 </template>
@@ -23,11 +13,13 @@
 <script>
   import AppFilter from './Filter'
   import AppTable from './Table'
+  import DummyScreen from '@/views/loyalty/DummyScreen'
 
   export default {
     components: {
       AppFilter,
       AppTable,
+      DummyScreen,
     },
     props: {
     },

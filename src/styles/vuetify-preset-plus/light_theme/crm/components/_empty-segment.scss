@@ -1,12 +1,6 @@
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 
 .b-segment__empty {
-    margin-top: -65px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
     .b-segment__btn-create {
         width: 198px;
         height: 53px;

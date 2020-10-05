@@ -2,10 +2,10 @@
   <side-panel
     v-model="state"
     :width="483"
-    class="panel-segment"
+    class="panel-crm panel-crm_segment"
   >
-    <div class="panel-segment__header">
-      <h1 class="panel-segment__title title-m-bold">
+    <div class="panel-crm__header panel-crm_segment__header">
+      <h1 class="panel-crm__header-title panel-segment__title title-m-bold">
         <template v-if="mode == 'create'">
           Новый сегмент клиентов
         </template>
@@ -14,13 +14,13 @@
         </template>
       </h1>
     </div>
-    <div class="panel-segment__body">
+    <div class="panel-crm__body panel-crm_segment__body">
       <v-form
-        ref="panel-segment__form"
-        class="panel-segment__form"
+        ref="panel-crm_segment__form"
+        class="panel-crm_segment__form"
       >
-        <div class="panel-segment__form-block">
-          <div class="panel-segment__form-labels">
+        <div class="panel-crm_segment__form-block">
+          <div class="panel-crm_segment__form-labels">
             <p class="body-l-semibold">
               Название сигмента
             </p>
@@ -33,7 +33,7 @@
             v-if="mode == 'create'"
             v-model="createData.name"
             :rules="rules.name"
-            class="panel-segment__form-input"
+            class="panel-crm__form-input panel-crm_segment__form-input"
             type="text"
             placeholder="Введите название сигмента"
             outlined
@@ -42,14 +42,14 @@
             v-if="mode == 'edit'"
             v-model="editData.name"
             :rules="rules.name"
-            class="panel-segment__form-input"
+            class="panel-crm__form-input panel-crm_segment__form-input"
             type="text"
             placeholder="Введите название сигмента"
             outlined
           />
         </div>
-        <div class="panel-segment__form-block">
-          <div class="panel-segment__form-labels">
+        <div class="panel-crm_segment__form-block">
+          <div class="panel-crm_segment__form-labels">
             <p class="body-l-semibold">
               Описание сегмента
             </p>
@@ -57,14 +57,14 @@
               Развернутое описание сегмента клиентов.
             </p>
           </div>
-          <div class="panel-segment__form-textarea">
+          <div class="panel-crm_segment__form-textarea">
             <v-textarea
               v-if="mode == 'create'"
               v-model="createData.description"
               :rules="rules.description"
-              class="panel-segment__form-input"
+              class="panel-crm__form-input panel-crm_segment__form-input"
               rows="4"
-              placeholder="Введите название сигмента"
+              placeholder="Введите описание сигмента"
               outlined
               auto-grow
             />
@@ -72,7 +72,7 @@
               v-if="mode == 'edit'"
               v-model="editData.description"
               :rules="rules.description"
-              class="panel-segment__form-input"
+              class="panel-crm__form-input panel-crm_segment__form-input"
               rows="4"
               placeholder="Введите название сигмента"
               outlined
@@ -81,8 +81,8 @@
             <div class="textarea---angle" />
           </div>
         </div>
-        <div class="panel-segment__form-block">
-          <div class="panel-segment__form-labels">
+        <div class="panel-crm_segment__form-block">
+          <div class="panel-crm_segment__form-labels">
             <p class="body-l-semibold">
               Цвет сегмента
             </p>
@@ -94,7 +94,7 @@
             >
               <div
                 class="labels__color-box"
-                :style="mode == 'create' ? `background: ${createData.color};` : `background: ${editData.label_color};`"
+                :style="mode == 'create' ? `background: ${createData.color};` : `background: ${editData.color};`"
                 @click="colorPickerShow = !colorPickerShow"
               />
               <div
@@ -112,7 +112,7 @@
                 />
                 <v-color-picker
                   v-if="mode == 'edit'"
-                  v-model="editData.label_color"
+                  v-model="editData.color"
                   class="color-picker pa-2"
                   hide-mode-switch
                   mode="hexa"
@@ -124,11 +124,11 @@
           </div>
         </div>
         <div
-          class="b-segment__btns"
+          class="panel-crm_segment__btns"
         >
           <v-btn
             v-if="btnCreateShow"
-            class="b-segment__btn-create"
+            class="panel-crm_segment__btn-create"
             color="primary"
             @click="addSegment"
           >
@@ -146,7 +146,7 @@
           </v-btn>
           <div
             v-if="mode == 'edit'"
-            class="b-segment__btn-delete"
+            class="panel-crm_segment__btn-delete"
             @click="deleteSegment"
           >
             <iconify-icon
@@ -206,6 +206,9 @@
       }
     },
     computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
       segmentData () {
         let data
 
@@ -235,30 +238,24 @@
       },
     },
     created () {
-      document.addEventListener('click', (e) => {
+      document.addEventListener('click', (event) => {
         let isClose = true
-
-        e.path.forEach((el) => {
-          if (el.className === 'labels__color-picker') {
-            isClose = false
-          }
-        })
-
+        event.path.forEach((dom) => { if (dom.className === 'labels__color-picker') { isClose = false } })
         if (isClose) this.closePicker()
       })
     },
     mounted () {
       if (this.mode === 'edit') this.btnCreateShow = true
 
-      this.$watch(
-        () => {
-          return this.$refs['panel-segment__form'].validate()
-        },
-        (isValid) => {
-          if (this.mode === 'create' && isValid) this.btnCreateShow = true
-          else if (this.mode === 'create' && !isValid) this.btnCreateShow = false
-        },
-      )
+      // this.$watch(
+      //   () => {
+      //     return this.$refs['panel-crm_segment__form'].validate()
+      //   },
+      //   (isValid) => {
+      //     if (this.mode === 'create' && isValid) this.btnCreateShow = true
+      //     else if (this.mode === 'create' && !isValid) this.btnCreateShow = false
+      //   },
+      // )
     },
     methods: {
       changeColor (str) {
@@ -273,6 +270,7 @@
           ? Object.assign({}, this.tableData)
           : []
       },
+
       getDefaultCreateData () {
         return {
           name: '',
@@ -284,19 +282,23 @@
         this.colorPickerShow = false
       },
       async addSegment () {
-        const valid = this.$refs['panel-segment__form'].validate()
+        const valid = this.$refs['panel-crm_segment__form'].validate()
 
         if (valid) {
           if (this.mode === 'create') {
-            this.$store.dispatch('crm/segment/createSegment', this.segmentData)
+            const payload = Object.assign({ program_id: this.program.id }, this.segmentData)
+            this.$store.dispatch('crm/segment/createSegment', payload)
           } else if (this.mode === 'edit') {
-            this.$store.dispatch('crm/segment/editSegment', this.segmentData)
+            this.$store.dispatch('crm/segment/editSegment', this.segmentData.data)
           }
           this.state = false
         }
       },
       deleteSegment () {
-        this.$store.dispatch('crm/segment/deleteSegment', this.segmentData.id)
+        const payload = {
+          segment_id: this.segmentData.id,
+        }
+        this.$store.dispatch('crm/segment/deleteSegment', payload)
         this.state = false
       },
     },
@@ -305,6 +307,6 @@
 
 <style lang="scss" scoped>
 
-@import "@/styles/vuetify-preset-plus/light_theme/crm/components/_side-panel-segment.scss";
+@import "@/styles/vuetify-preset-plus/light_theme/crm/components/side_panels/_side-panel-segment.scss";
 
 </style>

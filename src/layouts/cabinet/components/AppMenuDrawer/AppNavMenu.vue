@@ -91,6 +91,11 @@
         },
         {
           icon: '$iconify_ion-megaphone-outline',
+          title: 'Акции',
+          to: '/actions',
+        },
+        {
+          icon: '$iconify_ion-mail-outline',
           title: 'Рассылки',
           to: '/sendings',
         },
@@ -102,7 +107,7 @@
         },
         {
           icon: '$iconify_feather-settings',
-          title: 'Настройки компаний',
+          title: 'Настройки',
           to: '/settings',
         },
       ],
@@ -136,7 +141,7 @@
           return this.$store.getters['company/program/program']
         },
         set (v) {
-          this.$store.commit('widget/filter/RESET_STATE') // сброс фильтра бонусных операций
+          this.$store.commit('widget/filter/RESET_FILTER') // сброс фильтра бонусных операций
           this.$store.commit('company/program/SET_PROGRAM', v)
         },
       },

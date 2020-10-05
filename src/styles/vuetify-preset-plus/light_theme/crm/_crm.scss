@@ -5,6 +5,15 @@
 .crm {
     display: flex;
     flex-direction: column;
+    .crm__empty {
+        padding-bottom: 64px;
+        margin-top: auto;
+        margin-bottom: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
     .crm__header {
         display: flex;
         justify-content: space-between;
@@ -15,6 +24,43 @@
             p {
                 margin-left: 10px;
                 margin-bottom: 0;
+            }
+        }
+    }
+    
+    .panel-crm {
+        .panel-crm__header {
+            margin-top: 50px;
+            margin-left: 34px;
+        }
+
+        .panel-crm__body {
+            margin-left: 34px;
+            margin-right: 34px;
+            margin-top: 34px;
+        }
+
+        .panel-crm__form-input {
+            border-radius: 10px;
+            .v-input__slot {
+                margin-bottom: 5px !important;
+            }
+
+            .v-text-field__details {
+                padding-left: 5px !important;
+            }
+
+            input,
+            textarea {
+                font-family: 'Gilroy' !important;
+                font-weight: 500 !important;
+                color: $neutral-900 !important;
+                font-size: 15px !important;
+                line-height: 21px !important;
+
+                &::placeholder {
+                    color: $neutral-600 !important;
+                }
             }
         }
     }
