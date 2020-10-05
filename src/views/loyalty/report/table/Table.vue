@@ -235,8 +235,11 @@
       },
     },
     watch: {
-      program (v) {
-        if (v) this.fetchData()
+      'program.id' (v) {
+        if (v) {
+          console.log('watch program.id')
+          this.fetchData()
+        }
       },
       filter (v) {
         if (v) this.fetchData()

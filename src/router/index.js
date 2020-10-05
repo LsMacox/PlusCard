@@ -157,7 +157,7 @@ export default new Router({
         },
         {
           path: '/program/bonus/settings',
-          component: () => import('@/views/SkeletonPage'),
+          component: () => import('@/views/createLoyalty'),
           name: 'ProgramBonusSetting',
           meta: { title: 'ProgramBonusSetting', icon: 'ui_kit' },
         },
@@ -183,6 +183,12 @@ export default new Router({
           path: '/ui_kit',
           component: () => import('@/views/ui_kit/Components.vue'),
           name: 'components',
+          meta: { title: 'ui_kit', icon: 'ui_kit' },
+        },
+        {
+          path: '/icons',
+          component: () => import('@/views/ui_kit/Icons.vue'),
+          name: 'icons',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
         {
@@ -214,6 +220,12 @@ export default new Router({
           component: () => import('@/views/account/certificate/table/index'),
           name: 'UserCertificates',
           meta: { title: 'Certificates', icon: 'certificates' },
+        },
+        {
+          path: 'actions',
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Actions',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {
           path: 'sendings',

@@ -36,6 +36,7 @@ import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'
 
 import moment from 'moment'
+import { v4 as uuidv4 } from 'uuid'
 import VueMoment from 'vue-moment'
 import VueConstants from './plugins/vue-constants'
 import random from 'random'
@@ -44,6 +45,7 @@ import VueUnderScore from 'vue-underscore'
 import { IsDebugQuery } from './router/router-handler-log'
 
 import VueClipboard from 'vue-clipboard2'
+
 
 // Vue mask
 Vue.use(VueMask)
@@ -100,6 +102,8 @@ Vue.prototype.$IsDebugMode = function () {
 Vue.prototype.$sleep = function (ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
+
+Vue.prototype.$uuid = uuidv4
 
 Vue.prototype.$random = random
 

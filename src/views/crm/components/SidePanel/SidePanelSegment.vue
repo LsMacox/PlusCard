@@ -64,7 +64,7 @@
               :rules="rules.description"
               class="panel-crm__form-input panel-crm_segment__form-input"
               rows="4"
-              placeholder="Введите название сигмента"
+              placeholder="Введите описание сигмента"
               outlined
               auto-grow
             />
@@ -94,7 +94,7 @@
             >
               <div
                 class="labels__color-box"
-                :style="mode == 'create' ? `background: ${createData.color};` : `background: ${editData.label_color};`"
+                :style="mode == 'create' ? `background: ${createData.color};` : `background: ${editData.color};`"
                 @click="colorPickerShow = !colorPickerShow"
               />
               <div
@@ -112,7 +112,7 @@
                 />
                 <v-color-picker
                   v-if="mode == 'edit'"
-                  v-model="editData.label_color"
+                  v-model="editData.color"
                   class="color-picker pa-2"
                   hide-mode-switch
                   mode="hexa"
@@ -206,6 +206,9 @@
       }
     },
     computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
       segmentData () {
         let data
 
@@ -267,6 +270,7 @@
           ? Object.assign({}, this.tableData)
           : []
       },
+
       getDefaultCreateData () {
         return {
           name: '',
@@ -282,15 +286,19 @@
 
         if (valid) {
           if (this.mode === 'create') {
-            this.$store.dispatch('crm/segment/createSegment', this.segmentData)
+            const payload = Object.assign({ program_id: this.program.id }, this.segmentData)
+            this.$store.dispatch('crm/segment/createSegment', payload)
           } else if (this.mode === 'edit') {
-            this.$store.dispatch('crm/segment/editSegment', this.segmentData)
+            this.$store.dispatch('crm/segment/editSegment', this.segmentData.data)
           }
           this.state = false
         }
       },
       deleteSegment () {
-        this.$store.dispatch('crm/segment/deleteSegment', this.segmentData.id)
+        const payload = {
+          segment_id: this.segmentData.id,
+        }
+        this.$store.dispatch('crm/segment/deleteSegment', payload)
         this.state = false
       },
     },

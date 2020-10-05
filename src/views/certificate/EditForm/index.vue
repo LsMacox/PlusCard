@@ -111,25 +111,7 @@
         default: '#main',
       },
     },
-    constants: {
-
-      DEFAULT_CERT: {
-        name: '',
-        // short_description: '',
-        description: '',
-        category_id_list: [],
-        certificate_usage_type: 'Everywhere',
-        guaranteed_period_unlimit: true,
-        guaranteed_period: null,
-        quantity_unlimit: true,
-        nominals: [
-          {
-            nominal_name: '',
-            selling_price: null,
-            quantity: null,
-          },
-        ],
-      },
+    constants: {     
     },
     data () {
       return {
@@ -244,6 +226,7 @@
         try {
           this.GetCertAction = true
           this.cert = await this.$store.dispatch('certificates/certificate/GetCert', this.certId)
+          Vue.set(this.cert, 'quantity_unlimit', this.quantity == null)
           Vue.set(this.cert, 'guaranteed_period_unlimit', this.guaranteed_period == null)
           // for (let index = 0; index < this.cert.nominals.length; index++) {
           //   const element = array[index];

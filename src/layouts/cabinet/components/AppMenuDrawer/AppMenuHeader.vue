@@ -30,7 +30,7 @@
               src="@/assets/svg/logo_32x32.svg"
               width="32px"
               height="32px"
-              @click="$router.push({ name: 'Dashboard' })"
+              @click.stop="$router.push({ name: 'Dashboard' })"
             />
           </router-link>
         </v-badge>
@@ -51,7 +51,7 @@
             fab
             x-small
             color="secondary"
-            @click="$router.push({ name: 'Dashboard' })"
+            @click.stop=""
           >
             <v-icon>mdi-bell-outline</v-icon>
           </v-btn>
