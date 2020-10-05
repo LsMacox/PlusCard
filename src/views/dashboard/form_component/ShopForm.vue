@@ -394,9 +394,10 @@
             `/api-cabinet/company/shops/search?query=${v}`,
           )
           console.log('GEO search string')
-          console.log(success)
+
           // массив геообъектов
           const featureMembers = success.response.GeoObjectCollection.featureMember
+
           console.log(featureMembers)
 
           if (featureMembers.length) {

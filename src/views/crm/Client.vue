@@ -1,10 +1,8 @@
 <template>
   <div class="crm b-segment">
-    <div
-      class="crm__header b-segment__header"
-    >
+    <div class="crm__header b-segment__header">
       <p class="crm__header-title title-m-bold neutral-900--text">
-        Клиенты Metro Cash & Carry
+        {{ program.name }}
       </p>
       <v-btn
         class="crm__header_new-btn"
@@ -37,6 +35,15 @@
         </p>
       </v-btn>
     </div>
+    <div style="margin-top: 34px;">
+      <div class="body-l-semibold neutral-900--text">
+        Работа с клиентами
+      </div>
+      <div class="body-m-regular neutral-700--text">
+        Для списания или начисления бонусов найдите клиента используя поле ниже. Вводите любые данные клиента: ФИО, номер карты, штрих-код, электронная почта, номер телефона.
+      </div>
+    </div>
+    <client-table />
     <side-panel-new-client
       v-model="sidePanelNewClientStatus"
     />
@@ -48,16 +55,16 @@
 </template>
 
 <script>
+  import ClientTable from '@/views/crm/components/ClientTable'
   import SidePanelNewClient from './components/SidePanel/SidePanelNewClient'
   import SidePanelEditClient from './components/SidePanel/SidePanelEditClient'
-  import Convertor from '@/mixins/convertor'
 
   export default {
     components: {
+      ClientTable,
       SidePanelNewClient,
       SidePanelEditClient,
     },
-    mixins: [Convertor],
     data () {
       return {
         clientData: null,
@@ -68,20 +75,14 @@
         },
       }
     },
-    computed: {},
-    watch: {},
-    created () {
-      this.clientData = this.$store.getters['crm/client/clients']
-    },
-    mounted () {},
-    methods: {
-
+    computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
     },
   }
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
 @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
-
 </style>
