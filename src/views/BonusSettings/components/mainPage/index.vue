@@ -41,7 +41,7 @@
   import Basic from './tab/Basic'
   import Advanced from './tab/Advanced'
   export default {
-    name: 'CreateLoyaltyMain',
+    name: 'BonusSettingsMain',
     components: {
       Basic,
       Advanced,

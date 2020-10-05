@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-container class="pa-0">
     <v-menu offset-y>
       <template v-slot:activator="{ on, attrs }">
         <button
@@ -54,7 +54,7 @@
         </div>
       </v-list>
     </v-menu>
-  </div>
+  </v-container>
 </template>
 <script>
   import Vue from 'vue'
