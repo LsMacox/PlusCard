@@ -1,16 +1,13 @@
 <template>
   <div class="crm b-segment">
-    <div
-      v-if="Boolean(segmentsData.length)"
-      class="crm__header b-segment__header"
-    >
+    <div class="crm__header b-segment__header">
       <p class="crm__header-title title-m-bold neutral-900--text">
-        Клиенты Metro Cash & Carry
+        {{ program.name }}
       </p>
       <v-btn
         class="crm__header_new-btn"
         color="primary"
-        @click="sidePanelNewClientStatus = true"
+        @click="openCreate = true"
       >
         <iconify-icon
           icon="plus-circle"
@@ -23,11 +20,24 @@
         </p>
       </v-btn>
     </div>
+    <div style="margin-top: 34px;">
+      <div class="body-l-semibold neutral-900--text">
+        Работа с клиентами
+      </div>
+      <div class="body-m-regular neutral-700--text">
+        Для списания или начисления бонусов найдите клиента используя поле ниже. Вводите любые данные клиента: ФИО, номер карты, штрих-код, электронная почта, номер телефона.
+      </div>
+    </div>
+    <div
+      v-if="Boolean(clients.length)"
+    >
+      /////
+    </div>
     <empty-client
-      v-if="!segmentsData.length"
+      v-else
     />
     <side-panel-new-client
-      v-model="sidePanelNewClientStatus"
+      v-model="openCreate"
     />
   </div>
 </template>
@@ -45,15 +55,17 @@
     mixins: [Convertor],
     data () {
       return {
-        segmentsData: null,
-        sidePanelNewClientStatus: false,
-        sidePanelEditClientStatus: false,
+        openCreate: false,
+        openUpdate: false,
       }
     },
-    computed: {},
+    computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+    },
     watch: {},
     created () {
-      this.segmentsData = this.$store.getters['crm/segment/segments']
     },
     mounted () {},
     methods: {
@@ -62,8 +74,6 @@
   }
 </script>
 
-<style lang="scss">
-
+<style lang="scss" scoped>
 @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
-
 </style>
