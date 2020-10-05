@@ -77,7 +77,6 @@
       <div class="app__date-select-block-square" />
       <!--выбор календарь-->
       <date-range-picker
-        ref="picker"
         v-model="dateRange"
         opens="inline"
         :ranges="false"

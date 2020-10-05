@@ -247,15 +247,15 @@
     mounted () {
       if (this.mode === 'edit') this.btnCreateShow = true
 
-      this.$watch(
-        () => {
-          return this.$refs['panel-crm_segment__form'].validate()
-        },
-        (isValid) => {
-          if (this.mode === 'create' && isValid) this.btnCreateShow = true
-          else if (this.mode === 'create' && !isValid) this.btnCreateShow = false
-        },
-      )
+      // this.$watch(
+      //   () => {
+      //     return this.$refs['panel-crm_segment__form'].validate()
+      //   },
+      //   (isValid) => {
+      //     if (this.mode === 'create' && isValid) this.btnCreateShow = true
+      //     else if (this.mode === 'create' && !isValid) this.btnCreateShow = false
+      //   },
+      // )
     },
     methods: {
       changeColor (str) {

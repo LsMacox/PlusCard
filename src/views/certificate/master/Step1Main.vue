@@ -19,7 +19,7 @@
             <base-text-field
               v-model="cert.name"
               :validate-on-blur="true"
-              :rules="nameRules"
+              :rules="nameRules"              
               placeholder="Название сертификата"
               outlined
               counter
