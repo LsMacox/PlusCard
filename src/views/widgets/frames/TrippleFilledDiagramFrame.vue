@@ -35,7 +35,7 @@
               :class="generateClassesByPrefix(widgetClasses, '__info-statistics')"
             >
               <p class="statistics__number title-m-bold">
-                {{ counts[i-1] }} ₽
+                {{ formatNumberString(counts[i-1]) }} ₽
               </p>
               <p class="statistics__percent-all title-m-bold">
                 {{ prepareDecimalNumberToDisplay(allPercentageDifferences[i-1]) }}%
@@ -66,11 +66,13 @@
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
   import MultiFilledGraph from '@/views/widgets/components/graphs/MultiFilledGraph'
+  import FormatNumber from '@/mixins/formatNumber'
+
 
   export default {
     name: 'TrippleFilledDiagramFrame',
     components: { MultiFilledGraph, WidgetTemplate },
-    mixins: [WidgetFunctions],
+    mixins: [WidgetFunctions, FormatNumber],
     inheritAttrs: false,
     props: {
       diagramData: {

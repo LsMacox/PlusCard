@@ -50,7 +50,7 @@
       :sm="2"
       :md="2"
     >
-      <custom-actions />
+      <custom-actions :widget-data="customActions" />
     </v-col>
   </v-row>
 </template>
@@ -98,6 +98,9 @@
       bonuses () {
         return this.$store.getters['dashboard/bonuses/widgetData']
       },
+      customActions () {
+        return this.$store.getters['dashboard/customActions/widgetData']
+      },
     },
     watch: {
       period (v) {
@@ -114,6 +117,12 @@
         })
 
         this.$store.dispatch('dashboard/bonuses/widget', {
+          program_id: this.program.id,
+          start_period: v.start,
+          end_period: v.end,
+        })
+
+        this.$store.dispatch('dashboard/customActions/widget', {
           program_id: this.program.id,
           start_period: v.start,
           end_period: v.end,
@@ -137,6 +146,12 @@
       })
 
       this.$store.dispatch('dashboard/bonuses/widget', {
+        program_id: this.program.id,
+        start_period: this.start_period,
+        end_period: this.end_period,
+      })
+
+      this.$store.dispatch('dashboard/customActions/widget', {
         program_id: this.program.id,
         start_period: this.start_period,
         end_period: this.end_period,
