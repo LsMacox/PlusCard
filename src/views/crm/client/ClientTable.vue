@@ -214,5 +214,16 @@
 
 <style lang="scss" scoped>
 @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
-@import "@/styles/vuetify-preset-plus/light_theme/tables/_avatar.scss";
+
+.table-cell_avatar {
+  display: flex;
+
+  .table-cell_avatar-img {
+    display: block;
+    margin-right: 8px;
+    width: 25px;
+    height: 25px;
+    border-radius: 25px;
+  }
+}
 </style>
