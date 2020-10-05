@@ -14,10 +14,11 @@
 <script>
   import DoubleDiagramFrame from '@/views/widgets/frames/DoubleDiagramFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
+  import FormatNumber from "@/mixins/formatNumber"
 
   export default {
     components: { DoubleDiagramFrame },
-    mixins: [WidgetFunctions],
+    mixins: [WidgetFunctions, FormatNumber],
     props: {
       widgetData: {
         type: Object,
@@ -81,8 +82,8 @@
     methods: {
       subTitles () {
         return [
-          this.widgetData.byProgramCount + ' покупки по программе',
-          this.widgetData.totalCount + ' покупки всего',
+          this.formatNumberString(this.widgetData.byProgramCount) + ' покупки по программе',
+          this.formatNumberString(this.widgetData.totalCount) + ' покупки всего',
         ]
       },
     },

@@ -1,4 +1,4 @@
-<template>
+<template v-if="data && data.length > 0">
   <widget-template :class-name="widgetClasses">
     <template v-slot:header-left>
       <p class="body-m-semibold">
@@ -28,7 +28,10 @@
             </th>
           </tr>
         </thead>
-        <tbody :class="generateClassesByPrefix(widgetClasses, '__table-body')">
+        <tbody
+            :class="generateClassesByPrefix(widgetClasses, '__table-body')"
+            v-if="data && data.length > 0"
+        >
           <template
             v-for="i in data.length * 2 -1"
           >
@@ -45,7 +48,7 @@
                 >
                   <p
                     class="body-s-medium"
-                    :style="typeof item == 'object' ? `background-color: ${item.background}; color: ${item.color}` : ''"
+                    :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
                   >
                     {{ typeof item == 'object' ? item.text : item }}
                   </p>
@@ -68,7 +71,7 @@
                   >
                     <p
                       class="body-s-medium"
-                      :style="typeof item == 'object' ? `background-color: ${item.background}; color: ${item.color}` : ''"
+                      :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
                     >
                       {{ typeof item == 'object' ? item.text : item }}
                     </p>
@@ -78,7 +81,7 @@
 
               <!-- Horizontal Line -->
               <tr
-                v-if="i % 2 == 1 && i !== data.length * 2 -1"
+                v-if="data && i % 2 == 1 && i !== data.length * 2 -1"
                 :key="i + '-hr'"
                 :class="generateClassesByPrefix(widgetClasses, '__table-hr')"
                 :bgcolor="theme['neutral-250']"
@@ -99,11 +102,12 @@
 <script>
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
+  import Convertor from '@/mixins/convertor'
 
   export default {
     name: 'TableFrame',
     components: { WidgetTemplate },
-    mixins: [WidgetFunctions],
+    mixins: [WidgetFunctions, Convertor],
     inheritAttrs: false,
     props: {
       title: {
