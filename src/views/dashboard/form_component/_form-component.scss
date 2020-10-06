@@ -33,8 +33,11 @@ $shopIconRed: #EA4C2A;
         height: 31px;
 
         .shop-card-title {
-            width: calc(100% - 24px);
+            width: 80%;
             color: $shopCardTitle;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .shop-card-title-action {

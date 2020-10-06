@@ -14,6 +14,7 @@
     <div class="panel-crm__body panel-crm_new_client__body">
       <v-form
         ref="panel-crm_new_client__form"
+        v-model="valid"
         class="panel-crm_new_client__form"
       >
         <div class="panel-crm_segment__form-labels">
@@ -32,7 +33,11 @@
               style="height: 65px"
             >
               <v-text-field
-                :rules="rules.name"
+                v-model="form.name"
+                :rules="[
+                  v => !!v || 'Имя обязательно',
+                  v => String(v).length <= 50 || 'Имя должно быть не более 50 символов',
+                ]"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Имя"
@@ -44,7 +49,10 @@
               style="height: 65px"
             >
               <v-text-field
-                :rules="rules.name"
+                v-model="form.lastname"
+                :rules="[
+                  v => String(v).length <= 50 || 'Фамилия должна быть не более 50 символов',
+                ]"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Фамилия"
@@ -56,7 +64,12 @@
               style="height: 65px"
             >
               <v-text-field
-                :rules="rules.name"
+                v-model="form.phone"
+                v-mask="mask"
+                :rules="[
+                  v => !!v || 'Номер телефона обязателен',
+                  v => String(v).length <= 255 || 'Номер телефона должен быть не более 255 символов',
+                ]"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Номер телефона"
@@ -68,16 +81,16 @@
               style="height: 65px"
             >
               <date-text-field
-                :rules="rules.name"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Дата рождения"
                 outlined
+                :date.sync="form.birthday"
               />
             </v-col>
             <v-col cols="12">
               <v-switch
-                v-model="isInviteCheckbox"
+                v-model="form.sms_invite"
                 class="panel-crm_new_client__switch"
                 hide-details
               >
@@ -91,6 +104,8 @@
               <v-btn
                 class="panel-crm_new_client__btn-add-client"
                 color="primary"
+                :loading="loading"
+                :disabled="!valid"
                 @click="addClient"
               >
                 <iconify-icon
@@ -111,6 +126,7 @@
 </template>
 
 <script>
+  import { mask } from 'vue-the-mask'
   import Convertor from '@/mixins/convertor.js'
   import SidePanel from '@/components/base/SidePanel'
   import DateTextField from '@/components/base/DateTextField'
@@ -120,6 +136,7 @@
       SidePanel,
       DateTextField,
     },
+    directives: { mask },
     mixins: [Convertor],
     model: {
       prop: 'active',
@@ -132,34 +149,61 @@
     },
     data () {
       return {
-        isInviteCheckbox: false,
-        state: this.active,
-        rules: {
-          name: [(v) => !!v || 'Заполните поле'],
+        valid: true,
+        loading: false,
+        form: {
+          name: null,
+          lastname: null,
+          phone: null,
+          birthday: null,
+          sms_invite: false,
         },
+        mask: '7 (###) ###-##-##',
+        state: this.active,
       }
     },
-    computed: {},
-    watch: {
-      active () {
-        this.state = this.active
-      },
-      state () {
-        this.$emit('changeState', this.state)
+    computed: {
+      program () {
+        return this.$store.getters['company/program/program']
       },
     },
-    created () {},
-    mounted () {},
+    watch: {
+      active (v) {
+        this.state = v
+      },
+      state (v) {
+        this.$emit('changeState', v)
+      },
+    },
     methods: {
-      addClient () {
-      // const valid = this.$refs['panel-crm_new_client__form'].validate()
-      // if (valid) {}
-      // else if (isInviteCheckbox && valida) {}
+      close () {
+        this.$emit('changeState', false)
+      },
+      clearPhoneMask (p) {
+        if (p) {
+          p = String(p).match(/\d/g)
+          if (p) p = p.join('')
+        }
+        return p
+      },
+      async addClient () {
+        try {
+          this.loading = true
+          const item = {
+            program_id: this.program.id,
+            name: this.form.name,
+            lastname: this.form.lastname,
+            phone: this.clearPhoneMask(this.form.phone),
+            birthday: this.form.birthday,
+            sms_invite: this.form.sms_invite,
+          }
+          console.log(item)
+          // await this.$store.dispatch('crm/client/create', item)
+          this.close()
+        } finally {
+          this.loading = false
+        }
       },
     },
   }
 </script>
-
-<style lang="scss" scoped>
-@import "@/styles/vuetify-preset-plus/light_theme/crm/components/side_panels/_side-panel-new-client.scss";
-</style>

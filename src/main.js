@@ -20,8 +20,6 @@ import './plugins/base'
 import vuetify from './plugins/vuetify'
 import './plugins/iconify'
 
-import VueMask from 'v-mask'
-
 import i18n from './i18n'
 
 import './AuthGuard'
@@ -45,9 +43,6 @@ import VueUnderScore from 'vue-underscore'
 import { IsDebugQuery } from './router/router-handler-log'
 
 import VueClipboard from 'vue-clipboard2'
-
-// Vue mask
-Vue.use(VueMask)
 
 //
 // Vue.use(DateRangePicker)

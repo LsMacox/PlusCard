@@ -4,6 +4,7 @@
       <div class="shop-card-title body-l-semibold">
         {{ item.name }}
       </div>
+      <div class="app__spacer" />
       <div
         class="shop-card-title-action"
         @mouseleave="actionsShow = false"
@@ -12,7 +13,7 @@
           v-show="!actionsShow"
           @mouseover="actionsShow = true"
         >
-          <v-icon style="color: #B5B5C4; position: relative; top: 3px;">
+          <v-icon style="color: #B5B5C4; position: relative; top: -1px;">
             $iconify_feather-more-vertical
           </v-icon>
         </div>

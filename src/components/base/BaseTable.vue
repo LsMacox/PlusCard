@@ -31,7 +31,7 @@
                   :class="[
                     {
                       active: isValEqualSort = (header.value === pagination.sortBy),
-                      'text-end': i >= 2,
+                      // 'text-end': i >= 2,
                     },
                     isValEqualSort ? (pagination.descending === 'descending' ? 'desc' : 'ask') : ''
                   ]"
@@ -170,6 +170,15 @@
           }
         },
       },
+      pagination: {
+        type: Object,
+        default () {
+          return {
+            sortBy: 'name',
+            descending: '',
+          }
+        },
+      },
       paginationOptions: {
         type: Array,
         default () {
@@ -198,10 +207,6 @@
     },
     data () {
       return {
-        pagination: {
-          sortBy: 'name',
-          descending: '',
-        },
         tableOptions: this.options,
       }
     },
