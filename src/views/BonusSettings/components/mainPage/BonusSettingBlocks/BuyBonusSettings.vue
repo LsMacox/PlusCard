@@ -291,12 +291,12 @@
             Сохранить настройки механики
           </v-btn>
         </div>
-        <v-row>
+        <!-- <v-row>
           this.dbBuyBonusRes.map(this.getEditedObject)= {{ dbBuyBonusRes.map(getEditedObject) }}
         </v-row>
         <v-row>
           this.buyBonusResInternal.map(this.getEditedObject)= {{ buyBonusResInternal.map(getEditedObject) }}
-        </v-row>
+        </v-row> -->
       </v-form>
     </div>
   </div>
@@ -620,9 +620,9 @@
           rules: bonusRes.rules ? {
             event: bonusRes.rules.event,
             percent: bonusRes.rules.percent,
-            expired_days: bonusRes.rules.expired_days,
+            expire_days: bonusRes.rules.expire_days || null,
           } : null,
-          expire_days_unlimit:  bonusRes.expire_days_unlimit !== false
+          expire_days_unlimit:  bonusRes.expire_days_unlimit || bonusRes.rules.expire_days == null
 
         }
       },
