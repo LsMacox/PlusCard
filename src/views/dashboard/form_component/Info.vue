@@ -11,12 +11,15 @@
         <base-text-field
           v-model="program.name"
           :validate-on-blur="true"
-          :rules="nameRules"
           placeholder="Название компании"
           outlined
           counter
           minlength="1"
           maxlength="20"
+          :rules="[
+            v => !!v || 'Название компании обязательно',
+            v => v.length <= 20 || 'Название компании не должно быть более 20 символов'
+          ]"
         />
       </template>
     </BaseMasterFieldBlock>
@@ -71,9 +74,7 @@
       },
     },
     data () {
-      return {
-        nameRules: [(value) => !!value || 'Введите название'],
-      }
+      return {}
     },
   }
 </script>

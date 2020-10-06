@@ -23,9 +23,9 @@ export default {
             const deleteDataIndex = this._vm.$_.findIndex(state.segments, (o) => {
                 return o.id === payload.id
             })
-            console.log('deleteDataIndex')
+            console.log('delete_DataIndex')
             console.log(deleteDataIndex)
-            console.log('deleteDataIndex')
+            console.log('delete_DataIndex')
             state.segments.splice(deleteDataIndex, 1)
         },
         segmentCreate (state, payload) {

@@ -25,6 +25,7 @@
           <v-btn
             color="primary"
             :loading="loading"
+            :disabled="!valid"
             @click="updateContact()"
           >
             <v-icon style="margin-right: 10px;">
@@ -52,7 +53,7 @@
     data () {
       return {
         loading: false,
-        valid: false,
+        valid: true,
         program: {
           phone: null,
           website: null,

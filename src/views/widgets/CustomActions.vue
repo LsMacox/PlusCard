@@ -6,18 +6,21 @@
     <template v-slot:tab-1>
       <ul class="custom-actions__list">
         <li
-          v-for="i in 6"
-          :key="i"
+          v-for="item in widgetData"
+          :key="item.id"
           class="custom-actions__item"
         >
           <div class="custom-actions__item-img">
-            <img :src="require('@/assets/widget/custom-actions/user' + i + '.png')">
+            <img
+              style="width: 24px; border-radius: 50%;"
+              :src="item.avatar"
+            >
           </div>
           <div class="custom-actions__item-text">
             <p class="body-s-semibold">
-              Александр Тарасов
+              {{ item.name }} {{ item.lastname }}
             </p>
-            <span class="body-s-medium wc-neutral">833 действия</span>
+            <span class="body-s-medium wc-neutral">{{ item.action_count }} действия</span>
           </div>
         </li>
       </ul>
@@ -34,12 +37,12 @@
     components: { TabListFrame },
     mixins: [WidgetFunctions],
     props: {
-    //   widgetData: {
-    //     type: Array,
-    //     default () {
-    //       return []
-    //     },
-    //   },
+      widgetData: {
+        type: Array,
+        default () {
+          return []
+        },
+      },
     },
     data () {
       return {

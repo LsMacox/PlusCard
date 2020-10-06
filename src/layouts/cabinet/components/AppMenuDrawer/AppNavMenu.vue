@@ -107,7 +107,7 @@
         },
         {
           icon: '$iconify_feather-settings',
-          title: 'Настройки компаний',
+          title: 'Настройки',
           to: '/settings',
         },
       ],

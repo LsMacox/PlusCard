@@ -24,7 +24,7 @@
 
         <v-row
           style="margin: 68px 0;"
-          justify="space-between"          
+          justify="space-between"
           align="baseline"
         >
           <v-btn
@@ -43,7 +43,7 @@
           <v-btn
             color="primary"
             :loading="loading"
-            :disabled="!program.name || !program.logo"
+            :disabled="!valid || !program.logo"
             @click="updateCompany()"
           >
             <v-icon style="margin-right: 10px;">
@@ -71,7 +71,7 @@
     data () {
       return {
         loading: false,
-        valid: false,
+        valid: true,
         program: {
           name: null,
           logo: null,

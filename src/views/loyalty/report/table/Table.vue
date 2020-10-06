@@ -57,7 +57,7 @@
           <template v-slot:item.client="{ item }">
             <div style="display: flex;">
               <img
-                class="cell-avatar"
+                class="table-cell_avatar"
                 style="position: relative; top: -5px;"
                 :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`"
               >
@@ -95,7 +95,7 @@
           <template v-slot:item.operator="{ item }">
             <div style="display: flex; align-items: center">
               <img
-                class="cell-avatar"
+                class="table-cell_avatar"
                 :style="`background-color: ${program.bgcolor1};`"
                 :src="(item.operator_avatar === 'system' || item.operator_avatar === 'external')
                   ? program.logo_short
@@ -330,7 +330,7 @@
   color: #9191A1;
 }
 
-.cell-avatar {
+.table-cell_avatar {
   margin-right: 8px;
   width: 25px;
   height: 25px;
