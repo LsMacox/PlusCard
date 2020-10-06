@@ -198,7 +198,7 @@
             sms_invite: this.form.sms_invite,
           }
           console.log(item)
-          await this.$store.dispatch('crm/client/create', item)
+          // await this.$store.dispatch('crm/client/create', item)
           this.close()
         } finally {
           this.loading = false
