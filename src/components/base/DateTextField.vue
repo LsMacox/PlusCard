@@ -23,7 +23,7 @@
       class="date-range-picker"
       opens="inline"
       :ranges="false"
-      :auto-apply="false"
+      :auto-apply="true"
       :show-dropdowns="true"
       :linked-calendars="false"
       :single-date-picker="true"
@@ -154,8 +154,10 @@
       border-right: none !important;
     }
 }
+
 .date-text-field__input {
   position: relative;
+
   .icon-feather-calendar {
     position: absolute;
     top: 25%;
