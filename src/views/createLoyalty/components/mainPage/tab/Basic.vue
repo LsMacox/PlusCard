@@ -14,7 +14,7 @@
           />
           <div>
             <h3 class="title-h3">
-              <span @click="switchBagOn = !switchBagOn">Начисление и списание</span>
+              <span @click="switchBagOn = !switchBagOn">Начисление и списаниея</span>
             </h3>
             <p class="desc-15 color-text-grey">
               Правила начисления и списания бонусов при совершении покупок
@@ -23,7 +23,6 @@
         </div>
         <div>
           <v-switch
-            v-if="false"
             v-model="switchBagOn"
             inset
             class="custom-switch"
@@ -32,7 +31,6 @@
       </div>
       <accrual-writing
         v-if="switchBagOn"
-        v-on="$listeners"
         @saveChangeAccrual="saveChangeAccrual"
       />
     </div>
@@ -160,8 +158,8 @@
 </template>
 
 <script>
-  import AccrualWriting from '../BonusSettingBlocks/BuyBonusSettings'
-  import { mapMutations, mapGetters } from 'vuex'
+  import AccrualWriting from '../switchControl/AccrualWriting'
+  import { mapMutations } from 'vuex'
   export default {
     name: 'Basic',
     components: {
@@ -176,10 +174,14 @@
         switchStats: false,
       }
     },
-    computed: {
-      ...mapGetters({
-        existsBuyBonusResActive: 'company/bonus_resources/existsBuyBonusResActive',
-      }),
+    methods: {
+      ...mapMutations(
+        {
+          resetState: 'createBonusesCurrency/create_bonuses_currency/resetState',
+        }),
+      saveChangeAccrual (val) {
+        this.switchBagOn = val
+      },
     },
     watch: {
       switchBagOn (val) {
@@ -188,20 +190,6 @@
         }
       },
     },
-    methods: {
-      ...mapMutations(
-        {
-          resetState: 'createBonusesCurrency/create_bonuses_currency/resetState',
-        }),
-
-      saveChangeAccrual (val) {
-        this.switchBagOn = val
-      },
-      openBonusUnitDialog (bonusUnit) {
-        this.$emit('bonus-unit-dialog', bonusUnit)
-      },
-    },
-
   }
 </script>
 

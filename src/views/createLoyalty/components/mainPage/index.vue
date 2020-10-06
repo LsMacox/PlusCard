@@ -14,12 +14,12 @@
       <v-tabs
         v-model="tab"
         background-color="transparent"
-        color="primary"
+        color="#4776E6"
       >
         <v-tab
+          class="tabs-items-own"
           v-for="item in items"
           :key="item"
-          class="tabs-items-own body-m-medium"
         >
           {{ item }}
         </v-tab>
@@ -27,10 +27,7 @@
 
       <v-tabs-items v-model="tab">
         <keep-alive>
-          <component
-            :is="currentTabComponent"
-            v-on="$listeners"
-          />
+          <component :is="currentTabComponent" />
         </keep-alive>
       </v-tabs-items>
     </div>
@@ -62,15 +59,7 @@
           return Advanced
         }
       },
-
     },
-
-    methods: {
-      openBonusUnitDialog (bonusUnit) {
-        this.$emit('bonus-unit-dialog', bonusUnit)
-      },
-    },
-
   }
 </script>
 

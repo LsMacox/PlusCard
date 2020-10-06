@@ -3,73 +3,29 @@
     <div class="loyalty-wrap">
       <toolbar />
       <div class="main-wrap">
-        <v-skeleton-loader
-          v-if="loadData"
-          boilerplate
-          type="card-avatar, article, actions"
-          class="skeleton"
-        />
-        <create-loyalty-main
-          v-else
-          @bonus-unit-dialog="openBonusUnitDialog"
-        />
-        <!--        <switch-control />-->
+        <create-loyalty-main />
+<!--        <switch-control />-->
       </div>
     </div>
-    <bonus-unit-dialog
-      v-if="bonusDialog"
-      v-model="bonusDialog"
-      :bonus-unit="editedBonusUnit"
-      :program-id="programId"
-    />
+    <navigation-drawers-right />
   </div>
 </template>
 
 <script>
   import Toolbar from '@/views/createLoyalty/components/Toolbar'
-  import BonusUnitDialog from '@/views/createLoyalty/components/BonusUnitDialog'
+  import NavigationDrawersRight from '@/views/createLoyalty/components/NavigationDrawersRight'
   import createLoyaltyMain from '@/views/createLoyalty/components/mainPage'
   // import SwitchControl from './components/mainPage/switchControl/index'
   export default {
-    name: 'CreateLoyalty',
+    name: 'createLoyalty',
     components: {
       // SwitchControl,
       Toolbar,
       createLoyaltyMain,
-      BonusUnitDialog,
+      NavigationDrawersRight,
     },
     data () {
-      return {
-        editedBonusUnit: null,
-        bonusDialog: false,
-        loadData: false,
-
-      }
-    },
-    computed: {
-      programId () {
-        return this.$store.getters.programId
-      },
-    },
-    watch: {
-      programId (v) {
-        if (v) this.init()
-      },
-    },
-    created () {
-      this.init()
-    },
-    methods: {
-      async init () {
-        this.loadData = true
-        await this.$store.dispatch('company/bonus_units/loadBonusUnits', this.programId)
-        await this.$store.dispatch('company/bonus_resources/GetList', this.programId)
-        this.loadData = false
-      },
-      openBonusUnitDialog (bonusUnit) {
-        this.bonusDialog = true
-        this.editedBonusUnit = bonusUnit
-      },
+      return {}
     },
   }
 </script>
@@ -79,8 +35,5 @@
     max-width: 676px;
     width: 100%;
     margin: 0 auto;
-  }
-  .skeleton {
-    margin-top: 100px;
   }
 </style>
