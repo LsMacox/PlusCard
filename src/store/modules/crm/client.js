@@ -44,6 +44,18 @@ const actions = {
         commit('RESET_STATE')
     },
 
+    async create ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.post('/api-cabinet/merchant/account/create', item)
+            console.log('/api-cabinet/merchant/account/create')
+            console.log(result)
+            commit('ADD', result)
+        } catch (error) {
+            throw error
+        }
+    },
+
     async list ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {

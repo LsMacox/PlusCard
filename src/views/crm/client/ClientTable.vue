@@ -3,7 +3,9 @@
     <empty-client
       v-if="!clients.length"
     />
-    <div>
+    <div
+      v-else
+    >
       <!--
       <client-filter />
       -->
@@ -15,6 +17,10 @@
         :options="list"
         :total-count="totalClients"
         :word-operations="['клиент', 'клиента', 'клиентов']"
+        :pagination="{
+          sortBy: 'created_at',
+          descending: 'descending',
+        }"
         @click:row="editSidePanel"
       >
         <template v-slot:[`item.id`]="{ item }">

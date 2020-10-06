@@ -1,9 +1,11 @@
 <template>
-  <div class="crm__empty b-client__empty">
-    <empty
-      sub-text="Здесь будет отображаться актуальная информация
+  <div class="crm">
+    <div class="crm__empty b-client__empty">
+      <empty
+        sub-text="Здесь будет отображаться актуальная информация
       по базе ваших клиентов"
-    />
+      />
+    </div>
   </div>
 </template>
 

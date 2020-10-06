@@ -170,6 +170,15 @@
           }
         },
       },
+      pagination: {
+        type: Object,
+        default () {
+          return {
+            sortBy: 'name',
+            descending: '',
+          }
+        },
+      },
       paginationOptions: {
         type: Array,
         default () {
@@ -198,10 +207,6 @@
     },
     data () {
       return {
-        pagination: {
-          sortBy: 'name',
-          descending: '',
-        },
         tableOptions: this.options,
       }
     },

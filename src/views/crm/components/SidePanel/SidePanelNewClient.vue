@@ -14,6 +14,7 @@
     <div class="panel-crm__body panel-crm_new_client__body">
       <v-form
         ref="panel-crm_new_client__form"
+        v-model="valid"
         class="panel-crm_new_client__form"
       >
         <div class="panel-crm_segment__form-labels">
@@ -32,7 +33,10 @@
               style="height: 65px"
             >
               <v-text-field
-                :rules="rules.name"
+                v-model="form.name"
+                :rules="[
+                  v => !!v || 'Имя обязательно',
+                ]"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Имя"
@@ -44,7 +48,10 @@
               style="height: 65px"
             >
               <v-text-field
-                :rules="rules.name"
+                v-model="form.lastname"
+                :rules="[
+                  v => !!v || 'Фамилия обязательна',
+                ]"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Фамилия"
@@ -56,7 +63,10 @@
               style="height: 65px"
             >
               <v-text-field
-                :rules="rules.name"
+                v-model="form.phone"
+                :rules="[
+                  v => !!v || 'Номер телефона обязателен',
+                ]"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Номер телефона"
@@ -68,7 +78,7 @@
               style="height: 65px"
             >
               <date-text-field
-                :rules="rules.name"
+                v-model="form.birthday"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Дата рождения"
@@ -77,7 +87,7 @@
             </v-col>
             <v-col cols="12">
               <v-switch
-                v-model="isInviteCheckbox"
+                v-model="form.sms_invite"
                 class="panel-crm_new_client__switch"
                 hide-details
               >
@@ -91,6 +101,8 @@
               <v-btn
                 class="panel-crm_new_client__btn-add-client"
                 color="primary"
+                :loading="loading"
+                :disabled="!valid"
                 @click="addClient"
               >
                 <iconify-icon
@@ -132,29 +144,47 @@
     },
     data () {
       return {
-        isInviteCheckbox: false,
-        state: this.active,
-        rules: {
-          name: [(v) => !!v || 'Заполните поле'],
+        valid: true,
+        loading: false,
+        form: {
+          name: null,
+          lastname: null,
+          phone: null,
+          birthday: null,
+          sms_invite: false,
         },
+        state: this.active,
       }
     },
     computed: {},
     watch: {
-      active () {
-        this.state = this.active
+      active (v) {
+        this.state = v
       },
-      state () {
-        this.$emit('changeState', this.state)
+      state (v) {
+        this.$emit('changeState', v)
       },
     },
-    created () {},
-    mounted () {},
+    created () {
+    },
+    mounted () {
+    },
     methods: {
-      addClient () {
-      // const valid = this.$refs['panel-crm_new_client__form'].validate()
-      // if (valid) {}
-      // else if (isInviteCheckbox && valida) {}
+      async addClient () {
+        try {
+          this.loading = false
+          const item = {
+            name: this.form.name,
+            lastname: this.form.lastname,
+            phone: this.form.phone,
+            birthday: this.form.birthday,
+            sms_invite: this.form.sms_invite,
+          }
+          console.log(item)
+        // await this.$store.dispatch('crm/client/create', item)
+        } finally {
+          this.loading = false
+        }
       },
     },
   }
