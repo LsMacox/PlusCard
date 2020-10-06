@@ -36,6 +36,7 @@
                 v-model="form.name"
                 :rules="[
                   v => !!v || 'Имя обязательно',
+                  v => String(v).length <= 50 || 'Имя должно быть не более 50 символов',
                 ]"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
@@ -50,7 +51,7 @@
               <v-text-field
                 v-model="form.lastname"
                 :rules="[
-                  v => !!v || 'Фамилия обязательна',
+                  v => String(v).length <= 50 || 'Фамилия должна быть не более 50 символов',
                 ]"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
@@ -64,8 +65,10 @@
             >
               <v-text-field
                 v-model="form.phone"
+                v-mask="mask"
                 :rules="[
                   v => !!v || 'Номер телефона обязателен',
+                  v => String(v).length <= 255 || 'Номер телефона должен быть не более 255 символов',
                 ]"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
@@ -123,6 +126,7 @@
 </template>
 
 <script>
+  import { mask } from 'vue-the-mask'
   import Convertor from '@/mixins/convertor.js'
   import SidePanel from '@/components/base/SidePanel'
   import DateTextField from '@/components/base/DateTextField'
@@ -132,6 +136,7 @@
       SidePanel,
       DateTextField,
     },
+    directives: { mask },
     mixins: [Convertor],
     model: {
       prop: 'active',
@@ -153,10 +158,15 @@
           birthday: null,
           sms_invite: false,
         },
+        mask: '7 (###) ###-##-##',
         state: this.active,
       }
     },
-    computed: {},
+    computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+    },
     watch: {
       active (v) {
         this.state = v
@@ -165,23 +175,31 @@
         this.$emit('changeState', v)
       },
     },
-    created () {
-    },
-    mounted () {
-    },
     methods: {
+      close () {
+        this.$emit('changeState', false)
+      },
+      clearPhoneMask (p) {
+        if (p) {
+          p = String(p).match(/\d/g)
+          if (p) p = p.join('')
+        }
+        return p
+      },
       async addClient () {
         try {
-          this.loading = false
+          this.loading = true
           const item = {
+            program_id: this.program.id,
             name: this.form.name,
             lastname: this.form.lastname,
-            phone: this.form.phone,
+            phone: this.clearPhoneMask(this.form.phone),
             birthday: this.form.birthday,
             sms_invite: this.form.sms_invite,
           }
           console.log(item)
-        // await this.$store.dispatch('crm/client/create', item)
+          await this.$store.dispatch('crm/client/create', item)
+          this.close()
         } finally {
           this.loading = false
         }

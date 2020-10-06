@@ -58,6 +58,7 @@ const actions = {
     await commit('profile/profile/RESET_STATE', null, { root: true })
     await commit('company/program/RESET_STATE', null, { root: true })
     await commit('widget/filter/RESET_STATE', null, { root: true })
+    await commit('crm/client/RESET_STATE', null, { root: true })
   },
 
   async InitDevice ({ commit }) {

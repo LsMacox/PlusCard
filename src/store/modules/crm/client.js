@@ -47,7 +47,7 @@ const actions = {
     async create ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.post('/api-cabinet/merchant/account/create', item)
+            const result = await ApiService.post('/api-cabinet/merchant/account', item)
             console.log('/api-cabinet/merchant/account/create')
             console.log(result)
             commit('ADD', result)
