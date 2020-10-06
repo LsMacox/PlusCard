@@ -57,7 +57,7 @@
               Развернутое описание сегмента клиентов.
             </p>
           </div>
-          <div class="panel-crm_segment__form-textarea">
+          <div class="panel-crm__form-textarea panel-crm_segment__form-textarea">
             <v-textarea
               v-if="mode == 'create'"
               v-model="createData.description"

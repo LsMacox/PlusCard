@@ -72,6 +72,8 @@
     watch: {},
     created () {
       this.clientData = this.$store.getters['crm/client/clients']
+      // example
+      this.sidePanelEditClient.data = this.clientData[0]
     },
     mounted () {},
     methods: {

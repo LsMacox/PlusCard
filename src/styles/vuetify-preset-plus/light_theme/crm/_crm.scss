@@ -41,7 +41,7 @@
         }
 
         .panel-crm__form-input {
-            border-radius: 10px;
+            border-radius: 10px !important;
             .v-input__slot {
                 margin-bottom: 5px !important;
             }
@@ -52,16 +52,45 @@
 
             input,
             textarea {
-                font-family: 'Gilroy' !important;
-                font-weight: 500 !important;
-                color: $neutral-900 !important;
-                font-size: 15px !important;
-                line-height: 21px !important;
+                font-family: 'Gilroy';
+                font-weight: 500;
+                color: $neutral-900;
+                font-size: 15px ;
+                line-height: 21px;
 
                 &::placeholder {
                     color: $neutral-600 !important;
                 }
             }
         }
+
+        .panel-crm__form-textarea {
+            position: relative;
+            width: 100%;
+
+            .textarea---angle {
+                position: absolute;
+                width: 13px;
+                height: 1.4px;
+                background: $neutral-500;
+                bottom: 39px;
+                right: 4px;
+                transform: rotate(139deg);
+                border-radius: 50px;
+                z-index: 22;
+
+                &:before {
+                    content: "";
+                    position: absolute;
+                    width: 7px;
+                    height: 1.4px;
+                    margin-top: -4px;
+                    margin-left: 2.5px;
+                    border-radius: 10px;
+                    background: $neutral-500;
+                }
+            }
+        }
+
     }
 }

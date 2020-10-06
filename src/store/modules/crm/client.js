@@ -16,7 +16,7 @@ export default {
                 email: 'rs.bikeev@yandex.ru',
                 code: '1640000000145437',
                 card: '432156',
-                img_avatar: '@/assets/png/custom/beardedman.png',
+                img_avatar: require('@/assets/png/custom/beardedman.png'),
             }
         )
     },

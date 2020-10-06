@@ -1,18 +1,35 @@
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+@import "./components/client-edit-mode-usual.scss";
 
 .panel-crm_edit_client {
     .panel-crm_edit_client__header {
+        margin-left: calc(100% - 258px) !important;
+        margin-top: -29px !important;
         .panel-crm_edit_client__tabs {
             .panel-crm_edit_client__tabs-btn {
+                width: 112px;
                 height: 33px !important;
+                &.active {
+                    background: linear-gradient(90deg, $primary-base 0%, $secondary-base 100%) !important;
+                    span.v-btn__content {
+                        color: $neutral-100; 
+                    }
+                }
+                span.v-btn__content {
+                    @include body-s-semibold;
+                    color: $primary-base;
+                }
                 &:nth-child(1) {
                     border-radius: 10px 0px 0px 10px;
                 } 
                 &:nth-child(2) {
                     border-radius: 0px 10px 10px 0px;
-                    color: $primary-base;
                 }
             }
         }
+    }
+    .panel-crm_edit_client__body {
+        margin-top: 48px !important;
     }
 }

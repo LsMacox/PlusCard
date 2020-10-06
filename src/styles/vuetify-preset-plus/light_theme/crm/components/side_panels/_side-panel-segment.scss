@@ -22,40 +22,6 @@
                     }
                 }
 
-                .panel-crm_segment__form-textarea {
-                    position: relative;
-                    width: 100%;
-
-                    textarea {
-                        width: inherit;
-                        resize: vertical;
-                    }
-
-                    .textarea---angle {
-                        position: absolute;
-                        width: 13px;
-                        height: 1.4px;
-                        background: $neutral-500;
-                        bottom: 39px;
-                        right: 4px;
-                        transform: rotate(139deg);
-                        border-radius: 50px;
-                        z-index: 22;
-
-                        &:before {
-                            content: "";
-                            position: absolute;
-                            width: 7px;
-                            height: 1.4px;
-                            margin-top: -4px;
-                            margin-left: 2.5px;
-                            border-radius: 10px;
-                            background: $neutral-500;
-                        }
-                    }
-                }
-
-
                 .labels__color-picker {
                     display: inline-block;
                     position: relative;

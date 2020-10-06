@@ -46,7 +46,6 @@ import { IsDebugQuery } from './router/router-handler-log'
 
 import VueClipboard from 'vue-clipboard2'
 
-
 // Vue mask
 Vue.use(VueMask)
 
