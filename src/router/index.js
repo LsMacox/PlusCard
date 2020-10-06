@@ -167,9 +167,15 @@ export default new Router({
           name: 'Master',
           meta: { auth: true, title: 'Master', icon: 'master' },
         },
+        // {
+        //   path: '/loyalty',
+        //   component: () => import('@/views/loyalty/index'),
+        //   name: 'loyalty',
+        //   meta: { auth: true },
+        // },
         {
           path: '/loyalty',
-          component: () => import('@/views/loyalty/index'),
+          component: () => import('@/views/createLoyalty/index'),
           name: 'loyalty',
           meta: { auth: true },
         },
@@ -192,6 +198,12 @@ export default new Router({
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
         {
+          path: '/account/setting',
+          component: () => import('@/views/setting/index.vue'),
+          name: 'UserCertificates',
+          meta: { title: 'Certificates', icon: 'certificates' },
+        },
+        {
           path: '/program/certificate/list',
           component: () => import('@/views/certificate/ProgramCertificateView.vue'),
           name: 'ProgramCertificateList',
@@ -207,7 +219,7 @@ export default new Router({
           component: () => import('@/views/certificate/EditForm/index.vue'),
           props: (route) => ({ certId: +route.params.cert_id, startPage: route.hash || '#main' }),
           name: 'ProgramCertificateForm',
-          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },         
+          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
         },
         {
           path: '/certificate/master',
@@ -215,9 +227,15 @@ export default new Router({
           name: 'ProgramCertificateMaster',
           meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
         },
+        // {
+        //   path: '/account/certificates',
+        //   component: () => import('@/views/account/certificate/table/index'),
+        //   name: 'UserCertificates',
+        //   meta: { title: 'Certificates', icon: 'certificates' },
+        // },
         {
           path: '/account/certificates',
-          component: () => import('@/views/account/certificate/table/index'),
+          component: () => import('@/views/certificate/settingRequisites/index.vue'),
           name: 'UserCertificates',
           meta: { title: 'Certificates', icon: 'certificates' },
         },
