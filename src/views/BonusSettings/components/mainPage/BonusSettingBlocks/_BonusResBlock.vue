@@ -1,52 +1,5 @@
 <template>
-  <div
-    class="tab-basic"
-  >
-    <div
-      class="create-mess-container"
-    >
-      <v-form
-        ref="form"
-        v-model="formValid"
-        lazy-validation
-      >
-        <div class="mess-wrap">
-          <div class="step">
-            1
-          </div>
-          <div class="block-title-create">
-            <div>
-              <h3 class="title-h4">
-                Начисление
-              </h3>
-              <p class="desc-15 color-text-grey">
-                Какой процент от каждой покупки начислять клиенту? Если вам нужны несколько
-                вариантов начисления - добавьте еще одну операцию.
-              </p>
-            </div>
-
-            <div
-              v-if="bonusUnits.length === 0"
-              class="select-input-wrap"
-            >
-              <v-btn
-                color="secondary"
-                small
-                max-width="283px"
-                width="100%"
-                max-height="45px"
-                height="100%"
-                type="button"
-                @click="createBonusesCurrency"
-              >
-                <img
-                  src="@/icons/svg/plus-circle.svg"
-                  class="plus-circle"
-                >
-                Создайте бонусную валюту
-              </v-btn>
-            </div>
-            <div
+<div
               v-for="(bonusRes, bonusResIndex) in buyBonusResSource"
               :key="bonusResIndex"
               class="select-input-accrual-bonuses"
@@ -73,7 +26,7 @@
 
                 <div class="wrap-circle">
                   <v-btn
-                    v-if="buyBonusResSource.length > 1"
+                    v-if="showDeleteAction"
                     icon
                     class="simple-circle mines-right"
                     :loading="bonusRes.deleteAction"
@@ -82,7 +35,7 @@
                     <img src="@/icons/svg/mines.svg">
                   </v-btn>
                   <div
-                    v-if="(bonusResIndex + 1) === buyBonusResSource.length"
+                    v-if="showAddAction"
                     class="simple-circle mines-right"
                     @click="addNewBonusRes('TYPE_SOURCE')"
                   >
@@ -101,7 +54,7 @@
                     validate-on-blur
                   />
                 </v-col>
-              </v-row>
+              </v-row>              
 
               <v-row
                 align="center"
@@ -110,9 +63,8 @@
                 <v-col cols="auto">
                   <base-switch
                     v-model="bonusRes.expire_days_unlimit"
-                    :label="bonusRes.expire_days_unlimit ? 'Срок действия бонусов: без ограничений' : ' Срок действия бонусов:'"
 
-                    @change="(v)=>{ if (v) bonusRes.rules.expire_days = null }"
+                    :label="bonusRes.expire_days_unlimit ? 'Срок действия бонусов: без ограничений' : ' Срок действия бонусов:'"
                   />
                 </v-col>
                 <v-col v-if="!bonusRes.expire_days_unlimit">
@@ -123,21 +75,12 @@
                     >
                       <img src="@/icons/svg/mines.svg">
                     </div>
-                     <base-text-field
-                    v-model.number="bonusRes.rules.expire_days"
-                    :rules="daysRules"
-                    :validation-placement="'top'"
-                    placeholder="X дней"
-                    class="percent-field"
-                    @input="(v) => { bonusRes.rules.expire_days = checkValidNum(v)}"
-                    validate-on-blur
-                  />
-                    <!-- <input
+                    <input
                       v-model="bonusRes.rules.expire_days"
                       class="input-bonuses input-sm-xl input-sm"
                       type="text"
                       @input="bonusRes.rules.expire_days = checkValidNum($event.target.value)"
-                    > -->
+                    >
                     <div
                       class="small-circle-input"
                       @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days + 1"
@@ -159,157 +102,16 @@
                 </v-col>
               </v-row>
             </div>
-          </div>
-        </div>
-        <div
-          class="magazine-wrap"
-          :class="[(dbBuyBonusRes.length === 0 && false) ? 'disabled-block' : '']"
-        >
-          <div class="step">
-            2
-          </div>
-          <div
-            class="block-title-create"
-          >
-            <div>
-              <h3 class="title-h3">
-                Списание
-              </h3>
-              <p class="desc-15 color-text-grey">
-                Какую часть покупки можно оплатить бонусной валютой? Если вам нужны несколько вариантов
-                оплаты покупки - добавьте операцию.
-              </p>
-            </div>
-            <div
-              v-if="(dbBuyBonusRes.length === 0 && false) "
-              class="select-input-wrap"
-            >
-              <input
-                type="text"
-                class="input-bonuses shopping-inp input-sm"
-                placeholder="% от покупки"
-              >
-              <v-select
-                :items="items"
-                label="Выберите бонусную валюту"
-                dense
-                outlined
-                hide-details
-                class="select-md"
-              />
-            </div>
-            <template v-else>
-              <div
-                v-for="(bonusRes, bonusResIndex) in buyBonusResTarget"
-                :key="bonusResIndex"
-                class="select-input-accrual-bonuses"
-              >
-                <div class="wrap-input">
-                  <base-text-field
-                    v-model.number="bonusRes.rules.percent"
-                    :rules="percentRules"
-                    :validation-placement="'top'"
-                    placeholder="% от покупки"
-                    class="percent-field"
-                    validate-on-blur
-                  />
-
-                  <bonus-unit-select
-                    v-model="bonusRes.bonus_score.units_id"
-                    :disabled="!bonusRes.isNew"
-                    :bonus-unit-list="bonusUnits"
-                    :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
-                    :show-error="showErrors"
-                    style="width:254px"
-                    v-on="$listeners"
-                  />
-
-                  <div class="wrap-circle">
-                    <v-btn
-                      v-if="buyBonusResTarget.length > 1"
-                      icon
-                      class="simple-circle mines-right"
-                      :loading="bonusRes.deleteAction"
-                      @click="deleteBonusRes(bonusRes)"
-                    >
-                      <img src="@/icons/svg/mines.svg">
-                    </v-btn>
-                    <div
-                      v-if="(bonusResIndex + 1) === buyBonusResTarget.length"
-                      class="simple-circle mines-right"
-                      @click="addNewBonusRes('TYPE_TARGET')"
-                    >
-                      <img src="@/icons/svg/plus.svg">
-                    </div>
-                  </div>
-                </div>
-                <v-row>
-                  <v-col>
-                    <base-text-field
-                      v-model="bonusRes.title"
-                      :rules="titleRules"
-                      :validation-placement="'top'"
-                      placeholder="Введите название операции, чтобы не запутаться"
-                      class="title-field input-lg-l"
-                      validate-on-blur
-                    />
-                  </v-col>
-                </v-row>
-
-                <v-row
-                  align="center"
-                >
-                  <v-col>
-                    <base-switch
-                      v-model="bonusRes.can_app_usage"
-                      :label="'Разрешить использование менеджером'"
-                    />
-                  </v-col>
-                </v-row>
-              </div>
-            </template>
-          </div>
-        </div>
-
-        <div
-          v-if="hasChanges && valid"
-          class="save-currency"
-        >
-          <v-btn
-
-            color="primary"
-            :loading="saveChangesActive"
-            @click="saveChanges"
-          >
-            <!-- <img
-            src="@/icons/svg/checkmark-circle-outline.svg"
-            class="img-circle"
-          > -->
-            <v-icon left>
-              $iconify_ion-checkmark-circle-outline
-            </v-icon>
-            Сохранить настройки механики
-          </v-btn>
-        </div>
-        <v-row>
-          this.dbBuyBonusRes.map(this.getEditedObject)= {{ dbBuyBonusRes.map(getEditedObject) }}
-        </v-row>
-        <v-row>
-          this.buyBonusResInternal.map(this.getEditedObject)= {{ buyBonusResInternal.map(getEditedObject) }}
-        </v-row>
-      </v-form>
-    </div>
-  </div>
 </template>
 
 <script>
   import { mapMutations, mapGetters } from 'vuex'
   import Vue from 'vue'
 
-  import { asMixin, isFilled, isNumber, isInteger, isPosNumber, maxLen } from '@/utils/validate'
+  import { asMixin, isFilled, isNumber, isPosNumber, maxLen } from '@/utils/validate'
 
   export default {
-    name: 'Basic',
+    name: 'BonusResBlock',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
@@ -338,11 +140,6 @@
           (v) => isNumber(v) || 'Должно быть числом',
           (v) => isPosNumber(v) || 'Должно быть положительным',
         ],
-        daysRules: [
-          (v) => isFilled(v) || 'Введите дни',
-          (v) => isInteger(v) || 'Должно быть целым числом',
-          (v) => isPosNumber(v) || 'Должно быть положительным',
-        ],
         titleRules: [
           (v) => isFilled(v) || 'Введите название',
           (v) => maxLen(v, 255) || 'Не более 255 символов',
@@ -369,13 +166,11 @@
         return this.buyBonusResInternal.map(item => {
           Vue.set(item, 'deleteAction', false)
 
-          
-
-          Vue.set(item, 'expire_days_unlimit', item.rules && item.rules.expire_days == null)
-
           Vue.set(item, 'rules', Object.assign({
             expire_days: null,
           }, item.rules))
+
+          Vue.set(item, 'expire_days_unlimit', item.rules && item.rules.expire_days === null)
 
           return item
         })
@@ -611,18 +406,9 @@
           id: bonusRes.id,
           title: bonusRes.title,
           description: bonusRes.description,
-          bonus_score: {
-            id: bonusRes.bonus_score.id,
-            units_id: bonusRes.bonus_score.units_id,
-            active: bonusRes.bonus_score.active,
-          },
+          bonus_score: bonusRes.bonus_score,
           can_app_usage: bonusRes.can_app_usage,
-          rules: bonusRes.rules ? {
-            event: bonusRes.rules.event,
-            percent: bonusRes.rules.percent,
-            expired_days: bonusRes.rules.expired_days,
-          } : null,
-          expire_days_unlimit:  bonusRes.expire_days_unlimit !== false
+          rules: bonusRes.rules,
 
         }
       },

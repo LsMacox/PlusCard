@@ -38,9 +38,9 @@ export default {
     actions: {
         async GetList ({ commit }, programId) {
             const result = await ApiService.get(
-                `/api-cabinet/program/bonus_resources/list?program_id=${programId}`,
+                `/api-cabinet/program/bonus/resource/list/short?program_id=${programId}`,
             )
-
+            
             commit('bonusResources', result)
         },
 

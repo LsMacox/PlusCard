@@ -1,25 +1,43 @@
 <template>
-  <v-container class="pa-0">
+  <div>
+    <base-tooltip
+      :activator="$refs.bonusUnitSelectBtn"
+      :value="showError && errorMessageText"
+      :disabled="!errorMessageText"
+      :text="errorMessageText"
+      color="error"
+      :open-on-hover="true"
+      :open-on-click="false"
+      :open-on-focus="false"
+      top
+    />
     <v-menu offset-y>
       <template v-slot:activator="{ on, attrs }">
-        <button
+        <v-btn
+          ref="bonusUnitSelectBtn"
           v-bind="attrs"
-          class="custom-drop-down"
-          :class="attrs['aria-expanded'] === 'true' ? 'border-bottom-not-round' : ''"
+          outlined
+          :class="{
+            'custom-drop-down': true,
+            'border-bottom-not-round': attrs['aria-expanded'] === 'true',
+            'error-input': showError && errorMessageText,
+          }"
           :disabled="disabled"
           v-on="on"
         >
           <span>{{ selectedItem ? selectedItem.name : 'Выберите валюту' }}</span>
 
           <img
-            v-if="attrs['aria-expanded'] === 'false'"
+            v-if="!disabled && attrs['aria-expanded'] === 'false'"
+            right
             src="@/icons/svg/triangle-down.svg"
           >
           <img
-            v-else
+            v-else-if="!disabled && attrs['aria-expanded'] === 'true'"
+            right
             src="@/icons/svg/triangle-up.svg"
           >
-        </button>
+        </v-btn>
       </template>
       <v-list class="list-own-padding">
         <v-list-item
@@ -54,7 +72,7 @@
         </div>
       </v-list>
     </v-menu>
-  </v-container>
+  </div>
 </template>
 <script>
   import Vue from 'vue'
@@ -75,6 +93,11 @@
         default: () => [],
       },
       disabled: Boolean,
+      showError: Boolean,
+      errorMessage: {
+        type: [String, Boolean],
+        default: undefined,
+      },
     },
     data () {
       return {
@@ -82,6 +105,9 @@
       }
     },
     computed: {
+      errorMessageText () {
+        return this.errorMessage !== true ? this.errorMessage : ''
+      },
       bonusListMap () {
         return this.bonusUnitList.map(item => {
           Vue.set(item, 'setting', false)
@@ -113,6 +139,8 @@
   }
 </script>
 <style scoped lang="scss">
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+
   .time-bonuses {
     height: 46px;
   }
@@ -230,6 +258,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    text-transform: none;
+    &.error-input{
+      border-color: $error;
+    }
   }
   .custom-drop-down:focus {
     outline: none;
@@ -241,6 +273,7 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
+
   .item-select {
     display: flex;
     align-items: center;
