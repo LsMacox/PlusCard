@@ -23,90 +23,135 @@
       <div class="navigation-title">
         <h1>{{ isNew ? 'Новая бонусная валюта': 'Редактирование бонусной валюты' }} </h1>
       </div>
-      <div class="name-currency">
-        <div class="title-currency">
-          <h3 class="title-h3">
-            Название валюты
-          </h3>
-          <p class="desc-15">
-            Это название будет видно всем пользователям приложения Plus Cards.
-          </p>
+      <v-form
+        ref="form"
+        v-model="valid"
+      >
+        <div class="name-currency">
+          <div class="title-currency">
+            <h3 class="title-h3">
+              Название валюты
+            </h3>
+            <p class="desc-15">
+              Это название будет видно всем пользователям приложения Plus Cards.
+            </p>
+          </div>
+          <div>
+            <base-text-field
+              v-model="bonusUnitInternal.name"
+              :rules="nameRules"
+              :validation-placement="'bottom'"
+              class="input-lg input-bonuses"
+              placeholder="Например, бонусы"
+
+              counter
+              minlength="1"
+              maxlength="45"
+
+              validate-on-blur
+            />
+            <!-- :attach="'.navigation-drawers-wrap'" -->
+          </div>
         </div>
-        <div>
-          <input
-            v-model="bonusUnitInternal.name"
-            type="text"
-            class="input-lg input-bonuses"
-            placeholder="Например, бонусы"
-          >
+        <div class="declines-currency">
+          <div class="title-currency">
+            <h3 class="title-h3">
+              Склонения валюты
+            </h3>
+            <p class="desc-15">
+              Введите название валюты в разных склонениях. Багодаря этому достигается корректное отображение баланса.
+            </p>
+          </div>
+          <div class="input-box">
+            <base-text-field
+              v-model="bonusUnitInternal.unit_name_ending_first"
+              :rules="nameEndingRules"
+              :validation-placement="'bottom'"
+              class="name-ending-input"
+              placeholder="1 бонус"
+              maxlength="45"
+              validate-on-blur
+            />
+            <base-text-field
+              v-model="bonusUnitInternal.unit_name_ending_second"
+              :rules="nameEndingRules"
+              :validation-placement="'bottom'"
+              class="name-ending-input"
+              placeholder="2 бонуса"
+              maxlength="45"
+              validate-on-blur
+            />
+            <base-text-field
+              v-model="bonusUnitInternal.unit_name_ending_third"
+              :rules="nameEndingRules"
+              class="name-ending-input"
+              :validation-placement="'bottom'"
+              placeholder="5 бонусов"
+              maxlength="45"
+              validate-on-blur
+            />
+            <!-- <input
+              v-model="bonusUnitInternal.unit_name_ending_first"
+              type="text"
+              placeholder="1 бонус"
+              class="input-sm-x input-bonuses"
+            > -->
+
+            <!-- <input
+              v-model="bonusUnitInternal.unit_name_ending_second"
+              type="text"
+              placeholder="2 бонуса"
+              class="input-sm-x input-bonuses"
+            >
+            <input
+              v-model="bonusUnitInternal.unit_name_ending_third"
+              type="text"
+              placeholder="5 бонусов"
+              class="input-sm-x input-bonuses"
+            > -->
+          </div>
         </div>
-      </div>
-      <div class="declines-currency">
-        <div class="title-currency">
-          <h3 class="title-h3">
-            Склонения валюты
-          </h3>
-          <p class="desc-15">
-            Введите название валюты в разных склонениях. Багодаря этому достигается корректное отображение баланса.
-          </p>
+        <div class="transfer-currency">
+          <div class="title-currency">
+            <h3 class="title-h3">
+              Передача валюты
+            </h3>
+            <p class="desc-15">
+              Даете ли вы возможность делиться и передавать друг другу валюту?
+            </p>
+          </div>
+          <div class="allow-transfer-currency">
+            <base-switch
+              v-model="bonusUnitInternal.can_transfer"
+              label="Разрешить передавать валюту"
+            />
+          </div>
         </div>
-        <div class="input-box">
-          <input
-            v-model="bonusUnitInternal.unit_name_ending_first"
-            type="text"
-            placeholder="1 бонус"
-            class="input-sm-x input-bonuses"
-          >
-          <input
-            v-model="bonusUnitInternal.unit_name_ending_second"
-            type="text"
-            placeholder="2 бонуса"
-            class="input-sm-x input-bonuses"
-          >
-          <input
-            v-model="bonusUnitInternal.unit_name_ending_third"
-            type="text"
-            placeholder="5 бонусов"
-            class="input-sm-x input-bonuses"
-          >
+        <div class="transfer-currency">
+          <div class="title-currency">
+            <h3 class="title-h3">
+              Основная валюта
+            </h3>
+            <p class="desc-15">
+              Основная валюта отображается на карте в приложении, используется для построения всех графиков и диаграмм.
+            </p>
+          </div>
+          <div class="allow-transfer-currency">
+            <base-switch
+              v-model="bonusUnitInternal.is_main"
+              label="Использовать как основную"
+            />
+          </div>
+          <v-row v-if="isMainUpdate">
+            <v-col>
+              <span class="error--text body-m-regular">
+                У вас уже есть основная валюта <span class="body-m-semibold">«{{ mainBonusUnit.name }}»</span>. Если вы хотите использовать валюту <span class="body-m-semibold">«{{ bonusUnitInternal.name }}»</span> как основную, оставьте переключатель включенным.
+
+              </span>
+            </v-col>
+          </v-row>
         </div>
-      </div>
-      <div class="transfer-currency">
-        <div class="title-currency">
-          <h3 class="title-h3">
-            Передача валюты
-          </h3>
-          <p class="desc-15">
-            Даете ли вы возможность делиться и передавать друг другу валюту?
-          </p>
-        </div>
-        <div class="allow-transfer-currency">
-          <v-switch
-            v-model="bonusUnitInternal.can_transfer"
-            inset
-            class="custom-switch"
-          />
-          Разрешить передавать валюту
-        </div>
-      </div>
-      <div class="transfer-currency">
-        <div class="title-currency">
-          <h3 class="title-h3">
-            Основная валюта
-          </h3>
-          <p class="desc-15">
-            Основная валюта отображается на карте в приложении, используется для построения всех графиков и диаграмм.
-          </p>
-        </div>
-        <div class="allow-transfer-currency">
-          <v-switch
-            v-model="bonusUnitInternal.is_main"
-            inset
-            class="custom-switch"
-          />
-          Использовать как основную
-        </div>
-      </div>
+      </v-form>
       <v-row
         class="save-currency"
       >
@@ -147,6 +192,8 @@
 
 <script>
   import { mapGetters, mapMutations } from 'vuex'
+  import { isFilled, maxLen } from '@/utils/validate'
+
   export default {
     name: 'BonusUnitDialog',
     model: {
@@ -174,7 +221,8 @@
         update: false,
         idUpdate: 0,
         allBonusesItems: [],
-
+        // --
+        valid: false,
         confirmAction: false,
         deleteAction: false,
         bonusUnitInternal: {
@@ -188,23 +236,36 @@
           cert_pay_available: false,
           is_main: false,
         },
+        nameRules: [
+          (v) => isFilled(v) || 'Введите название валюты',
+          (v) => maxLen(v, 45) || 'Не более 45 символов',
+        ],
+        nameEndingRules: [
+          (v) => maxLen(v, 45) || 'Не более 45 символов',
+        ],
+
       }
     },
     computed: {
+
       ...mapGetters({
+        bonusUnits: 'company/bonus_units/bonusUnits',
+        mainBonusUnit: 'company/bonus_units/mainBonusUnit',
+
         getOpenNavigationCreateBonuses: 'createBonusesCurrency/create_bonuses_currency/getOpenNavigationCreateBonuses',
         getBonusesItems: 'createBonusesCurrency/create_bonuses_currency/getBonusesItems',
         getUpdateBonusesItem: 'createBonusesCurrency/create_bonuses_currency/getUpdateBonusesItem',
       }),
+
       isNew () {
         return !this.bonusUnit
       },
-      valid () {
-        return this.bonusUnitInternal.name &&
-          this.bonusUnitInternal.unit_name_ending_first &&
-          this.bonusUnitInternal.unit_name_ending_second &&
-          this.bonusUnitInternal.unit_name_ending_third
-      },
+      // valid () {
+      //   return this.bonusUnitInternal.name &&
+      //     this.bonusUnitInternal.unit_name_ending_first &&
+      //     this.bonusUnitInternal.unit_name_ending_second &&
+      //     this.bonusUnitInternal.unit_name_ending_third
+      // },
       drawer: {
         get () {
           return this.value
@@ -213,6 +274,9 @@
           if (val === this.value) return
           this.$emit('change', val)
         },
+      },
+      isMainUpdate () {
+        return this.bonusUnitInternal.is_main && this.mainBonusUnit && this.mainBonusUnit.id !== this.bonusUnitInternal.id
       },
 
     },
@@ -250,7 +314,8 @@
         updateBonusesItem: 'createBonusesCurrency/create_bonuses_currency/updateBonusesItem',
         getWhatSelect: 'createBonusesCurrency/create_bonuses_currency/getWhatSelect',
         updateWhatSelect: 'createBonusesCurrency/create_bonuses_currency/updateWhatSelect',
-      }),
+      }),   
+
       setCreateBonuses () {
         if (this.update) {
           const copyObj = Object.assign({}, this.createUpdateObjBonuses())
@@ -385,6 +450,9 @@
   }
 </script>
 <style scoped>
+  .name-ending-input {
+    margin: 0px 6px;
+  }
   .navigation-drawers-wrap {
     padding: 34px;
   }
@@ -401,6 +469,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 0px -6px;
   }
   .declines-currency {
     margin-bottom: 34px;

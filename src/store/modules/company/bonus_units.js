@@ -110,6 +110,10 @@ export default {
         bonusUnits (state) {
             return state.bonusUnits
         },
+        mainBonusUnit (state) {
+            const index = state.bonusUnits.findIndex( x => !!x.is_main)
+            return (index >= 0 ) ? state.bonusUnits[index] : null            
+        },
         bonusUnitIcons (state) {
             return state.bonusUnitIcons
         },
