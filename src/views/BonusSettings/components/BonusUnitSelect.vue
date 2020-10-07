@@ -27,16 +27,13 @@
         >
           <span>{{ selectedItem ? selectedItem.name : 'Выберите валюту' }}</span>
 
-          <img
-            v-if="!disabled && attrs['aria-expanded'] === 'false'"
+          <v-icon
             right
-            src="@/icons/svg/triangle-down.svg"
+            :color="!disabled ? 'primary' : null"
+            style="height: 21px; width: 21px;"
           >
-          <img
-            v-else-if="!disabled && attrs['aria-expanded'] === 'true'"
-            right
-            src="@/icons/svg/triangle-up.svg"
-          >
+            {{ attrs['aria-expanded'] === 'false' ? '$iconify_octicon-triangle-down-24' : '$iconify_octicon-triangle-up-24' }}
+          </v-icon>
         </v-btn>
       </template>
       <v-list class="list-own-padding">

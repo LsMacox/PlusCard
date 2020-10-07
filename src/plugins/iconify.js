@@ -252,12 +252,26 @@ export const ICONIFY_ICONS = [
         id: 'check-circle',
         component: () => import('@iconify/icons-octicon/check-circle-24'),
     },
+    {
+        id: 'octicon-triangle-up-24',
+        component: () => import('@iconify/icons-octicon/triangle-up-24'),
+    },
+    {
+        id: 'octicon-triangle-down-24',
+        component: () => import('@iconify/icons-octicon/triangle-down-24'),
+    },
+     
 
     // si-glyph
     {
         id: 'si-glyph-triangle-down',
         component: () => import('@iconify/icons-si-glyph/triangle-down'),
     },
+    {
+        id: 'si-glyph-triangle-up',
+        component: () => import('@iconify/icons-si-glyph/triangle-up'),
+    },
+    
 ]
 
 ICONIFY_ICONS.forEach((icon) => {

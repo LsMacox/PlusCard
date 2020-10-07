@@ -61,7 +61,7 @@
                 style="min-height:calc(45px + 20px)"
               >
                 <v-col cols="auto">
-                  <base-switch
+                  <base-ext-switch
                     v-model="bonusRes.expire_days_unlimit"
 
                     :label="bonusRes.expire_days_unlimit ? 'Срок действия бонусов: без ограничений' : ' Срок действия бонусов:'"
@@ -95,7 +95,7 @@
                 align="center"
               >
                 <v-col>
-                  <base-switch
+                  <base-ext-switch
                     v-model="bonusRes.can_app_usage"
                     :label="'Разрешить использование менеджером'"
                   />

@@ -121,7 +121,7 @@
             </p>
           </div>
           <div class="allow-transfer-currency">
-            <base-switch
+            <base-ext-switch
               v-model="bonusUnitInternal.can_transfer"
               label="Разрешить передавать валюту"
             />
@@ -137,7 +137,7 @@
             </p>
           </div>
           <div class="allow-transfer-currency">
-            <base-switch
+            <base-ext-switch
               v-model="bonusUnitInternal.is_main"
               label="Использовать как основную"
             />

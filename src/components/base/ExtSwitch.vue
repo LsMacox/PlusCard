@@ -23,7 +23,7 @@
   // import { selectable } from 'vuetify/lib/mixins/selectable'
 
   export default {
-    name: 'Switch',
+    name: 'ExtSwitch',
     model: {
       prop: 'inputValue',
       event: 'change',
