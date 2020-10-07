@@ -1,12 +1,12 @@
 <template>
   <div>
     <div
-      class="no-data"
       v-if="getCreateConfiguringIntegrations && getCreateConfiguringIntegrations.length === 0"
+      class="no-data"
     >
       <div class="img-no-data">
         <v-img
-          src="@/assets/png/Icn.jpg"
+          src="@/assets/png/settings-dummy.png"
           max-width="187"
         />
       </div>

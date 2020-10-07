@@ -175,7 +175,7 @@ export default new Router({
         // },
         {
           path: '/loyalty',
-          component: () => import('@/views/createLoyalty/index'),
+          component: () => import('@/views/loyalty/index'),
           name: 'loyalty',
           meta: { auth: true },
         },

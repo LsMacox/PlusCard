@@ -5,7 +5,7 @@
     >
       <div class="img-no-data">
         <v-img
-          src="@/assets/png/Icn.jpg"
+          src="@/assets/png/settings-dummy.png"
           max-width="187"
         />
       </div>
@@ -160,7 +160,7 @@
           { text: 'Статус', value: 'typeOperation' },
           { text: 'Сумма', value: 'price' },
           { text: 'Описание', value: 'description' },
-          { text: '', value: 'download', sortable: false, },
+          { text: '', value: 'download', sortable: false },
         ],
         desserts: [
           {

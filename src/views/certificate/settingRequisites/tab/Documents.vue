@@ -5,7 +5,7 @@
     >
       <div class="img-no-data">
         <v-img
-          src="@/assets/png/Icn.jpg"
+          src="@/assets/png/settings-dummy.png"
           max-width="187"
         />
       </div>
@@ -19,7 +19,9 @@
       </div>
     </div>
     <div class="text-center ">
-      <h2 class="title-h2 color-text-dark font-weight-bold">История запросов</h2>
+      <h2 class="title-h2 color-text-dark font-weight-bold">
+        История запросов
+      </h2>
     </div>
     <div>
       <v-data-table

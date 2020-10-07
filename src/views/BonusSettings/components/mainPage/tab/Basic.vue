@@ -158,7 +158,7 @@
 </template>
 
 <script>
-  import AccrualWriting from '../switchControl/AccrualWriting'
+  import AccrualWriting from '@/views/BonusSettings/components/mainPage/BonusSettingBlocks/BuyBonusSettings.vue'
   import { mapMutations } from 'vuex'
   export default {
     name: 'Basic',
