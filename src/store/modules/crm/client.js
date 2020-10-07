@@ -28,7 +28,7 @@ const mutations = {
         const items = state.clients
         items.forEach((item, index) => {
             if (item.id === payload.id) Object.assign(items[index], payload)
-        }) 
+        })
     },
     REMOVE (state, payload) {
         const items = state.clients
@@ -53,7 +53,6 @@ const actions = {
         console.log('/api-cabinet/merchant/account/create')
         console.log(result)
         commit('ADD', result)
-        
     },
 
     async list ({ commit }, item) {
