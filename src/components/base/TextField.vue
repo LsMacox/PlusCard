@@ -52,6 +52,7 @@
     @update:error="updateError"
     @blur="onBlur"
     @focus="onFocus"
+    @input="onInput"
   >
     <template v-slot:prepend-inner>
       <v-icon
@@ -69,7 +70,7 @@
       <v-row
         no-gutters
         class="append-slot-row"
-        align="center"
+        align="center"        
       >
         <v-col
           v-if="false"
@@ -95,9 +96,10 @@
           </span>
         </v-col>
         <v-col
-          cols="auto"
+          cols="auto"          
           class="append-slot-row__col"
         >
+          <!-- <div class="dev-tooltip">dev-tooltip</div> -->
           <base-tooltip
             v-if="hasDispayErrors && !disabled"
             :value="true"
@@ -107,8 +109,9 @@
             :top="validationPlacement === 'top'"
             :right="validationPlacement === 'right'"
             :left="validationPlacement === 'left'"
-            :bottom="validationPlacement === 'bottom'"
+            :bottom="validationPlacement === 'bottom'"           
           >
+          <!-- :attach="$refs.vTextField.$el" -->
             <v-icon
               v-show="hasDispayErrors"
               color="error"
@@ -309,6 +312,10 @@
         this.isFocused = false
         e && this.$nextTick(() => this.$emit('blur', e))
       },
+      onInput (e) {        
+        console.log('onInput', e)
+        e && this.$nextTick(() => this.$emit('input', e))
+      },
       onClick () {
       // if (this.isFocused || this.isDisabled || !this.$refs.vTextField) return;
       // this.$refs.input.focus();
@@ -324,8 +331,10 @@
 .append-slot-row {
   min-height: calc(45px - 12px - 12px);
   width: max-content;
+  margin: 0px -4px;
   .append-slot-row__col{
-    margin-left: 8px;;
+    margin-left: 4px;
+    margin-right: 4px;
   }
   .base-counter {
      @include body-xs-semibold;

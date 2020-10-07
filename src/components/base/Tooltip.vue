@@ -1,5 +1,6 @@
 <template>
   <v-tooltip
+    ref="vTooltip"
     v-model="isActive"
     :value="isActive"
     :activator="activator"
@@ -14,6 +15,9 @@
     :open-on-hover="openOnHover"
     :z-index="zIndex"
     :disabled="disabled"
+    :attach="attach"
+    :allow-overflow="allowOverflow"
+    :offset-overflow="offsetOverflow"
   >
     <template v-slot:activator="{ on }">
       <!-- <slot
@@ -48,6 +52,10 @@
         type: [String, Object],
         default: undefined,
       },
+      attach: {
+        type: [String, Object, Boolean, HTMLDivElement],
+        default: false,
+      },
       openDelay: {
         type: [Number, String],
         default: config.tooltipButtonDelay,
@@ -61,10 +69,16 @@
         default: undefined,
       },
       absolute: Boolean,
+      allowOverflow: Boolean,
+      offsetOverflow: Boolean,
       top: Boolean,
       bottom: Boolean,
       left: Boolean,
       right: Boolean,
+      positionY: {
+        type: Number,
+        default: undefined,
+      },
 
       arrow: {
         type: Boolean,
@@ -86,7 +100,7 @@
       disabled: {
         type: Boolean,
         default: false,
-      }
+      },     
     },
 
     computed: {
@@ -109,7 +123,17 @@
     },
     mounted () {
       // console.log('mounted', this.$el)
-    // this.$el.setAttribute('x-placement', this.placement)
+      // this.$el.setAttribute('x-placement', this.placement)
+      // console.log('vTooltip', this.$refs.vTooltip)
+      // if (this.pageYOffsetOff) {
+      //   this.$refs.vTooltip.pageYOffset = 0
+      //   this.$refs.vTooltip.checkForPageYOffset = () => {}
+      // }
+
+      // this.$refs.vTooltip.activatorFixed = true
+    },
+    created () {
+
     },
   }
 </script>

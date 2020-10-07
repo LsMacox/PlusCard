@@ -9,7 +9,7 @@
           type="card-avatar, article, actions"
           class="skeleton"
         />
-        <create-loyalty-main
+        <bonus-settings-main
           v-else
           @bonus-unit-dialog="openBonusUnitDialog"
         />
@@ -26,16 +26,16 @@
 </template>
 
 <script>
-  import Toolbar from '@/views/createLoyalty/components/Toolbar'
-  import BonusUnitDialog from '@/views/createLoyalty/components/BonusUnitDialog'
-  import createLoyaltyMain from '@/views/createLoyalty/components/mainPage'
+  import Toolbar from '@/views/BonusSettings/components/Toolbar'
+  import BonusUnitDialog from '@/views/BonusSettings/components/BonusUnitDialog'
+  import BonusSettingsMain from '@/views/BonusSettings/components/mainPage'
   // import SwitchControl from './components/mainPage/switchControl/index'
   export default {
-    name: 'CreateLoyalty',
+    name: 'BonusSettings',
     components: {
       // SwitchControl,
       Toolbar,
-      createLoyaltyMain,
+      BonusSettingsMain,
       BonusUnitDialog,
     },
     data () {

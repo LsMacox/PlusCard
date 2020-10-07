@@ -1,309 +1,121 @@
 <template>
-  <div
-    class="tab-basic"
-  >
-    <div
-      class="create-mess-container"
-    >
-      <div class="mess-wrap">
-        <div class="step">
-          1
-        </div>
-        <div class="block-title-create">
-          <div>
-            <h3 class="title-h4">
-              Начисление
-            </h3>
-            <p class="desc-15 color-text-grey">
-              Какой процент от каждой покупки начислять клиенту? Если вам нужны несколько
-              вариантов начисления - добавьте еще одну операцию.
-            </p>
-          </div>
-
-          <div
-            v-if="bonusUnits.length === 0"
-            class="select-input-wrap"
-          >
-            <input
-              v-model="inputShow"
-              type="text"
-              class="input-bonuses shopping-inp input-sm"
-              placeholder="% от покупки"
-              @input="inputShow = checkMathRound($event.target.value)"
-            >
-            <v-btn
-              color="secondary"
-              small
-              max-width="283px"
-              width="100%"
-              max-height="45px"
-              height="100%"
-              type="button"
-              @click="createBonusesCurrency"
-            >
-              <img
-                src="@/icons/svg/plus-circle.svg"
-                class="plus-circle"
-              >
-              Создайте бонусную валюту
-            </v-btn>
-          </div>
-          <div
-            v-for="(accrual, accrualIndex) in buyBonusResSource"
-            :key="accrualIndex"
-            class="select-input-accrual-bonuses"
-          >
-            <div class="wrap-input">
-              <input
-                v-model="accrual.rules.percent"
-                type="text"
-                class="input-bonuses shopping-inp input-sm"
-                placeholder="% от покупки"
-                @input="accrual.rules.percent = checkMathRound($event.target.value)"
-              >
-
-              <bonus-unit-select
-                v-model="accrual.bonus_score.units_id"
-                :disabled="!accrual.isNew"
-                :bonus-unit-list="bonusUnits"
-                v-on="$listeners"
-              />
-
-              <div class="wrap-circle">
-                <v-btn
-                  v-if="buyBonusResSource.length > 1"
-                  icon
-                  class="simple-circle mines-right"
-                  :loading="accrual.deleteAction"
-                  @click="deleteBonusRes(accrual)"
-                >
-                  <img src="@/icons/svg/mines.svg">
-                </v-btn>
-                <div
-                  v-if="true"
-                  class="simple-circle mines-right"
-                  @click="addNewBonusRes('TYPE_SOURCE')"
-                >
-                  <img src="@/icons/svg/plus.svg">
-                </div>
-              </div>
-            </div>
-            <div>
-              <input
-                v-model="accrual.title"
-                type="text"
-                class="input-bonuses input-big-name input-lg-l"
-                placeholder="Введите название операции, чтобы не запутаться"
-              >
-            </div>
-
-            <div class="time-bonuses">
-              <div class="first-step-switch">
-                <v-switch
-                  v-model="accrual.checkTimeLimit"
-                  inset
-                  class="custom-switch"
-                />
-                <div v-if="accrual.checkTimeLimit">
-                  <h3 class="desc-15">
-                    Срок действия бонусов: без ограничений
-                  </h3>
-                </div>
-                <div
-                  v-else
-                  class="container-input-counter"
-                >
-                  <p class="desc-15">
-                    Срок действия бонусов:
-                  </p>
-                  <div class="container-input-count">
-                    <div
-                      class="small-circle-input"
-                      @click="minesCountDay(accrual.id, accrual.day)"
-                    >
-                      <img src="@/icons/svg/mines.svg">
-                    </div>
-                    <input
-                      v-model="accrual.day"
-                      class="input-bonuses input-sm-xl input-sm"
-                      type="text"
-                      @input="accrual.day = checkValidNum($event.target.value)"
-                    >
-                    <div
-                      class="small-circle-input"
-                      @click="plusCountDay(accrual.id, accrual.day)"
-                    >
-                      <img src="@/icons/svg/plus.svg">
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="first-step-switch">
-              <v-switch
-                v-model="accrual.can_app_usage"
-                inset
-                class="custom-switch"
-              />
-              <div v-if="accrual.can_app_usage">
-                <h3 class="desc-15">
-                  Разрешить использование менеджером
-                </h3>
-              </div>
-              <div
-                v-else
-                class="container-input-counter"
-              >
-                <p class="desc-15">
-                  Запрещено использование менеджером
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div
-        class="magazine-wrap"
-        :class="[(dbBuyBonusRes.length === 0 && false) ? 'disabled-block' : '']"
-      >
-        <div class="step">
-          2
-        </div>
-        <div
-          class="block-title-create"
-        >
-          <div>
-            <h3 class="title-h3">
-              Списание
-            </h3>
-            <p class="desc-15 color-text-grey">
-              Какую часть покупки можно оплатить бонусной валютой? Если вам нужны несколько вариантов
-              оплаты покупки - добавьте операцию.
-            </p>
-          </div>
-          <div
-            v-if="(dbBuyBonusRes.length === 0 && false) "
-            class="select-input-wrap"
-          >
-            <input
-              type="text"
-              class="input-bonuses shopping-inp input-sm"
-              placeholder="% от покупки"
-            >
-            <v-select
-              :items="items"
-              label="Выберите бонусную валюту"
-              dense
-              outlined
-              hide-details
-              class="select-md"
-            />
-          </div>
-          <template v-else>
-            <div
-              v-for="(magazine, magazineIndex) in buyBonusResTarget"
-              :key="magazineIndex"
+<div
+              v-for="(bonusRes, bonusResIndex) in buyBonusResSource"
+              :key="bonusResIndex"
               class="select-input-accrual-bonuses"
             >
               <div class="wrap-input">
-                <input
-                  v-model.number="magazine.rules.percent"
-                  type="number"
-                  class="input-bonuses shopping-inp input-sm"
+                <base-text-field
+                  v-model.number="bonusRes.rules.percent"
+                  :rules="percentRules"
+                  :validation-placement="'top'"
                   placeholder="% от покупки"
-                >
-                <!-- @input="magazine.rules.percent = checkMathRound($event.target.value)" -->
+                  class="percent-field"
+                  validate-on-blur
+                />
+
                 <bonus-unit-select
-                  v-model="magazine.bonus_score.units_id"
-                  :disabled="!magazine.isNew"
+                  v-model="bonusRes.bonus_score.units_id"
+                  :disabled="!bonusRes.isNew"
                   :bonus-unit-list="bonusUnits"
+                  :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+                  :show-error="showErrors"
+                  style="width:254px"
                   v-on="$listeners"
                 />
 
                 <div class="wrap-circle">
                   <v-btn
-                    v-if="buyBonusResTarget.length > 1"
+                    v-if="showDeleteAction"
                     icon
-                    :loading="magazine.deleteAction"
                     class="simple-circle mines-right"
-                    @click="deleteBonusRes(magazine)"
+                    :loading="bonusRes.deleteAction"
+                    @click="deleteBonusRes(bonusRes)"
                   >
                     <img src="@/icons/svg/mines.svg">
                   </v-btn>
                   <div
-                    v-if="magazine.nameOperation === '' || magazine.nameOperation !== ''"
+                    v-if="showAddAction"
                     class="simple-circle mines-right"
-                    @click="addNewBonusRes('TYPE_TARGET')"
+                    @click="addNewBonusRes('TYPE_SOURCE')"
                   >
                     <img src="@/icons/svg/plus.svg">
                   </div>
                 </div>
               </div>
-              <div>
-                <input
-                  v-model="magazine.title"
-                  type="text"
-                  class="input-bonuses input-big-name input-lg-l"
-                  placeholder="Введите название операции, чтобы не запутаться"
-                >
-              </div>
-              <div class="first-step-switch">
-                <v-switch
-                  v-model="magazine.can_app_usage"
-                  inset
-                  class="custom-switch"
-                />
-                <div v-if="magazine.can_app_usage">
-                  <h3 class="desc-15">
-                    Разрешить использование менеджером
-                  </h3>
-                </div>
-                <div
-                  v-else
-                  class="container-input-counter"
-                >
-                  <p class="desc-15">
-                    Запрещено использование менеджером
-                  </p>
-                </div>
-              </div>
-            </div>
-          </template>
-        </div>
-      </div>
-      <div
-        v-if="hasChanges && valid"
-        class="save-currency"
-      >
-        <v-btn
+              <v-row>
+                <v-col>
+                  <base-text-field
+                    v-model="bonusRes.title"
+                    :rules="titleRules"
+                    :validation-placement="'top'"
+                    placeholder="Введите название операции, чтобы не запутаться"
+                    class="title-field input-lg-l"
+                    validate-on-blur
+                  />
+                </v-col>
+              </v-row>              
 
-          color="primary"
-          :loading="saveChangesActive"
-          @click="saveChanges"
-        >
-          <!-- <img
-            src="@/icons/svg/checkmark-circle-outline.svg"
-            class="img-circle"
-          > -->
-          <v-icon left>
-            $iconify_ion-checkmark-circle-outline
-          </v-icon>
-          Сохранить настройки механики
-        </v-btn>
-      </div>
-    </div>
-  </div>
+              <v-row
+                align="center"
+                style="min-height:calc(45px + 20px)"
+              >
+                <v-col cols="auto">
+                  <base-switch
+                    v-model="bonusRes.expire_days_unlimit"
+
+                    :label="bonusRes.expire_days_unlimit ? 'Срок действия бонусов: без ограничений' : ' Срок действия бонусов:'"
+                  />
+                </v-col>
+                <v-col v-if="!bonusRes.expire_days_unlimit">
+                  <div class="container-input-count">
+                    <div
+                      class="small-circle-input"
+                      @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days > 1 ? bonusRes.rules.expire_days - 1 : 1"
+                    >
+                      <img src="@/icons/svg/mines.svg">
+                    </div>
+                    <input
+                      v-model="bonusRes.rules.expire_days"
+                      class="input-bonuses input-sm-xl input-sm"
+                      type="text"
+                      @input="bonusRes.rules.expire_days = checkValidNum($event.target.value)"
+                    >
+                    <div
+                      class="small-circle-input"
+                      @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days + 1"
+                    >
+                      <img src="@/icons/svg/plus.svg">
+                    </div>
+                  </div>
+                </v-col>
+              </v-row>
+
+              <v-row
+                align="center"
+              >
+                <v-col>
+                  <base-switch
+                    v-model="bonusRes.can_app_usage"
+                    :label="'Разрешить использование менеджером'"
+                  />
+                </v-col>
+              </v-row>
+            </div>
 </template>
 
 <script>
   import { mapMutations, mapGetters } from 'vuex'
   import Vue from 'vue'
 
+  import { asMixin, isFilled, isNumber, isPosNumber, maxLen } from '@/utils/validate'
+
   export default {
-    name: 'Basic',
+    name: 'BonusResBlock',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
+    mixins: [asMixin(isFilled)],
     data () {
       return {
         inputShow: '',
@@ -319,8 +131,19 @@
         itemsMagazine: [],
         nameSelectNeedGet: '',
         // -
+        showErrors: false,
+        formValid: false,
         buyBonusResInternal: [],
         saveChangesActive: false,
+        percentRules: [
+          (v) => isFilled(v) || 'Введите процент',
+          (v) => isNumber(v) || 'Должно быть числом',
+          (v) => isPosNumber(v) || 'Должно быть положительным',
+        ],
+        titleRules: [
+          (v) => isFilled(v) || 'Введите название',
+          (v) => maxLen(v, 255) || 'Не более 255 символов',
+        ],
       }
     },
 
@@ -342,6 +165,13 @@
       buyBonusRes () {
         return this.buyBonusResInternal.map(item => {
           Vue.set(item, 'deleteAction', false)
+
+          Vue.set(item, 'rules', Object.assign({
+            expire_days: null,
+          }, item.rules))
+
+          Vue.set(item, 'expire_days_unlimit', item.rules && item.rules.expire_days === null)
+
           return item
         })
       },
@@ -397,6 +227,16 @@
           resetState: 'createBonusesCurrency/create_bonuses_currency/resetState',
         }),
 
+      validate () {
+        this.showErrors = true
+        if (!this.$refs.form.validate()) return false
+
+        const allBonusUnitFilled = this.buyBonusRes.every(item => item.bonus_score && !!item.bonus_score.units_id)
+        if (!allBonusUnitFilled) return false
+
+        return true
+      },
+
       async deleteBonusRes (bonusRes) {
         try {
           bonusRes.deleteAction = true
@@ -428,10 +268,11 @@
             units_id: null,
           },
           can_app_usage: false,
+          expire_days_unlimit: true,
           rules: {
             event: 'App\\Events\\AccountBuyEvent',
             percent: null,
-            expired_days: null,
+            expire_days: null,
           },
         })
       },
@@ -572,6 +413,8 @@
         }
       },
       async saveChanges () {
+        if (!this.validate()) return
+
         try {
           this.saveChangesActive = true
 
@@ -642,12 +485,19 @@
     // eslint-disable-next-line vue/order-in-components
     created () {
       this.init()
+      // this.isFilled = isFilled
     },
 
   }
 </script>
 
 <style scoped lang="scss">
+.percent-field {
+  max-width: 154px;
+  width: 100%;
+  margin-right: 12px;
+}
+//-----
   .time-bonuses {
     height: 46px;
   }
@@ -683,7 +533,7 @@
     justify-content: center;
   }
   .small-circle-input:first-child {
-    margin-left: 20px;
+    // margin-left: 20px;
   }
   .container-input-count {
     display: flex;
