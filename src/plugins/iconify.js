@@ -153,8 +153,82 @@ export const ICONIFY_ICONS = [
         component: () => import('@iconify/icons-ion/mail-outline'),
     },
     {
-      id: 'ion-warning',
-      component: () => import('@iconify/icons-ion/warning'),
+        id: 'ion-phone-portrait-outline',
+        component: () => import('@iconify/icons-ion/phone-portrait-outline'),
+    },
+    {
+        id: 'ion-barcode-outline',
+        component: () => import('@iconify/icons-ion/barcode-outline'),
+    },
+    // ion
+    { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
+    {
+        id: 'ion-close-circle-outline',
+        component: () => import('@iconify/icons-ion/close-circle-outline'),
+    },
+    {
+        id: 'ion-checkmark-circle-outline',
+        component: () => import('@iconify/icons-ion/checkmark-circle-outline'),
+    },
+    {
+        id: 'ion-stats-chart',
+        component: () => import('@iconify/icons-ion/stats-chart'),
+    },
+    {
+        id: 'ion-wallet-outline',
+        component: () => import('@iconify/icons-ion/wallet-outline'),
+    },
+    {
+        id: 'ion-funnel-outline',
+        component: () => import('@iconify/icons-ion/funnel-outline'),
+    },
+    {
+        id: 'ion-megaphone-outline',
+        component: () => import('@iconify/icons-ion/megaphone-outline'),
+    },
+    {
+        id: 'ion-chatbox-outline',
+        component: () => import('@iconify/icons-ion/chatbox-outline'),
+    },
+    {
+        id: 'ion-exit-outline',
+        component: () => import('@iconify/icons-ion/exit-outline'),
+    },
+    {
+        id: 'ion-color-fill-outline',
+        component: () => import('@iconify/icons-ion/color-fill-outline'),
+    },
+    {
+        id: 'ion-checkmark-circle-outline',
+        component: () => import('@iconify/icons-ion/checkmark-circle-outline'),
+    },
+    {
+        id: 'ion-document-outline',
+        component: () => import('@iconify/icons-ion/document-outline'),
+    },
+    {
+        id: 'ion-logo-vk',
+        component: () => import('@iconify/icons-ion/logo-vk'),
+    },
+    {
+        id: 'ion-logo-instagram',
+        component: () => import('@iconify/icons-ion/logo-instagram'),
+    },
+    {
+        id: 'ion-location-outline',
+        component: () => import('@iconify/icons-ion/location-outline'),
+    },
+    {
+        id: 'ion-qr-code-outline',
+        component: () => import('@iconify/icons-ion/qr-code-outline'),
+    },
+    {
+        id: 'ion-mail-outline',
+        component: () => import('@iconify/icons-ion/mail-outline'),
+    },
+    {
+        id: 'ion-warning',
+        component: () => import('@iconify/icons-ion/warning'),
     },
 
     // feather
@@ -230,6 +304,14 @@ export const ICONIFY_ICONS = [
         id: 'feather-copy',
         component: () => import('@iconify/icons-feather/copy'),
     },
+    {
+        id: 'feather-credit-card',
+        component: () => import('@iconify/icons-feather/credit-card'),
+    },
+    {
+        id: 'feather-minus',
+        component: () => import('@iconify/icons-feather/minus'),
+    },
 
     // la
     {
@@ -260,6 +342,10 @@ export const ICONIFY_ICONS = [
         id: 'octicon-triangle-down-24',
         component: () => import('@iconify/icons-octicon/triangle-down-24'),
     },
+    {
+        id: 'octicon-check-16',
+        component: () => import('@iconify/icons-octicon/check-16'),
+    },
 
     // si-glyph
     {
@@ -270,7 +356,11 @@ export const ICONIFY_ICONS = [
         id: 'si-glyph-triangle-up',
         component: () => import('@iconify/icons-si-glyph/triangle-up'),
     },
-
+    // eva
+    {
+        id: 'eva-plus-outline',
+        component: () => import('@iconify/icons-eva/plus-outline'),
+    },
 ]
 
 ICONIFY_ICONS.forEach((icon) => {

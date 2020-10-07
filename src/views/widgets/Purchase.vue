@@ -14,7 +14,7 @@
 <script>
   import DoubleDiagramFrame from '@/views/widgets/frames/DoubleDiagramFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
-  import FormatNumber from "@/mixins/formatNumber"
+  import FormatNumber from '@/mixins/formatNumber'
 
   export default {
     components: { DoubleDiagramFrame },

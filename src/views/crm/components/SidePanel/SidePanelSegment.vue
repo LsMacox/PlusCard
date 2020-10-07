@@ -6,10 +6,10 @@
   >
     <div class="panel-crm__header panel-crm_segment__header">
       <h1 class="panel-crm__header-title panel-segment__title title-m-bold">
-        <template v-if="mode == 'create'">
+        <template v-if="mode === 'create'">
           Новый сегмент клиентов
         </template>
-        <template v-if="mode == 'edit'">
+        <template v-if="mode === 'edit'">
           Редактирование сегмента
         </template>
       </h1>
@@ -22,7 +22,7 @@
         <div class="panel-crm_segment__form-block">
           <div class="panel-crm_segment__form-labels">
             <p class="body-l-semibold">
-              Название сигмента
+              Название сегмента
             </p>
             <p class="labels__sub-label body-m-regular">
               Это название будет использоваться во всех
@@ -30,21 +30,21 @@
             </p>
           </div>
           <v-text-field
-            v-if="mode == 'create'"
+            v-if="mode === 'create'"
             v-model="createData.name"
             :rules="rules.name"
             class="panel-crm__form-input panel-crm_segment__form-input"
             type="text"
-            placeholder="Введите название сигмента"
+            placeholder="Введите название сегмента"
             outlined
           />
           <v-text-field
-            v-if="mode == 'edit'"
+            v-if="mode === 'edit'"
             v-model="editData.name"
             :rules="rules.name"
             class="panel-crm__form-input panel-crm_segment__form-input"
             type="text"
-            placeholder="Введите название сигмента"
+            placeholder="Введите название сегмента"
             outlined
           />
         </div>
@@ -57,9 +57,9 @@
               Развернутое описание сегмента клиентов.
             </p>
           </div>
-          <div class="panel-crm_segment__form-textarea">
+          <div class="panel-crm__form-textarea panel-crm_segment__form-textarea">
             <v-textarea
-              v-if="mode == 'create'"
+              v-if="mode === 'create'"
               v-model="createData.description"
               :rules="rules.description"
               class="panel-crm__form-input panel-crm_segment__form-input"
@@ -69,7 +69,7 @@
               auto-grow
             />
             <v-textarea
-              v-if="mode == 'edit'"
+              v-if="mode === 'edit'"
               v-model="editData.description"
               :rules="rules.description"
               class="panel-crm__form-input panel-crm_segment__form-input"
@@ -94,7 +94,7 @@
             >
               <div
                 class="labels__color-box"
-                :style="mode == 'create' ? `background: ${createData.color};` : `background: ${editData.color};`"
+                :style="mode === 'create' ? `background: ${createData.color};` : `background: ${editData.color};`"
                 @click="colorPickerShow = !colorPickerShow"
               />
               <div
@@ -102,7 +102,7 @@
                 class="colorPickerWrapper"
               >
                 <v-color-picker
-                  v-if="mode == 'create'"
+                  v-if="mode === 'create'"
                   v-model="createData.color"
                   class="color-picker pa-2"
                   hide-mode-switch
@@ -111,7 +111,7 @@
                   @input="changeColor"
                 />
                 <v-color-picker
-                  v-if="mode == 'edit'"
+                  v-if="mode === 'edit'"
                   v-model="editData.color"
                   class="color-picker pa-2"
                   hide-mode-switch
@@ -137,15 +137,15 @@
               icon="check-circle"
               height="21"
             />
-            <template v-if="mode == 'create'">
+            <template v-if="mode === 'create'">
               Создать сегмент
             </template>
-            <template v-if="mode == 'edit'">
+            <template v-if="mode === 'edit'">
               Сохранить сегмент
             </template>
           </v-btn>
           <div
-            v-if="mode == 'edit'"
+            v-if="mode === 'edit'"
             class="panel-crm_segment__btn-delete"
             @click="deleteSegment"
           >
@@ -270,7 +270,6 @@
           ? Object.assign({}, this.tableData)
           : []
       },
-
       getDefaultCreateData () {
         return {
           name: '',
@@ -304,9 +303,3 @@
     },
   }
 </script>
-
-<style lang="scss" scoped>
-
-@import "@/styles/vuetify-preset-plus/light_theme/crm/components/side_panels/_side-panel-segment.scss";
-
-</style>

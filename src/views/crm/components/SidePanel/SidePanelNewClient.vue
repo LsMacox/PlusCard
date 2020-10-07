@@ -68,8 +68,8 @@
                 v-mask="mask"
                 :rules="[
                   v => !!v || 'Номер телефона обязателен',
-                  v => String(v).length <= 255 || 'Номер телефона должен быть не более 255 символов',
                 ]"
+                :error-messages="phoneErrors"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Номер телефона"
@@ -81,11 +81,11 @@
               style="height: 65px"
             >
               <date-text-field
-                v-model="form.birthday"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Дата рождения"
                 outlined
+                :date.sync="form.birthday"
               />
             </v-col>
             <v-col cols="12">
@@ -159,6 +159,7 @@
           sms_invite: false,
         },
         mask: '7 (###) ###-##-##',
+        phoneErrors: [],
         state: this.active,
       }
     },
@@ -174,6 +175,14 @@
       state (v) {
         this.$emit('changeState', v)
       },
+      'form.phone' (v) {
+        if (v) {
+          const phone = this.clearPhoneMask(v)
+          if (phone.length === 11) {
+            this.phoneErrors = []
+          }
+        }
+      },
     },
     methods: {
       close () {
@@ -187,13 +196,18 @@
         return p
       },
       async addClient () {
+        const phone = this.clearPhoneMask(this.form.phone)
+        if (phone.length !== 11) {
+          this.phoneErrors = ['Номер телефона должен быть 11 символов']
+          return false
+        }
         try {
           this.loading = true
           const item = {
             program_id: this.program.id,
             name: this.form.name,
             lastname: this.form.lastname,
-            phone: this.clearPhoneMask(this.form.phone),
+            phone,
             birthday: this.form.birthday,
             sms_invite: this.form.sms_invite,
           }
@@ -207,7 +221,3 @@
     },
   }
 </script>
-
-<style lang="scss" scoped>
-@import "@/styles/vuetify-preset-plus/light_theme/crm/components/side_panels/_side-panel-new-client.scss";
-</style>

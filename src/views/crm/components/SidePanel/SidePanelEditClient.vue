@@ -8,13 +8,15 @@
       <div class="panel-crm_edit_client__tabs">
         <v-btn
           class="panel-crm_edit_client__tabs-btn"
-          color="primary"
+          :class="{active: !mode}"
+          color="primary-100"
           @click="mode = false"
         >
           Обычный
         </v-btn>
         <v-btn
           class="panel-crm_edit_client__tabs-btn"
+          :class="{active: mode}"
           color="primary-100"
           @click="mode = true"
         >
@@ -22,17 +24,24 @@
         </v-btn>
       </div>
     </div>
-    <div class="panel-crm__body panel-crm_edit_client__body" />
+    <div class="panel-crm__body panel-crm_edit_client__body">
+      <mode-usual
+        v-if="!mode"
+        :client-data="tableData"
+      />
+    </div>
   </side-panel>
 </template>
 
 <script>
   import Convertor from '@/mixins/convertor.js'
   import SidePanel from '@/components/base/SidePanel'
+  import ModeUsual from './components/EditClientModeUsual'
 
   export default {
     components: {
       SidePanel,
+      ModeUsual,
     },
     mixins: [Convertor],
     model: {
@@ -43,22 +52,22 @@
       active: {
         type: Boolean,
       },
-      clientData: {
+      tableData: {
         type: Object,
         default: () => {
           return {
             id: '103112',
             gender: true,
-            date_of_birth: '10.03.1990',
+            birthday: '10.03.1990',
             city: 'Новокузнецк',
             name: 'Константин',
-            surname: 'Константинопольский',
-            online: '02.08.2020 04:32',
+            lastname: 'Константинопольский',
+            last_activity: '02.08.2020 04:32',
             phone: '79832525202',
             email: 'rs.bikeev@yandex.ru',
-            code: '1640000000145437',
+            barcode: '1640000000145437',
             card: '432156',
-            img_avatar: '@/assets/png/custom/beardedman.png',
+            avatar: require('@/assets/png/custom/beardedman.png'),
           }
         },
       },
@@ -86,9 +95,3 @@
     },
   }
 </script>
-
-<style lang="scss">
-
-@import "@/styles/vuetify-preset-plus/light_theme/crm/components/side_panels/_side-panel-edit-client.scss";
-
-</style>

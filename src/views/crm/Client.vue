@@ -7,21 +7,6 @@
       <v-btn
         class="crm__header_new-btn"
         color="primary"
-        @click="sidePanelEditClient.status = true"
-      >
-        <iconify-icon
-          icon="plus-circle"
-          width="21"
-        />
-        <p
-          class="body-m-semibold neutral-100--text"
-        >
-          Редактирование клиента
-        </p>
-      </v-btn>
-      <v-btn
-        class="crm__header_new-btn"
-        color="primary"
         @click="sidePanelNewClientStatus = true"
       >
         <iconify-icon
@@ -81,9 +66,19 @@
         return this.$store.getters['company/program/program']
       },
     },
+    watch: {},
+    created () {
+      this.clientData = this.$store.getters['crm/client/clients']
+      // example
+      this.sidePanelEditClient.data = this.clientData[0]
+    },
+    mounted () {},
+    methods: {},
   }
 </script>
 
-<style lang="scss" scoped>
-@import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
+<style lang="scss">
+
+  @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
+
 </style>

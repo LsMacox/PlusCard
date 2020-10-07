@@ -1,0 +1,71 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "./bonus-account";
+
+.mode-usual__contacts {
+    display: flex;
+    .contacts__block-right {
+        .contacts-full_name {
+            p {
+                margin-bottom: 3px;
+            }
+        }
+        .contacts-online {
+            margin-top: 8px;
+        }
+        .contacts-info {
+            margin-top: 17px;
+            .contacts-info__list {
+                padding-left: 0;
+                list-style: none;
+                .contacts-info__item {
+                    display: flex;
+                    .info__item-icon {
+                        color: $neutral-600;
+                        margin-right: 13px;
+                    }
+                }
+            }
+        }
+    }
+    .contacts__block-left {
+        margin-top: 5px;
+        margin-left: 120px;
+        img {
+            width: 67px;
+            height: 67px;
+        }
+    }
+}
+
+.mode-usual__panel-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 28px;
+    p {
+        margin-bottom: 0 !important;
+    }
+    .panel-btn {
+        display: inline-block;
+        background-color: $primary-100 !important;
+        border-radius: 10px;
+        height: 45px;
+        width: 192px;
+        margin-bottom: 22px;
+        margin-top: 48px;
+        p { 
+            margin-left: 12px;
+        }
+        .icon-document-outline {
+            color: $primary-base;
+        }
+    }
+    a {
+        display: inherit;
+        text-decoration: none;
+        .icon-question-circle-outlined {
+            margin-right: 6px;
+        }
+    }
+}

@@ -102,8 +102,7 @@
     },
     created () {
       const program = JSON.parse(JSON.stringify(this.programModel))
-      // если социальные сети не заполнены
-      if (!program.socials) program.socials = this.program.socials
+      program.socials = JSON.parse(this.programModel.socials)
       this.program = program
     },
     methods: {

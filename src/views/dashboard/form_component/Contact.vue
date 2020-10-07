@@ -15,16 +15,17 @@
           prepend-inner-icon="$iconify_feather-phone"
           prepend-inner-icon-color="neutral-500"
           outlined
-          :rules="[v => v.length < 255 || 'Телефон должен быть менее 255 символов']"
+          :rules="[v => String(v).length < 255 || 'Телефон должен быть менее 255 символов']"
         />
         <base-text-field
           v-model="program.website"
+          style="margin-top: 20px !important;"
           :validate-on-blur="true"
           placeholder="Адрес сайта"
           prepend-inner-icon="$iconify_feather-mouse-pointer"
           prepend-inner-icon-color="neutral-500"
           outlined
-          :rules="[v => v.length < 255 || 'Адрес сайта должен быть менее 255 символов']"
+          :rules="[v => String(v).length < 255 || 'Адрес сайта должен быть менее 255 символов']"
         />
       </template>
     </BaseMasterFieldBlock>
@@ -44,34 +45,37 @@
           prepend-inner-icon="$iconify_ion-logo-vk"
           prepend-inner-icon-color="logo-vk"
           outlined
-          :rules="[v => v.length < 255 || 'Ссылка должна быть менее 255 символов']"
+          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
         />
         <base-text-field
           v-model="program.socials.youtube"
+          style="margin-top: 20px !important;"
           :validate-on-blur="true"
           placeholder="/Канал на Youtube"
           prepend-inner-icon="$iconify_ant-design-youtube-filled"
           prepend-inner-icon-color="logo-youtube"
           outlined
-          :rules="[v => v.length < 255 || 'Ссылка должна быть менее 255 символов']"
+          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
         />
         <base-text-field
           v-model="program.socials.facebook"
+          style="margin-top: 20px !important;"
           :validate-on-blur="true"
           placeholder="/Группа в Facebook"
           prepend-inner-icon="$iconify_la-facebook-f"
           prepend-inner-icon-color="logo-facebook"
           outlined
-          :rules="[v => v.length < 255 || 'Ссылка должна быть менее 255 символов']"
+          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
         />
         <base-text-field
           v-model="program.socials.instagram"
+          style="margin-top: 20px !important;"
           :validate-on-blur="true"
           placeholder="/Профиль в Instagram"
           prepend-inner-icon="$iconify_ion-logo-instagram"
           prepend-inner-icon-color="logo-instagram"
           outlined
-          :rules="[v => v.length < 255 || 'Ссылка должна быть менее 255 символов']"
+          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
         />
       </template>
     </BaseMasterFieldBlock>

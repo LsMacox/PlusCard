@@ -3,7 +3,7 @@ import Vue from 'vue'
 
 import { EVENTS_ENUM } from '@/models/enums'
 
-function eventFilter(event) {
+function eventFilter (event) {
     return (item) => {
         return item.rules && item.rules.event === event
     }
@@ -14,7 +14,7 @@ export default {
     state: {
         bonusResources: [],
         activeBonusResources: [],
-        activeBonusResourcesShort: [],        
+        activeBonusResourcesShort: [],
     },
     mutations: {
         clearState (state) {
@@ -125,13 +125,12 @@ export default {
         },
         buyBonusRes (state) {
             return state.bonusResources.filter(eventFilter(EVENTS_ENUM.AccountBuyEvent))
-             
         },
         newAccountBonusRes (state) {
             return state.bonusResources.filter(eventFilter(EVENTS_ENUM.AccountFirstEmissionEvent))
         },
         birthDayBonusRes (state) {
-            return state.bonusResources.filter(eventFilter(EVENTS_ENUM.AccountClientBirthDayEvent))              
+            return state.bonusResources.filter(eventFilter(EVENTS_ENUM.AccountClientBirthDayEvent))
         },
         buyBonusResActive (state, getters) {
             return getters.buyBonusRes.filter(

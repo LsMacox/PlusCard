@@ -68,7 +68,6 @@
   import MultiFilledGraph from '@/views/widgets/components/graphs/MultiFilledGraph'
   import FormatNumber from '@/mixins/formatNumber'
 
-
   export default {
     name: 'TrippleFilledDiagramFrame',
     components: { MultiFilledGraph, WidgetTemplate },

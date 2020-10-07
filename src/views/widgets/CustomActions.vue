@@ -12,8 +12,8 @@
         >
           <div class="custom-actions__item-img">
             <img
-                style="width: 24px; border-radius: 50%;"
-                :src="item.avatar"
+              style="width: 24px; border-radius: 50%;"
+              :src="item.avatar"
             >
           </div>
           <div class="custom-actions__item-text">
