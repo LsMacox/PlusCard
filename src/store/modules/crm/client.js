@@ -28,7 +28,7 @@ const mutations = {
         const items = state.clients
         items.forEach((item, index) => {
             if (item.id === payload.id) Object.assign(items[index], payload)
-        })
+        }) 
     },
     REMOVE (state, payload) {
         const items = state.clients
@@ -46,14 +46,14 @@ const actions = {
 
     async create ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
-        try {
-            const result = await ApiService.post('/api-cabinet/merchant/account', item)
-            console.log('/api-cabinet/merchant/account/create')
-            console.log(result)
-            commit('ADD', result)
-        } catch (error) {
-            throw error
-        }
+        const result = await ApiService.post('/api-cabinet/merchant/account', item).catch(error => {
+            console.log('/api-cabinet/merchant/account/create error')
+            console.log(error)
+        })
+        console.log('/api-cabinet/merchant/account/create')
+        console.log(result)
+        commit('ADD', result)
+        
     },
 
     async list ({ commit }, item) {

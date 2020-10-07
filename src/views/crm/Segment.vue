@@ -55,19 +55,19 @@
       </template>
       <template v-slot:[`item.profit`]="{ item }">
         <p class="body-s-medium mb-0">
-<!--          {{ item.profit | spacesBetweenNumbers }} ₽-->
+          {{ item.profit | spacesBetweenNumbers }} ₽
           -
         </p>
       </template>
       <template v-slot:[`item.average-check`]="{ item }">
         <p class="body-s-medium mb-0">
-<!--          {{ item.average_check | spacesBetweenNumbers }} ₽-->
+          {{ item.average_check | spacesBetweenNumbers }} ₽
           -
         </p>
       </template>
       <template v-slot:[`item.client-cost`]="{ item }">
         <p class="body-s-medium mb-0">
-<!--          {{ item.client_cost | spacesBetweenNumbers }} ₽-->
+          {{ item.client_cost | spacesBetweenNumbers }} ₽
           -
         </p>
       </template>
@@ -173,6 +173,6 @@
 
 <style lang="scss">
 
-@import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
+  @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 
 </style>

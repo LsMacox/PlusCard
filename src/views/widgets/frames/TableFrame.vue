@@ -29,8 +29,8 @@
           </tr>
         </thead>
         <tbody
-            :class="generateClassesByPrefix(widgetClasses, '__table-body')"
-            v-if="data && data.length > 0"
+          v-if="data && data.length > 0"
+          :class="generateClassesByPrefix(widgetClasses, '__table-body')"
         >
           <template
             v-for="i in data.length * 2 -1"

@@ -157,7 +157,7 @@ export default new Router({
         },
         {
           path: '/program/bonus/settings',
-          component: () => import('@/views/createLoyalty'),
+          component: () => import('@/views/BonusSettings'),
           name: 'ProgramBonusSetting',
           meta: { title: 'ProgramBonusSetting', icon: 'ui_kit' },
         },
@@ -181,7 +181,7 @@ export default new Router({
         },
         {
           path: '/loyalty/setting',
-          component: () => import('@/views/createLoyalty/index'),
+          component: () => import('@/views/BonusSettings/index'),
           name: 'LoyaltySetting',
           meta: { auth: true },
         },

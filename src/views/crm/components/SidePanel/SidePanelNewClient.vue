@@ -81,11 +81,11 @@
               style="height: 65px"
             >
               <date-text-field
-                v-model="form.birthday"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Дата рождения"
                 outlined
+                :date.sync="form.birthday"
               />
             </v-col>
             <v-col cols="12">
@@ -198,7 +198,7 @@
             sms_invite: this.form.sms_invite,
           }
           console.log(item)
-          await this.$store.dispatch('crm/client/create', item)
+          // await this.$store.dispatch('crm/client/create', item)
           this.close()
         } finally {
           this.loading = false
@@ -207,7 +207,3 @@
     },
   }
 </script>
-
-<style lang="scss" scoped>
-@import "@/styles/vuetify-preset-plus/light_theme/crm/components/side_panels/_side-panel-new-client.scss";
-</style>

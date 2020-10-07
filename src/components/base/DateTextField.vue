@@ -2,12 +2,12 @@
   <div class="date-text-field">
     <div class="date-text-field__input">
       <v-text-field
+        ref="text-field"
         v-model="dateText"
         v-mask="'##.##.####'"
         v-bind="$attrs"
         maxlength="10"
         autocomplete="off"
-        v-on="inputListeners"
         @focus="showDatePicker = true"
       />
       <iconify-icon
@@ -71,11 +71,13 @@
 </template>
 
 <script>
+  import { mask } from 'vue-the-mask'
   import DateRangePicker from 'vue2-daterange-picker'
   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
 
   export default {
     name: 'DateTextField',
+    directives: { mask },
     components: {
       DateRangePicker,
     },
@@ -90,17 +92,6 @@
       }
     },
     computed: {
-      inputListeners () {
-        var _this = this
-        return Object.assign({},
-                             this.$listeners,
-                             {
-                               input: function (event) {
-                                 _this.$emit('input', event)
-                               },
-                             },
-        )
-      },
     },
     created () {
       this.clickEventListener()
@@ -110,16 +101,14 @@
         this.showDatePicker = false
         this.dateText = v.startDate.toISOString().split('T')[0]
         this.dateText = this.$moment(this.dateText).format('DD.MM.YYYY')
+        this.$emit('update:date', this.dateText)
       },
       clickEventListener () {
         document.addEventListener('click', (event) => {
           let isClose = true
           event.path.forEach((dom) => {
-            if (
-              typeof dom.className !== 'undefined' &&
-              dom.className.indexOf('date-text-field') > -1
-            ) {
-              isClose = false
+            if (typeof dom.className !== 'undefined') {
+              if (dom.className.indexOf('date-text-field') > -1) isClose = false
             }
           })
           if (isClose) this.showDatePicker = false
