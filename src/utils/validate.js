@@ -91,7 +91,18 @@ function isNumber (val) {
  * @param {any} val
  * @returns {Boolean}
  */
-function isInteger (val) {
+function isNumeric (val) {
+    if (isNumber(val)) return true
+    if (!isString(val)) return false
+
+    return !isNaN(val) && !isNaN(parseFloat(val))
+}
+
+/**
+ * @param {any} val
+ * @returns {Boolean}
+ */
+function isInteger (val) {   
   return /^-?[0-9]+$/.test(String(val))
 }
 
@@ -100,7 +111,15 @@ function isInteger (val) {
  * @returns {Boolean}
  */
 function isPosNumber (val) {
-    return isNumber(val) && val > 0
+    return isNumeric(val) && parseFloat(val) > 0
+}
+
+/**
+ * @param {any} val
+ * @returns {Boolean}
+ */
+function maxNumber (val, max) {
+    return isNumeric(val) && parseFloat(val) <= max
 }
 
 /**
@@ -147,6 +166,7 @@ export {
     validEmail,
     isString,
     isNumber,
+    isNumeric,
     isInteger,
     isPosNumber,
     isArray,

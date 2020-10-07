@@ -260,7 +260,6 @@ export const ICONIFY_ICONS = [
         id: 'octicon-triangle-down-24',
         component: () => import('@iconify/icons-octicon/triangle-down-24'),
     },
-     
 
     // si-glyph
     {
@@ -271,7 +270,7 @@ export const ICONIFY_ICONS = [
         id: 'si-glyph-triangle-up',
         component: () => import('@iconify/icons-si-glyph/triangle-up'),
     },
-    
+
 ]
 
 ICONIFY_ICONS.forEach((icon) => {

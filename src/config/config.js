@@ -8,6 +8,8 @@ const config = Object.freeze({
     },
     tooltipButtonDelay: 1000,
     tooltipDelay: 500,
+    MAX_TRAN_VALUE: 1000000,
+    MAX_DAYS: 999,
 })
 
 export { config }

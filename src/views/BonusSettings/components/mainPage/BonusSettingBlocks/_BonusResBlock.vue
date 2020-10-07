@@ -1,107 +1,103 @@
 <template>
-<div
-              v-for="(bonusRes, bonusResIndex) in buyBonusResSource"
-              :key="bonusResIndex"
-              class="select-input-accrual-bonuses"
-            >
-              <div class="wrap-input">
-                <base-text-field
-                  v-model.number="bonusRes.rules.percent"
-                  :rules="percentRules"
-                  :validation-placement="'top'"
-                  placeholder="% от покупки"
-                  class="percent-field"
-                  validate-on-blur
-                />
+  <div class="select-input-accrual-bonuses">
+    <div class="wrap-input">
+      <base-text-field
+        v-model.number="bonusRes.rules.percent"
+        :rules="percentRules"
+        :validation-placement="'top'"
+        placeholder="% от покупки"
+        class="percent-field"
+        validate-on-blur
+      />
 
-                <bonus-unit-select
-                  v-model="bonusRes.bonus_score.units_id"
-                  :disabled="!bonusRes.isNew"
-                  :bonus-unit-list="bonusUnits"
-                  :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
-                  :show-error="showErrors"
-                  style="width:254px"
-                  v-on="$listeners"
-                />
+      <bonus-unit-select
+        v-model="bonusRes.bonus_score.units_id"
+        :disabled="!bonusRes.isNew"
+        :bonus-unit-list="bonusUnits"
+        :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+        :show-error="showErrors"
+        style="width:254px"
+        v-on="$listeners"
+      />
 
-                <div class="wrap-circle">
-                  <v-btn
-                    v-if="showDeleteAction"
-                    icon
-                    class="simple-circle mines-right"
-                    :loading="bonusRes.deleteAction"
-                    @click="deleteBonusRes(bonusRes)"
-                  >
-                    <img src="@/icons/svg/mines.svg">
-                  </v-btn>
-                  <div
-                    v-if="showAddAction"
-                    class="simple-circle mines-right"
-                    @click="addNewBonusRes('TYPE_SOURCE')"
-                  >
-                    <img src="@/icons/svg/plus.svg">
-                  </div>
-                </div>
-              </div>
-              <v-row>
-                <v-col>
-                  <base-text-field
-                    v-model="bonusRes.title"
-                    :rules="titleRules"
-                    :validation-placement="'top'"
-                    placeholder="Введите название операции, чтобы не запутаться"
-                    class="title-field input-lg-l"
-                    validate-on-blur
-                  />
-                </v-col>
-              </v-row>              
+      <div class="wrap-circle">
+        <v-btn
+          v-if="showDeleteAction"
+          icon
+          class="simple-circle mines-right"
+          :loading="bonusRes.deleteAction"
+          @click="deleteBonusRes(bonusRes)"
+        >
+          <img src="@/icons/svg/mines.svg">
+        </v-btn>
+        <div
+          v-if="showAddAction"
+          class="simple-circle mines-right"
+          @click="addNewBonusRes('TYPE_SOURCE')"
+        >
+          <img src="@/icons/svg/plus.svg">
+        </div>
+      </div>
+    </div>
+    <v-row>
+      <v-col>
+        <base-text-field
+          v-model="bonusRes.title"
+          :rules="titleRules"
+          :validation-placement="'top'"
+          placeholder="Введите название операции, чтобы не запутаться"
+          class="title-field input-lg-l"
+          validate-on-blur
+        />
+      </v-col>
+    </v-row>
 
-              <v-row
-                align="center"
-                style="min-height:calc(45px + 20px)"
-              >
-                <v-col cols="auto">
-                  <base-ext-switch
-                    v-model="bonusRes.expire_days_unlimit"
+    <v-row
+      align="center"
+      style="min-height:calc(45px + 20px)"
+    >
+      <v-col cols="auto">
+        <base-ext-switch
+          v-model="bonusRes.expire_days_unlimit"
 
-                    :label="bonusRes.expire_days_unlimit ? 'Срок действия бонусов: без ограничений' : ' Срок действия бонусов:'"
-                  />
-                </v-col>
-                <v-col v-if="!bonusRes.expire_days_unlimit">
-                  <div class="container-input-count">
-                    <div
-                      class="small-circle-input"
-                      @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days > 1 ? bonusRes.rules.expire_days - 1 : 1"
-                    >
-                      <img src="@/icons/svg/mines.svg">
-                    </div>
-                    <input
-                      v-model="bonusRes.rules.expire_days"
-                      class="input-bonuses input-sm-xl input-sm"
-                      type="text"
-                      @input="bonusRes.rules.expire_days = checkValidNum($event.target.value)"
-                    >
-                    <div
-                      class="small-circle-input"
-                      @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days + 1"
-                    >
-                      <img src="@/icons/svg/plus.svg">
-                    </div>
-                  </div>
-                </v-col>
-              </v-row>
+          :label="bonusRes.expire_days_unlimit ? 'Срок действия бонусов: без ограничений' : ' Срок действия бонусов:'"
+        />
+      </v-col>
+      <v-col v-if="!bonusRes.expire_days_unlimit">
+        <div class="container-input-count">
+          <div
+            class="small-circle-input"
+            @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days > 1 ? bonusRes.rules.expire_days - 1 : 1"
+          >
+            <img src="@/icons/svg/mines.svg">
+          </div>
+          <input
+            v-model="bonusRes.rules.expire_days"
+            class="input-bonuses input-sm-xl input-sm"
+            type="text"
+            @input="bonusRes.rules.expire_days = checkValidNum($event.target.value)"
+          >
+          <div
+            class="small-circle-input"
+            @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days + 1"
+          >
+            <img src="@/icons/svg/plus.svg">
+          </div>
+        </div>
+      </v-col>
+    </v-row>
 
-              <v-row
-                align="center"
-              >
-                <v-col>
-                  <base-ext-switch
-                    v-model="bonusRes.can_app_usage"
-                    :label="'Разрешить использование менеджером'"
-                  />
-                </v-col>
-              </v-row>
-            </div>
+    <v-row
+      align="center"
+    >
+      <v-col>
+        <base-ext-switch
+          v-model="bonusRes.can_app_usage"
+          :label="'Разрешить использование менеджером'"
+        />
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
@@ -532,9 +528,7 @@
     cursor: pointer;
     justify-content: center;
   }
-  .small-circle-input:first-child {
-    // margin-left: 20px;
-  }
+
   .container-input-count {
     display: flex;
     align-items: center;

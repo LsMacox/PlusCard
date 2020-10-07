@@ -330,7 +330,7 @@
 
 .append-slot-row {
   min-height: calc(45px - 12px - 12px);
-  width: max-content;
+  // width: max-content;
   margin: 0px -4px;
   .append-slot-row__col{
     margin-left: 4px;

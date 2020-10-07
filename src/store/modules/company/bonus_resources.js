@@ -1,12 +1,20 @@
 import ApiService from '@/api/api-client'
 import Vue from 'vue'
 
+import { EVENTS_ENUM } from '@/models/enums'
+
+function eventFilter(event) {
+    return (item) => {
+        return item.rules && item.rules.event === event
+    }
+}
+
 export default {
     namespaced: true,
     state: {
         bonusResources: [],
         activeBonusResources: [],
-        activeBonusResourcesShort: [],
+        activeBonusResourcesShort: [],        
     },
     mutations: {
         clearState (state) {
@@ -40,7 +48,7 @@ export default {
             const result = await ApiService.get(
                 `/api-cabinet/program/bonus/resource/list/short?program_id=${programId}`,
             )
-            
+
             commit('bonusResources', result)
         },
 
@@ -116,11 +124,14 @@ export default {
             return state.bonusResources
         },
         buyBonusRes (state) {
-            return state.bonusResources.filter(
-                (item) =>
-                    item.rules &&
-                    item.rules.event === 'App\\Events\\AccountBuyEvent',
-            )
+            return state.bonusResources.filter(eventFilter(EVENTS_ENUM.AccountBuyEvent))
+             
+        },
+        newAccountBonusRes (state) {
+            return state.bonusResources.filter(eventFilter(EVENTS_ENUM.AccountFirstEmissionEvent))
+        },
+        birthDayBonusRes (state) {
+            return state.bonusResources.filter(eventFilter(EVENTS_ENUM.AccountClientBirthDayEvent))              
         },
         buyBonusResActive (state, getters) {
             return getters.buyBonusRes.filter(

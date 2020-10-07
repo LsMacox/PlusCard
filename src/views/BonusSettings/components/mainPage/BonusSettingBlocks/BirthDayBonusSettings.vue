@@ -10,7 +10,7 @@
         v-model="formValid"
         lazy-validation
       >
-        <div class="single-mess-wrap">           
+        <div class="single-mess-wrap">
           <v-col class="ma-0">
             <div
               v-if="bonusUnits.length === 0"
@@ -118,10 +118,47 @@
                       placeholder="X дней"
                       class="days-field"
                       validate-on-blur                      
-                    />                    
+                    />
                     <div
                       class="small-circle-input"
                       @click="bonusRes.rules.expire_days = +bonusRes.rules.expire_days + 1"
+                    >
+                      <img src="@/icons/svg/plus.svg">
+                    </div>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row
+                align="center"
+                style="min-height:calc(45px + 20px)"
+              >
+                <v-col cols="auto">
+                  <base-ext-switch
+                    v-model="bonusRes.delay_days_unlimit"
+                    :label="bonusRes.delay_days_unlimit ? 'Начислять бонусы: в день рождения' : 'Начислять бонусы за:'"
+
+                    @change="(v)=>{ if (v) bonusRes.rules.delay_days = null }"
+                  />
+                </v-col>
+                <v-col v-if="!bonusRes.delay_days_unlimit">
+                  <div class="container-input-count">
+                    <div
+                      class="small-circle-input"
+                      @click="bonusRes.rules.delay_days = bonusRes.rules.delay_days > 1 ? +bonusRes.rules.delay_days - 1 : 1"
+                    >
+                      <img src="@/icons/svg/mines.svg">
+                    </div>
+                    <base-text-field
+                      v-model.number="bonusRes.rules.delay_days"
+                      :rules="daysRules"
+                      :validation-placement="'top'"
+                      placeholder="X дней"
+                      class="days-field"
+                      validate-on-blur                      
+                    />
+                    <div
+                      class="small-circle-input"
+                      @click="bonusRes.rules.delay_days = +bonusRes.rules.delay_days + 1"
                     >
                       <img src="@/icons/svg/plus.svg">
                     </div>
@@ -147,13 +184,11 @@
             Сохранить настройки механики
           </v-btn>
         </div>
-        <!-- <v-row>
-          {{dbBonusRes.map(getEditedObject)}}
-          <v-divider/>
-          {{bonusResInternal.map(getEditedObject)}}
-          
-        </v-row> -->
-        
+        <v-row>
+          {{ dbBonusRes.map(getEditedObject) }}
+          <v-divider />
+          {{ bonusResInternal.map(getEditedObject) }}
+        </v-row>
       </v-form>
     </div>
   </div>
@@ -164,6 +199,7 @@
   import Vue from 'vue'
 
   import { asMixin, isFilled, isNumber, isNumeric, isInteger, isPosNumber, maxLen } from '@/utils/validate'
+  import { EVENTS_ENUM, RESOURCE_TYPE_ENUM } from '@/models/enums'
 
   export default {
     name: 'Basic',
@@ -188,7 +224,7 @@
           (v) => isFilled(v) || 'Введите дни',
           (v) => isInteger(v) || 'Должно быть целым числом',
           (v) => isPosNumber(v) || 'Должно быть положительным',
-          (v) => v <= this.$config.MAX_DAYS || `Не более ${this.$config.MAX_DAYS}`,          
+          (v) => v <= this.$config.MAX_DAYS || `Не более ${this.$config.MAX_DAYS}`,
         ],
         titleRules: [
           (v) => isFilled(v) || 'Введите название',
@@ -200,7 +236,7 @@
     computed: {
       ...mapGetters({
         bonusUnits: 'company/bonus_units/bonusUnits',
-        dbBonusRes: 'company/bonus_resources/newAccountBonusRes',
+        dbBonusRes: 'company/bonus_resources/birthDayBonusRes',
       }),
 
       programId () {
@@ -212,9 +248,11 @@
           Vue.set(item, 'deleteAction', false)
 
           Vue.set(item, 'expire_days_unlimit', item.rules && item.rules.expire_days == null)
+          Vue.set(item, 'delay_days_unlimit', item.rules && item.rules.delay_days == null)
 
           Vue.set(item, 'rules', Object.assign({
             expire_days: null,
+            delay_days: null,
           }, item.rules))
 
           return item
@@ -281,19 +319,21 @@
           },
           can_app_usage: false,
           expire_days_unlimit: true,
+          delay_days_unlimit: true,
           rules: {
-            event: 'App\\Events\\AccountFirstEmissionEvent',
+            event: EVENTS_ENUM.AccountClientBirthDayEvent,
             value: null,
             expire_days: null,
+            delay_days: null,
           },
         })
       },
 
       isSourceFilter (item) {
-        return item.resource_type_enum === 'TYPE_SOURCE'
+        return item.resource_type_enum === RESOURCE_TYPE_ENUM.SOURCE
       },
       isTargetFilter (item) {
-        return item.resource_type_enum === 'TYPE_TARGET'
+        return item.resource_type_enum === RESOURCE_TYPE_ENUM.TARGET
       },
 
       createBonusesCurrency () {
@@ -320,8 +360,10 @@
             event: bonusRes.rules.event,
             value: bonusRes.rules.value,
             expire_days: bonusRes.rules.expire_days || null,
+            delay_days: bonusRes.rules.delay_days || null,
           } : null,
           expire_days_unlimit: bonusRes.expire_days_unlimit || bonusRes.rules.expire_days == null,
+          delay_days_unlimit: bonusRes.delay_days_unlimit || bonusRes.rules.delay_days == null,
 
         }
       },
@@ -389,7 +431,7 @@
         this.bonusResInternal = Object.copy(this.dbBonusRes)
 
         if (this.bonusResMaped.length === 0) {
-          this.addNewBonusRes('TYPE_SOURCE')          
+          this.addNewBonusRes(RESOURCE_TYPE_ENUM.SOURCE)
         }
       },
     },
@@ -404,7 +446,6 @@
 </script>
 
 <style scoped lang="scss">
-
 
 @import '_BlockStyle.scss';
 
