@@ -30,6 +30,7 @@
     </div>
     <client-table />
     <side-panel-new-client
+      v-if="sidePanelNewClientStatus"
       v-model="sidePanelNewClientStatus"
     />
     <side-panel-edit-client
