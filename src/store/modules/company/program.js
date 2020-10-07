@@ -5,7 +5,14 @@ const getDefaultState = () => {
   return {
     programs: [], // компании продавца
     program: VueSession.get('program'), // сокращенная модель программы
-    programModel: {}, // полная модель редактируемой программы
+    programModel: {
+      socials: {
+        vk: null,
+        youtube: null,
+        facebook: null,
+        instagram: null,
+      },
+    }, // полная модель редактируемой программы
     shops: [], // торговые точки
     // -2 все окна закрыты
     // -1 открыто окно новой торговой точки
