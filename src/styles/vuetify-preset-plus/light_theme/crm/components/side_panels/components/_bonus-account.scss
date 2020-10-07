@@ -1,0 +1,97 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.bonus-accounts {
+    margin-top: 16px;
+
+    .bonus-accounts__header {
+        margin-bottom: 8px;
+    }
+
+    .bonus-accounts__cards {
+        .bonus-accounts__card {
+            margin-bottom: 8px;
+            background: $neutral-100;
+            box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1);
+            border: 1px solid $neutral-250;
+            border-radius: 10px;
+
+            .card__header {
+                display: flex;
+                align-items: center;
+                padding: 24px 20px 24px 20px;
+
+                .card__header-title {}
+
+                .card__header-count {
+                    margin-left: auto;
+                    margin-right: 20px;
+                }
+
+                .card__header-control {
+                    .control-btn {
+                        width: 31px;
+                        height: 31px;
+                        min-width: inherit;
+                        padding: 0 !important;
+                        border-radius: 50px;
+                        margin-left: 12px;
+
+                        .v-btn__content {
+                            color: $primary-base;
+                        }
+
+                        &.active {
+                            background: linear-gradient(90deg, $primary-base 0%, $secondary-base 100%);
+                            .v-btn__content {
+                                color: $neutral-100;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            .card__body {
+                padding: 0 20px 0 20px;
+                .card__body-form {
+                    .card__body-input {
+                        margin-bottom: 12px;
+                        .v-input__slot {
+                            margin-bottom: 0 !important;
+                        }
+                        input {
+                            &::focus {
+                                background-color: $neutral-200 !important;
+                            }
+                        }
+                        input, textarea {
+                            @include body-m-medium;
+                            &::placeholder {
+                                color: $neutral-600 !important;
+                            }
+                        }
+                    }
+                    .card__body-select {
+                        margin-bottom: 12px;
+                    }
+                    .textarea---angle {
+                        bottom: 10px;
+                    }
+                    .card__body-group {
+                        display: flex;
+                        .card__body-input {
+                            &:nth-child(2) {
+                                margin-left: 13px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    p {
+        margin-bottom: 0;
+    }
+}

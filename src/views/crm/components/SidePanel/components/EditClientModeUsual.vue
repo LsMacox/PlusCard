@@ -4,15 +4,15 @@
       <div class="contacts__block-right">
         <div class="contacts-full_name">
           <p class="title-m-bold">
-            {{ clientData.name }}
+            {{ clientData.name || '-' }}
           </p>
           <p class="title-m-bold">
-            {{ clientData.surname }}
+            {{ clientData.lastname || '-' }}
           </p>
         </div>
         <div class="contacts-online">
           <p class="body-s-semibold neutral-600--text">
-            Был(а) в сети {{ $moment(clientData.online).format('DD.MM.YYYY в HH:mm') }}
+            {{ getLastActivity(clientData.last_activity) }}
           </p>
         </div>
         <div class="contacts-info">
@@ -24,7 +24,7 @@
                 width="21"
               />
               <p class="body-m-medium neutral-700--text">
-                {{ clientData.phone }}
+                {{ clientData.phone || '-' }}
               </p>
             </li>
             <li class="contacts-info__item">
@@ -34,7 +34,7 @@
                 width="21"
               />
               <p class="body-m-medium neutral-700--text">
-                {{ clientData.email }}
+                {{ clientData.email || '-' }}
               </p>
             </li>
             <li class="contacts-info__item">
@@ -44,7 +44,7 @@
                 width="21"
               />
               <p class="body-m-medium neutral-700--text">
-                {{ clientData.code }}
+                {{ clientData.barcode || '-' }}
               </p>
             </li>
             <li class="contacts-info__item">
@@ -54,7 +54,7 @@
                 width="21"
               />
               <p class="body-m-medium neutral-700--text">
-                {{ clientData.card }}
+                {{ clientData.id || '-' }}
               </p>
             </li>
           </ul>
@@ -62,85 +62,46 @@
       </div>
       <div class="contacts__block-left">
         <img
-          :src="[clientData.img_avatar ? clientData.img_avatar : '']"
+          :src="[clientData.avatar || '']"
         >
       </div>
     </div>
-    <div class="mode-usual__bonus-accounts">
-      <div class="bonus-accounts__header">
-        <p class="body-l-semibold">
-          Бонусные счета
+    <bonus-account />
+    <div class="mode-usual__panel-btn">
+      <v-btn class="panel-btn">
+        <iconify-icon
+          class="icon-document-outline"
+          icon="ion-document-outline"
+          width="21"
+        />
+        <p class="body-m-semibold primary--text">
+          Создать выписку
         </p>
-      </div>
-      <div class="bonus-accounts__cards">
-        <div class="bonus-accounts__card">
-          <div class="card__header">
-            <p class="card__header-title body-l-semibold">
-              Бонусные рубли
-            </p>
-            <p class="card__header-count title-m-bold success--text">
-              {{ '1364' | spacesBetweenNumbers }}
-            </p>
-            <div class="card__header-control">
-              <v-btn
-                class="control-btn"
-                color="primary-100"
-              >
-                <iconify-icon
-                  icon="feather-minus"
-                  width="15"
-                />
-              </v-btn>
-              <v-btn
-                class="control-btn"
-                color="primary-100"
-              >
-                <iconify-icon
-                  icon="eva-plus-outline"
-                  width="15"
-                />
-              </v-btn>
-            </div>
-          </div>
-          <div
-            v-if="false"
-            class="card__body"
-          >
-            <div class="card__body-form">
-              <v-select
-                :items="bonusRubleItems"
-                label="Выберите операцию"
-                outlined
-              />
-              <v-text-field
-                v-model="bonusRubleCrib"
-                v-mask="'Списать: ###############'"
-                class="panel-crm__form-input card__body-input"
-                type="text"
-                placeholder="Списать:"
-                outlined
-              />
-              <div class="panel-crm__form-textarea">
-                <v-textarea
-                  v-model="bonusRubleDescription"
-                  class="panel-crm__form-input card__body-input"
-                  rows="4"
-                  placeholder="Введите комментарий (необязательно)"
-                  outlined
-                  auto-grow
-                />
-                <div class="textarea---angle" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </v-btn>
+      <a
+        class="body-m-semibold primary--text"
+        href="#"
+      >
+        <iconify-icon
+          class="icon-question-circle-outlined"
+          icon="question-circle-outlined"
+          width="21"
+        />
+        <p class="body-m-semibold primary--text">Неактивные кнопки списания и начисления?</p>
+      </a>
     </div>
   </div>
 </template>
 
 <script>
+  import BonusAccount from './BonusAccount'
+  import { mask } from 'vue-the-mask'
+
   export default {
+    directives: { mask },
+    components: {
+      BonusAccount,
+    },
     props: {
       clientData: {
         type: Object,
@@ -150,11 +111,13 @@
       },
     },
     data () {
-      return {
-        bonusRubleCrib: 0,
-        bonusRubleDescription: '',
-        bonusRubleItems: ['Покупка'],
-      }
+      return {}
+    },
+    methods: {
+      getLastActivity (date) {
+        if (date) return 'Был(а) в сети ' + this.$moment.utc(date).local().format(this.$config.date.DATETIME_FORMAT_MIN2)
+        return 'Был(а) в сети - '
+      },
     },
   }
 </script>

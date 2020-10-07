@@ -1,5 +1,5 @@
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
-@import "@/styles/_typography.sass";
+@import "./bonus-account";
 
 .mode-usual__contacts {
     display: flex;
@@ -18,8 +18,8 @@
                 padding-left: 0;
                 list-style: none;
                 .contacts-info__item {
+                    display: flex;
                     .info__item-icon {
-                        float: left;
                         color: $neutral-600;
                         margin-right: 13px;
                     }
@@ -30,48 +30,42 @@
     .contacts__block-left {
         margin-top: 5px;
         margin-left: 120px;
+        img {
+            width: 67px;
+            height: 67px;
+        }
     }
 }
 
-.mode-usual__bonus-accounts {
-    margin-top: 16px;
-    .bonus-accounts__header {
-
+.mode-usual__panel-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 28px;
+    p {
+        margin-bottom: 0 !important;
     }
-    .bonus-accounts__cards {
-        .bonus-accounts__card {
-            background: $neutral-100;
-            box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1);
-            border: 1px solid $neutral-250;
-            border-radius: 10px;
-            .card__header {
-                display: flex;
-                .card__header-title {
-
-                }
-                .card__header-count {
-
-                }
-                .card__header-control {
-                    .control-btn {
-                        width: 31px;
-                        height: 31px;
-                        min-width: inherit;
-                        padding: 0 !important;
-                        border-radius: 50px;
-                        .v-btn__content {
-                            color: $primary-base;
-                        }
-                    }
-                }
-            }
-            .card__body {
-                .card__body-input {
-                    input {
-                        @include body-m-medium;
-                    }
-                }
-            }
+    .panel-btn {
+        display: inline-block;
+        background-color: $primary-100 !important;
+        border-radius: 10px;
+        height: 45px;
+        width: 192px;
+        margin-bottom: 22px;
+        margin-top: 48px;
+        p { 
+            margin-left: 12px;
+        }
+        .icon-document-outline {
+            color: $primary-base;
+        }
+    }
+    a {
+        display: inherit;
+        text-decoration: none;
+        .icon-question-circle-outlined {
+            margin-right: 6px;
         }
     }
 }

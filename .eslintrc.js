@@ -3,7 +3,7 @@ module.exports = {
     env: {
         node: true,
     },
-    extends: ["vuetify", ],
+    extends: ["vuetify"],
     plugins: [],
     rules: {
         "no-console": process.env.NODE_ENV === "production" ? "error" : "off",

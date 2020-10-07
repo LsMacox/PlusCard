@@ -333,6 +333,10 @@ export const ICONIFY_ICONS = [
     id: "check-circle",
     component: () => import("@iconify/icons-octicon/check-circle-24"),
   },
+  {
+    id: "octicon-check-16",
+    component: () => import("@iconify/icons-octicon/check-16"),
+  },
 
   // si-glyph
   {
