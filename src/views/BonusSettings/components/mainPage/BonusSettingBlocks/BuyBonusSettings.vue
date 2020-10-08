@@ -47,6 +47,7 @@
               </v-btn>
             </div>
             <div
+              v-else
               v-for="(bonusRes, bonusResIndex) in buyBonusResSource"
               :key="bonusResIndex"
               class="select-input-accrual-bonuses"
@@ -268,7 +269,7 @@
         </div>
 
         <div
-          v-if="hasChanges && valid"
+          v-if="hasChanges && bonusUnits.length > 0"
           class="save-currency"
         >
           <v-btn
@@ -304,6 +305,12 @@
     name: 'Basic',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
+    },
+     props:{
+      globalActive: {
+        type: Boolean,
+        required: true,
+      }
     },
     mixins: [asMixin(isFilled)],
     data () {
@@ -641,6 +648,7 @@
               description: element.description,
               units_id: element.bonus_score.units_id,
               can_app_usage: element.can_app_usage,
+              active: this.globalActive,
               // max_value: element.max_value,
               // expire_at: element.expire_date,
               rules: element.rules,
@@ -648,7 +656,6 @@
 
             if (element.isNew) {
               // Create
-
               await this.$store.dispatch('company/bonus_resources/CreateBonusRes', {
                 bonusRes,
                 silent: false,
@@ -656,7 +663,6 @@
             } else {
               // Update
               bonusRes.id = element.id
-
               await this.$store.dispatch('company/bonus_resources/UpdateBonusRes', {
                 bonusRes,
                 silent: false,

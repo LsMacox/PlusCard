@@ -117,7 +117,7 @@
                       :validation-placement="'top'"
                       placeholder="X дней"
                       class="days-field"
-                      validate-on-blur                      
+                      validate-on-blur
                     />
                     <div
                       class="small-circle-input"
@@ -154,7 +154,7 @@
                       :validation-placement="'top'"
                       placeholder="X дней"
                       class="days-field"
-                      validate-on-blur                      
+                      validate-on-blur
                     />
                     <div
                       class="small-circle-input"
@@ -170,7 +170,7 @@
         </div>
 
         <div
-          v-if="hasChanges"
+          v-if="hasChanges && bonusUnits.length > 0"
           class="save-currency"
         >
           <v-btn
@@ -184,7 +184,7 @@
             Сохранить настройки механики
           </v-btn>
         </div>
-        <v-row>
+        <v-row v-if="false">
           {{ dbBonusRes.map(getEditedObject) }}
           <v-divider />
           {{ bonusResInternal.map(getEditedObject) }}
@@ -207,6 +207,12 @@
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
     mixins: [asMixin(isFilled)],
+    props: {
+      globalActive: {
+        type: Boolean,
+        required: true,
+      },
+    },    
     data () {
       return {
 
@@ -391,6 +397,7 @@
               description: element.description,
               units_id: element.bonus_score.units_id,
               can_app_usage: element.can_app_usage,
+              active: this.globalActive,
               // max_value: element.max_value,
               // expire_at: element.expire_date,
               rules: element.rules,

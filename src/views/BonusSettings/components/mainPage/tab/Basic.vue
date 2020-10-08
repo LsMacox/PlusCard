@@ -34,6 +34,8 @@
       <component
         :is="bonusResBlock.component"
         v-show="bonusResBlock.expand"
+        :global-active="bonusResBlock.active"
+        v-on="$listeners"
       />
     </div>
   </div>
@@ -85,7 +87,7 @@
             desc: 'Правила начисления и списания бонусов при совершении покупок',
             active: true,
             expand: true,
-            activeSwitchShow: false,
+            activeSwitchShow: true,
             iconOn: require('@/assets/png/Bag-On.png'),
             iconOff: require('@/assets/png/Bag-On.png'),
             component: BuyBonusSettings,
@@ -134,33 +136,38 @@
     },
     computed: {
       ...mapGetters({
-        existsBuyBonusResActive: 'company/bonus_resources/existsBuyBonusResActive',
+        activeBonusResources: 'company/bonus_resources/activeBonusResources',
+        programId: 'programId',
       }),
-      AccountFirstEmissionBonusResActive: {
-        get () {},
-        set (v) {
-
-        },
-      },
+      // programId () {
+      //   return this.$store.getters.programId
+      // },
     },
     watch: {
-      switchBagOn (val) {
-        if (!val) {
-          this.resetState()
-        }
-      },
+
     },
     methods: {
-      ...mapMutations(
-        {
-          resetState: 'createBonusesCurrency/create_bonuses_currency/resetState',
-        }),
+
       async activeChange (bonusRes, active) {
         // TODO dispach
         try {
           bonusRes.action = true
-          await this.$sleep(3000)
+          console.log('activeChange', bonusRes)
+          // await this.$sleep(3000)
+          await this.$store.dispatch('company/bonus_resources/SetActiveResource', {
+            event: bonusRes.event,
+            programId: this.programId,
+            active,
+          })
+          // bonusRes.active = true
         } catch (error) {
+          console.error('active rollback', error)
+          this.$notify({
+            title: 'Бонусная механика',
+            text: error,
+            type: 'error',
+          })
+          // rollback
           this.$nextTick(() => {
             bonusRes.active = !bonusRes.active
           })
@@ -168,12 +175,27 @@
           bonusRes.action = false
         }
       },
-      saveChangeAccrual (val) {
-        this.switchBagOn = val
-      },
       openBonusUnitDialog (bonusUnit) {
         this.$emit('bonus-unit-dialog', bonusUnit)
       },
+      initActive () {
+        const bonusResBlocksList = this.bonusResBlocks.toList()
+        for (let index = 0; index < bonusResBlocksList.length; index++) {
+          const element = bonusResBlocksList[index]
+          this.$store.dispatch('company/bonus_resources/FilterBonusRes', {
+            event: element.event,
+            active: true,
+          }).then(list => {
+            element.active = list.length > 0
+          })
+        }
+      },
+    },
+
+    // eslint-disable-next-line vue/order-in-components
+    created () {
+      // Init Active
+      this.initActive()
     },
 
   }
