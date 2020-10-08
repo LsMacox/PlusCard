@@ -13,7 +13,8 @@
           >
           <div>
             <h3 class="title-h3">
-              <span @click="bonusResBlock.expand = !bonusResBlock.expand">{{ bonusResBlock.title }}</span>
+              <span @click="bonusResBlock.expand = !bonusResBlock.expand">{{ bonusResBlock.title }} </span>
+              <span v-if="$IsDebugMode()">{{ bonusResBlock.hasChanges }}</span>
             </h3>
             <p class="desc-15 color-text-grey">
               {{ bonusResBlock.desc }}
@@ -34,7 +35,9 @@
       <component
         :is="bonusResBlock.component"
         v-show="bonusResBlock.expand"
+        :ref="bonusResBlock.id"
         :global-active="bonusResBlock.active"
+        :has-changes-output.sync="bonusResBlock.hasChanges"
         v-on="$listeners"
       />
     </div>
@@ -45,7 +48,7 @@
   import BuyBonusSettings from '../BonusSettingBlocks/BuyBonusSettings'
   import NewAccountBonusSettings from '../BonusSettingBlocks/NewAccountBonusSettings'
   import BirthDayBonusSettings from '../BonusSettingBlocks/BirthDayBonusSettings'
-  import { mapMutations, mapGetters } from 'vuex'
+  import { mapGetters } from 'vuex'
 
   import { EVENTS_ENUM } from '@/models/enums'
 
@@ -56,6 +59,12 @@
       NewAccountBonusSettings,
       BirthDayBonusSettings,
     },
+    props: {
+      hasChangesGlobalOutput: {
+        type: Boolean,
+        default: undefined,
+      },
+    },
     data () {
       const BonusResBlockTemplate = {
         event: null,
@@ -65,6 +74,7 @@
         active: false,
         expand: false,
         action: false,
+        hasChanges: false,
         iconOn: require('@/assets/png/Bag-On.png'),
         iconOff: require('@/assets/png/Bag-On.png'),
         curIcon: function () { return this.active ? this.iconOn : this.iconOff },
@@ -82,6 +92,7 @@
         bonusResBlocks: {
 
           AccountBuyEvent: Object.assign({}, BonusResBlockTemplate, {
+            id: 'AccountBuyEvent',
             event: EVENTS_ENUM.AccountBuyEvent,
             title: 'Начисление и списание',
             desc: 'Правила начисления и списания бонусов при совершении покупок',
@@ -93,6 +104,7 @@
             component: BuyBonusSettings,
           }),
           AccountFirstEmissionEvent: Object.assign({}, BonusResBlockTemplate, {
+            id: 'AccountFirstEmissionEvent',
             event: EVENTS_ENUM.AccountFirstEmissionEvent,
             title: 'Приветственные бонусы',
             desc: 'Начисляются при регистрации клиента программе лояльности.',
@@ -101,6 +113,7 @@
             component: NewAccountBonusSettings,
           }),
           AccountClientBirthDayEvent: Object.assign({}, BonusResBlockTemplate, {
+            id: 'AccountClientBirthDayEvent',
             event: EVENTS_ENUM.AccountClientBirthDayEvent,
             title: 'День рождения',
             desc: 'Начисляются в качестве подарка на день рождения клиента.',
@@ -139,11 +152,18 @@
         activeBonusResources: 'company/bonus_resources/activeBonusResources',
         programId: 'programId',
       }),
-      // programId () {
-      //   return this.$store.getters.programId
-      // },
+      changedBonusRes () {
+        return this.bonusResBlocks.toList().filter(x => x.hasChanges === true)
+      },
+      hasChangesGlobal () {
+        return this.changedBonusRes.length > 0
+      },
     },
     watch: {
+      hasChangesGlobal (v) {
+        console.log('hasChangesGlobalOutput', v)
+        this.$emit('update:hasChangesGlobalOutput', v)
+      },
 
     },
     methods: {
@@ -177,6 +197,18 @@
       },
       openBonusUnitDialog (bonusUnit) {
         this.$emit('bonus-unit-dialog', bonusUnit)
+      },
+      async save () {
+        console.log('todo save', this.$options.name, 'this.changedBonusRes.length', this.changedBonusRes.length)
+        // const changedBlocks = this.bonusResBlocks.toList().filter(x => x.hasChanges)
+        const refList = this.changedBonusRes.map(x => x.id)
+        console.log('refList.', refList)
+        for (let index = 0; index < refList.length; index++) {
+          const refId = refList[index]
+          const component = this.$refs[refId]
+          console.log('refId.', refId, 'component', component)
+          if (component.length > 0) await component[0].saveChanges()
+        }
       },
       initActive () {
         const bonusResBlocksList = this.bonusResBlocks.toList()

@@ -164,8 +164,9 @@
 
   import { asMixin, isFilled, isNumber, isNumeric, isInteger, isPosNumber, maxLen } from '@/utils/validate'
 
+  import BonusResBlockMixin from './BonusResBlockMixin.js'
   export default {
-    name: 'Basic',
+    name: 'NewAccountBonusSettings',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
@@ -175,7 +176,7 @@
         required: true,
       },
     },
-    mixins: [asMixin('isFilled', isFilled)],
+    mixins: [asMixin('isFilled', isFilled), BonusResBlockMixin],
     data () {
       return {
 
@@ -331,6 +332,7 @@
         }
       },
       async saveChanges () {
+        console.log('saveChanges', this.$options.name)
         if (!this.validate()) return
 
         try {

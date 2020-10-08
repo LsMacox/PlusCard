@@ -5,7 +5,7 @@
       no-gutters
     >
       <v-col>
-        <v-row no-gutters>
+        <v-row no-gutters class="header-row">
           <v-col :cols="3">
             <v-btn
               v-if="showCancel"
@@ -33,6 +33,11 @@
                 {{ item.name }}
               </div>
             </div>
+            <v-row justify="center" no-gutters>
+              <v-col cols="auto">
+                <slot name="header" />
+              </v-col>
+            </v-row>
           </v-col>
           <v-col :cols="3">
             <v-row
@@ -59,14 +64,13 @@
         <v-row
           v-if="true"
           class="top-menu__divider-row"
-          
           no-gutters
         >
-          <v-divider  class="top-menu__divider"/>
+          <v-divider class="top-menu__divider" />
         </v-row>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row no-gutters v-if="$slots.default">
       <slot />
     </v-row>
   </v-row>
@@ -231,8 +235,12 @@
       text-align: center;
     }
   }
+
+  .header-row {
+    height: 59px;
+  }
   .top-menu__divider-row{
-     margin-top: 30px;
+    //  margin-top: 30px;
   margin-left: -$page-content-padding-size;
   margin-right: -$page-content-padding-size;
   }
