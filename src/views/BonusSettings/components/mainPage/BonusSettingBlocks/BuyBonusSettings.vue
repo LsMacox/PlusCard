@@ -66,7 +66,7 @@
                   v-model="bonusRes.bonus_score.units_id"
                   :disabled="!bonusRes.isNew"
                   :bonus-unit-list="bonusUnits"
-                  :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+                  :error-message=" !!bonusRes.bonus_score.units_id || 'Выберите валюту' "
                   :show-error="showErrors"
                   class="bonus-unit-select"
                   v-on="$listeners"
