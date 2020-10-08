@@ -81,6 +81,7 @@
       </template>
     </base-table>
     <side-panel-segment
+      v-if="sidePanelStatus.active"
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"
       :table-data="sidePanelStatus.data"
@@ -172,7 +173,5 @@
 </script>
 
 <style lang="scss">
-
-  @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
-
+@import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 </style>
