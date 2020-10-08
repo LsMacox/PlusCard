@@ -29,6 +29,7 @@
         <keep-alive>
           <component
             :is="currentTabComponent"
+            ref="tabComp"
             v-on="$listeners"
           />
         </keep-alive>
@@ -68,6 +69,9 @@
     methods: {
       openBonusUnitDialog (bonusUnit) {
         this.$emit('bonus-unit-dialog', bonusUnit)
+      },
+      async save () {
+        await this.$refs.tabComp.save()
       },
     },
 

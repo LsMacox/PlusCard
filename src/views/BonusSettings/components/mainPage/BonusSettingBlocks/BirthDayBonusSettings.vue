@@ -53,7 +53,7 @@
                   v-model="bonusRes.bonus_score.units_id"
                   :disabled="!bonusRes.isNew"
                   :bonus-unit-list="bonusUnits"
-                  :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+                  :error-message=" !!bonusRes.bonus_score.units_id || 'Выберите валюту' "
                   :show-error="showErrors"
                   class="bonus-unit-select"
                   v-on="$listeners"
@@ -117,7 +117,7 @@
                       :validation-placement="'top'"
                       placeholder="X дней"
                       class="days-field"
-                      validate-on-blur                      
+                      validate-on-blur
                     />
                     <div
                       class="small-circle-input"
@@ -154,7 +154,7 @@
                       :validation-placement="'top'"
                       placeholder="X дней"
                       class="days-field"
-                      validate-on-blur                      
+                      validate-on-blur
                     />
                     <div
                       class="small-circle-input"
@@ -170,7 +170,7 @@
         </div>
 
         <div
-          v-if="hasChanges"
+          v-if="hasChanges && bonusUnits.length > 0"
           class="save-currency"
         >
           <v-btn
@@ -184,7 +184,7 @@
             Сохранить настройки механики
           </v-btn>
         </div>
-        <v-row>
+        <v-row v-if="false">
           {{ dbBonusRes.map(getEditedObject) }}
           <v-divider />
           {{ bonusResInternal.map(getEditedObject) }}
@@ -200,13 +200,17 @@
 
   import { asMixin, isFilled, isNumber, isNumeric, isInteger, isPosNumber, maxLen } from '@/utils/validate'
   import { EVENTS_ENUM, RESOURCE_TYPE_ENUM } from '@/models/enums'
+  import BonusResBlockMixin from './BonusResBlockMixin.js'
 
   export default {
-    name: 'Basic',
+    name: 'BirthDayBonusSettings',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-    mixins: [asMixin(isFilled)],
+    mixins: [asMixin('isFilled', isFilled), BonusResBlockMixin],
+    props: {
+
+    },
     data () {
       return {
 
@@ -368,6 +372,7 @@
         }
       },
       async saveChanges () {
+        console.log('saveChanges', this.$options.name)
         if (!this.validate()) return
 
         try {
@@ -391,6 +396,7 @@
               description: element.description,
               units_id: element.bonus_score.units_id,
               can_app_usage: element.can_app_usage,
+              active: this.globalActive,
               // max_value: element.max_value,
               // expire_at: element.expire_date,
               rules: element.rules,

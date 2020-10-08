@@ -48,6 +48,7 @@
             </div>
             <div
               v-for="(bonusRes, bonusResIndex) in buyBonusResSource"
+              v-else
               :key="bonusResIndex"
               class="select-input-accrual-bonuses"
             >
@@ -65,7 +66,7 @@
                   v-model="bonusRes.bonus_score.units_id"
                   :disabled="!bonusRes.isNew"
                   :bonus-unit-list="bonusUnits"
-                  :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+                  :error-message=" !!bonusRes.bonus_score.units_id || 'Выберите валюту' "
                   :show-error="showErrors"
                   class="bonus-unit-select"
                   v-on="$listeners"
@@ -130,7 +131,6 @@
                       placeholder="X дней"
                       class="days-field"
                       validate-on-blur
-                     
                     />
                     <!-- <input
                       v-model="bonusRes.rules.expire_days"
@@ -214,7 +214,7 @@
                     v-model="bonusRes.bonus_score.units_id"
                     :disabled="!bonusRes.isNew"
                     :bonus-unit-list="bonusUnits"
-                    :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+                    :error-message=" !!bonusRes.bonus_score.units_id || 'Выберите валюту' "
                     :show-error="showErrors"
                     class="bonus-unit-select"
                     v-on="$listeners"
@@ -268,7 +268,7 @@
         </div>
 
         <div
-          v-if="hasChanges && valid"
+          v-if="hasChanges && bonusUnits.length > 0"
           class="save-currency"
         >
           <v-btn
@@ -300,12 +300,17 @@
 
   import { asMixin, isFilled, isNumber, isNumeric, isInteger, isPosNumber, maxLen } from '@/utils/validate'
 
+  import BonusResBlockMixin from './BonusResBlockMixin.js'
+
   export default {
-    name: 'Basic',
+    name: 'BuyBonusSettings',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-    mixins: [asMixin(isFilled)],
+    props: {
+
+    },
+    mixins: [asMixin('isFilled', isFilled), BonusResBlockMixin],
     data () {
       return {
         inputShow: '',
@@ -618,6 +623,7 @@
         }
       },
       async saveChanges () {
+        console.log('saveChanges', this.$options.name)
         if (!this.validate()) return
 
         try {
@@ -641,6 +647,7 @@
               description: element.description,
               units_id: element.bonus_score.units_id,
               can_app_usage: element.can_app_usage,
+              active: this.globalActive,
               // max_value: element.max_value,
               // expire_at: element.expire_date,
               rules: element.rules,
@@ -648,7 +655,6 @@
 
             if (element.isNew) {
               // Create
-
               await this.$store.dispatch('company/bonus_resources/CreateBonusRes', {
                 bonusRes,
                 silent: false,
@@ -656,7 +662,6 @@
             } else {
               // Update
               bonusRes.id = element.id
-
               await this.$store.dispatch('company/bonus_resources/UpdateBonusRes', {
                 bonusRes,
                 silent: false,

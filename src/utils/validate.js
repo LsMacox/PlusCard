@@ -1,6 +1,6 @@
-function asMixin (fun) {
+function asMixin (name,fun) {
     const methods = {}
-    methods[fun.name] = fun
+    methods[name] = fun
 
     return { methods }
 }

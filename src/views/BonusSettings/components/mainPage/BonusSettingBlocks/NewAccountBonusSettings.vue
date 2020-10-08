@@ -10,7 +10,7 @@
         v-model="formValid"
         lazy-validation
       >
-        <div class="single-mess-wrap">           
+        <div class="single-mess-wrap">
           <v-col class="ma-0">
             <div
               v-if="bonusUnits.length === 0"
@@ -53,7 +53,7 @@
                   v-model="bonusRes.bonus_score.units_id"
                   :disabled="!bonusRes.isNew"
                   :bonus-unit-list="bonusUnits"
-                  :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+                  :error-message=" !!bonusRes.bonus_score.units_id || 'Выберите валюту' "
                   :show-error="showErrors"
                   class="bonus-unit-select"
                   v-on="$listeners"
@@ -117,8 +117,8 @@
                       :validation-placement="'top'"
                       placeholder="X дней"
                       class="days-field"
-                      validate-on-blur                      
-                    />                    
+                      validate-on-blur
+                    />
                     <div
                       class="small-circle-input"
                       @click="bonusRes.rules.expire_days = +bonusRes.rules.expire_days + 1"
@@ -133,7 +133,7 @@
         </div>
 
         <div
-          v-if="hasChanges"
+          v-if="hasChanges && bonusUnits.length > 0"
           class="save-currency"
         >
           <v-btn
@@ -151,9 +151,8 @@
           {{dbBonusRes.map(getEditedObject)}}
           <v-divider/>
           {{bonusResInternal.map(getEditedObject)}}
-          
+
         </v-row> -->
-        
       </v-form>
     </div>
   </div>
@@ -165,12 +164,19 @@
 
   import { asMixin, isFilled, isNumber, isNumeric, isInteger, isPosNumber, maxLen } from '@/utils/validate'
 
+  import BonusResBlockMixin from './BonusResBlockMixin.js'
   export default {
-    name: 'Basic',
+    name: 'NewAccountBonusSettings',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-    mixins: [asMixin(isFilled)],
+    props: {
+      globalActive: {
+        type: Boolean,
+        required: true,
+      },
+    },
+    mixins: [asMixin('isFilled', isFilled), BonusResBlockMixin],
     data () {
       return {
 
@@ -188,7 +194,7 @@
           (v) => isFilled(v) || 'Введите дни',
           (v) => isInteger(v) || 'Должно быть целым числом',
           (v) => isPosNumber(v) || 'Должно быть положительным',
-          (v) => v <= this.$config.MAX_DAYS || `Не более ${this.$config.MAX_DAYS}`,          
+          (v) => v <= this.$config.MAX_DAYS || `Не более ${this.$config.MAX_DAYS}`,
         ],
         titleRules: [
           (v) => isFilled(v) || 'Введите название',
@@ -326,6 +332,7 @@
         }
       },
       async saveChanges () {
+        console.log('saveChanges', this.$options.name)
         if (!this.validate()) return
 
         try {
@@ -344,11 +351,13 @@
 
             const bonusRes = {
               program_id: this.programId,
+
               resource_type_enum: element.resource_type_enum,
               title: element.title,
               description: element.description,
               units_id: element.bonus_score.units_id,
               can_app_usage: element.can_app_usage,
+              active: this.globalActive,
               // max_value: element.max_value,
               // expire_at: element.expire_date,
               rules: element.rules,
@@ -389,7 +398,7 @@
         this.bonusResInternal = Object.copy(this.dbBonusRes)
 
         if (this.bonusResMaped.length === 0) {
-          this.addNewBonusRes('TYPE_SOURCE')          
+          this.addNewBonusRes('TYPE_SOURCE')
         }
       },
     },
@@ -404,7 +413,6 @@
 </script>
 
 <style scoped lang="scss">
-
 
 @import '_BlockStyle.scss';
 

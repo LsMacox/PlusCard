@@ -8,6 +8,11 @@ function eventFilter (event) {
         return item.rules && item.rules.event === event
     }
 }
+function activeFilter (active) {
+    return (item) => {
+        return item.bonus_score && item.bonus_score.active === active
+    }
+}
 
 export default {
     namespaced: true,
@@ -29,11 +34,21 @@ export default {
         activeBonusResourcesShort (state, payload) {
             state.activeBonusResourcesShort = payload
         },
+        UPDATE_BONUS_RESOURCE_ACTIVE (state, { id, active }) {
+            const index = state.bonusResources.findIndex(
+                (x) => x.id === id,
+            )
+            if (index >= 0) {
+                state.bonusResources[index].bonus_score.active = active
+            }
+        },
         UPDATE_BONUS_RESOURCE (state, newItem) {
             const index = state.bonusResources.findIndex(
                 (x) => x.id === newItem.id,
             )
-            Vue.set(state.bonusResources, index, newItem)
+            if (index >= 0) {
+                Vue.set(state.bonusResources, index, Object.assign(state.bonusResources[index], newItem))
+            }
         },
         ADD_BONUS_RESOURCE (state, newItem) {
             state.bonusResources.push(newItem)
@@ -95,6 +110,37 @@ export default {
                 })
             }
         },
+        async SetActiveResource ({ state, commit }, { event, programId, active }) {
+            const bonusResIds = state.bonusResources
+                .filter(x => x.program_id === programId)
+                .filter(eventFilter(event))
+                .map(x => x.id)
+                console.log('bonusResIds', bonusResIds)
+            if (bonusResIds.length === 0) {
+               throw Error('Включение не возможно: требуется заполнить блок')
+            }
+            
+
+            await ApiService.post(
+                '/api-cabinet/program/bonus_resources/active/set',
+                {
+                    ids: bonusResIds,
+                    program_id: programId,
+                    active,
+                },
+            )
+
+            for (let index = 0; index < bonusResIds.length; index++) {
+                const id = bonusResIds[index]
+                commit('UPDATE_BONUS_RESOURCE_ACTIVE', { id, active })
+            }
+
+            this._vm.$notify({
+                title: 'Бонусная механика',
+                text: `Бонусная механика ${active ? 'включена' : 'выключена'}`,
+                type: 'success',
+            })
+        },
         async get_active_list ({ commit }, id) {
             ApiService.get(
                 `/api-cabinet/program/bonus_resources/list?program_id=${id}&active=1`,
@@ -118,6 +164,11 @@ export default {
             commit('activeBonusResourcesShort', response)
             return response
         },
+
+        FilterBonusRes ({ state }, { event, active }) {
+            console.log('FilterBonusRes')
+            return state.bonusResources.filter(eventFilter(event)).filter(activeFilter(active))
+        },
     },
     getters: {
         bonusResources (state) {
@@ -132,17 +183,9 @@ export default {
         birthDayBonusRes (state) {
             return state.bonusResources.filter(eventFilter(EVENTS_ENUM.AccountClientBirthDayEvent))
         },
-        buyBonusResActive (state, getters) {
-            return getters.buyBonusRes.filter(
-                (item) => item.bonus_score && item.bonus_score.active,
-            )
-        },
-        existsBuyBonusResActive (state, getters) {
-            return getters.buyBonusResActive.length > 0
-        },
         //
         activeBonusResources (state) {
-            return state.activeBonusResources
+            return state.bonusResources.filter(x => x.bonus_score && x.bonus_score.active)
         },
         activeBonusResourcesShort (state) {
             return state.activeBonusResourcesShort
