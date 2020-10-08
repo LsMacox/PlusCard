@@ -5,16 +5,26 @@
         Бонусные счета
       </p>
     </div>
-    <div class="bonus-accounts__cards">
+    <div
+      v-if="loading"
+    >
+      <v-skeleton-loader
+        type="table-tfoot"
+      />
+      <v-skeleton-loader
+        type="table-tfoot"
+      />
+    </div>
+    <div
+      v-else
+      class="bonus-accounts__cards"
+    >
       <div
         v-for="(item, i) in accountBalances"
         :key="i"
         class="bonus-accounts__card"
       >
-        <div
-          v-if="editedItem.unit_id !== item.unit_id"
-          class="card__header"
-        >
+        <div class="card__header">
           <p class="card__header-title body-l-semibold">
             {{ item.name }}
           </p>
@@ -29,28 +39,28 @@
             <v-btn
               class="control-btn"
               color="primary-100"
-              @click="!editedItem.menuShow ? menuOperation(item, 'debit') : menuClose()"
+              @click="(editedItem.unit_id === item.unit_id && operationMode) ? menuClose() : menuOperation(item, 'debit')"
             >
               <iconify-icon
-                :icon="!item.menuShow ? 'feather-minus' : 'jam-close'"
+                :icon="(editedItem.unit_id === item.unit_id && operationMode) ? 'jam-close' : 'feather-minus'"
                 width="15"
               />
             </v-btn>
             <v-btn
               class="control-btn"
-              :class="{active: item.menuShow}"
+              :class="{active: (editedItem.unit_id === item.unit_id && operationMode)}"
               color="primary-100"
-              @click="!item.menuShow ? menuOperation(item, 'credit') : menuClose()"
+              @click="(editedItem.unit_id === item.unit_id && operationMode) ? processing(item) : menuOperation(item, 'credit')"
             >
               <iconify-icon
-                :icon="!item.menuShow ? 'eva-plus-outline' : 'octicon-check-16'"
+                :icon="(editedItem.unit_id === item.unit_id && operationMode) ? 'octicon-check-16' : 'eva-plus-outline'"
                 width="15"
               />
             </v-btn>
           </div>
         </div>
         <div
-          v-else
+          v-if="editedItem.unit_id === item.unit_id"
           class="card__body"
         >
           <div class="card__body-form">
@@ -63,20 +73,19 @@
               hide-details
               :menu-props="{ auto: false, offsetY: 200 }"
             >
-
             </vue-select> -->
             <div class="card__body-select" />
             <div class="card__body-group">
               <v-text-field
-                v-mask="getMask(item.mode)"
+                v-mask="getMask(operationMode)"
                 class="panel-crm__form-input card__body-input"
                 type="text"
-                :placeholder="item.mode == 'writeOff' ? 'Списать:' : 'Начислить:'"
+                :placeholder="operationMode === 'debit' ? 'Списать:' : 'Начислить:'"
                 outlined
                 hide-details
               />
               <v-text-field
-                v-if="item.mode == 'charge'"
+                v-if="operationMode === 'credit'"
                 v-mask="'Действуют: ###'"
                 class="panel-crm__form-input card__body-input"
                 type="text"
@@ -114,13 +123,14 @@
     directives: { mask },
     // components: { vueSelect },
     props: {
-      loading: {
-        type: Boolean,
-        default: false,
+      clientData: {
+        type: Object,
+        default: () => {},
       },
     },
     data () {
       return {
+        loading: false,
         editedItem: {},
         operationMode: null,
       }
@@ -136,9 +146,13 @@
         return result
       },
     },
+    async created () {
+      console.log(this.clientData)
+      await this.fetchData()
+    },
     methods: {
       getMask (mode) {
-        return mode === 'writeOff' ? 'Списать: ###########' : 'Начислить: ###########'
+        return mode === 'debit' ? 'Списать: ###########' : 'Начислить: ###########'
       },
       menuOperation (item, operation) {
         console.log(item)
@@ -149,8 +163,27 @@
         this.operationMode = null
         this.editedItem = {}
       },
-      getCategoryIndexById (id) {
-        return this.$_.findIndex(this.categories, (category) => { return category.id === id })
+      async processing (item) {
+        try {
+          this.loading = true
+          const operation = {
+            item,
+          }
+          console.log('processing')
+          console.log(operation)
+          // await this.$store.dispatch('crm/clientCard/getAccountBalances', operation)
+          this.menuClose()
+        } finally {
+          this.loading = false
+        }
+      },
+      async fetchData () {
+        try {
+          this.loading = true
+          await this.$store.dispatch('crm/clientCard/getAccountBalances', this.clientData)
+        } finally {
+          this.loading = false
+        }
       },
     },
   }

@@ -68,7 +68,7 @@
     </div>
     <div>
       <bonus-account
-        :loading="loading"
+        :client-data="clientData"
       />
     </div>
     <div class="mode-usual__panel-btn">
@@ -115,26 +115,12 @@
       },
     },
     data () {
-      return {
-        loading: false,
-      }
-    },
-    async created () {
-      console.log(this.clientData)
-      await this.fetchData()
+      return {}
     },
     methods: {
       getLastActivity (date) {
         if (date) return 'Был(а) в сети ' + this.$moment.utc(date).local().format(this.$config.date.DATETIME_FORMAT_MIN2)
         return 'Был(а) в сети - '
-      },
-      async fetchData () {
-        try {
-          this.loading = true
-          await this.$store.dispatch('crm/clientCard/getAccountBalances', this.clientData)
-        } finally {
-          this.loading = false
-        }
       },
     },
   }
