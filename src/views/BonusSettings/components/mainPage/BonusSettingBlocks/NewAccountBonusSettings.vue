@@ -10,7 +10,7 @@
         v-model="formValid"
         lazy-validation
       >
-        <div class="single-mess-wrap">           
+        <div class="single-mess-wrap">
           <v-col class="ma-0">
             <div
               v-if="bonusUnits.length === 0"
@@ -117,8 +117,8 @@
                       :validation-placement="'top'"
                       placeholder="X дней"
                       class="days-field"
-                      validate-on-blur                      
-                    />                    
+                      validate-on-blur
+                    />
                     <div
                       class="small-circle-input"
                       @click="bonusRes.rules.expire_days = +bonusRes.rules.expire_days + 1"
@@ -151,9 +151,8 @@
           {{dbBonusRes.map(getEditedObject)}}
           <v-divider/>
           {{bonusResInternal.map(getEditedObject)}}
-          
+
         </v-row> -->
-        
       </v-form>
     </div>
   </div>
@@ -170,13 +169,13 @@
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-    props:{
+    props: {
       globalActive: {
         type: Boolean,
         required: true,
-      }
+      },
     },
-    mixins: [asMixin(isFilled)],
+    mixins: [asMixin('isFilled', isFilled)],
     data () {
       return {
 
@@ -194,7 +193,7 @@
           (v) => isFilled(v) || 'Введите дни',
           (v) => isInteger(v) || 'Должно быть целым числом',
           (v) => isPosNumber(v) || 'Должно быть положительным',
-          (v) => v <= this.$config.MAX_DAYS || `Не более ${this.$config.MAX_DAYS}`,          
+          (v) => v <= this.$config.MAX_DAYS || `Не более ${this.$config.MAX_DAYS}`,
         ],
         titleRules: [
           (v) => isFilled(v) || 'Введите название',
@@ -397,7 +396,7 @@
         this.bonusResInternal = Object.copy(this.dbBonusRes)
 
         if (this.bonusResMaped.length === 0) {
-          this.addNewBonusRes('TYPE_SOURCE')          
+          this.addNewBonusRes('TYPE_SOURCE')
         }
       },
     },
@@ -412,7 +411,6 @@
 </script>
 
 <style scoped lang="scss">
-
 
 @import '_BlockStyle.scss';
 

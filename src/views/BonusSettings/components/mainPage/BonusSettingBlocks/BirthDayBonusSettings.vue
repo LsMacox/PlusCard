@@ -206,13 +206,13 @@
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-    mixins: [asMixin(isFilled)],
+    mixins: [asMixin('isFilled', isFilled)],
     props: {
       globalActive: {
         type: Boolean,
         required: true,
       },
-    },    
+    },
     data () {
       return {
 

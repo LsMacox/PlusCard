@@ -47,8 +47,8 @@
               </v-btn>
             </div>
             <div
-              v-else
               v-for="(bonusRes, bonusResIndex) in buyBonusResSource"
+              v-else
               :key="bonusResIndex"
               class="select-input-accrual-bonuses"
             >
@@ -131,7 +131,6 @@
                       placeholder="X дней"
                       class="days-field"
                       validate-on-blur
-                     
                     />
                     <!-- <input
                       v-model="bonusRes.rules.expire_days"
@@ -215,7 +214,7 @@
                     v-model="bonusRes.bonus_score.units_id"
                     :disabled="!bonusRes.isNew"
                     :bonus-unit-list="bonusUnits"
-                    :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+                    :error-message=" !!bonusRes.bonus_score.units_id || 'Выберите валюту' "
                     :show-error="showErrors"
                     class="bonus-unit-select"
                     v-on="$listeners"
@@ -306,13 +305,13 @@
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-     props:{
+    props: {
       globalActive: {
         type: Boolean,
         required: true,
-      }
+      },
     },
-    mixins: [asMixin(isFilled)],
+    mixins: [asMixin('isFilled', isFilled)],
     data () {
       return {
         inputShow: '',
