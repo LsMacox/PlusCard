@@ -1,38 +1,20 @@
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 @import "./bonus-account";
 
-.mode-usual__contacts {
-    display: flex;
-    .contacts__block-right {
-        .contacts-full_name {
-            p {
-                margin-bottom: 3px;
+.mode-usual__contacts-info {
+    margin-top: 2px;
+
+    .contacts-info__list {
+        padding-left: 0;
+        list-style: none;
+
+        .contacts-info__item {
+            display: flex;
+
+            .info__item-icon {
+                color: $neutral-600;
+                margin-right: 13px;
             }
-        }
-        .contacts-online {
-            margin-top: 8px;
-        }
-        .contacts-info {
-            margin-top: 17px;
-            .contacts-info__list {
-                padding-left: 0;
-                list-style: none;
-                .contacts-info__item {
-                    display: flex;
-                    .info__item-icon {
-                        color: $neutral-600;
-                        margin-right: 13px;
-                    }
-                }
-            }
-        }
-    }
-    .contacts__block-left {
-        margin-top: 5px;
-        margin-left: 120px;
-        img {
-            width: 67px;
-            height: 67px;
         }
     }
 }

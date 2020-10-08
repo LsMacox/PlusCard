@@ -26,7 +26,7 @@
             <v-btn
               class="control-btn"
               color="primary-100"
-              @click="!category.menuShow ? menuOperation(category.id, 'writeOff') : menuClose(category.id)"
+              @click="!category.menuShow ? menuOperation(category, 'writeOff') : menuClose(category.id)"
             >
               <iconify-icon
                 :icon="!category.menuShow ? 'feather-minus' : 'jam-close'"
@@ -37,7 +37,7 @@
               class="control-btn"
               :class="{active: category.menuShow}"
               color="primary-100"
-              @click="!category.menuShow ? menuOperation(category.id, 'charge') : menuClose(category.id)"
+              @click="!category.menuShow ? menuOperation(category, 'charge') : menuSave(category)"
             >
               <iconify-icon
                 :icon="!category.menuShow ? 'eva-plus-outline' : 'octicon-check-16'"
@@ -51,20 +51,15 @@
           class="card__body"
         >
           <div class="card__body-form">
-            <!-- <vue-select
+            <base-select
               v-if="category.mode == 'charge'"
+              v-model="chargeData.selectedItem"
               class="card__body-select"
-              label="Выберите операцию"
-              :items="['dds', 'dsadsa', 'ddd']"
-              solo
-              hide-details
-              :menu-props="{ auto: false, offsetY: 200 }"
-            >
-
-            </vue-select> -->
-            <div class="card__body-select" />
+              :items="chargeData.listItems"
+            />
             <div class="card__body-group">
               <v-text-field
+                v-model="generalData.sum"
                 v-mask="getMask(category.mode)"
                 class="panel-crm__form-input card__body-input"
                 type="text"
@@ -74,6 +69,7 @@
               />
               <v-text-field
                 v-if="category.mode == 'charge'"
+                v-model="chargeData.acts"
                 v-mask="'Действуют: ###'"
                 class="panel-crm__form-input card__body-input"
                 type="text"
@@ -87,6 +83,7 @@
               style="margin-bottom: 20px"
             >
               <v-textarea
+                v-model="generalData.description"
                 class="panel-crm__form-input card__body-input"
                 rows="4"
                 placeholder="Введите комментарий (необязательно)"
@@ -100,18 +97,39 @@
         </div>
       </div>
     </div>
+    <div
+      v-if="success.active"
+      class="bonus-accounts__success"
+      :class="success.mode ? 'success--text' : 'error--text'"
+    >
+      <iconify-icon
+        class="icon-success"
+        :icon="success.mode ? 'octicon-check-circle-fill' : 'jam-close-fill'"
+        width="21"
+      />
+      <p class="body-s-semibold">
+        {{ success.mode ? 'Начислено ' : 'Списано ' }}{{ Number(success.data) }} бонусных рублей
+      </p>
+    </div>
   </div>
 </template>
 
 <script>
-  // import vueSelect from 'vue-select'
+  import BaseSelect from '@/components/base/BaseSelect'
   import { mask } from 'vue-the-mask'
 
   export default {
     directives: { mask },
-    // components: { vueSelect },
+    components: { BaseSelect },
     data () {
       return {
+        generalData: this.getDefaultGeneralData(),
+        chargeData: this.getDefaultChartData(),
+        success: {
+          active: false,
+          mode: true,
+          data: null,
+        },
         categories: [
           {
             id: 1,
@@ -138,6 +156,7 @@
         ],
       }
     },
+    watch: {},
     methods: {
       getMask (mode) {
         return mode === 'writeOff' ? 'Списать: ###########' : 'Начислить: ###########'
@@ -145,14 +164,52 @@
       getCategoryIndexById (id) {
         return this.$_.findIndex(this.categories, (category) => { return category.id === id })
       },
-      menuOperation (id, mode) {
-        const categoryIndex = this.getCategoryIndexById(id)
+      menuOperation (category, mode) {
+        const categoryIndex = this.getCategoryIndexById(category.id)
 
         this.categories[categoryIndex].mode = mode
         this.categories[categoryIndex].menuShow = true
       },
       menuClose (id) {
+        this.clearData()
         this.categories[this.getCategoryIndexById(id)].menuShow = false
+      },
+      getDefaultChartData () {
+        return {
+          listItems: [{ id: 1, title: 'a' }, { id: 2, title: 'b' }, { id: 3, title: 'c' }],
+          selectedItem: null,
+          acts: null,
+        }
+      },
+      getDefaultGeneralData () {
+        return {
+          sum: null,
+          description: '',
+        }
+      },
+      clearData () {
+        this.chargeData = this.getDefaultChartData()
+        this.generalData = this.getDefaultGeneralData()
+      },
+      showSuccess (sum, mode) {
+        this.success.active = true
+        this.success.mode = mode
+        this.success.data = sum
+      },
+      menuSave (category) {
+        // === Data === //
+        const sum = this.generalData.sum.replace(/[^\d]+/, '')
+        // const description = this.generalData.description
+        if (category.mode === 'charge') {
+          this.showSuccess(sum, true)
+        //   const acts = this.chargeData.acts.replace(/[^\d]+/, '')
+        //   const operation = this.chargeData.selectedItem
+        } else {
+          this.showSuccess(sum, false)
+        }
+        // === Data === //
+        this.clearData()
+        category.menuShow = false
       },
     },
   }

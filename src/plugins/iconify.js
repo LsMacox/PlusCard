@@ -45,7 +45,6 @@ export const ICONIFY_ICONS = [
   { id: "bi-phone", component: () => import("@iconify/icons-bi/phone") },
 
   // bx
-  { id: "bx-check", component: () => import("@iconify/icons-bx/bx-check") },
   {
     id: "arrow-back",
     component: () => import("@iconify/icons-bx/bx-arrow-back"),
@@ -68,6 +67,7 @@ export const ICONIFY_ICONS = [
 
   // jam
   { id: "jam-close", component: () => import("@iconify/icons-jam/close") },
+  { id: "jam-close-fill", component: () => import("@iconify/icons-jam/close-circle-f") },
 
   // carbon
   {
@@ -159,76 +159,82 @@ export const ICONIFY_ICONS = [
     id: "ion-barcode-outline",
     component: () => import("@iconify/icons-ion/barcode-outline"),
   },
-    // ion
-    { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
-    {
-        id: 'ion-close-circle-outline',
-        component: () => import('@iconify/icons-ion/close-circle-outline'),
-    },
-    {
-        id: 'ion-checkmark-circle-outline',
-        component: () => import('@iconify/icons-ion/checkmark-circle-outline'),
-    },
-    {
-        id: 'ion-stats-chart',
-        component: () => import('@iconify/icons-ion/stats-chart'),
-    },
-    {
-        id: 'ion-wallet-outline',
-        component: () => import('@iconify/icons-ion/wallet-outline'),
-    },
-    {
-        id: 'ion-funnel-outline',
-        component: () => import('@iconify/icons-ion/funnel-outline'),
-    },
-    {
-        id: 'ion-megaphone-outline',
-        component: () => import('@iconify/icons-ion/megaphone-outline'),
-    },
-    {
-        id: 'ion-chatbox-outline',
-        component: () => import('@iconify/icons-ion/chatbox-outline'),
-    },
-    {
-        id: 'ion-exit-outline',
-        component: () => import('@iconify/icons-ion/exit-outline'),
-    },
-    {
-        id: 'ion-color-fill-outline',
-        component: () => import('@iconify/icons-ion/color-fill-outline'),
-    },
-    {
-        id: 'ion-checkmark-circle-outline',
-        component: () => import('@iconify/icons-ion/checkmark-circle-outline'),
-    },
-    {
-        id: 'ion-document-outline',
-        component: () => import('@iconify/icons-ion/document-outline'),
-    },
-    {
-        id: 'ion-logo-vk',
-        component: () => import('@iconify/icons-ion/logo-vk'),
-    },
-    {
-        id: 'ion-logo-instagram',
-        component: () => import('@iconify/icons-ion/logo-instagram'),
-    },
-    {
-        id: 'ion-location-outline',
-        component: () => import('@iconify/icons-ion/location-outline'),
-    },
-    {
-        id: 'ion-qr-code-outline',
-        component: () => import('@iconify/icons-ion/qr-code-outline'),
-    },
-    {
-        id: 'ion-mail-outline',
-        component: () => import('@iconify/icons-ion/mail-outline'),
-    },
-    {
-      id: 'ion-warning',
-      component: () => import('@iconify/icons-ion/warning'),
-    },
+  // ion
+  { id: "ion-close", component: () => import("@iconify/icons-ion/close") },
+  {
+    id: "ion-close-circle-outline",
+    component: () => import("@iconify/icons-ion/close-circle-outline"),
+  },
+  {
+    id: "ion-checkmark-circle-outline",
+    component: () => import("@iconify/icons-ion/checkmark-circle-outline"),
+  },
+  {
+    id: "ion-stats-chart",
+    component: () => import("@iconify/icons-ion/stats-chart"),
+  },
+  {
+    id: "ion-wallet-outline",
+    component: () => import("@iconify/icons-ion/wallet-outline"),
+  },
+  {
+    id: "ion-funnel-outline",
+    component: () => import("@iconify/icons-ion/funnel-outline"),
+  },
+  {
+    id: "ion-megaphone-outline",
+    component: () => import("@iconify/icons-ion/megaphone-outline"),
+  },
+  {
+    id: "ion-chatbox-outline",
+    component: () => import("@iconify/icons-ion/chatbox-outline"),
+  },
+  {
+    id: "ion-exit-outline",
+    component: () => import("@iconify/icons-ion/exit-outline"),
+  },
+  {
+    id: "ion-color-fill-outline",
+    component: () => import("@iconify/icons-ion/color-fill-outline"),
+  },
+  {
+    id: "ion-checkmark-circle-outline",
+    component: () => import("@iconify/icons-ion/checkmark-circle-outline"),
+  },
+  {
+    id: "ion-document-outline",
+    component: () => import("@iconify/icons-ion/document-outline"),
+  },
+  {
+    id: "ion-logo-vk",
+    component: () => import("@iconify/icons-ion/logo-vk"),
+  },
+  {
+    id: "ion-logo-instagram",
+    component: () => import("@iconify/icons-ion/logo-instagram"),
+  },
+  {
+    id: "ion-location-outline",
+    component: () => import("@iconify/icons-ion/location-outline"),
+  },
+  {
+    id: "ion-qr-code-outline",
+    component: () => import("@iconify/icons-ion/qr-code-outline"),
+  },
+  {
+    id: "ion-mail-outline",
+    component: () => import("@iconify/icons-ion/mail-outline"),
+  },
+  {
+    id: "ion-warning",
+    component: () => import("@iconify/icons-ion/warning"),
+  },
+
+  // tabler
+  {
+    id: "tabler-external-link",
+    component: () => import("@iconify/icons-tabler/external-link"),
+  },
 
   // feather
   {
@@ -334,10 +340,13 @@ export const ICONIFY_ICONS = [
     component: () => import("@iconify/icons-octicon/check-circle-24"),
   },
   {
+    id: "octicon-check-circle-fill",
+    component: () => import("@iconify/icons-octicon/check-circle-fill-24"),
+  },
+  {
     id: "octicon-check-16",
     component: () => import("@iconify/icons-octicon/check-16"),
   },
-
   // si-glyph
   {
     id: "si-glyph-triangle-down",

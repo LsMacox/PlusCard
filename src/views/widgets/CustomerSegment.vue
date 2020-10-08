@@ -11,14 +11,7 @@
 
   export default {
     components: { TableFrame },
-    props: {
-      // widgetData: {
-      //   type: Array,
-      //   default () {
-      //     return []
-      //   },
-      // },
-    },
+    props: {},
     data () {
       return {
         widgetData: [],

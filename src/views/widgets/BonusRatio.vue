@@ -14,7 +14,14 @@
   export default {
     components: { VerticalProgressFrame },
     mixins: [WidgetFunctions],
-    props: ['widgetData'],
+    props: {
+      widgetData: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
+    },
     data () {
       return {
         creditRatio: 0,
