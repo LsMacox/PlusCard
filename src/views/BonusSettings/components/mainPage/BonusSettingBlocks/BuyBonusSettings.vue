@@ -47,8 +47,8 @@
               </v-btn>
             </div>
             <div
-              v-else
               v-for="(bonusRes, bonusResIndex) in buyBonusResSource"
+              v-else
               :key="bonusResIndex"
               class="select-input-accrual-bonuses"
             >
@@ -131,7 +131,6 @@
                       placeholder="X дней"
                       class="days-field"
                       validate-on-blur
-                     
                     />
                     <!-- <input
                       v-model="bonusRes.rules.expire_days"
@@ -301,18 +300,17 @@
 
   import { asMixin, isFilled, isNumber, isNumeric, isInteger, isPosNumber, maxLen } from '@/utils/validate'
 
+  import BonusResBlockMixin from './BonusResBlockMixin.js'
+
   export default {
-    name: 'Basic',
+    name: 'BuyBonusSettings',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-     props:{
-      globalActive: {
-        type: Boolean,
-        required: true,
-      }
+    props: {
+
     },
-    mixins: [asMixin(isFilled)],
+    mixins: [asMixin(isFilled), BonusResBlockMixin],
     data () {
       return {
         inputShow: '',
@@ -625,6 +623,7 @@
         }
       },
       async saveChanges () {
+        console.log('saveChanges', this.$options.name)
         if (!this.validate()) return
 
         try {

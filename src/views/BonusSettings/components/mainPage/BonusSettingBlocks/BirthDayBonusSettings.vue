@@ -200,19 +200,17 @@
 
   import { asMixin, isFilled, isNumber, isNumeric, isInteger, isPosNumber, maxLen } from '@/utils/validate'
   import { EVENTS_ENUM, RESOURCE_TYPE_ENUM } from '@/models/enums'
+  import BonusResBlockMixin from './BonusResBlockMixin.js'
 
   export default {
-    name: 'Basic',
+    name: 'BirthDayBonusSettings',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-    mixins: [asMixin(isFilled)],
+    mixins: [asMixin(isFilled), BonusResBlockMixin],
     props: {
-      globalActive: {
-        type: Boolean,
-        required: true,
-      },
-    },    
+
+    },
     data () {
       return {
 
@@ -374,6 +372,7 @@
         }
       },
       async saveChanges () {
+        console.log('saveChanges', this.$options.name)
         if (!this.validate()) return
 
         try {
