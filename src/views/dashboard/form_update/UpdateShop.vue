@@ -11,7 +11,7 @@
     />
     <v-row>
       <v-col>
-        <div style="position: relative; height: 100%;">
+        <div style="position: relative; height: 100%; margin: -10px -35px;">
           <yandex-map
             id="map1"
             :settings="settings"

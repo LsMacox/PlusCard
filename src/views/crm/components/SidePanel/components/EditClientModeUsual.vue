@@ -66,7 +66,11 @@
         >
       </div>
     </div>
-    <bonus-account />
+    <div>
+      <bonus-account
+        :loading="loading"
+      />
+    </div>
     <div class="mode-usual__panel-btn">
       <v-btn class="panel-btn">
         <iconify-icon
@@ -111,12 +115,26 @@
       },
     },
     data () {
-      return {}
+      return {
+        loading: false,
+      }
+    },
+    async created () {
+      console.log(this.clientData)
+      await this.fetchData()
     },
     methods: {
       getLastActivity (date) {
         if (date) return 'Был(а) в сети ' + this.$moment.utc(date).local().format(this.$config.date.DATETIME_FORMAT_MIN2)
         return 'Был(а) в сети - '
+      },
+      async fetchData () {
+        try {
+          this.loading = true
+          await this.$store.dispatch('crm/clientCard/getAccountBalances', this.clientData)
+        } finally {
+          this.loading = false
+        }
       },
     },
   }

@@ -46,11 +46,11 @@ const actions = {
 
     async create ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
-        const result = await ApiService.post('/api-cabinet/merchant/account', item).catch(error => {
-            console.log('/api-cabinet/merchant/account/create error')
+        const result = await ApiService.post('/api-cabinet/crm/account', item).catch(error => {
+            console.log('/api-cabinet/crm/account/create error')
             console.log(error)
         })
-        console.log('/api-cabinet/merchant/account/create')
+        console.log('/api-cabinet/crm/account/create')
         console.log(result)
         commit('ADD', result)
     },
@@ -58,8 +58,8 @@ const actions = {
     async list ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.post('/api-cabinet/merchant/account/list2', item)
-            console.log('/api-cabinet/merchant/account/list2')
+            const result = await ApiService.post('/api-cabinet/crm/account/list2', item)
+            console.log('/api-cabinet/crm/account/list2')
             console.log(result)
             commit('SET_CLIENTS', result.items)
             commit('SET_TOTAL', result.total)
