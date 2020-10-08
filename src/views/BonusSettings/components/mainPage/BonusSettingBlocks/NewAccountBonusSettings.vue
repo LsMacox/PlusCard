@@ -133,7 +133,7 @@
         </div>
 
         <div
-          v-if="hasChanges"
+          v-if="hasChanges && bonusUnits.length > 0"
           class="save-currency"
         >
           <v-btn
@@ -169,6 +169,12 @@
     name: 'Basic',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
+    },
+    props:{
+      globalActive: {
+        type: Boolean,
+        required: true,
+      }
     },
     mixins: [asMixin(isFilled)],
     data () {
@@ -344,11 +350,13 @@
 
             const bonusRes = {
               program_id: this.programId,
+
               resource_type_enum: element.resource_type_enum,
               title: element.title,
               description: element.description,
               units_id: element.bonus_score.units_id,
               can_app_usage: element.can_app_usage,
+              active: this.globalActive,
               // max_value: element.max_value,
               // expire_at: element.expire_date,
               rules: element.rules,
