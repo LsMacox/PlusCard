@@ -230,13 +230,13 @@
           if (certData.LastVersion) {
             console.log('certData', certData)
             this.cert = Object.assign({}, certData, certData.LastVersion ) 
-             console.log('certData2', certData)
+            console.log('certData2', certData)
             this.cert.nominals = certData.nominals.map(x => x.LastVersion || x)
           } else {
             this.cert = certData
           }
-          Vue.set(this.cert, 'quantity_unlimit', this.quantity == null)
-          Vue.set(this.cert, 'guaranteed_period_unlimit', this.guaranteed_period == null)
+          Vue.set(this.cert, 'quantity_unlimit', this.cert.quantity == null)
+          Vue.set(this.cert, 'guaranteed_period_unlimit', this.cert.guaranteed_period == null)
           // for (let index = 0; index < this.cert.nominals.length; index++) {
           //   const element = array[index];
 
