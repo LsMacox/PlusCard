@@ -54,6 +54,18 @@
           md="6"
         >
           <program-certificate-card
+            v-if="ShowLastVersion && item.LastVersion"
+            :id="item.id"
+            :name="item.LastVersion.name"
+            :description="item.LastVersion.description"
+            :active.sync="item.active"
+            :nominals="item.nominals.map(x=> x.LastVersion || x)"
+            :moderation-status="item.moderation_status"
+            :moderation-active="item.moderation_active"
+            :program="program"
+          />
+          <program-certificate-card
+            v-else
             :id="item.id"
             :name="item.name"
             :description="item.short_description||item.description"
@@ -100,6 +112,7 @@
       return {
         search: '',
         GetCertListAction: false,
+        ShowLastVersion: true,
 
       }
     },

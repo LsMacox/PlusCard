@@ -111,7 +111,7 @@
         default: '#main',
       },
     },
-    constants: {     
+    constants: {
     },
     data () {
       return {
@@ -225,7 +225,16 @@
       async init () {
         try {
           this.GetCertAction = true
-          this.cert = await this.$store.dispatch('certificates/certificate/GetCert', this.certId)
+          const certData = await this.$store.dispatch('certificates/certificate/GetCert', this.certId)
+
+          if (certData.LastVersion) {
+            console.log('certData', certData)
+            this.cert = Object.assign({}, certData, certData.LastVersion ) 
+             console.log('certData2', certData)
+            this.cert.nominals = certData.nominals.map(x => x.LastVersion || x)
+          } else {
+            this.cert = certData
+          }
           Vue.set(this.cert, 'quantity_unlimit', this.quantity == null)
           Vue.set(this.cert, 'guaranteed_period_unlimit', this.guaranteed_period == null)
           // for (let index = 0; index < this.cert.nominals.length; index++) {
@@ -237,7 +246,7 @@
           }))
           Vue.set(this.cert, 'tags_list', this.cert.tags.map(item => {
             return item.name
-          }))          
+          }))
 
           this.originalCert = Object.copy(this.cert) // JSON.parse(JSON.stringify(this.cert) )
           console.log('cert=', this.cert)
