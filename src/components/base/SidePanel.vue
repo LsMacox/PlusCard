@@ -116,7 +116,7 @@
         }
     }
     .side-panel__navigation {
-        z-index: 9!important;
+      z-index: 9!important;
     }
 }
 

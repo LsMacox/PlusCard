@@ -18,6 +18,12 @@ export default {
             })
 
             Object.assign(state.segments[editDataIndex], payload)
+
+            this._vm.$notify({
+                type: 'success',
+                title: 'Сегменты',
+                text: 'Сегмент успешно обновлен',
+            })
         },
         segmentDeleteById (state, payload) {
             const deleteDataIndex = this._vm.$_.findIndex(state.segments, (o) => {
@@ -27,12 +33,24 @@ export default {
             console.log(deleteDataIndex)
             console.log('delete_DataIndex')
             state.segments.splice(deleteDataIndex, 1)
+
+            this._vm.$notify({
+                type: 'success',
+                title: 'Сегменты',
+                text: 'Сегмент успешно удален',
+            })
         },
         segmentCreate (state, payload) {
             console.log('mutation')
             console.log(payload)
             console.log('mutation')
             state.segments.push(payload)
+
+            this._vm.$notify({
+                type: 'success',
+                title: 'Сегменты',
+                text: 'Сегмент успешно создан',
+            })
         },
         loading (state, payload) {
             state.loading = payload
