@@ -1,6 +1,6 @@
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 @import "./components/_table-segment.scss";
-@import "./components/_empty-segment.scss";
+@import "./components/side_panels/side-panel-segment.scss";
 
 .b-segment {
     display: flex;

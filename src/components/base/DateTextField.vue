@@ -107,8 +107,10 @@
         document.addEventListener('click', (event) => {
           let isClose = true
           event.path.forEach((dom) => {
-            if (typeof dom.className !== 'undefined') {
-              if (dom.className.indexOf('date-text-field') > -1) isClose = false
+            if (dom.className !== undefined) {
+              if (String(dom.className).indexOf('date-text-field') > -1) {
+                isClose = false
+              }
             }
           })
           if (isClose) this.showDatePicker = false

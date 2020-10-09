@@ -81,6 +81,7 @@
       </template>
     </base-table>
     <side-panel-segment
+      v-if="sidePanelStatus.active"
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"
       :table-data="sidePanelStatus.data"
@@ -139,9 +140,6 @@
       },
     },
     created () {
-      // this.segmentsData = this.$store.getters['crm/segment/segments']
-    },
-    mounted () {
       this.fetchData()
     },
     methods: {
@@ -155,14 +153,13 @@
         this.sidePanelStatus.data = item
         this.sidePanelStatus.active = true
       },
-      fetchData () {
-        this.loadingList = true
-        const payload = {
-          program_id: this.program.id,
-        }
-
+      async fetchData () {
         try {
-          this.$store.dispatch('crm/segment/segments', payload)
+          this.loadingList = true
+          const payload = {
+            program_id: this.program.id,
+          }
+          await this.$store.dispatch('crm/segment/segments', payload)
         } finally {
           this.loadingList = false
         }
@@ -172,7 +169,5 @@
 </script>
 
 <style lang="scss">
-
-  @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
-
+@import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 </style>

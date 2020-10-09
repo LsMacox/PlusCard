@@ -27,7 +27,11 @@
 
       <v-tabs-items v-model="tab">
         <keep-alive>
-          <component :is="currentTabComponent" />
+          <component
+            :is="currentTabComponent"
+            ref="tabComp"
+            v-on="$listeners"
+          />
         </keep-alive>
       </v-tabs-items>
     </div>
@@ -58,6 +62,14 @@
         } else {
           return Advanced
         }
+      },
+    },
+    methods: {
+      openBonusUnitDialog (bonusUnit) {
+        this.$emit('bonus-unit-dialog', bonusUnit)
+      },
+      async save () {
+        await this.$refs.tabComp.save()
       },
     },
   }

@@ -27,7 +27,7 @@
     <div class="panel-crm__body panel-crm_edit_client__body">
       <mode-usual
         v-if="!mode"
-        :client-data="clientData"
+        :client-data="tableData"
       />
     </div>
   </side-panel>
@@ -52,22 +52,22 @@
       active: {
         type: Boolean,
       },
-      clientData: {
+      tableData: {
         type: Object,
         default: () => {
           return {
             id: '103112',
             gender: true,
-            date_of_birth: '10.03.1990',
+            birthday: '10.03.1990',
             city: 'Новокузнецк',
             name: 'Константин',
-            surname: 'Константинопольский',
-            online: '02.08.2020 04:32',
+            lastname: 'Константинопольский',
+            last_activity: '02.08.2020 04:32',
             phone: '79832525202',
             email: 'rs.bikeev@yandex.ru',
-            code: '1640000000145437',
+            barcode: '1640000000145437',
             card: '432156',
-            img_avatar: require('@/assets/png/custom/beardedman.png'),
+            avatar: require('@/assets/png/custom/beardedman.png'),
           }
         },
       },

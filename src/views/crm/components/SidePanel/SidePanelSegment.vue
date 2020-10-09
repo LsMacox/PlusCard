@@ -6,10 +6,10 @@
   >
     <div class="panel-crm__header panel-crm_segment__header">
       <h1 class="panel-crm__header-title panel-segment__title title-m-bold">
-        <template v-if="mode == 'create'">
+        <template v-if="mode === 'create'">
           Новый сегмент клиентов
         </template>
-        <template v-if="mode == 'edit'">
+        <template v-if="mode === 'edit'">
           Редактирование сегмента
         </template>
       </h1>
@@ -22,7 +22,7 @@
         <div class="panel-crm_segment__form-block">
           <div class="panel-crm_segment__form-labels">
             <p class="body-l-semibold">
-              Название сигмента
+              Название сегмента
             </p>
             <p class="labels__sub-label body-m-regular">
               Это название будет использоваться во всех
@@ -30,21 +30,21 @@
             </p>
           </div>
           <v-text-field
-            v-if="mode == 'create'"
+            v-if="mode === 'create'"
             v-model="createData.name"
             :rules="rules.name"
             class="panel-crm__form-input panel-crm_segment__form-input"
             type="text"
-            placeholder="Введите название сигмента"
+            placeholder="Введите название сегмента"
             outlined
           />
           <v-text-field
-            v-if="mode == 'edit'"
+            v-if="mode === 'edit'"
             v-model="editData.name"
             :rules="rules.name"
             class="panel-crm__form-input panel-crm_segment__form-input"
             type="text"
-            placeholder="Введите название сигмента"
+            placeholder="Введите название сегмента"
             outlined
           />
         </div>
@@ -59,7 +59,7 @@
           </div>
           <div class="panel-crm__form-textarea panel-crm_segment__form-textarea">
             <v-textarea
-              v-if="mode == 'create'"
+              v-if="mode === 'create'"
               v-model="createData.description"
               :rules="rules.description"
               class="panel-crm__form-input panel-crm_segment__form-input"
@@ -69,7 +69,7 @@
               auto-grow
             />
             <v-textarea
-              v-if="mode == 'edit'"
+              v-if="mode === 'edit'"
               v-model="editData.description"
               :rules="rules.description"
               class="panel-crm__form-input panel-crm_segment__form-input"
@@ -94,7 +94,7 @@
             >
               <div
                 class="labels__color-box"
-                :style="mode == 'create' ? `background: ${createData.color};` : `background: ${editData.color};`"
+                :style="mode === 'create' ? `background: ${createData.color};` : `background: ${editData.color};`"
                 @click="colorPickerShow = !colorPickerShow"
               />
               <div
@@ -102,7 +102,7 @@
                 class="colorPickerWrapper"
               >
                 <v-color-picker
-                  v-if="mode == 'create'"
+                  v-if="mode === 'create'"
                   v-model="createData.color"
                   class="color-picker pa-2"
                   hide-mode-switch
@@ -111,7 +111,7 @@
                   @input="changeColor"
                 />
                 <v-color-picker
-                  v-if="mode == 'edit'"
+                  v-if="mode === 'edit'"
                   v-model="editData.color"
                   class="color-picker pa-2"
                   hide-mode-switch
@@ -130,6 +130,7 @@
             v-if="btnCreateShow"
             class="panel-crm_segment__btn-create"
             color="primary"
+            :loading="loading"
             @click="addSegment"
           >
             <iconify-icon
@@ -137,15 +138,15 @@
               icon="check-circle"
               height="21"
             />
-            <template v-if="mode == 'create'">
+            <template v-if="mode === 'create'">
               Создать сегмент
             </template>
-            <template v-if="mode == 'edit'">
+            <template v-if="mode === 'edit'">
               Сохранить сегмент
             </template>
           </v-btn>
           <div
-            v-if="mode == 'edit'"
+            v-if="mode === 'edit'"
             class="panel-crm_segment__btn-delete"
             @click="deleteSegment"
           >
@@ -194,6 +195,8 @@
     },
     data () {
       return {
+        loading: false,
+        loadingDelete: false,
         state: this.active,
         colorPickerShow: false,
         createData: this.getDefaultCreateData(),
@@ -236,6 +239,17 @@
       mode () {
         if (this.mode === 'edit') this.btnCreateShow = true
       },
+      createData: {
+        handler: function (v) {
+          console.log(v)
+          if (v.name && v.description) {
+            this.btnCreateShow = true
+          } else {
+            this.btnCreateShow = false
+          }
+        },
+        deep: true,
+      },
     },
     created () {
       document.addEventListener('click', (event) => {
@@ -270,7 +284,6 @@
           ? Object.assign({}, this.tableData)
           : []
       },
-
       getDefaultCreateData () {
         return {
           name: '',
@@ -283,23 +296,32 @@
       },
       async addSegment () {
         const valid = this.$refs['panel-crm_segment__form'].validate()
-
         if (valid) {
-          if (this.mode === 'create') {
-            const payload = Object.assign({ program_id: this.program.id }, this.segmentData)
-            this.$store.dispatch('crm/segment/createSegment', payload)
-          } else if (this.mode === 'edit') {
-            this.$store.dispatch('crm/segment/editSegment', this.segmentData.data)
+          try {
+            this.loading = true
+            if (this.mode === 'create') {
+              const payload = Object.assign({ program_id: this.program.id }, this.segmentData)
+              await this.$store.dispatch('crm/segment/createSegment', payload)
+            } else if (this.mode === 'edit') {
+              await this.$store.dispatch('crm/segment/editSegment', this.segmentData.data)
+            }
+          } finally {
+            this.loading = false
+            this.state = false
           }
-          this.state = false
         }
       },
-      deleteSegment () {
-        const payload = {
-          segment_id: this.segmentData.id,
+      async deleteSegment () {
+        try {
+          this.loadingDelete = true
+          const payload = {
+            segment_id: this.segmentData.id,
+          }
+          await this.$store.dispatch('crm/segment/deleteSegment', payload)
+        } finally {
+          this.loadingDelete = false
+          this.state = false
         }
-        this.$store.dispatch('crm/segment/deleteSegment', payload)
-        this.state = false
       },
     },
   }

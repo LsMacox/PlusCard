@@ -48,6 +48,7 @@
             </div>
             <div
               v-for="(bonusRes, bonusResIndex) in buyBonusResSource"
+              v-else
               :key="bonusResIndex"
               class="select-input-accrual-bonuses"
             >
@@ -65,9 +66,9 @@
                   v-model="bonusRes.bonus_score.units_id"
                   :disabled="!bonusRes.isNew"
                   :bonus-unit-list="bonusUnits"
-                  :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+                  :error-message=" !!bonusRes.bonus_score.units_id || 'Выберите валюту' "
                   :show-error="showErrors"
-                  style="width:254px"
+                  class="bonus-unit-select"
                   v-on="$listeners"
                 />
 
@@ -108,7 +109,7 @@
                 style="min-height:calc(45px + 20px)"
               >
                 <v-col cols="auto">
-                  <base-switch
+                  <base-ext-switch
                     v-model="bonusRes.expire_days_unlimit"
                     :label="bonusRes.expire_days_unlimit ? 'Срок действия бонусов: без ограничений' : ' Срок действия бонусов:'"
 
@@ -119,19 +120,18 @@
                   <div class="container-input-count">
                     <div
                       class="small-circle-input"
-                      @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days > 1 ? bonusRes.rules.expire_days - 1 : 1"
+                      @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days > 1 ? +bonusRes.rules.expire_days - 1 : 1"
                     >
                       <img src="@/icons/svg/mines.svg">
                     </div>
-                     <base-text-field
-                    v-model.number="bonusRes.rules.expire_days"
-                    :rules="daysRules"
-                    :validation-placement="'top'"
-                    placeholder="X дней"
-                    class="percent-field"
-                    @input="(v) => { bonusRes.rules.expire_days = checkValidNum(v)}"
-                    validate-on-blur
-                  />
+                    <base-text-field
+                      v-model.number="bonusRes.rules.expire_days"
+                      :rules="daysRules"
+                      :validation-placement="'top'"
+                      placeholder="X дней"
+                      class="days-field"
+                      validate-on-blur
+                    />
                     <!-- <input
                       v-model="bonusRes.rules.expire_days"
                       class="input-bonuses input-sm-xl input-sm"
@@ -140,7 +140,7 @@
                     > -->
                     <div
                       class="small-circle-input"
-                      @click="bonusRes.rules.expire_days = bonusRes.rules.expire_days + 1"
+                      @click="bonusRes.rules.expire_days = +bonusRes.rules.expire_days + 1"
                     >
                       <img src="@/icons/svg/plus.svg">
                     </div>
@@ -152,7 +152,7 @@
                 align="center"
               >
                 <v-col>
-                  <base-switch
+                  <base-ext-switch
                     v-model="bonusRes.can_app_usage"
                     :label="'Разрешить использование менеджером'"
                   />
@@ -181,21 +181,17 @@
               </p>
             </div>
             <div
-              v-if="(dbBuyBonusRes.length === 0 && false) "
+              v-if="(bonusUnits.length === 0)"
               class="select-input-wrap"
             >
-              <input
-                type="text"
-                class="input-bonuses shopping-inp input-sm"
+              <base-text-field
+                disabled
                 placeholder="% от покупки"
-              >
-              <v-select
-                :items="items"
-                label="Выберите бонусную валюту"
-                dense
-                outlined
-                hide-details
-                class="select-md"
+                class="percent-field"
+              />
+              <bonus-unit-select
+                disabled
+                class="bonus-unit-select"
               />
             </div>
             <template v-else>
@@ -218,9 +214,9 @@
                     v-model="bonusRes.bonus_score.units_id"
                     :disabled="!bonusRes.isNew"
                     :bonus-unit-list="bonusUnits"
-                    :error-message=" isFilled(bonusRes.bonus_score.units_id) || 'Выберите валюту' "
+                    :error-message=" !!bonusRes.bonus_score.units_id || 'Выберите валюту' "
                     :show-error="showErrors"
-                    style="width:254px"
+                    class="bonus-unit-select"
                     v-on="$listeners"
                   />
 
@@ -260,7 +256,7 @@
                   align="center"
                 >
                   <v-col>
-                    <base-switch
+                    <base-ext-switch
                       v-model="bonusRes.can_app_usage"
                       :label="'Разрешить использование менеджером'"
                     />
@@ -272,7 +268,7 @@
         </div>
 
         <div
-          v-if="hasChanges && valid"
+          v-if="hasChanges && bonusUnits.length > 0"
           class="save-currency"
         >
           <v-btn
@@ -281,10 +277,6 @@
             :loading="saveChangesActive"
             @click="saveChanges"
           >
-            <!-- <img
-            src="@/icons/svg/checkmark-circle-outline.svg"
-            class="img-circle"
-          > -->
             <v-icon left>
               $iconify_ion-checkmark-circle-outline
             </v-icon>
@@ -306,14 +298,19 @@
   import { mapMutations, mapGetters } from 'vuex'
   import Vue from 'vue'
 
-  import { asMixin, isFilled, isNumber, isInteger, isPosNumber, maxLen } from '@/utils/validate'
+  import { asMixin, isFilled, isNumber, isNumeric, isInteger, isPosNumber, maxLen } from '@/utils/validate'
+
+  import BonusResBlockMixin from './BonusResBlockMixin.js'
 
   export default {
-    name: 'Basic',
+    name: 'BuyBonusSettings',
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-    mixins: [asMixin(isFilled)],
+    props: {
+
+    },
+    mixins: [asMixin('isFilled', isFilled), BonusResBlockMixin],
     data () {
       return {
         inputShow: '',
@@ -335,13 +332,14 @@
         saveChangesActive: false,
         percentRules: [
           (v) => isFilled(v) || 'Введите процент',
-          (v) => isNumber(v) || 'Должно быть числом',
+          (v) => isNumeric(v) || 'Должно быть числом',
           (v) => isPosNumber(v) || 'Должно быть положительным',
         ],
         daysRules: [
           (v) => isFilled(v) || 'Введите дни',
           (v) => isInteger(v) || 'Должно быть целым числом',
           (v) => isPosNumber(v) || 'Должно быть положительным',
+          (v) => v <= this.$config.MAX_DAYS || `Не более ${this.$config.MAX_DAYS}`,
         ],
         titleRules: [
           (v) => isFilled(v) || 'Введите название',
@@ -368,8 +366,6 @@
       buyBonusRes () {
         return this.buyBonusResInternal.map(item => {
           Vue.set(item, 'deleteAction', false)
-
-          
 
           Vue.set(item, 'expire_days_unlimit', item.rules && item.rules.expire_days == null)
 
@@ -622,11 +618,12 @@
             percent: bonusRes.rules.percent,
             expire_days: bonusRes.rules.expire_days || null,
           } : null,
-          expire_days_unlimit:  bonusRes.expire_days_unlimit || bonusRes.rules.expire_days == null
+          expire_days_unlimit: bonusRes.expire_days_unlimit || bonusRes.rules.expire_days == null,
 
         }
       },
       async saveChanges () {
+        console.log('saveChanges', this.$options.name)
         if (!this.validate()) return
 
         try {
@@ -650,6 +647,7 @@
               description: element.description,
               units_id: element.bonus_score.units_id,
               can_app_usage: element.can_app_usage,
+              active: this.globalActive,
               // max_value: element.max_value,
               // expire_at: element.expire_date,
               rules: element.rules,
@@ -657,7 +655,6 @@
 
             if (element.isNew) {
               // Create
-
               await this.$store.dispatch('company/bonus_resources/CreateBonusRes', {
                 bonusRes,
                 silent: false,
@@ -665,7 +662,6 @@
             } else {
               // Update
               bonusRes.id = element.id
-
               await this.$store.dispatch('company/bonus_resources/UpdateBonusRes', {
                 bonusRes,
                 silent: false,
@@ -706,163 +702,7 @@
 </script>
 
 <style scoped lang="scss">
-.percent-field {
-  max-width: 154px;
-  width: 100%;
-  margin-right: 12px;
-}
-//-----
-  .time-bonuses {
-    height: 46px;
-  }
-  .list-own-padding {
-    padding: 0;
-  }
-  .save-currency {
-    padding: 34px 88px;
-    border-top: 1px solid #E8E8ED;
-  }
-  .tab-basic {
-    margin-bottom: 12px;
-    border: 1px solid #F2F2F7;
-    box-sizing: border-box;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1);
-  }
-  .title-basic {
-    display: flex;
-    align-items: center;
-    .img-bag {
-      margin-right: 22px;
-    }
-  }
-  .small-circle-input {
-    width: 20px;
-    height: 20px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    justify-content: center;
-  }
-  .small-circle-input:first-child {
-    // margin-left: 20px;
-  }
-  .container-input-count {
-    display: flex;
-    align-items: center;
-  }
-  .container-input-counter {
-    display: flex;
-    align-items: center;
-  }
-  .input-big-name {
-    margin-top: 12px;
-  }
-  .mess-wrap {
-    display: flex;
-    padding: 34px 30px;
-    border-bottom: 1px solid #E8E8ED;
-  }
-  .wrap-circle {
-    display: flex;
-    align-items: center;
-    margin-left: 20px;
-  }
-  .simple-circle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #EBF1FF;
-    border-radius: 16px;
-    width: 32px;
-    height: 32px;
-    cursor: pointer;
-  }
-  .mines-right {
-    margin-right: 12px;
-  }
-  .magazine-wrap {
-    padding: 34px 30px;
-    display: flex;
-  }
-  .step {
-    margin-right: 30px;
-    font-size: 15px;
-    color: #4776E6;
-    line-height: 21px;
-    width: 50px;
-    height: 30px;
-    border-radius: 20px;
-    border: 1px solid #EBF1FF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .shopping-inp {
-    margin-right: 12px;
-  }
-  .plus-circle {
-    margin-right: 10px;
-  }
-  .select-input-wrap {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-  }
-  .wrap-input {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-  }
-  .disabled-block {
-    pointer-events: none;
-    opacity: 0.4;
-  }
-  .custom-drop-down {
-    border: 1px solid #D7D7E0;
-    max-width: 254px;
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .custom-drop-down:focus {
-    outline: none;
-  }
-  .hide-img {
-    display: none;
-  }
-  .border-bottom-not-round {
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .item-select {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .v-list-item:hover {
-    background: #EBF1FF;
-    color: #2A2A34;
-  }
-  .btn-inside-select {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 14px;
-    border-top: 1px solid #E8E8ED;
-    cursor: pointer;
-    color: #4776E6;
-  }
-  .btn-inside-select img {
-    margin-right: 6px;
-  }
-  .first-step-switch {
-    display: flex;
-    align-items: center;
-  }
+// @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import '_BlockStyle.scss';
+
 </style>
