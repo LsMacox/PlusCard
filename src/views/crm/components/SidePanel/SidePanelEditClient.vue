@@ -78,7 +78,11 @@
         state: this.active,
       }
     },
-    computed: {},
+    computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+    },
     watch: {
       active () {
         this.state = this.active
@@ -87,11 +91,19 @@
         this.$emit('changeState', this.state)
       },
     },
-    created () {
-    },
-    mounted () {
+    async created () {
+      await this.fetchData()
     },
     methods: {
+      async fetchData () {
+        try {
+          this.$store.commit('crm/clientCard/SET_LOADING', true)
+          await this.$store.dispatch('company/bonus_resources/GetList', this.program.id)
+          await this.$store.dispatch('crm/clientCard/getAccountBalances', this.tableData)
+        } finally {
+          this.$store.commit('crm/clientCard/SET_LOADING', false)
+        }
+      },
     },
   }
 </script>

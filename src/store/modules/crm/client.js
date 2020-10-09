@@ -53,6 +53,12 @@ const actions = {
         console.log('/api-cabinet/crm/account/create')
         console.log(result)
         commit('ADD', result)
+
+        this._vm.$notify({
+            type: 'success',
+            title: 'Клиенты',
+            text: 'Клиент успешно создан',
+        })
     },
 
     async list ({ commit }, item) {
