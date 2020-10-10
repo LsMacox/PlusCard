@@ -72,7 +72,10 @@ export function uppercaseFirst (string) {
  * @param {Number} num
  */
 export function spacesBetweenNumbers (num) {
-  var n = num.toString()
-  var separator = ' '
-  return n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, '$1' + separator)
+  if (num) {
+    var n = num.toString()
+    var separator = ' '
+    return n.replace(/(\d{1,3}(?=(?:\d\d\d)+(?!\d)))/g, '$1' + separator)
+  }
+  return null
 }

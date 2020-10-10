@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <v-container>
     <v-skeleton-loader
       boilerplate
       type="card-avatar, article, actions"
     />
-  </div>
+  </v-container>
 </template>
 <script>
   export default {

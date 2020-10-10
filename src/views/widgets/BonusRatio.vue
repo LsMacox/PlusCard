@@ -17,9 +17,7 @@
     props: {
       widgetData: {
         type: Object,
-        default: () => {
-          return {}
-        },
+        default: () => {},
       },
     },
     data () {

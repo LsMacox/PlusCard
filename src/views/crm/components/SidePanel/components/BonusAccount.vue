@@ -5,211 +5,296 @@
         Бонусные счета
       </p>
     </div>
-    <div class="bonus-accounts__cards">
+    <div
+      v-if="loading"
+    >
+      <v-skeleton-loader
+        type="table-tfoot"
+      />
+      <v-skeleton-loader
+        type="table-tfoot"
+      />
+    </div>
+    <div
+      v-else
+      class="bonus-accounts__cards"
+    >
       <div
-        v-for="category in categories"
-        :key="category.title"
+        v-for="(item, i) in accountBalances"
+        :key="i"
         class="bonus-accounts__card"
       >
         <div class="card__header">
           <p class="card__header-title body-l-semibold">
-            {{ category.title }}
+            {{ item.name }}
           </p>
           <p class="card__header-count title-m-bold success--text">
-            <span>{{ category.count | spacesBetweenNumbers }}</span>
+            <span>{{ item.balance | spacesBetweenNumbers }}</span>
             <span
-              v-if="category.of != undefined"
+              v-if="item.of != undefined"
               class="neutral-400--text"
-            >/{{ category.of }}</span>
+            >/{{ item.of }}</span>
           </p>
           <div class="card__header-control">
+            <!-- списание/отмена -->
+            <!-- блокируем операцию если нет ручного бонусного ресурса -->
             <v-btn
+              v-if="editedItem.unit_id !== item.unit_id"
               class="control-btn"
               color="primary-100"
-              @click="!category.menuShow ? menuOperation(category, 'writeOff') : menuClose(category.id)"
+              :disabled="!isManual(item, 'TYPE_TARGET') || !valid"
+              @click="menuOperation(item, 'FROM')"
             >
               <iconify-icon
-                :icon="!category.menuShow ? 'feather-minus' : 'jam-close'"
+                icon="feather-minus"
                 width="15"
               />
             </v-btn>
             <v-btn
+              v-else
               class="control-btn"
-              :class="{active: category.menuShow}"
               color="primary-100"
-              @click="!category.menuShow ? menuOperation(category, 'charge') : menuSave(category)"
+              @click="menuClose()"
             >
               <iconify-icon
-                :icon="!category.menuShow ? 'eva-plus-outline' : 'octicon-check-16'"
+                icon="jam-close"
+                width="15"
+              />
+            </v-btn>
+
+            <!-- начисление/подтверждение -->
+            <!-- блокируем операцию если нет ручного бонусного ресурса -->
+            <v-btn
+              v-if="editedItem.unit_id !== item.unit_id"
+              class="control-btn"
+              color="primary-100"
+              :disabled="!isManual(item, 'TYPE_SOURCE') || !valid"
+              @click="menuOperation(item, 'TO')"
+            >
+              <iconify-icon
+                icon="eva-plus-outline"
+                width="15"
+              />
+            </v-btn>
+            <v-btn
+              v-else
+              class="control-btn active"
+              color="primary-100"
+              :loading="loadingOperation"
+              @click="processing()"
+            >
+              <iconify-icon
+                icon="octicon-check-16"
                 width="15"
               />
             </v-btn>
           </div>
         </div>
         <div
-          v-if="category.menuShow"
+          v-if="editedItem.unit_id === item.unit_id"
           class="card__body"
         >
           <div class="card__body-form">
-            <base-select
-              v-if="category.mode == 'charge'"
-              v-model="chargeData.selectedItem"
-              class="card__body-select"
-              :items="chargeData.listItems"
-            />
-            <div class="card__body-group">
-              <v-text-field
-                v-model="generalData.sum"
-                v-mask="getMask(category.mode)"
-                class="panel-crm__form-input card__body-input"
-                type="text"
-                :placeholder="category.mode == 'writeOff' ? 'Списать:' : 'Начислить:'"
-                outlined
-                hide-details
-              />
-              <v-text-field
-                v-if="category.mode == 'charge'"
-                v-model="chargeData.acts"
-                v-mask="'Действуют: ###'"
-                class="panel-crm__form-input card__body-input"
-                type="text"
-                placeholder="Дейсвуют (дней)"
-                outlined
-                hide-details
-              />
-            </div>
-            <div
-              class="panel-crm__form-textarea"
-              style="margin-bottom: 20px"
+            <v-form
+              v-model="valid"
             >
-              <v-textarea
-                v-model="generalData.description"
-                class="panel-crm__form-input card__body-input"
-                rows="4"
-                placeholder="Введите комментарий (необязательно)"
-                outlined
-                auto-grow
-                hide-details
-              />
-              <div class="textarea---angle" />
-            </div>
+              <div class="card__body-select">
+                <v-select
+                  v-if="availableOperations.length > 1"
+                  v-model="selectedBonusResourceId"
+                  :items="availableOperations"
+                  item-text="title"
+                  item-value="score_id"
+                  placeholder="Выберите операцию"
+                  outlined
+                  :ripple="false"
+                >
+                  <template v-slot:item="data">
+                    <div style="display: flex; align-items: center;">
+                      <div
+                        v-if="data.attrs.inputValue"
+                        :key="data.item.text + 'active'"
+                        class="active"
+                      >
+                        <span
+                          class="iconify"
+                          data-icon="eva:checkmark-square-2-fill"
+                          data-inline="false"
+                        />
+                      </div>
+                      <div
+                        v-else
+                        :key="data.item.text + 'inactive'"
+                        class="inactive"
+                      >
+                        <span
+                          class="iconify"
+                          data-icon="eva:square-outline"
+                          data-inline="false"
+                        />
+                      </div>
+                      <span>{{ data.item.text + ' ' + data.attrs.inputValue }}</span>
+                    </div>
+                  </template>
+                </v-select>
+              </div>
+              <div class="card__body-group">
+                <v-text-field
+                  v-model="operation.value"
+                  v-mask="getMask(operationMode)"
+                  class="panel-crm__form-input card__body-input"
+                  type="text"
+                  :placeholder="operationMode === 'FROM' ? 'Списать:' : 'Начислить:'"
+                  outlined
+                  hide-details
+                />
+                <v-text-field
+                  v-if="operationMode === 'TO'"
+                  v-model="operation.expired_days"
+                  v-mask="'Действуют: ###'"
+                  class="panel-crm__form-input card__body-input"
+                  type="text"
+                  placeholder="Дейсвуют (дней)"
+                  outlined
+                  hide-details
+                />
+              </div>
+              <div
+                class="panel-crm__form-textarea"
+                style="margin-bottom: 20px"
+              >
+                <v-textarea
+                  v-model="operation.comment"
+                  class="panel-crm__form-input card__body-input"
+                  rows="4"
+                  placeholder="Введите комментарий (необязательно)"
+                  outlined
+                  auto-grow
+                  hide-details
+                  :rules="[
+                    v => String(v).length <= 255 || 'Комментарий должен быть не более 255 символов'
+                  ]"
+                />
+                <div class="textarea---angle" />
+              </div>
+            </v-form>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      v-if="success.active"
-      class="bonus-accounts__success"
-      :class="success.mode ? 'success--text' : 'error--text'"
-    >
-      <iconify-icon
-        class="icon-success"
-        :icon="success.mode ? 'octicon-check-circle-fill' : 'jam-close-fill'"
-        width="21"
-      />
-      <p class="body-s-semibold">
-        {{ success.mode ? 'Начислено ' : 'Списано ' }}{{ Number(success.data) }} бонусных рублей
-      </p>
     </div>
   </div>
 </template>
 
 <script>
-  import BaseSelect from '@/components/base/BaseSelect'
   import { mask } from 'vue-the-mask'
 
   export default {
     directives: { mask },
-    components: { BaseSelect },
+    // components: { vueSelect },
+    props: {
+      clientData: {
+        type: Object,
+        default: () => {},
+      },
+    },
     data () {
       return {
-        generalData: this.getDefaultGeneralData(),
-        chargeData: this.getDefaultChartData(),
-        success: {
-          active: false,
-          mode: true,
-          data: null,
+        valid: true,
+        loadingOperation: false,
+        editedItem: {},
+        operationMode: null,
+        selectedBonusResourceId: null,
+        operation: {
+          value: null,
+          expired_days: null,
+          comment: null,
         },
-        categories: [
-          {
-            id: 1,
-            title: 'Бонусные рубли',
-            count: 1364,
-            menuShow: false,
-            mode: 'writeOff', // charge
-          },
-          {
-            id: 2,
-            title: 'Бонусы',
-            count: 1993,
-            menuShow: false,
-            mode: 'writeOff', // charge
-          },
-          {
-            id: 3,
-            title: 'Чашки кофе',
-            count: 4,
-            of: 10,
-            menuShow: false,
-            mode: 'writeOff', // charge
-          },
-        ],
       }
     },
-    watch: {},
+    computed: {
+      loading () {
+        return this.$store.getters['crm/clientCard/loading']
+      },
+      bonusResources () {
+        return this.$store.getters['company/bonus_resources/bonusResources']
+      },
+      availableOperations () { // доступные ручные бонусные ресурсы
+        let type = null
+        if (this.operationMode === 'FROM') type = 'TYPE_TARGET'
+        if (this.operationMode === 'TO') type = 'TYPE_SOURCE'
+        return this.bonusResources.filter(item => (item.bonus_score.units_id == this.editedItem.unit_id && item.resource_type_enum == type && !item.rules))
+      },
+      accountBalances () {
+        const result = this.$store.getters['crm/clientCard/accountBalances']
+        result.forEach(item => {
+          if (!item.max_value) {
+            item.icon = null
+          }
+        })
+        return result
+      },
+    },
     methods: {
       getMask (mode) {
-        return mode === 'writeOff' ? 'Списать: ###########' : 'Начислить: ###########'
+        return mode === 'FROM' ? 'Списать: ###########' : 'Начислить: ###########'
       },
-      getCategoryIndexById (id) {
-        return this.$_.findIndex(this.categories, (category) => { return category.id === id })
+      isManual (unit, type) {
+        const res = this.bonusResources.find(item => (item.bonus_score.units_id == unit.unit_id && item.resource_type_enum == type && !item.rules))
+        if (res) return true
+        return false
       },
-      menuOperation (category, mode) {
-        const categoryIndex = this.getCategoryIndexById(category.id)
-
-        this.categories[categoryIndex].mode = mode
-        this.categories[categoryIndex].menuShow = true
-      },
-      menuClose (id) {
-        this.clearData()
-        this.categories[this.getCategoryIndexById(id)].menuShow = false
-      },
-      getDefaultChartData () {
-        return {
-          listItems: [{ id: 1, title: 'a' }, { id: 2, title: 'b' }, { id: 3, title: 'c' }],
-          selectedItem: null,
-          acts: null,
+      menuOperation (item, operation) {
+        this.operationMode = operation
+        this.editedItem = item
+        if (this.availableOperations.length === 1) {
+          this.selectedBonusResourceId = this.availableOperations[0].score_id
         }
       },
-      getDefaultGeneralData () {
-        return {
-          sum: null,
-          description: '',
+      menuClose () {
+        this.operationMode = null
+        this.selectedBonusResourceId = null
+        this.operation = {
+          value: null,
+          expired_days: null,
+          comment: null,
         }
+        this.valid = true
+        this.editedItem = {}
       },
-      clearData () {
-        this.chargeData = this.getDefaultChartData()
-        this.generalData = this.getDefaultGeneralData()
+      clearValue (v) {
+        v = String(v).replace('Списать: ', '')
+        v = v.replace('Начислить: ', '')
+        return Number(v)
       },
-      showSuccess (sum, mode) {
-        this.success.active = true
-        this.success.mode = mode
-        this.success.data = sum
+      clearDays (v) {
+        v = String(v).replace('Действуют: ', '')
+        return Number(v)
       },
-      menuSave (category) {
-        // === Data === //
-        const sum = this.generalData.sum.replace(/[^\d]+/, '')
-        // const description = this.generalData.description
-        if (category.mode === 'charge') {
-          this.showSuccess(sum, true)
-        //   const acts = this.chargeData.acts.replace(/[^\d]+/, '')
-        //   const operation = this.chargeData.selectedItem
-        } else {
-          this.showSuccess(sum, false)
+      async processing () {
+        try {
+          this.loadingOperation = true
+          const operation = {
+            account_id: this.clientData.id,
+            direction: this.operationMode,
+            value: this.clearValue(this.operation.value),
+            expired_days: this.clearDays(this.operation.expired_days),
+            comment: this.operation.comment,
+          }
+          if (this.operationMode === 'FROM') operation.score_target_id = this.selectedBonusResourceId
+          if (this.operationMode === 'TO') operation.score_source_id = this.selectedBonusResourceId
+          console.log('processing')
+          console.log(operation)
+          await this.$store.dispatch('crm/clientCard/transactionsAdd', operation)
+          await this.$store.dispatch('crm/clientCard/getAccountBalances', this.clientData) // обнвление баланса
+          this.$notify({
+            type: 'success',
+            title: 'Клиенты',
+            text: 'Бонусная операция успешно проведена',
+          })
+          this.menuClose()
+        } finally {
+          this.loadingOperation = false
         }
-        // === Data === //
-        this.clearData()
-        category.menuShow = false
       },
     },
   }

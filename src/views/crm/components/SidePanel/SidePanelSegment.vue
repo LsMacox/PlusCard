@@ -130,6 +130,7 @@
             v-if="btnCreateShow"
             class="panel-crm_segment__btn-create"
             color="primary"
+            :loading="loading"
             @click="addSegment"
           >
             <iconify-icon
@@ -194,6 +195,8 @@
     },
     data () {
       return {
+        loading: false,
+        loadingDelete: false,
         state: this.active,
         colorPickerShow: false,
         createData: this.getDefaultCreateData(),
@@ -235,6 +238,17 @@
       },
       mode () {
         if (this.mode === 'edit') this.btnCreateShow = true
+      },
+      createData: {
+        handler: function (v) {
+          console.log(v)
+          if (v.name && v.description) {
+            this.btnCreateShow = true
+          } else {
+            this.btnCreateShow = false
+          }
+        },
+        deep: true,
       },
     },
     created () {
@@ -282,23 +296,32 @@
       },
       async addSegment () {
         const valid = this.$refs['panel-crm_segment__form'].validate()
-
         if (valid) {
-          if (this.mode === 'create') {
-            const payload = Object.assign({ program_id: this.program.id }, this.segmentData)
-            this.$store.dispatch('crm/segment/createSegment', payload)
-          } else if (this.mode === 'edit') {
-            this.$store.dispatch('crm/segment/editSegment', this.segmentData.data)
+          try {
+            this.loading = true
+            if (this.mode === 'create') {
+              const payload = Object.assign({ program_id: this.program.id }, this.segmentData)
+              await this.$store.dispatch('crm/segment/createSegment', payload)
+            } else if (this.mode === 'edit') {
+              await this.$store.dispatch('crm/segment/editSegment', this.segmentData.data)
+            }
+          } finally {
+            this.loading = false
+            this.state = false
           }
-          this.state = false
         }
       },
-      deleteSegment () {
-        const payload = {
-          segment_id: this.segmentData.id,
+      async deleteSegment () {
+        try {
+          this.loadingDelete = true
+          const payload = {
+            segment_id: this.segmentData.id,
+          }
+          await this.$store.dispatch('crm/segment/deleteSegment', payload)
+        } finally {
+          this.loadingDelete = false
+          this.state = false
         }
-        this.$store.dispatch('crm/segment/deleteSegment', payload)
-        this.state = false
       },
     },
   }
