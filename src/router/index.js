@@ -198,12 +198,6 @@ export default new Router({
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },
         {
-          path: '/account/setting',
-          component: () => import('@/views/setting/index.vue'),
-          name: 'UserCertificates',
-          meta: { title: 'Certificates', icon: 'certificates' },
-        },
-        {
           path: '/program/certificate/list',
           component: () => import('@/views/certificate/ProgramCertificateView.vue'),
           name: 'ProgramCertificateList',
@@ -227,15 +221,9 @@ export default new Router({
           name: 'ProgramCertificateMaster',
           meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
         },
-        // {
-        //   path: '/account/certificates',
-        //   component: () => import('@/views/account/certificate/table/index'),
-        //   name: 'UserCertificates',
-        //   meta: { title: 'Certificates', icon: 'certificates' },
-        // },
         {
           path: '/account/certificates',
-          component: () => import('@/views/certificate/settingRequisites/index.vue'),
+          component: () => import('@/views/account/certificate/table/index'),
           name: 'UserCertificates',
           meta: { title: 'Certificates', icon: 'certificates' },
         },
@@ -253,15 +241,36 @@ export default new Router({
         },
         {
           path: 'settings',
-          component: () => import('@/views/settings/ProgramSettings.vue'),
+          component: () => import('@/views/settings/index'),
           name: 'Settings',
+          redirect: 'settings/menu',
           meta: { auth: true, title: 'Settings', icon: 'dashboard' },
-        },
-        {
-          path: 'staff',
-          component: () => import('@/views/settings/staff/index'),
-          name: 'CompanySettingsStaff',
-          meta: { auth: true },
+          children: [
+            {
+              path: 'menu',
+              component: () => import('@/views/settings/ProgramSettings.vue'),
+              name: 'SettingsMenu',
+              meta: { auth: true },
+            },
+            {
+              path: 'requisites',
+              component: () => import('@/views/settings/requisites/index'),
+              name: 'SettingsRequisites',
+              meta: { auth: true },
+            },
+            {
+              path: 'staff',
+              component: () => import('@/views/settings/staff/index'),
+              name: 'SettingsStaff',
+              meta: { auth: true },
+            },
+            {
+              path: 'integration',
+              component: () => import('@/views/settings/integration/index'),
+              name: 'SettingsIntegration',
+              meta: { auth: true },
+            },
+          ],
         },
         {
           path: 'help',
