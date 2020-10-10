@@ -1,70 +1,48 @@
 <template>
   <div>
-    <div class="mode-usual__contacts">
-      <div class="contacts__block-right">
-        <div class="contacts-full_name">
-          <p class="title-m-bold">
-            {{ clientData.name || '-' }}
+    <div class="mode-usual__contacts-info">
+      <ul class="contacts-info__list">
+        <li class="contacts-info__item">
+          <iconify-icon
+            class="info__item-icon"
+            icon="ion-phone-portrait-outline"
+            width="21"
+          />
+          <p class="body-m-medium neutral-700--text">
+            {{ clientData.phone || '-' }}
           </p>
-          <p class="title-m-bold">
-            {{ clientData.lastname || '-' }}
+        </li>
+        <li class="contacts-info__item">
+          <iconify-icon
+            class="info__item-icon"
+            icon="ion-mail-outline"
+            width="21"
+          />
+          <p class="body-m-medium neutral-700--text">
+            {{ clientData.email || '-' }}
           </p>
-        </div>
-        <div class="contacts-online">
-          <p class="body-s-semibold neutral-600--text">
-            {{ getLastActivity(clientData.last_activity) }}
+        </li>
+        <li class="contacts-info__item">
+          <iconify-icon
+            class="info__item-icon"
+            icon="ion-barcode-outline"
+            width="21"
+          />
+          <p class="body-m-medium neutral-700--text">
+            {{ clientData.barcode || '-' }}
           </p>
-        </div>
-        <div class="contacts-info">
-          <ul class="contacts-info__list">
-            <li class="contacts-info__item">
-              <iconify-icon
-                class="info__item-icon"
-                icon="ion-phone-portrait-outline"
-                width="21"
-              />
-              <p class="body-m-medium neutral-700--text">
-                {{ clientData.phone || '-' }}
-              </p>
-            </li>
-            <li class="contacts-info__item">
-              <iconify-icon
-                class="info__item-icon"
-                icon="ion-mail-outline"
-                width="21"
-              />
-              <p class="body-m-medium neutral-700--text">
-                {{ clientData.email || '-' }}
-              </p>
-            </li>
-            <li class="contacts-info__item">
-              <iconify-icon
-                class="info__item-icon"
-                icon="ion-barcode-outline"
-                width="21"
-              />
-              <p class="body-m-medium neutral-700--text">
-                {{ clientData.barcode || '-' }}
-              </p>
-            </li>
-            <li class="contacts-info__item">
-              <iconify-icon
-                class="info__item-icon"
-                icon="feather-credit-card"
-                width="21"
-              />
-              <p class="body-m-medium neutral-700--text">
-                {{ clientData.id || '-' }}
-              </p>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div class="contacts__block-left">
-        <img
-          :src="[clientData.avatar || '']"
-        >
-      </div>
+        </li>
+        <li class="contacts-info__item">
+          <iconify-icon
+            class="info__item-icon"
+            icon="feather-credit-card"
+            width="21"
+          />
+          <p class="body-m-medium neutral-700--text">
+            {{ clientData.id || '-' }}
+          </p>
+        </li>
+      </ul>
     </div>
     <div>
       <bonus-account
