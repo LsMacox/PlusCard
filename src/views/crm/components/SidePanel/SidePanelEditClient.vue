@@ -183,6 +183,9 @@
         this.$emit('changeState', this.state)
       },
     },
+    async created () {
+      await this.fetchData()
+    },
     mounted () {
       this.$refs['panel-crm_edit_client'].$el.querySelector('.v-navigation-drawer__content').addEventListener('scroll', (e) => {
         if (e.srcElement.scrollTop > 10) {
@@ -191,8 +194,6 @@
           this.$refs['panel-crm_edit_client__header'].style.boxShadow = 'none'
         }
       })
-    async created () {
-      await this.fetchData()
     },
     methods: {
       getLastActivity (date) {
