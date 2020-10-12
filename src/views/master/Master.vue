@@ -1029,14 +1029,14 @@ line-height: 17px;"
                 align="center"
                 justify="center"
               >
-                <div
-                  style="margin-top:2.4rem; text-align:center; color: #70707D"
-                  class="body-m-regular"
+                <v-col
+                  :cols="12"
+                  style="margin-top: 24px;"
                 >
                   <v-btn
                     color="secondary"
-                    style="width: 335px; margin-bottom: 16px"
-                    @click="$router.push('/master')"
+                    style="display: block; width: 335px; margin: 0 auto;"
+                    @click="$router.push('/account/certificates')"
                   >
                     <span
                       class="iconify"
@@ -1045,10 +1045,14 @@ line-height: 17px;"
                     />
                     Выпустить подарочный сертификат
                   </v-btn>
+                </v-col>
+                <v-col
+                  :cols="12"
+                >
                   <v-btn
                     color="primary"
-                    style="width: 335px"
-                    @click="$router.push('/master')"
+                    style="display: block; width: 335px; margin: -4px auto;"
+                    @click="$router.push('/loyalty')"
                   >
                     <span
                       class="iconify"
@@ -1057,7 +1061,7 @@ line-height: 17px;"
                     />
                     Создать программу лояльности
                   </v-btn>
-                </div>
+                </v-col>
               </v-row>
             </v-col>
           </v-row>
