@@ -1621,19 +1621,19 @@ line-height: 17px;"
           .toString(16)
       },
       changeColor (str) {
-        console.log('changeColor' ,str)
+        console.log('changeColor', str)
         const color = Color(str)
-        console.log('changeColor' , color.rgb().array())
+        console.log('changeColor', color.rgb().array())
         let alpha, mask
         if (color.isLight()) {
-          console.log('isLight' )
+          console.log('isLight')
           alpha = 0.04
           mask = 0
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#2A2A34'
         // //console.log('color', this.program.bgcolor[1])
         } else {
-          console.log('!isLight' )
+          console.log('!isLight')
           alpha = 0.1
           mask = 255
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
@@ -1727,7 +1727,6 @@ line-height: 17px;"
 <style lang="sass" scoped>
 @import '~@/styles/vuetify-preset-plus/light_theme/_variables.sass'
 #master
-  height: 100%
 
   .app-bar
     min-height: 100px
@@ -1763,10 +1762,9 @@ line-height: 17px;"
       background-color: #F2F2F7
 
   .content-wrapper
-    height: calc(100% - 100px)
+    margin: 67px -34px 0 -34px
 
     .content-firstStep, .content-secondStep, .content-thirdStep
-      height: 100%
 
       .row
         height: 100%
@@ -1949,13 +1947,12 @@ line-height: 17px;"
 .shop-block
   display: flex
   flex-direction: row
-  height: calc(100vh - 100px)
   @media(max-width: 992px)
     flex-direction: column
     // overflow-y: scroll
 
   .shop-block__left
-    position: fixed
+    width: 50%
     // top: 0px
     @media(max-width: 992px)
       position: relative
@@ -1963,24 +1960,26 @@ line-height: 17px;"
       justify-content: center
 
     .map
+      position: fixed
+      width: 40%
       height: calc(100vh - 100px)
-      width: 523px
+      //width: 523px
       margin: 0
       padding: 0
       @media (max-width: 776px)
         height: calc(30vh)
 
   .shop-block__right
-    margin-left: 523px
+    width: 50%
     display: flex
     flex-grow: 1
     justify-content: center
-    padding: 68px 0
+    padding: 68px 0 0 0
     // overflow-y: scroll
     @media(max-width: 992px)
       // overflow-y: visible
       // margin-top: 827px
-      margin-left: 0px
+      margin-left: 0
 
     .content-block
       &__title
