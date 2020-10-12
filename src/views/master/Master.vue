@@ -469,6 +469,7 @@
                       v-model="newShop.name"
                       class="shop-card__name_input"
                       placeholder="Введите название точки"
+                      outlined
                       :rules="[
                         v => !!v || 'Название точки продаж обязательно',
                         v => String(v).length <= 250 || 'Название должно быть не более 250 символов',
@@ -482,6 +483,7 @@
                       :search-input.sync="searchCity"
                       hide-details
                       hide-no-data
+                      outlined
                       placeholder="Выберите город"
                       class="shop-card__city_select"
                       style="width: 380px;"
@@ -548,6 +550,7 @@
                       :search-input.sync="searchString"
                       hide-details
                       hide-no-data
+                      outlined
                       placeholder="Введите адрес"
                       class="shop-card__city_select"
                       style="width: 380px"
@@ -1454,10 +1457,13 @@ line-height: 17px;"
           program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
           program.shops = this.shops
           program.merchant_id = this.merchant_id
-          await ApiService.post(
+          const result = await ApiService.post(
             '/api-cabinet/company/create',
             program,
           )
+          console.log(result)
+          this.$store.commit('ADD_IN_PROGRAMS', result)
+          this.$store.commit('SET_PROGRAM', result)
           this.currentStep = 4
         } finally {
           this.loading = false
