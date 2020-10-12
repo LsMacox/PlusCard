@@ -101,7 +101,7 @@
         visible1: false,
         phoneRules: [
           v => (!!v && v.length === 18) || 'Телефон обязателен',
-          v => (!!v && /^(\+7|7|8)+\ \(\d{3}\)\ \d{3}\-\d{2}\-\d{2}$/.test(v) ) || 'Не верный формат телефона',
+          v => (!!v && /^(\+7|7|8)+\ \(\d{3}\)\ \d{3}\-\d{2}\-\d{2}$/.test(v)) || 'Не верный формат телефона',
         ],
         loading: false,
         selectMerchant: false,
@@ -118,7 +118,7 @@
       this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
-       toRoute (path) {
+      toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
       toConfirm (phone) {
@@ -136,8 +136,7 @@
         return p
       },
       async login () {
-
-        console.log("<login>")
+        console.log('<login>')
 
         if (!this.$refs.form.validate()) return
 

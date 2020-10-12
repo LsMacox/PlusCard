@@ -3,8 +3,14 @@
     <div class="card-shadow" />
     <div
       class="card-block"
-      :style="'background: linear-gradient(109deg,'+ program.bgcolor1 + ' 0% ,' + program.bgcolor2 + ' 99.35%);'"
+      :style="'background: linear-gradient(108deg,'+ program.bgcolor1 + ' 0% ,' + program.bgcolor2 + ' 99.35%);'"
     >
+      <div class="card-bg">
+        <v-img
+          :src="cardBg"
+          max-width="300px"
+        />
+      </div>
       <div
         class="card-header"
         :style="`color: ${program.color};`"
@@ -174,6 +180,7 @@
           .toString(16)
       },
       changeColor (str) {
+        console.log('changeColor', str)
         const color = Color(str)
         let alpha, mask
         if (color.isLight()) {
@@ -223,6 +230,12 @@
     height: 152px;
     border-radius: 12px;
     z-index: 2;
+
+    .card-bg {
+      width: 100%;
+      position: absolute;
+      z-index: 3;
+    }
 
     .card-header {
       position: absolute;

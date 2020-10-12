@@ -129,7 +129,7 @@
               <div class="right-block">
                 <div
                   class="card-wrapper"
-                  :style="'background: linear-gradient(140deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%); border: 1px solid ' + getBorderColor()"
+                  :style="'background: linear-gradient(108deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%); border: 1px solid ' + getBorderColor()"
                 >
                   <div class="card-bg">
                     <v-img
@@ -1621,15 +1621,19 @@ line-height: 17px;"
           .toString(16)
       },
       changeColor (str) {
+        console.log('changeColor' ,str)
         const color = Color(str)
+        console.log('changeColor' , color.rgb().array())
         let alpha, mask
         if (color.isLight()) {
+          console.log('isLight' )
           alpha = 0.04
           mask = 0
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#2A2A34'
         // //console.log('color', this.program.bgcolor[1])
         } else {
+          console.log('!isLight' )
           alpha = 0.1
           mask = 255
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
