@@ -29,7 +29,7 @@
     },
     computed: {
       profile () {
-        return this.$store.getters.getProfile
+        return this.$store.getters.user
       },
       chatUser () {
         return this.$store.getters['chat/chatUser/chatUser']

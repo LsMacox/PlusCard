@@ -12,9 +12,11 @@ const config = Object.freeze({
     MAX_DAYS: 999,
 })
 
+
 export { app, date, config }
 
 export default {
+    config,
     install (Vue) {
         Vue.prototype.$config = config
     },
