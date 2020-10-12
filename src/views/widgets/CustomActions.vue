@@ -6,7 +6,7 @@
     <template v-slot:tab-1>
       <ul class="custom-actions__list">
         <li
-          v-for="item in widgetData"
+          v-for="item in widgetData['activity']"
           :key="item.id"
           class="custom-actions__item"
         >
@@ -20,12 +20,33 @@
             <p class="body-s-semibold">
               {{ item.name }} {{ item.lastname }}
             </p>
-            <span class="body-s-medium wc-neutral">{{ item.action_count }} действия</span>
+            <span class="body-s-medium wc-neutral">Действий: {{ item.action_count }}</span>
           </div>
         </li>
       </ul>
     </template>
-    <template v-slot:tab-2 />
+    <template v-slot:tab-2>
+      <ul class="custom-actions__list">
+        <li
+            v-for="item in widgetData['purchases']"
+            :key="item.id"
+            class="custom-actions__item"
+        >
+          <div class="custom-actions__item-img">
+            <img
+                style="width: 24px; border-radius: 50%;"
+                :src="item.avatar"
+            >
+          </div>
+          <div class="custom-actions__item-text">
+            <p class="body-s-semibold">
+              {{ item.name }} {{ item.lastname }}
+            </p>
+            <span class="body-s-medium wc-neutral">Покупки: {{ item.purchase_count }}</span>
+          </div>
+        </li>
+      </ul>
+    </template>
   </tab-list-frame>
 </template>
 
@@ -38,9 +59,12 @@
     mixins: [WidgetFunctions],
     props: {
       widgetData: {
-        type: Array,
+        type: Object,
         default () {
-          return []
+          return {
+            activity: [],
+            purchases: [],
+          }
         },
       },
     },

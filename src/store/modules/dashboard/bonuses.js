@@ -50,9 +50,9 @@ export default {
 
             if (state.widgetData.bonus_sum) {
                 if (state.widgetData.bonus_sum > 0) {
-                    bonusRatio[0] = Math.round(state.widgetData.credit[0] / state.widgetData.bonus_sum * 100)
-                    bonusRatio[1] = Math.round(state.widgetData.debit[0] / state.widgetData.bonus_sum * 100)
-                    bonusRatio[2] = Math.round(state.widgetData.expired[0] / state.widgetData.bonus_sum * 100)
+                    bonusRatio[0] = Math.round(state.widgetData.credit[state.widgetData.credit.length - 1] / state.widgetData.bonus_sum * 100)
+                    bonusRatio[1] = Math.round(state.widgetData.debit[state.widgetData.debit.length - 1] / state.widgetData.bonus_sum * 100)
+                    bonusRatio[2] = Math.round(state.widgetData.expired[state.widgetData.expired.length - 1] / state.widgetData.bonus_sum * 100)
                 }
             }
 

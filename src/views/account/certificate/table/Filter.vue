@@ -166,7 +166,7 @@
                 <div class="app__filter-content-header">
                   Сертификаты<br>
                 </div>
-                <div
+                <div v-if="totalCount > 0"
                   v-for="(item, i) in programCertificates"
                   :key="i"
                   :class="getFilterClass('certificates', item)"
@@ -181,7 +181,7 @@
                 <div class="app__filter-content-header">
                   Оплаты
                 </div>
-                <div
+                <div v-if="totalCount > 0"
                   v-for="(item, i) in certPaymentStatusEnum"
                   :key="i"
                   :class="getFilterClass('certPaymentStatus', item)"
@@ -203,7 +203,7 @@
                 <div class="app__filter-content-header">
                   Статусы
                 </div>
-                <div
+                <div v-if="totalCount > 0"
                   v-for="(item, i) in certOrderStatusEnum"
                   :key="i"
                   :class="getFilterClass('certOrderStatus', item)"
@@ -223,7 +223,7 @@
                 <div class="app__filter-content-header">
                   Выплаты
                 </div>
-                <div
+                <div v-if="totalCount > 0"
                   v-for="(item, i) in certMerchantOrderStatusEnum"
                   :key="i"
                   :class="getFilterClass('certMerchantOrderStatus', item)"
@@ -243,7 +243,7 @@
                 <div class="app__filter-content-header">
                   Выпущен
                 </div>
-                <div>
+                <div v-if="totalCount > 0">
                   <date-range-picker
                     ref="picker"
                     v-model="filter.issueDate"
@@ -443,6 +443,9 @@
           return false
         }
         return true
+      },
+      totalCount () {
+        return this.$store.getters['account/certificate/certificate/totalCount']
       },
     },
     watch: {

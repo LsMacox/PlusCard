@@ -10,7 +10,7 @@
       outlined
       :rules="[
         v => !!v || 'Название точки продаж обязательно',
-        v => v.length <= 250 || 'Название должно быть не более 250 символов',
+        v => String(v).length <= 250 || 'Название должно быть не более 250 символов',
       ]"
       style="width: 380px"
     >
@@ -28,7 +28,7 @@
       :error-messages="addressErrors"
       :rules="[
         v => !!v || 'Адрес точки продаж обязателен',
-        v => v.length <= 250 || 'Адрес должен быть не более 100 символов',
+        v => String(v).length <= 250 || 'Адрес должен быть не более 100 символов',
       ]"
       @input="getAddressHandler"
     >
@@ -481,34 +481,32 @@
         return str
       },
       checkLength (label, index) {
-        if (label === 'startTime') {
-          if (this.editedShop.workTimes[index].startTime && this.editedShop.workTimes[index].startTime.length === 2) {
-            this.editedShop.workTimes[index].startTime += ':00'
-          } else if (this.editedShop.workTimes[index].startTime && this.editedShop.workTimes[index].startTime.length === 1) {
-            this.editedShop.workTimes[index].startTime = '0' + this.editedShop.workTimes[index].startTime + ':00'
+        let timeStr = this.editedShop.workTimes[index][label]
+        if (timeStr) {
+          timeStr = String(timeStr)
+          if (timeStr.length === 1) {
+            timeStr = `0${timeStr}:00`
+          }
+          if (timeStr.length === 2) {
+            timeStr = `${timeStr}:00`
+          }
+          if (timeStr.length === 4) {
+            const time = timeStr.split(':')
+            if (time.length === 2) {
+              if (time[1].length === 1) time[1] = `0${time[1]}`
+              timeStr = `${time[0]}:${time[1]}`
+            }
+          }
+          if (timeStr.length === 5) {
+            const time = timeStr.split(':')
+            if (time.length === 2) {
+              if (Number(time[0]) > 23) time[0] = '23'
+              if (Number(time[1]) > 59) time[1] = '59'
+              timeStr = `${time[0]}:${time[1]}`
+            }
           }
         }
-        if (label === 'endTime') {
-          if (this.editedShop.workTimes[index].endTime && this.editedShop.workTimes[index].endTime.length === 2) {
-            this.editedShop.workTimes[index].endTime += ':00'
-          } else if (this.editedShop.workTimes[index].endTime && this.editedShop.workTimes[index].endTime.length === 1) {
-            this.editedShop.workTimes[index].endTime = '0' + this.editedShop.workTimes[index].endTime + ':00'
-          }
-        }
-        if (label === 'breakStart') {
-          if (this.editedShop.workTimes[index].breakStart && this.editedShop.workTimes[index].breakStart.length === 2) {
-            this.editedShop.workTimes[index].breakStart += ':00'
-          } else if (this.editedShop.workTimes[index].breakStart && this.editedShop.workTimes[index].breakStart.length === 1) {
-            this.editedShop.workTimes[index].breakStart = '0' + this.editedShop.workTimes[index].breakStart + ':00'
-          }
-        }
-        if (label === 'breakEnd') {
-          if (this.editedShop.workTimes[index].breakEnd && this.editedShop.workTimes[index].breakEnd.length === 2) {
-            this.editedShop.workTimes[index].breakEnd += ':00'
-          } else if (this.editedShop.workTimes[index].breakEnd && this.editedShop.workTimes[index].breakEnd.length === 1) {
-            this.editedShop.workTimes[index].breakEnd = '0' + this.editedShop.workTimes[index].breakEnd + ':00'
-          }
-        }
+        this.editedShop.workTimes[index][label] = timeStr
       },
       getSelectedWorkDays (index) {
         // //console.log('index', index)
