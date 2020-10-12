@@ -65,6 +65,9 @@
       </div>
     </div>
     <div class="content-wrapper">
+      <!--
+        ИНФОРМАЦИЯ О КОМПАНИИ
+      -->
       <div
         v-if="currentStep === 0 || currentStep === 1"
         class="content-firstStep"
@@ -97,8 +100,11 @@
                   placeholder="Название комании"
                   outlined
                   counter="20"
-                  :class="{'v-input--counter': true,'success-text': program.companyName.length > 0 && program.companyName.length < 21}"
-                  :rules="[rules.required, rules.counter]"
+                  :class="{'v-input--counter': true,'success-text': program.companyName.length > 0 && program.companyName.length <= 20}"
+                  :rules="[
+                    v => !!v || 'Название компании обязательно',
+                    v => String(v).length <= 20 || 'Название не должно быть более 20 символов',
+                  ]"
                   maxlength="20"
                   @input="program.companyName.length ? currentStep = 1 : currentStep = 0"
                 />
@@ -252,7 +258,7 @@
               <v-btn
                 color="primary"
                 style="width: 123px"
-                :disabled="!program.companyName || !program.logo"
+                :disabled="!validInfo"
                 @click="updateCompany()"
               >
                 Далее
@@ -268,6 +274,9 @@
         </v-container>
       </div>
 
+      <!--
+        МАГАЗИНЫ
+      -->
       <div
         v-if="currentStep === 2"
         class="content-secondStep"
@@ -460,6 +469,10 @@
                       v-model="newShop.name"
                       class="shop-card__name_input"
                       placeholder="Введите название точки"
+                      :rules="[
+                        v => !!v || 'Название точки продаж обязательно',
+                        v => String(v).length <= 250 || 'Название должно быть не более 250 символов',
+                      ]"
                     />
                   </div>
                   <div class="shop-card__city">
@@ -517,6 +530,10 @@
                     <v-text-field
                       v-if="markerGenerated"
                       v-model="newShop.address"
+                      :rules="[
+                        v => !!v || 'Адрес точки продаж обязателен',
+                        v => String(v).length <= 250 || 'Адрес должен быть не более 100 символов',
+                      ]"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -538,6 +555,10 @@
                       item-value="pos"
                       aria-autocomplete="none"
                       autocomplete="new-street-address"
+                      :rules="[
+                        v => !!v || 'Адрес точки продаж обязателен',
+                        v => String(v).length <= 250 || 'Адрес должен быть не более 100 символов',
+                      ]"
                       @change="generate(newShop.address)"
                     >
                       <template slot="prepend-inner">
@@ -756,6 +777,7 @@ line-height: 17px;"
                         color="secondary"
                         small
                         style="width: 265px; margin-right: 0"
+                        :disabled="!validShopForm"
                         @click="saveShop()"
                       >
                         Сохранить
@@ -781,6 +803,7 @@ line-height: 17px;"
                   <v-btn
                     color="primary"
                     style="width: 123px"
+                    :disabled="!validShop"
                     @click="currentStep = 3"
                   >
                     Далее
@@ -832,6 +855,7 @@ line-height: 17px;"
                       v-model="program.phone"
                       placeholder="Номер горячей линии"
                       outlined
+                      :rules="[v => String(v).length < 255 || 'Номер телефона должен быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -846,6 +870,7 @@ line-height: 17px;"
                       v-model="program.website"
                       placeholder="Адрес сайта"
                       outlined
+                      :rules="[v => String(v).length < 255 || 'Адрес сайта должен быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -878,6 +903,7 @@ line-height: 17px;"
                       v-model="program.social.vk"
                       placeholder="/Группа Вконтакте"
                       outlined
+                      :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -890,6 +916,7 @@ line-height: 17px;"
                       v-model="program.social.youtube"
                       placeholder="/Канал на Youtube"
                       outlined
+                      :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -902,6 +929,7 @@ line-height: 17px;"
                       v-model="program.social.fb"
                       placeholder="/Группа в Facebook"
                       outlined
+                      :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -918,6 +946,7 @@ line-height: 17px;"
                       v-model="program.social.instagram"
                       placeholder="/Профиль в Instagram"
                       outlined
+                      :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -1197,7 +1226,26 @@ line-height: 17px;"
       sorted_work_array () {
         return this.sortById(this.newShop.workTimes)
       },
-
+      // валидация форм
+      validInfo () {
+        if (this.program.companyName && this.program.logo) return true
+        return false
+      },
+      validShop () {
+        let check = true
+        this.shops.forEach(item => {
+          if (!item.name) check = false
+          if (!item.address) check = false
+        })
+        return check
+      },
+      validShopForm () {
+        let check = true
+        if (!this.newShop.name || !this.newShop.address) {
+          check = false
+        }
+        return check
+      },
     },
     watch: {
       'worktime.endTime' (v) {
@@ -1273,34 +1321,32 @@ line-height: 17px;"
     },
     methods: {
       checkLength (label, index) {
-        if (label === 'startTime') {
-          if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 2) {
-            this.newShop.workTimes[index].startTime += ':00'
-          } else if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 1) {
-            this.newShop.workTimes[index].startTime = '0' + this.newShop.workTimes[index].startTime + ':00'
+        let timeStr = this.newShop.workTimes[index][label]
+        if (timeStr) {
+          timeStr = String(timeStr)
+          if (timeStr.length === 1) {
+            timeStr = `0${timeStr}:00`
+          }
+          if (timeStr.length === 2) {
+            timeStr = `${timeStr}:00`
+          }
+          if (timeStr.length === 4) {
+            const time = timeStr.split(':')
+            if (time.length === 2) {
+              if (time[1].length === 1) time[1] = `0${time[1]}`
+              timeStr = `${time[0]}:${time[1]}`
+            }
+          }
+          if (timeStr.length === 5) {
+            const time = timeStr.split(':')
+            if (time.length === 2) {
+              if (Number(time[0]) > 23) time[0] = '23'
+              if (Number(time[1]) > 59) time[1] = '59'
+              timeStr = `${time[0]}:${time[1]}`
+            }
           }
         }
-        if (label === 'endTime') {
-          if (this.newShop.workTimes[index].endTime && this.newShop.workTimes[index].endTime.length === 2) {
-            this.newShop.workTimes[index].endTime += ':00'
-          } else if (this.newShop.workTimes[index].endTime && this.newShop.workTimes[index].endTime.length === 1) {
-            this.newShop.workTimes[index].endTime = '0' + this.newShop.workTimes[index].endTime + ':00'
-          }
-        }
-        if (label === 'breakStart') {
-          if (this.newShop.workTimes[index].breakStart && this.newShop.workTimes[index].breakStart.length === 2) {
-            this.newShop.workTimes[index].breakStart += ':00'
-          } else if (this.newShop.workTimes[index].breakStart && this.newShop.workTimes[index].breakStart.length === 1) {
-            this.newShop.workTimes[index].breakStart = '0' + this.newShop.workTimes[index].breakStart + ':00'
-          }
-        }
-        if (label === 'breakEnd') {
-          if (this.newShop.workTimes[index].breakEnd && this.newShop.workTimes[index].breakEnd.length === 2) {
-            this.newShop.workTimes[index].breakEnd += ':00'
-          } else if (this.newShop.workTimes[index].breakEnd && this.newShop.workTimes[index].breakEnd.length === 1) {
-            this.newShop.workTimes[index].breakEnd = '0' + this.newShop.workTimes[index].breakEnd + ':00'
-          }
-        }
+        this.newShop.workTimes[index][label] = timeStr
       },
       selectCity () {
         const shop = this.cities.filter(item => item.id === this.newShop.city)[0]
@@ -1395,14 +1441,19 @@ line-height: 17px;"
         this.cancelShop()
       },
       async createProgram () {
-        const program = Object.assign({}, this.program)
-        program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
-        program.shops = this.shops
-        program.merchant_id = this.merchant_id
-        await ApiService.post(
-          '/api-cabinet/company/create',
-          program,
-        )
+        try {
+          const program = Object.assign({}, this.program)
+          program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
+          program.shops = this.shops
+          program.merchant_id = this.merchant_id
+          await ApiService.post(
+            '/api-cabinet/company/create',
+            program,
+          )
+          this.currentStep = 4
+        } finally {
+
+        }
       },
       getUnitColor () {
         if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.5)' } else { return 'rgba(0, 0, 0, 0.5)' }
@@ -1575,7 +1626,7 @@ line-height: 17px;"
       changeStep (step) {
         this.currentStep = step
       },
-      async updateCompany () {
+      updateCompany () {
         // console.log('merchant_id', this.merchant_id)
         // await this.$store.dispatch("brand/company/updateDesign", program)
         this.changeStep(2)
