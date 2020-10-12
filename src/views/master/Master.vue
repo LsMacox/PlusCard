@@ -821,6 +821,7 @@ line-height: 17px;"
         </div>
       </div>
 
+      <!-- СОЦ. ПРОФИЛЬ -->
       <div
         v-if="currentStep === 3"
         class="content-thirdStep"
@@ -961,6 +962,7 @@ line-height: 17px;"
                   <v-btn
                     color="primary"
                     style="width: 123px"
+                    :loading="loading"
                     @click="createProgram()"
                   >
                     Завершить
@@ -1101,6 +1103,7 @@ line-height: 17px;"
     directives: { mask },
     data () {
       return {
+        loading: false,
         markerGenerated: false,
         newShopEdit: false,
         resultAdr: '',
@@ -1442,6 +1445,7 @@ line-height: 17px;"
       },
       async createProgram () {
         try {
+          this.loading = true
           const program = Object.assign({}, this.program)
           program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
           program.shops = this.shops
@@ -1452,7 +1456,7 @@ line-height: 17px;"
           )
           this.currentStep = 4
         } finally {
-
+          this.loading = false
         }
       },
       getUnitColor () {
