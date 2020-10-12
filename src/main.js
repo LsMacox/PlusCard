@@ -19,10 +19,12 @@ import './plugins/base'
 // import './plugins/vee-validate'
 import vuetify from './plugins/vuetify'
 import './plugins/iconify'
+import './plugins/socket'
 
 import i18n from './i18n'
 
 import './AuthGuard'
+
 
 import * as filters from './filters'
 
@@ -106,6 +108,7 @@ if (process.env.NODE_ENV !== 'development') {
   window.console.log = () => { }
 }
 
+
 const App = new Vue({
   router,
   store,
@@ -121,3 +124,4 @@ const App = new Vue({
 App.$mount('#app')
 
 Vue.prototype.$app = App
+

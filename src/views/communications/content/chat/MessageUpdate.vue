@@ -1,50 +1,62 @@
 <template>
   <v-dialog
     v-model="dialog"
-    max-width="650"
-    hide-overlay
+    max-width="60%"
     persistent
   >
-    <v-card class="modal-card">
-      <div class="modal-header">
-        Редактирование сообщения
-      </div>
-
-      <div class="modal-content">
-        <app-textarea
-          class="input-field"
-          label="Текст сообщения *"
-          :value.sync="messageText"
-          max-length="10000"
-          hint="* поле не должно быть пустым"
-          error=""
-          validate.sync=""
-        />
-      </div>
-
-      <div class="modal-action">
-        <div>
-          <div
-            class="close"
-            @click="close()"
+    <v-card class="pa-3">
+      <v-container>
+        <v-row justify="center">
+          <v-col
+            class="modal-header"
+            cols="auto"
           >
-            Отмена
-          </div>
-        </div>
+            Редактирование сообщения
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>Текст сообщения *</v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-textarea
+              v-model="messageText"
+              class="_input-field"
+              max-length="10000"
+              hint="* поле не должно быть пустым"
+              outlined
+            />
+          </v-col>
+        </v-row>
+        <v-row justify="space-between">
+          <v-col>
+            <v-btn
+              class="_close"
+              text
+              @click="close()"
+            >
+              Отмена
+            </v-btn>
+          </v-col>
 
-        <v-spacer />
+          <v-col cols="auto">
+            <v-btn
+            class="_box-button"
+            :disabled="!validate"
+            color="success"
+            :loading="messageUpdateRequest"
+            @click="update(validate)"
+          >
+            <v-icon left>
+              fa-edit
+            </v-icon>
+            Сохранить
+          </v-btn>
+          </v-col>
 
-        <v-btn
-          class="box-button"
-          icon="create"
-          :disabled="!validate"
-          color="success"
-          :loading="messageUpdateRequest"
-          @click.native="update(validate)"
-        >
-          Сохранить
-        </v-btn>
-      </div>
+          
+        </v-row>
+      </v-container>
     </v-card>
   </v-dialog>
 </template>

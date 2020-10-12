@@ -1,5 +1,6 @@
 // import VueSession from '@/utils/session'
 import ApiService from '@/api/api-client'
+import VueSession from '@/utils/session'
 
 export default {
     namespaced: true,
@@ -7,25 +8,7 @@ export default {
 
     },
     mutations: {
-        connect () {
-            let session = JSON.parse(localStorage.getItem('session'))
 
-            let accessToken = null
-            let deviceId = null
-            let deviceType = null
-            if (!session) session = {}
-            if (session.tokens && session.device) {
-                accessToken = session.tokens.access
-                deviceId = session.device.id
-                deviceType = session.device.type
-            }
-            window.socket.emit('system', {
-                command: '/connect/redis',
-                access_token: accessToken,
-                device_id: deviceId,
-                device_type: deviceType,
-            })
-        },
     },
     actions: {
         async confirm ({ commit, rootState }, confirm) {
@@ -34,6 +17,24 @@ export default {
            await ApiService.post('/api/message/send/confirm', confirm)
            // console.log('redis confirm response')
            // console.log(success)
+        },
+        async connect ({ rootState }) {
+            console.log('redis.connect', rootState)
+            // const session = JSON.parse(localStorage.getItem('session'))
+
+            if (VueSession.exists()) {
+                const device = rootState['auth/auth'].device
+
+               const event = {
+                command: '/connect/redis',
+                access_token: VueSession.get('access_token'),
+                device_id: device.id,
+                device_type: device.type,
+
+                }
+                console.log('socket.emit.system', event)
+                window.socket.emit('system', event)
+            }
         },
     },
     getters: {

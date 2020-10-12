@@ -103,6 +103,7 @@
           icon: '$iconify_ion-chatbox-outline',
           title: 'Чаты',
           to: '/communications/chat',
+          alias: ['ChatType', 'ChatConversation'],
           badge: 12,
         },
         {

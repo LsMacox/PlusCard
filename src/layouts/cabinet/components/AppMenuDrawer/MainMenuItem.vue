@@ -128,7 +128,10 @@
     computed: {
       active () {
         return (this.item.to === this.$route.path) || (
-          this.item.alias && this.item.alias.includes(this.$route.path)
+          this.item.alias && (
+            this.item.alias.includes(this.$route.path) 
+            ||  this.item.alias.includes(this.$route.name) 
+            ) 
         )
       },
       computedText () {
