@@ -234,7 +234,7 @@
     .card-bg {
       width: 100%;
       position: absolute;
-      z-index: 3;
+      // z-index: 3;
     }
 
     .card-header {

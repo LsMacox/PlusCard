@@ -1781,7 +1781,7 @@ line-height: 17px;"
           height: calc(100vh - 100px)
           flex-direction: column
           justify-content: flex-start
-          overflow-y: scroll
+          // overflow-y: scroll
 
         .content-block
           display: flex
@@ -1952,10 +1952,13 @@ line-height: 17px;"
   height: calc(100vh - 100px)
   @media(max-width: 992px)
     flex-direction: column
-    overflow-y: scroll
+    // overflow-y: scroll
 
   .shop-block__left
+    position: fixed
+    // top: 0px
     @media(max-width: 992px)
+      position: relative
       display: flex
       justify-content: center
 
@@ -1968,13 +1971,16 @@ line-height: 17px;"
         height: calc(30vh)
 
   .shop-block__right
+    margin-left: 523px
     display: flex
     flex-grow: 1
     justify-content: center
     padding: 68px 0
-    overflow-y: scroll
+    // overflow-y: scroll
     @media(max-width: 992px)
-      overflow-y: visible
+      // overflow-y: visible
+      // margin-top: 827px
+      margin-left: 0px
 
     .content-block
       &__title
