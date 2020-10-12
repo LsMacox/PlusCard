@@ -87,17 +87,24 @@
         </v-list>
       </v-menu>
     </v-col>
+
     <v-spacer />
 
-    <div
-      v-if="lastTopic.sender_id == chatUser.id
-        && lastTopic.topic_id
-        && (!selectedTopicId && !recipients.length)"
-      class="btn2"
-      @click="setTopic(lastTopic.topic_id)"
+    <v-col
+      cols="auto"
+      align-self="center"
     >
-      {{ lastTopic.topic_name }}
-    </div>
+      <v-btn
+        v-if="lastTopic.sender_id == chatUser.id
+          && lastTopic.topic_id
+          && (!selectedTopicId && !recipients.length)"
+        color="primary"
+        x-small
+        @click="setTopic(lastTopic.topic_id)"
+      >
+        {{ lastTopic.topic_name }}
+      </v-btn>
+    </v-col>
 
     <!-- сброс настроек -->
     <v-col

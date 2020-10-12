@@ -17,30 +17,49 @@
     </div>
 
     <v-dialog
+
       v-if="show"
-      :v-model="show"
-      top="10vh"
-      class="previewDialog"
+      v-model="show"
+
+      max-width="80%"
+      content-class="preview-dialog"
     >
-      <div class="attachment--preview--toolbar">
-        <a
-          style="color:#fff"
-          :href="content.url"
-          target="_blank"
-          download
-        ><i class="fas fa-download" /></a>
-        <i
-          class="fas fa-times"
-          style="font-size: 24px;position: relative;top: 1px;left: 25px;"
-          @click="show = false"
-        />
-      </div>
-      <video-player
-        ref="videoPlayer"
-        class="video-player"
-        :options="playerOptions"
-        :playsinline="true"
-      />
+      <v-card class="preview-dialog__card">
+        <v-container class="preview-dialog__container">
+          <v-row justify="end">
+            <v-btn
+              icon
+              :href="content.url"
+              color="white"
+              target="_blank"
+              download
+            >
+              <v-icon>fa-download</v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              color="white"
+              @click="show = false"
+            >
+              <v-icon>fa-times</v-icon>
+            </v-btn>
+          </v-row>
+          <v-row
+            class="image-row"
+            justify="center"
+            align="center"
+          >
+            <v-col cols="auto">              
+              <video-player                
+                ref="videoPlayer"
+                class="video-player"
+                :options="playerOptions"
+                :playsinline="true"
+              />
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card>
     </v-dialog>
   </div>
 </template>
@@ -91,6 +110,20 @@
 </script>
 
 <style lang="scss" scoped>
+
+.preview-dialog {
+  .preview-dialog__card {
+    background-color: rgba(0, 0, 0, 0.8);
+
+    .preview-dialog__container {
+      // height: 100%;
+      .image-row {
+        min-height: 80vh;
+      }
+    }
+  }
+}
+
     .video-thumb {
         position: relative;
         width: 160px;
@@ -152,19 +185,5 @@
           width:20px;
           height: 20px;
       }
-    }
-</style>
-
-<style>
-    .previewDialog .el-dialog{
-        background-color: rgba(0,0,0,.8);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 auto;
-        height: 80vh;
-        width: 50%;
-        margin-top: 10vh;
-        padding: 20px;
     }
 </style>

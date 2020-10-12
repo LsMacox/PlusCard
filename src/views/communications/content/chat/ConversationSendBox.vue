@@ -704,9 +704,17 @@
       // отправляем сообщение
       async send (type) {
         /// /console.log('quotedMessage', this.quotedMessage);
+        console.log({
+          'quotedMessage' : this.quotedMessage,
+          'selectedTopicId' : this.selectedTopicId,
+          'message' : this.message,
+          'recipients' : this.recipients,
+          'recipients' : this.recipients,
+          'formDataFiles' : this.formDataFiles,
+        })
         if (this.validateSendMessage) {
           /// /console.log('topic', this.selectedTopicId);
-
+       
           this.sending = true
           const message = new FormData()
           message.set('conversation_id', this.conversationId)
@@ -722,6 +730,7 @@
           recipients = Array.from(new Set(this.recipients))
 
           // отправка файлов
+         
           if (Array.isArray(this.formDataFiles)) {
             for (let i = 0; i < this.formDataFiles.length; i++) {
               const file = this.formDataFiles[i]
