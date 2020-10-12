@@ -81,6 +81,10 @@ const mutations = {
     }
     state.programModel = payload
   },
+  ADD_IN_PROGRAMS (state, payload) {
+    const items = state.programs
+    items.push(payload)
+  },
   UPDATE_IN_PROGRAMS (state, payload) {
     const items = state.programs
     items.forEach((item, index) => {

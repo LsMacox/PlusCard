@@ -22,6 +22,7 @@
         ref="form"
         v-model="valid"
         class="auth-form"
+        @submit.prevent="login()"
       >
         <v-text-field
           v-model="form.phone"
@@ -31,7 +32,6 @@
           outlined
           required
           :rules="phoneRules"
-          validate-on-blur
         >
           <template slot="prepend-inner">
             <v-img
@@ -69,7 +69,7 @@
             <v-btn
               color="secondary"
               style="width: 100%;"
-              @click="toRoute('/login/email')"
+              to="/login/email"
             >
               <span
                 class="iconify"
@@ -100,7 +100,8 @@
         valid: true,
         visible1: false,
         phoneRules: [
-          v => !!v || 'Телефон обязателен',
+          v => (!!v && v.length === 18) || 'Телефон обязателен',
+          v => (!!v && /^(\+7|7|8)+\ \(\d{3}\)\ \d{3}\-\d{2}\-\d{2}$/.test(v)) || 'Не верный формат телефона',
         ],
         loading: false,
         selectMerchant: false,
@@ -120,6 +121,13 @@
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
+      toConfirm (phone) {
+        console.log('toConfirm', phone)
+        this.$router.push({
+          path: '/login/phone/confirm',
+          query: { phone },
+        })
+      },
       clearPhoneMask (p) {
         if (p) {
           p = String(p).match(/\d/g)
@@ -128,6 +136,10 @@
         return p
       },
       async login () {
+        console.log('<login>')
+
+        if (!this.$refs.form.validate()) return
+
         const user = {
           phone: this.clearPhoneMask(this.form.phone),
           device_id: this.device.id,
@@ -138,7 +150,7 @@
         try {
           this.loading = true
           await this.$store.dispatch('auth/phone/login', user)
-          this.toRoute('/login/phone/confirm')
+          this.toConfirm(user.phone)
         } finally {
           this.loading = false
         }

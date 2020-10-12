@@ -130,11 +130,11 @@
       },
       goToMaster () {
         this.$router.push('/master')
-        this.$refs.programListGroup.click()
+        // this.$refs.programListGroup.click()
       },
       changeCompany (item) {
         this.program = Object.assign({}, item)
-      // this.$refs.programListGroup.click()
+        // this.$refs.programListGroup.click()
       },
     },
   }
