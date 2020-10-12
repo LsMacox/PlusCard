@@ -1,7 +1,7 @@
 <template>
   <div>
     <certificate-header />
-    <certificate-filter disabled />
+    <certificate-filter />
     <certificate-table v-show="totalCount > 0" />
     <div
         v-show="totalCount <= 0"

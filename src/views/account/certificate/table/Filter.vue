@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-col>
+    <v-col style="margin-top: 24px; margin-left: -10px!important">
       <div class="app__filter">
         <div
           class="app__filter-block-input"
