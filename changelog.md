@@ -1,9 +1,13 @@
 # Changelog
 
-### Added
+### Added 
+- Added for new features.
 ### Changed
+- Changed for changes in existing functionality.
 ### Fixed
+- Fixed for any bug fixes.
 ### Removed
+- Removed for now removed features.
 
 ## [Unreleased]
 
