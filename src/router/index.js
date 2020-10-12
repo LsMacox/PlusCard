@@ -56,6 +56,7 @@ export default new Router({
         },
         {
           path: 'phone/confirm',
+          props: (route) => ({ phone: route.query.phone }),
           component: () => import('@/views/auth/login/phone/confirm'),
         },
       ],
