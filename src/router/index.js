@@ -7,6 +7,8 @@ import CabinetLayout from '@/layouts/cabinet'
 import CrmRouters from './modules/crm'
 import ChatRouters from './modules/chat'
 
+import GuardEmptyPrograms from '@/router/guards/guard-empty-programs'
+
 /* Router Modules */
 
 Vue.use(Router)
@@ -158,6 +160,7 @@ export default new Router({
         {
           path: '/program/bonus/settings',
           component: () => import('@/views/BonusSettings'),
+          beforeEnter: GuardEmptyPrograms,
           name: 'ProgramBonusSetting',
           meta: { title: 'ProgramBonusSetting', icon: 'ui_kit' },
         },
@@ -175,6 +178,7 @@ export default new Router({
         // },
         {
           path: '/loyalty',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/loyalty/index'),
           name: 'loyalty',
           meta: { auth: true },
@@ -223,24 +227,28 @@ export default new Router({
         },
         {
           path: '/account/certificates',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/account/certificate/table/index'),
           name: 'UserCertificates',
-          meta: { title: 'Certificates', icon: 'certificates' },
+          meta: { auth: true, title: 'Certificates', icon: 'certificates' },
         },
         {
           path: 'actions',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/SkeletonPage'),
           name: 'Actions',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {
           path: 'sendings',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/SkeletonPage'),
           name: 'Sendings',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {
           path: 'settings',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/settings/index'),
           name: 'Settings',
           redirect: 'settings/menu',

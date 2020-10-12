@@ -1,4 +1,4 @@
-import store from '../store'
+import store from '@/store'
 
 export default async function (to, from, next) {
     if (store._vm.$session.exists()) {
