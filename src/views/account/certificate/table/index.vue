@@ -1,8 +1,13 @@
 <template>
   <div>
     <certificate-header />
-    <certificate-filter />
-    <certificate-table />
+    <certificate-filter disabled />
+    <certificate-table v-show="totalCount > 0" />
+    <div
+        v-show="totalCount <= 0"
+    >
+      <dummy-screen />
+    </div>
   </div>
 </template>
 
@@ -10,12 +15,14 @@
   import CertificateTable from './CertificateTable'
   import CertificateFilter from './Filter'
   import CertificateHeader from './Header'
+  import DummyScreen from '@/views/loyalty/DummyScreen'
 
   export default {
     components: {
       CertificateFilter,
       CertificateTable,
       CertificateHeader,
+      DummyScreen,
     },
     props: {
     },
@@ -23,7 +30,9 @@
       return {}
     },
     computed: {
-
+      totalCount () {
+        return this.$store.getters['account/certificate/certificate/totalCount']
+      },
     },
     mounted () {
 

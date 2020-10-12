@@ -490,7 +490,11 @@
         if (v) this.fetchData()
       },
       program (v) {
-        if (v) this.fetchData()
+        if (v) {
+          this.$store.dispatch('account/certificate/certificate/programCertificates', v.id)
+          this.$store.dispatch('account/certificate/buyers/buyers', v.id)
+          this.fetchData()
+        }
       },
       'filter.archiveStatus.id' (v) {
         if (v) {

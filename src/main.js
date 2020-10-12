@@ -42,7 +42,7 @@ import VueConstants from './plugins/vue-constants'
 import random from 'random'
 import VueUnderScore from 'vue-underscore'
 // import DateRangePicker from 'vue2-daterange-picker'
-import { IsDebugQuery } from './router/router-handler-log'
+import { IsDebugQuery } from '@/router/guards/router-handler-log'
 import VueTelInput from 'vue-tel-input'
 import VueClipboard from 'vue-clipboard2'
 

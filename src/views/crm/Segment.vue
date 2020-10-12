@@ -55,20 +55,17 @@
       </template>
       <template v-slot:[`item.profit`]="{ item }">
         <p class="body-s-medium mb-0">
-          {{ item.profit | spacesBetweenNumbers }} ₽
-          -
+          {{ (item.profit | spacesBetweenNumbers) ? item.profit : 0 }} ₽
         </p>
       </template>
       <template v-slot:[`item.average-check`]="{ item }">
         <p class="body-s-medium mb-0">
-          {{ item.average_check | spacesBetweenNumbers }} ₽
-          -
+          {{ (item.average_check | spacesBetweenNumbers) ? item.average_check : 0 }} ₽
         </p>
       </template>
       <template v-slot:[`item.client-cost`]="{ item }">
         <p class="body-s-medium mb-0">
-          {{ item.client_cost | spacesBetweenNumbers }} ₽
-          -
+          {{ (item.client_cost | spacesBetweenNumbers) ? item.client_cost : 0 }} ₽
         </p>
       </template>
       <template v-slot:[`item.data-table-expand`]>

@@ -1,8 +1,8 @@
 import router from './router'
 
 // import { getToken } from '@/utils/auth' // get token from cookie
-import AuthGuard from '@/router/guard-auth'
-import LogHandler from '@/router/router-handler-log'
+import AuthGuard from '@/router/guards/guard-auth'
+import LogHandler from '@/router/guards/router-handler-log'
 
 router.beforeEach(async (to, from, next) => {
   LogHandler(to, from)
