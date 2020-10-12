@@ -69,7 +69,7 @@
             <v-btn
               color="secondary"
               style="width: 100%;"
-              @click="toRoute('/login/email')"
+              to="/login/email"
             >
               <span
                 class="iconify"
@@ -118,6 +118,9 @@
       this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
+       toRoute (path) {
+        if (this.$route.path !== path) this.$router.push(path)
+      },
       toConfirm (phone) {
         console.log('toConfirm', phone)
         this.$router.push({
@@ -133,7 +136,8 @@
         return p
       },
       async login () {
-         console.log("<login>")
+
+        console.log("<login>")
 
         if (!this.$refs.form.validate()) return
 
