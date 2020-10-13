@@ -8,6 +8,7 @@
       v-model="editedShop.name"
       placeholder="Введите название точки"
       outlined
+      maxlength="250"
       :rules="[
         v => !!v || 'Название точки продаж обязательно',
         v => String(v).length <= 250 || 'Название должно быть не более 250 символов',
@@ -25,10 +26,11 @@
       placeholder="Город, улица, дом"
       outlined
       style="width: 380px"
+      maxlength="250"
       :error-messages="addressErrors"
       :rules="[
         v => !!v || 'Адрес точки продаж обязателен',
-        v => String(v).length <= 250 || 'Адрес должен быть не более 100 символов',
+        v => String(v).length <= 250 || 'Адрес должен быть не более 250 символов',
       ]"
       @input="getAddressHandler"
     >
@@ -45,6 +47,7 @@
         placeholder="Введите телефон"
         outlined
         style="width: 380px"
+         maxlength="100"
         :rules="[
           v => !!v || 'Телефон точки продаж обязателен',
           v => v.length <= 100 || 'Телефон должен быть не более 100 символов',

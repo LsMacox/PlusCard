@@ -305,9 +305,16 @@
                     imageHref: require('@/assets/svg/Bottom-tail.svg'),
                     imageSize: [150, 55],
                     imageOffset: [-75, -50],
-                    content: item.name,
+                    content: getMarkerName(item.name) ,
                     contentOffset: [0, 0],
                     contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+                  }"
+                  :balloon="{
+                    header: item.name,
+                    body:
+                      `<div>Адрес: ${item.address}</div>
+                       <div>Телефон: ${item.phone}</div>`,
+                    footer: ''
                   }"
                 />
                 <ymap-marker
@@ -319,11 +326,29 @@
                     imageHref: require('@/assets/svg/Bottom-tail.svg'),
                     imageSize: [150, 55],
                     imageOffset: [-75, -50],
-                    content: newShop.name,
+                    content: getMarkerName(newShop.name) ,
                     contentOffset: [0, 0],
                     contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
                   }"
-                />
+                  :balloon="{
+                    header: newShop.name,
+                    body:
+                      `<div>Адрес: ${newShop.address}</div>
+                       <div>Телефон: ${newShop.phone}</div>`,
+                    footer: ''
+                  }"
+                >
+                  <!-- :balloon="{
+                    header: newShop.name,
+                    body: newShop.address,
+                    footer: ''
+                    }" -->
+                  <!-- <v-row slot="balloon" >
+
+                    <v-row><v-col>Наименование: {{ newShop.name }}</v-col></v-row>
+                    <v-row><v-col>Адрес: {{ newShop.address }}</v-col></v-row>
+                  </v-row> -->
+                </ymap-marker>
               </yandex-map>
             </div>
             <div class="shop-block__right">
@@ -469,6 +494,7 @@
                       v-model="newShop.name"
                       class="shop-card__name_input"
                       placeholder="Введите название точки"
+                      maxlength="250"
                       outlined
                       :rules="[
                         v => !!v || 'Название точки продаж обязательно',
@@ -532,9 +558,10 @@
                     <v-text-field
                       v-if="markerGenerated"
                       v-model="newShop.address"
+                      maxlength="250"
                       :rules="[
                         v => !!v || 'Адрес точки продаж обязателен',
-                        v => String(v).length <= 250 || 'Адрес должен быть не более 100 символов',
+                        v => String(v).length <= 250 || 'Адрес должен быть не более 250 символов',
                       ]"
                     >
                       <template slot="prepend-inner">
@@ -1330,6 +1357,12 @@ line-height: 17px;"
       this.changeColor(this.program.bgcolor[0])
     },
     methods: {
+      getMarkerName (str) {
+        if (!str) return ''
+        const maxLen = 16
+        const strTrim = str.trim()
+        return strTrim.length > maxLen ? strTrim.substring(0, maxLen) + '...' : strTrim
+      },
       checkLength (label, index) {
         let timeStr = this.newShop.workTimes[index][label]
         if (timeStr) {

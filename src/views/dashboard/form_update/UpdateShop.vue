@@ -32,9 +32,16 @@
                 imageHref: require('@/assets/svg/Bottom-tail.svg'),
                 imageSize: [150, 55],
                 imageOffset: [-75, -50],
-                content: item.name,
+                content: getMarkerName(item.name) ,
                 contentOffset: [0, 0],
                 contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+              }"
+              :balloon="{
+                header: item.name,
+                body:
+                  `<div>Адрес: ${item.address}</div>
+                       <div>Телефон: ${item.phone}</div>`,
+                footer: ''
               }"
             />
             <ymap-marker
@@ -46,9 +53,16 @@
                 imageHref: require('@/assets/svg/Bottom-tail.svg'),
                 imageSize: [150, 55],
                 imageOffset: [-75, -50],
-                content: editedShop.name,
+                content: getMarkerName(editedShop.name) ,
                 contentOffset: [0, 0],
                 contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+              }"
+              :balloon="{
+                header: editedShop.name,
+                body:
+                  `<div>Адрес: ${editedShop.address}</div>
+                       <div>Телефон: ${editedShop.phone}</div>`,
+                footer: ''
               }"
             />
           </yandex-map>
@@ -310,6 +324,12 @@
       if (this.shops.length) this.coords = [this.shops[0].lat, this.shops[0].lng]
     },
     methods: {
+      getMarkerName (str) {
+        if (!str) return ''
+        const maxLen = 16
+        const strTrim = str.trim()
+        return strTrim.length > maxLen ? strTrim.substring(0, maxLen) + '...' : strTrim
+      },
       async setMarker (e) {
         // не делаем запрос если
         // не открыта карточка торговой точки
