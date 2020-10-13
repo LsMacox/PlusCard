@@ -934,7 +934,7 @@ line-height: 17px;"
                       v-model="program.social.vk"
                       placeholder="/Группа Вконтакте"
                       outlined
-                      :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
+                      :rules="[validURLRule, v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -947,7 +947,7 @@ line-height: 17px;"
                       v-model="program.social.youtube"
                       placeholder="/Канал на Youtube"
                       outlined
-                      :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
+                      :rules="[validURLRule, v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -960,7 +960,7 @@ line-height: 17px;"
                       v-model="program.social.fb"
                       placeholder="/Группа в Facebook"
                       outlined
-                      :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
+                      :rules="[validURLRule, v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -977,7 +977,7 @@ line-height: 17px;"
                       v-model="program.social.instagram"
                       placeholder="/Профиль в Instagram"
                       outlined
-                      :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
+                      :rules="[validURLRule, v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -1125,6 +1125,7 @@ line-height: 17px;"
   import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import Color from 'color'
   import { mask } from 'vue-the-mask'
+  import { validURL } from '@/utils/validate'
 
   export default {
 
@@ -1357,6 +1358,11 @@ line-height: 17px;"
       this.changeColor(this.program.bgcolor[0])
     },
     methods: {
+       validURLRule (v) {
+        const url = `https://fake.ru${v}`
+        console.log('validURLRule', url)
+        return validURL(url) || 'Не верная ссылка'
+      },
       getMarkerName (str) {
         if (!str) return ''
         const maxLen = 16

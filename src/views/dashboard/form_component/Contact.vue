@@ -38,6 +38,7 @@
         slot="description"
       >Введите адреса ваших профилей и групп в социальных сетях. Вводите только название профиля, которое стоит в самом конце адресной строки после символа “/”.</span>
       <template v-slot:input>
+        {{ program.social }}
         <base-text-field
           v-model="program.socials.vk"
           :validate-on-blur="true"
@@ -45,7 +46,8 @@
           prepend-inner-icon="$iconify_ion-logo-vk"
           prepend-inner-icon-color="logo-vk"
           outlined
-          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
+          :rules="[maxLenRule, validURLRule]"
+          @input="changeVK"
         />
         <base-text-field
           v-model="program.socials.youtube"
@@ -55,7 +57,8 @@
           prepend-inner-icon="$iconify_ant-design-youtube-filled"
           prepend-inner-icon-color="logo-youtube"
           outlined
-          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
+          :rules="[maxLenRule, validURLRule]"
+          @input="changeYoutube"
         />
         <base-text-field
           v-model="program.socials.facebook"
@@ -65,7 +68,8 @@
           prepend-inner-icon="$iconify_la-facebook-f"
           prepend-inner-icon-color="logo-facebook"
           outlined
-          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
+          :rules="[maxLenRule ,validURLRule]"
+          @input="changeFB"
         />
         <base-text-field
           v-model="program.socials.instagram"
@@ -75,7 +79,8 @@
           prepend-inner-icon="$iconify_ion-logo-instagram"
           prepend-inner-icon-color="logo-instagram"
           outlined
-          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
+          :rules="[maxLenRule, validURLRule]"
+          @input="changeInstagram"
         />
       </template>
     </BaseMasterFieldBlock>
@@ -83,6 +88,10 @@
 </template>
 
 <script>
+  import { validURL } from '@/utils/validate'
+
+  import Vue from 'vue'
+
   export default {
     props: {
       program: {
@@ -94,6 +103,56 @@
     },
     data () {
       return {}
+    },
+    computed: {
+
+    },
+    watch: {
+
+    },
+    created () {
+      Vue.set(this.program, 'socials', Object.assign({
+        vk: '',
+        youtube: '',
+        facebook: '',
+        instagram: '',
+      }, this.program.socials))
+
+      console.log('program', this.program.social)
+      this.replaceAll()
+    },
+    methods: {
+      replaceAll () {
+        this.changeVK(this.program.socials.vk)
+        this.changeYoutube(this.program.socials.youtube)
+        this.changeFB(this.program.socials.fb)
+        this.changeInstagram(this.program.socials.instagram)
+      },
+      changeVK (v) {
+        const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
+        this.program.socials.vk = v.replace(regex, '')
+      },
+      changeYoutube (v) {
+        const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm
+        this.program.social.youtube = v.replace(regex, '')
+      },
+      changeFB (v) {
+        const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
+        this.program.social.fb = v.replace(regex, '')
+      },
+      changeInstagram (v) {
+        const regex = /^(http:\/\/|https:\/\/|)(www.|)(instagram.com)/gm
+        this.program.social.instagram = v.replace(regex, '')
+      },
+      maxLenRule (v) {
+        return String(v).length < 255 || 'Ссылка должна быть менее 255 символов'
+      },
+      validURLRule (v) {
+        const url = `https://fake.ru${v}`
+        console.log('validURLRule', url)
+        return validURL(url) || 'Не верная ссылка'
+      },
+
     },
   }
 </script>
