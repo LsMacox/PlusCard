@@ -885,8 +885,9 @@ line-height: 17px;"
                     <v-text-field
                       v-model="program.phone"
                       placeholder="Номер горячей линии"
+                      maxlength="255"
                       outlined
-                      :rules="[v => String(v).length < 255 || 'Номер телефона должен быть менее 255 символов']"
+                      :rules="[v => String(v).length <= 255 || 'Номер телефона должен быть не более 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -900,8 +901,12 @@ line-height: 17px;"
                     <v-text-field
                       v-model="program.website"
                       placeholder="Адрес сайта"
+                      maxlength="255"
                       outlined
-                      :rules="[v => String(v).length < 255 || 'Адрес сайта должен быть менее 255 символов']"
+                      :rules="[
+                        v => validURL(v, {protocol: false}) || 'Не верная ссылка',
+                        v => String(v).length <= 255 || 'Адрес сайта должен быть не более 255 символов'
+                      ]"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -1125,7 +1130,7 @@ line-height: 17px;"
   import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import Color from 'color'
   import { mask } from 'vue-the-mask'
-  import { validURL } from '@/utils/validate'
+  import { asMixin, validURL } from '@/utils/validate'
 
   export default {
 
@@ -1135,6 +1140,7 @@ line-height: 17px;"
       yandexMap,
       ymapMarker,
     },
+    mixins: [asMixin({ validURL })],
     directives: { mask },
     data () {
       return {
@@ -1358,7 +1364,8 @@ line-height: 17px;"
       this.changeColor(this.program.bgcolor[0])
     },
     methods: {
-       validURLRule (v) {
+      validURLRule (v) {
+        if (!v) return true
         const url = `https://fake.ru${v}`
         console.log('validURLRule', url)
         return validURL(url) || 'Не верная ссылка'

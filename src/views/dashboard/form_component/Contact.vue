@@ -14,8 +14,9 @@
           placeholder="Номер горячей линии"
           prepend-inner-icon="$iconify_feather-phone"
           prepend-inner-icon-color="neutral-500"
+          maxlength="255"
           outlined
-          :rules="[v => String(v).length < 255 || 'Телефон должен быть менее 255 символов']"
+          :rules="[v => String(v).length <= 255 || 'Телефон должен быть не более 255 символов']"
         />
         <base-text-field
           v-model="program.website"
@@ -24,8 +25,12 @@
           placeholder="Адрес сайта"
           prepend-inner-icon="$iconify_feather-mouse-pointer"
           prepend-inner-icon-color="neutral-500"
+          maxlength="255"
           outlined
-          :rules="[v => String(v).length < 255 || 'Адрес сайта должен быть менее 255 символов']"
+          :rules="[
+            v => validURL(v, {protocol: false}) || 'Не верная ссылка',
+            v => String(v).length <= 255 || 'Адрес сайта должен быть не более 255 символов'
+          ]"
         />
       </template>
     </BaseMasterFieldBlock>
@@ -45,6 +50,7 @@
           placeholder="/Группа Вконтакте"
           prepend-inner-icon="$iconify_ion-logo-vk"
           prepend-inner-icon-color="logo-vk"
+          :maxlength="MAX_URL_LEN"
           outlined
           :rules="[maxLenRule, validURLRule]"
           @input="changeVK"
@@ -56,6 +62,7 @@
           placeholder="/Канал на Youtube"
           prepend-inner-icon="$iconify_ant-design-youtube-filled"
           prepend-inner-icon-color="logo-youtube"
+          :maxlength="MAX_URL_LEN"
           outlined
           :rules="[maxLenRule, validURLRule]"
           @input="changeYoutube"
@@ -67,6 +74,7 @@
           placeholder="/Группа в Facebook"
           prepend-inner-icon="$iconify_la-facebook-f"
           prepend-inner-icon-color="logo-facebook"
+          :maxlength="MAX_URL_LEN"
           outlined
           :rules="[maxLenRule ,validURLRule]"
           @input="changeFB"
@@ -78,6 +86,7 @@
           placeholder="/Профиль в Instagram"
           prepend-inner-icon="$iconify_ion-logo-instagram"
           prepend-inner-icon-color="logo-instagram"
+          :maxlength="MAX_URL_LEN"
           outlined
           :rules="[maxLenRule, validURLRule]"
           @input="changeInstagram"
@@ -88,7 +97,7 @@
 </template>
 
 <script>
-  import { validURL } from '@/utils/validate'
+  import { asMixin, validURL } from '@/utils/validate'
 
   import Vue from 'vue'
 
@@ -101,8 +110,12 @@
         },
       },
     },
+    mixins: [asMixin({ validURL })],
     data () {
       return {}
+    },
+    constants: {
+      MAX_URL_LEN: 255,
     },
     computed: {
 
@@ -130,24 +143,25 @@
       },
       changeVK (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
-        this.program.socials.vk = v.replace(regex, '')
+        this.program.socials.vk = String(v || '').replace(regex, '')
       },
       changeYoutube (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm
-        this.program.social.youtube = v.replace(regex, '')
+        this.program.socials.youtube = String(v || '').replace(regex, '')
       },
       changeFB (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
-        this.program.social.fb = v.replace(regex, '')
+        this.program.socials.fb = String(v || '').replace(regex, '')
       },
       changeInstagram (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(instagram.com)/gm
-        this.program.social.instagram = v.replace(regex, '')
+        this.program.socials.instagram = String(v || '').replace(regex, '')
       },
       maxLenRule (v) {
-        return String(v).length < 255 || 'Ссылка должна быть менее 255 символов'
+        return String(v).length < this.MAX_URL_LEN || `Ссылка должна быть менее ${this.MAX_URL_LEN} символов`
       },
       validURLRule (v) {
+        if (!v) return true
         const url = `https://fake.ru${v}`
         console.log('validURLRule', url)
         return validURL(url) || 'Не верная ссылка'
