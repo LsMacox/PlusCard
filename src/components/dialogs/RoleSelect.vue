@@ -1,5 +1,83 @@
 <template>
-  <div class="app__date-select">
+  <v-menu
+    v-if="true"
+    offset-y
+  >
+    <template v-slot:activator="{ on, attrs }">
+      <div
+        class="app__date-select-btn"
+        v-on="on"
+      >
+        <div class="app__date-select-btn-text">
+          {{ getItemLabel(model) }}
+        </div>
+        <div>
+          <v-icon
+            class="app__date-select-btn-icon"
+          >
+            {{ attrs['aria-expanded'] === 'true'? '$iconify_si-glyph-triangle-down' : ' $iconify_si-glyph-triangle-up' }}
+          </v-icon>
+        </div>
+      </div>
+    </template>
+    <v-list v-if="true">
+      <v-list-item
+        v-for="(item, index) in items"
+        :key="index"
+        @click="selectItem(item)"
+      >
+        <v-list-item-title
+          :class="isActiveItem(item) ? {
+            'body-s-semibold' : true,
+            'primary--text': true,
+          } : {
+            'body-s-medium' : true,
+            'neutral-600--text':true,
+          }"
+        >
+          {{ item[itemLabel] }}
+        </v-list-item-title>
+        <v-list-item-icon v-if="isActiveItem(item)">
+          <v-icon color="primary">
+            $iconify_bx-check
+          </v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+    </v-list>
+
+    <div
+      v-else
+
+      class="app__date-select-block"
+      :style="`min-width: ${minWidth};`"
+    >
+      <div class="app__date-select-block-square" />
+      <div
+        v-for="(item, i) in items"
+        :key="i"
+        class="app__date-select-block-item"
+        :style="getStyle(item)"
+        @click="selectItem(item)"
+      >
+        <div class="app__date-select-block-item-text">
+          {{ item[itemLabel] }}
+        </div>
+        <div
+          v-if="isActiveItem(item)"
+          style="position: relative;"
+        >
+          <v-icon>
+            $iconify_bx-check
+          </v-icon>
+        </div>
+      </div>
+    </div>
+  </v-menu>
+
+  <div
+    v-else
+    class="app__date-select"
+  >
     <div
       class="app__date-select-btn"
       @click.stop="show = !show"
@@ -108,8 +186,8 @@
 </script>
 
 <style lang="scss" scoped>
-.app__date-select {
-  position: relative;
+// .app__date-select {
+//   position: relative;
 
   .app__date-select-btn {
     display: flex;
@@ -181,5 +259,5 @@
       }
     }
   }
-}
+// }
 </style>

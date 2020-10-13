@@ -277,6 +277,7 @@
           {
             text: 'Роль',
             value: 'role_display_name',
+            width: '200px',
           },
           {
             text: '',
