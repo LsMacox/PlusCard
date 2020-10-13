@@ -161,9 +161,10 @@
         return String(v).length < this.MAX_URL_LEN || `Ссылка должна быть менее ${this.MAX_URL_LEN} символов`
       },
       validURLRule (v) {
+        if (!v) return true
         const url = `https://fake.ru${v}`
         console.log('validURLRule', url)
-        return validURL(url) || 'Не верная ссылка'
+        return  validURL(url) || 'Не верная ссылка'
       },
 
     },

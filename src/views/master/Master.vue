@@ -1365,6 +1365,7 @@ line-height: 17px;"
     },
     methods: {
       validURLRule (v) {
+        if (!v) return true
         const url = `https://fake.ru${v}`
         console.log('validURLRule', url)
         return validURL(url) || 'Не верная ссылка'
