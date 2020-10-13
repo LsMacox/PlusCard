@@ -110,11 +110,11 @@
         },
       },
     },
-    mixins:[asMixin( {validURL})],
+    mixins: [asMixin({ validURL })],
     data () {
       return {}
     },
-    constants:{
+    constants: {
       MAX_URL_LEN: 255,
     },
     computed: {
@@ -143,19 +143,19 @@
       },
       changeVK (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
-        this.program.socials.vk = v.replace(regex, '')
+        this.program.socials.vk = String(v || '').replace(regex, '')
       },
       changeYoutube (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm
-        this.program.socials.youtube = v.replace(regex, '')
+        this.program.socials.youtube = String(v || '').replace(regex, '')
       },
       changeFB (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
-        this.program.socials.fb = v.replace(regex, '')
+        this.program.socials.fb = String(v || '').replace(regex, '')
       },
       changeInstagram (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(instagram.com)/gm
-        this.program.socials.instagram = v.replace(regex, '')
+        this.program.socials.instagram = String(v || '').replace(regex, '')
       },
       maxLenRule (v) {
         return String(v).length < this.MAX_URL_LEN || `Ссылка должна быть менее ${this.MAX_URL_LEN} символов`
@@ -164,7 +164,7 @@
         if (!v) return true
         const url = `https://fake.ru${v}`
         console.log('validURLRule', url)
-        return  validURL(url) || 'Не верная ссылка'
+        return validURL(url) || 'Не верная ссылка'
       },
 
     },
