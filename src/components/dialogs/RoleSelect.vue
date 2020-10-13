@@ -108,6 +108,7 @@
 </script>
 
 <style lang="scss" scoped>
+
 .app__date-select {
   position: relative;
 

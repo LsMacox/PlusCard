@@ -66,6 +66,7 @@
             </div>
 
             <role-select
+              class="role__select"
               v-else
               min-width="260px"
               :items="roles"
@@ -331,8 +332,13 @@
         }
       },
       validateForm () {
-        if (!this.form.method || (!this.form.email && !this.form.phone) || !emailV(this.form.email) || !this.form.role_id) return false
-        return true
+        if (this.form.method && this.form.method === 'email' && this.form.email && emailV(this.form.email) && this.form.role_id) {
+          return true
+        }
+        if (this.form.method && this.form.method !== 'email' && this.form.phone && this.form.role_id) {
+          return true
+        }
+        return false
       },
     },
     watch: {
@@ -404,7 +410,7 @@
           this.loadingCreate = true
           const item = {
             type: this.form.method,
-            login: (this.form.method === 'email' ? this.form.email : this.form.phone),
+            login: (this.form.method === 'email' ? this.form.email : this.form.phone.replace(/[+\- ()]/gm, '')),
             role_id: this.form.role_id,
           }
           // console.log(item)
