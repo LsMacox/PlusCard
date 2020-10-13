@@ -133,91 +133,97 @@
       :width="483"
       class="staff-side-panel"
     >
-      <div class="staff-side-panel__header title-m-bold">
-        Добавить сотрудника
-      </div>
-      <div class="staff-side-panel__text-block">
-        <div class="staff-side-panel__text-block-header body-l-semibold">
-          Отправка приглашения
-        </div>
-        <div class="body-m-regular">
-          Пригласите сотрудника используя его почту или телефон. Выбранный способ будет использоваться для регистрации и дальнейшего входа в систему.
-        </div>
-      </div>
-
-      <div style="margin: 18px 34px 0 34px;">
-        <v-radio-group
-          v-model="form.method"
-          row
-        >
-          <v-radio
-            label="Почта"
-            value="email"
-          />
-          <v-radio
-            label="Телефон"
-            value="phone"
-          />
-        </v-radio-group>
-
-        <v-text-field
-          v-if="form.method === 'email'"
-          key="email"
-          v-model="form.email"
-          placeholder="Введите почту сотрудника"
-          outlined
-          required
-          validate-on-blur
-          :rules="emailRules"
-        />
-        <v-text-field
-          v-else
-          key="phone"
-          v-model="form.phone"
-          v-mask="'+7 (###) ###-##-##'"
-          placeholder="Введите телефон сотрудника"
-          outlined
-          required
-          validate-on-blur
-          :rules="phoneRules"
-        />
-      </div>
-
-      <div
-        class="staff-side-panel__text-block"
-        style="margin: 4px 34px 0 34px;"
+      <v-form
+        ref="staffForm"
+        v-model="formValid"
       >
-        <div class="staff-side-panel__text-block-header body-l-semibold">
-          Роль сотрудника
-        </div>
-        <div class="body-m-regular">
-          Выберите роль сотрудника. От нее зависит доступ к информации и функционалу системы.
-        </div>
-      </div>
-
-      <div style="margin: 34px 34px 0 34px;">
-        <v-select
-          v-model="form.role_id"
-          :items="roles"
-          placeholder="Выберите роль сотрудника"
-          item-text="display_name"
-          item-value="id"
-          outlined
-        />
-
-        <v-btn
-          style="margin-top: 26px;"
-          color="primary"
-          :loading="loadingCreate"
-          :disabled="!validateForm"
-          @click="inviteStaff()"
-        >
-          <v-icon left>
-            $iconify_plus-circle-outlined
-          </v-icon>
+        <div class="staff-side-panel__header title-m-bold">
           Добавить сотрудника
-        </v-btn>
-      </div>
+        </div>
+        <div class="staff-side-panel__text-block">
+          <div class="staff-side-panel__text-block-header body-l-semibold">
+            Отправка приглашения
+          </div>
+          <div class="body-m-regular">
+            Пригласите сотрудника используя его почту или телефон. Выбранный способ будет использоваться для регистрации и дальнейшего входа в систему.
+          </div>
+        </div>
+
+        <div style="margin: 18px 34px 0 34px;">
+          <v-radio-group
+            v-model="form.method"
+            row
+          >
+            <v-radio
+              label="Почта"
+              value="email"
+            />
+            <v-radio
+              label="Телефон"
+              value="phone"
+            />
+          </v-radio-group>
+
+          <v-text-field
+            v-if="form.method === 'email'"
+            key="email"
+            v-model="form.email"
+            placeholder="Введите почту сотрудника"
+            outlined
+            required
+            validate-on-blur
+            :rules="emailRules"
+          />
+          <v-text-field
+            v-else
+            key="phone"
+            v-model="form.phone"
+            v-mask="'+7 (###) ###-##-##'"
+            placeholder="Введите телефон сотрудника"
+            outlined
+            required
+            validate-on-blur
+            :rules="phoneRules"
+          />
+        </div>
+
+        <div
+          class="staff-side-panel__text-block"
+          style="margin: 4px 34px 0 34px;"
+        >
+          <div class="staff-side-panel__text-block-header body-l-semibold">
+            Роль сотрудника
+          </div>
+          <div class="body-m-regular">
+            Выберите роль сотрудника. От нее зависит доступ к информации и функционалу системы.
+          </div>
+        </div>
+
+        <div style="margin: 34px 34px 0 34px;">
+          <v-select
+            v-model="form.role_id"
+            :items="roles"
+            placeholder="Выберите роль сотрудника"
+            item-text="display_name"
+            item-value="id"
+            :rules="[ v=> !!v || 'Выберите роль сотрудника' ]"
+            outlined
+          />
+
+          <v-btn
+            style="margin-top: 26px;"
+            color="primary"
+            :loading="loadingCreate"
+            :disabled="!formValid"
+            @click="inviteStaff()"
+          >
+            <v-icon left>
+              $iconify_plus-circle-outlined
+            </v-icon>
+            Добавить сотрудника
+          </v-btn>
+        </div>
+      </v-form>
     </side-panel>
   </div>
 </template>
@@ -228,6 +234,8 @@
   import SidePanel from '@/components/base/SidePanel.vue'
   import RoleSelect from '@/components/dialogs/RoleSelect'
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
+
+  import {validPhone} from '@/utils/validate'
 
   export default {
     components: {
@@ -282,6 +290,7 @@
         loadingCreate: false,
         loadingUpdate: false,
         loadingDelete: false,
+        formValid: false,
         form: {
           method: 'email',
           email: null,
@@ -290,6 +299,7 @@
         },
         phoneRules: [
           v => !!v || 'Телефон обязателен',
+          v => validPhone(v) || 'Не верный формат'
         ],
         emailRules: [
           v => !!v || 'Email обязателен',
@@ -400,6 +410,7 @@
         }
       },
       async inviteStaff () {
+        if (!this.$refs.staffForm.validate()) return
         try {
           this.loadingCreate = true
           const item = {

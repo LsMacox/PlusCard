@@ -1,4 +1,4 @@
-function asMixin (name,fun) {
+function asMixin (name, fun) {
     const methods = {}
     methods[name] = fun
 
@@ -69,6 +69,19 @@ function validEmail (email) {
 }
 
 /**
+ * @param {string} email
+ * @returns {Boolean}
+ */
+function validPhone (phone) {
+    if (!phone) return false
+    const phoneReplaced = phone.trim()
+        .replace(/(\ |-|\(|\))/g, '')
+
+    const reg = /^(\+7|7|8)+(\d{10})$/
+    return reg.test(phoneReplaced)
+}
+
+/**
  * @param {string} str
  * @returns {Boolean}
  */
@@ -102,7 +115,7 @@ function isNumeric (val) {
  * @param {any} val
  * @returns {Boolean}
  */
-function isInteger (val) {   
+function isInteger (val) {
   return /^-?[0-9]+$/.test(String(val))
 }
 
@@ -164,6 +177,7 @@ export {
     validLowerCase,
     validAlphabets,
     validEmail,
+    validPhone,
     isString,
     isNumber,
     isNumeric,
@@ -173,4 +187,5 @@ export {
     isFilled,
     isEmpty,
     maxLen,
+    maxNumber,
 }
