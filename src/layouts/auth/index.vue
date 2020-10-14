@@ -1,9 +1,7 @@
 <template>
-  <div class="layout-cabinet">
-    <div class="layouts-auth">
-      <side-panel />
-      <router-view />
-    </div>
+  <div class="layouts-auth">
+    <side-panel />
+    <router-view />
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="layout-cabinet">
+  <div class="layout layout-cabinet">
     <app-menu-drawer />
     <app-view />
   </div>
@@ -172,3 +172,9 @@
     },
   }
 </script>
+
+<style lang="scss" scoped>
+.layout {
+  // height: 100%;
+}
+</style>
