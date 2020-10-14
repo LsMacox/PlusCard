@@ -23,7 +23,12 @@
           </v-col>
 
           <v-col :cols="6">
-            <div class="form-menu__item-block">
+             <v-row justify="center" v-if="$slots.header" no-gutters style="text-align: center;">
+              <v-col>
+                <slot name="header" />
+              </v-col>
+            </v-row>
+            <div v-else class="form-menu__item-block">
               <div
                 v-for="(item, index) in menu"
                 :key="index"
@@ -32,12 +37,7 @@
               >
                 {{ item.name }}
               </div>
-            </div>
-            <v-row justify="center" no-gutters>
-              <v-col cols="auto">
-                <slot name="header" />
-              </v-col>
-            </v-row>
+            </div>           
           </v-col>
           <v-col :cols="3">
             <v-row

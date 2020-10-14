@@ -147,6 +147,18 @@ const actions = {
     }
   },
 
+  async setModeration ({ commit }, item) {
+    const result = await ApiService.put('/api-cabinet/company/moderation', item)
+    // console.log('brand/company/setModeration')
+    // console.log(success)
+    commit('SET_PROGRAM', result)
+    this._vm.$notify({
+      type: 'success',
+      title: 'Настройка компании',
+      text: 'Компания отправлена на модерацию',
+    })
+  },
+
   async Delete ({ commit }, programId) {
      await ApiService.delete('/api-cabinet/company/delete', {
         params: {

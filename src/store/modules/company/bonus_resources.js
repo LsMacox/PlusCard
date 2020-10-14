@@ -63,7 +63,7 @@ export default {
             const result = await ApiService.get(
                 `/api-cabinet/program/bonus/resource/list/short?program_id=${programId}`,
             )
-
+            console.log(result)
             commit('bonusResources', result)
         },
 
@@ -119,7 +119,6 @@ export default {
             if (bonusResIds.length === 0) {
                throw Error('Включение не возможно: требуется заполнить блок')
             }
-            
 
             await ApiService.post(
                 '/api-cabinet/program/bonus_resources/active/set',
@@ -172,7 +171,18 @@ export default {
     },
     getters: {
         bonusResources (state) {
-            return state.bonusResources
+            return state.bonusResources.map(x => {
+                console.log('bonusResources.map.before', x)
+                Vue.set(x, 'rules', Object.assign({
+                    event: null,
+                    expire_days: null,
+                }, x.rules))
+                console.log('bonusResources.map.after', x)
+                return x
+            })
+        },
+        manualBonusRes (state, getters) {
+            return getters.bonusResources.filter(x => x.rules === null || x.rules.event === null)
         },
         buyBonusRes (state) {
             return state.bonusResources.filter(eventFilter(EVENTS_ENUM.AccountBuyEvent))

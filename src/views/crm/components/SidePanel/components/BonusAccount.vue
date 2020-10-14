@@ -239,7 +239,12 @@
         return mode === 'FROM' ? 'Списать: ###########' : 'Начислить: ###########'
       },
       isManual (unit, type) {
-        const res = this.bonusResources.find(item => (item.bonus_score.units_id == unit.unit_id && item.resource_type_enum == type && !item.rules))
+        const res = this.bonusResources.find(item => {
+          return item.bonus_score.units_id == unit.unit_id &&
+            item.resource_type_enum == type &&
+            item.bonus_score && item.bonus_score.active &&
+            (!item.rules || !item.rules.event)
+        })
         if (res) return true
         return false
       },
