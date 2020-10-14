@@ -248,7 +248,7 @@
   }
   .custom-drop-down {
     border: 1px solid #D7D7E0;
-    max-width: 254px;
+    max-width: 420px;
     width: 100%;
     padding: 12px 16px;
     border-radius: 10px;

@@ -210,12 +210,12 @@ const actions = {
 
             await dispatch('auth/auth/loadingApp', null, { root: true })
             await dispatch('SocketConnect', null)
-
-            commit('LOADING_APP', false)
+            
             console.log('status=ok')
         } catch (error) {
             console.log('loading error', error)
         } finally {
+            commit('LOADING_APP', false)
             console.log('</LoadingApp>')
         }
     },
