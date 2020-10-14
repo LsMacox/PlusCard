@@ -630,6 +630,8 @@
                     <v-text-field
                       v-model="newShop.phone"
                       placeholder="Введите телефон"
+                      :rules="[v => String(v).length <= 100 || 'Номер телефона должен быть не более 100 символов']"
+                      maxlength="100"
                       outlined
                       style="width: 380px"
                     >
@@ -962,7 +964,7 @@ line-height: 17px;"
                       </template>
                     </v-text-field>
                     <v-text-field
-                      v-model="program.social.fb"
+                      v-model="program.social.facebook"
                       placeholder="/Группа в Facebook"
                       outlined
                       :rules="[validURLRule, v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
@@ -1331,9 +1333,9 @@ line-height: 17px;"
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
         this.program.social.vk = v.replace(regex, '')
       },
-      'program.social.fb' (v) {
+      'program.social.facebook' (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
-        this.program.social.fb = v.replace(regex, '')
+        this.program.social.facebook = v.replace(regex, '')
       },
       'program.social.youtube' (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm

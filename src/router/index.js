@@ -8,6 +8,7 @@ import CrmRouters from './modules/crm'
 import ChatRouters from './modules/chat'
 
 import GuardEmptyPrograms from '@/router/guards/guard-empty-programs'
+import GuardLoadingApp from '@/router/guards/guard-loading-app'
 
 /* Router Modules */
 
@@ -39,11 +40,12 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/login',
+      path: '/login',      
       component: AuthLayout,
       children: [
         {
           path: '',
+          name: 'Login',
           redirect: 'email',
         },
         {
@@ -114,6 +116,7 @@ export default new Router({
     },
     {
       path: '/',
+      beforeEnter: GuardLoadingApp,
       component: CabinetLayout,
       meta: { auth: true },
       children: [

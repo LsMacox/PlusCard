@@ -1,10 +1,10 @@
 <template>
-  <v-app>
+  <div class="layout-cabinet">
     <div class="layouts-auth">
       <side-panel />
       <router-view />
     </div>
-  </v-app>
+  </div>
 </template>
 
 <script>

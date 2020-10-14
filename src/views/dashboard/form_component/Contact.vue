@@ -138,7 +138,7 @@
       replaceAll () {
         this.changeVK(this.program.socials.vk)
         this.changeYoutube(this.program.socials.youtube)
-        this.changeFB(this.program.socials.fb)
+        this.changeFB(this.program.socials.facebook)
         this.changeInstagram(this.program.socials.instagram)
       },
       changeVK (v) {
@@ -151,7 +151,7 @@
       },
       changeFB (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
-        this.program.socials.fb = String(v || '').replace(regex, '')
+        this.program.socials.facebook = String(v || '').replace(regex, '')
       },
       changeInstagram (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(instagram.com)/gm

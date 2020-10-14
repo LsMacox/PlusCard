@@ -1,11 +1,8 @@
 <template>
-  <v-app
-    v-if="!loadingApp"
-    id="vApp"
-  >
+  <div class="layout-cabinet">
     <app-menu-drawer />
     <app-view />
-  </v-app>
+  </div>
 </template>
 
 <script>
@@ -23,31 +20,7 @@
       },
     },
     async created () {
-      try {
-        await this.$store.dispatch('app/setLoadingApp', true)
 
-        console.log('<AppLoading>')
-        await this.$store.dispatch('auth/auth/loadingApp')
-        // TODO connect socket+redis
-        // слушаем канал system
-        // let socketOn = this.socketOn
-        console.log('window.socket', window.socket)
-        window.socket.on('system', (data) => {          
-          this.socketOn(data)
-        })
-        // redis reconnect
-        window.socket.on('reconnect', (attemptNumber) => {
-          console.log('Socket reconnect after attempt = ' + attemptNumber)
-          this.$store.dispatch('auth/redis/connect')
-        })
-
-        await this.$store.dispatch('app/setLoadingApp', false)
-        console.log('status=ok')
-      } catch (error) {
-        console.log('loading error', error)
-      } finally {
-        console.log('</AppLoading>')
-      }
     },
     methods: {
       async socketOn (data) {

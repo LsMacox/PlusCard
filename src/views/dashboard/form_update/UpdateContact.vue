@@ -86,9 +86,9 @@
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
         this.program.social.vk = v.replace(regex, '')
       },
-      'program.social.fb' (v) {
+      'program.social.facebook' (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
-        this.program.social.fb = v.replace(regex, '')
+        this.program.social.facebook = v.replace(regex, '')
       },
       'program.social.youtube' (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm

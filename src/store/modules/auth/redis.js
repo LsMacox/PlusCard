@@ -19,7 +19,7 @@ export default {
            // console.log(success)
         },
         async connect ({ rootState }) {
-            console.log('redis.connect', rootState)
+            console.log('redis.connect')
             // const session = JSON.parse(localStorage.getItem('session'))
 
             if (VueSession.exists()) {
