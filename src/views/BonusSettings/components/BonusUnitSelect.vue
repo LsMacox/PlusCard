@@ -17,6 +17,7 @@
           ref="bonusUnitSelectBtn"
           v-bind="attrs"
           outlined
+          full-width
           :class="{
             'custom-drop-down': true,
             'border-bottom-not-round': attrs['aria-expanded'] === 'true',

@@ -673,6 +673,6 @@
 @import '_BlockStyle.scss';
 
 .bonus-unit-select{
-  max-width: 420px;
+  min-width: 420px;
 }
 </style>
