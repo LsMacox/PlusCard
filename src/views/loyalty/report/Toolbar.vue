@@ -18,7 +18,6 @@
             item-value="id"
             item-label="name"
           />
-          {{ periodId }}
         </div>
       </div>
     </v-col>
