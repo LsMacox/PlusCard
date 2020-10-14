@@ -125,9 +125,19 @@ const actions = {
       // console.log(result)
       commit('SET_PROGRAMS', result)
       if (result && result.length) {
-        if (!VueSession.get('program')) {
-          commit('SET_PROGRAM', result[0])
-          VueSession.set('program', result[0])
+        // сравнение моделей программ в ответе и localStorage
+        const p = VueSession.get('program')
+        const r = result.find(item => item.id === p.id)
+        if (JSON.stringify(p) !== JSON.stringify(r)) {
+          // программа из localStorage есть в ответе
+          if (p.id === r.id) {
+            commit('SET_PROGRAM', r)
+            VueSession.set('program', r)
+            // программы из localStorage нет в ответе
+          } else {
+            commit('SET_PROGRAM', result[0])
+            VueSession.set('program', result[0])
+          }
         }
       }
     } catch (error) {
@@ -157,6 +167,26 @@ const actions = {
       title: 'Настройка компании',
       text: 'Компания отправлена на модерацию',
     })
+  },
+
+  async setActive ({ commit }, item) {
+    const result = await ApiService.put('/api-cabinet/company/active', item)
+    // console.log('brand/company/active')
+    // console.log(success)
+    commit('SET_PROGRAM', result)
+    if (result.active) {
+      this._vm.$notify({
+        type: 'success',
+        title: 'Настройка компании',
+        text: 'Компания опубликована',
+      })
+    } else {
+      this._vm.$notify({
+        type: 'success',
+        title: 'Настройка компании',
+        text: 'Компания снята с публикации',
+      })
+    }
   },
 
   async Delete ({ commit }, programId) {

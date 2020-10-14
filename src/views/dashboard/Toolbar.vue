@@ -1,7 +1,7 @@
 <template>
   <div class="loyalty-toolbar">
     <div class="loyalty-toolbar-name">
-      {{ program.name }}
+      <div>{{ program.name }}</div>
     </div>
     <div class="loyalty-toolbar-period">
       <date-range-select
@@ -12,26 +12,57 @@
         item-label="name"
       />
     </div>
+    <div class="loyalty-toolbar-name-hint">
+      <div
+        v-if="(program.current_moderations && program.current_moderations.length)"
+        class="loyalty-toolbar-name-hint-green"
+      >
+        на модерации
+      </div>
+      <div
+        v-if="program.moderation_status === 'REJECT'"
+        class="loyalty-toolbar-name-hint-red"
+      >
+        модерация отклонена
+      </div>
+    </div>
 
     <div class="app__spacer" />
 
-    <div>
+    <div style="display: flex;">
       <v-btn
         v-if="program.moderation_status === 'TEMPLATE' && (program.current_moderations && !program.current_moderations.length)"
         color="secondary"
-        style="margin-right: 16px;"
-        small
+        style="position: relative; top: 10px; right: 16px;"
+        :text="true"
+        :ripple="false"
         :loading="loading"
         @click="setModeration()"
       >
         <span
           class="iconify"
-          style="margin-right: 8px;"
+          style="width: 18px; height: 18px; margin-right: 8px;"
           data-icon="ion-checkmark-circle-outline"
           data-inline="false"
         />
         Отправить на модерацию
       </v-btn>
+      <div
+        v-else
+        style="width: 230px; padding: 6px 20px 0 0;"
+      >
+        <v-switch
+          v-model="program.active"
+          :label="program.active ? 'Снять с публикации' : 'Опубликовать'"
+          inset
+          hide-details
+          class="custom-switch"
+          :loading="loadingActive"
+          :disabled="loadingActive || program.moderation_status === 'TEMPLATE' || program.moderation_status === 'REJECT'"
+          @change="setActive()"
+        />
+      </div>
+
       <v-btn
         color="secondary"
         small
@@ -61,6 +92,7 @@
     data () {
       return {
         loading: false,
+        loadingActive: false,
         periodId: null,
         periods: [
           { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
@@ -111,12 +143,21 @@
           this.loading = false
         }
       },
+      async setActive () {
+        try {
+          this.loadingActive = true
+          await this.$store.dispatch('company/program/setActive', this.program)
+        } finally {
+          this.loadingActive = false
+        }
+      },
     },
   }
 </script>
 
 <style lang="scss" scoped>
 .loyalty-toolbar {
+  position: relative;
   display: flex;
   align-items: center;
   margin: 0;
@@ -152,6 +193,22 @@
       font-size: 24px;
       position: relative;
       top: 4px;
+    }
+  }
+
+  .loyalty-toolbar-name-hint {
+    position: absolute;
+    top: 36px;
+    width: 200px;
+    font-size: 13px;
+    font-weight: normal;
+
+    .loyalty-toolbar-name-hint-red {
+      color: red;
+    }
+
+    .loyalty-toolbar-name-hint-green {
+      color: green;
     }
   }
 
