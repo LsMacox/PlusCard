@@ -1,37 +1,54 @@
 <template>
-  <div class="loyalty-toolbar">
-    <div class="loyalty-toolbar-name">
-      {{ program.name }}
-    </div>
-    <div class="loyalty-toolbar-period">
-      <date-range-select
-        min-width="250px"
-        :items="periods"
-        :model.sync="periodId"
-        item-value="id"
-        item-label="name"
-      />
-    </div>
-
-    <div class="app__spacer" />
-
-    <div
-      style="display: inline-grid;"
-    >
-      <v-btn
-        color="secondary"
-        small
-        @click="toRoute(`/company/${program.id}/info`)"
-      >
-        <span
-          class="iconify"
-          style="margin-right: 8px;"
-          data-icon="feather:settings"
-          data-inline="false"
+  <div>
+    <div class="loyalty-toolbar">
+      <div class="loyalty-toolbar-name">
+        {{ program.name }}
+      </div>
+      <div class="loyalty-toolbar-period">
+        <date-range-select
+          min-width="250px"
+          :items="periods"
+          :model.sync="periodId"
+          item-value="id"
+          item-label="name"
         />
-        Настроить компанию
-      </v-btn>
+      </div>
+
+      <div class="app__spacer" />
+
+      <div>
+        <v-btn
+          v-if="program.moderation_status === 'TEMPLATE' && (program.current_moderations && !program.current_moderations.length)"
+          color="secondary"
+          style="margin-right: 16px;"
+          small
+          :loading="loading"
+          @click="setModeration()"
+        >
+          <span
+            class="iconify"
+            style="margin-right: 8px;"
+            data-icon="ion-checkmark-circle-outline"
+            data-inline="false"
+          />
+          Отправить на модерацию
+        </v-btn>
+        <v-btn
+          color="secondary"
+          small
+          @click="toRoute(`/company/${program.id}/info`)"
+        >
+          <span
+            class="iconify"
+            style="margin-right: 8px;"
+            data-icon="feather:settings"
+            data-inline="false"
+          />
+          Настроить компанию
+        </v-btn>
+      </div>
     </div>
+    <div>{{ program }}</div>
   </div>
 </template>
 
@@ -46,6 +63,7 @@
     },
     data () {
       return {
+        loading: false,
         periodId: null,
         periods: [
           { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString(), end: new Date(Date.now()).toISOString() },
@@ -87,6 +105,14 @@
     methods: {
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
+      },
+      async setModeration () {
+        try {
+          this.loading = true
+          await this.$store.dispatch('company/program/setModeration', this.program)
+        } finally {
+          this.loading = false
+        }
       },
     },
   }
