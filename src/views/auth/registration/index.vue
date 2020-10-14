@@ -30,7 +30,7 @@
           outlined
           required
           :rules="emailRules"
-          validate-on-blur
+          :validate-on-blur="false"
         >
           <template slot="prepend-inner">
             <span
@@ -49,7 +49,7 @@
           outlined
           required
           :rules="phoneRules"
-          validate-on-blur
+          :validate-on-blur="false"
         >
           <template slot="prepend-inner">
             <v-img
@@ -66,7 +66,7 @@
           outlined
           required
           :rules="passwordRules"
-          validate-on-blur
+          :validate-on-blur="false"
         >
           <template slot="prepend-inner">
             <span
@@ -99,7 +99,7 @@
           outlined
           required
           :rules="passwordConfirmRules"
-          validate-on-blur
+          :validate-on-blur="false"
         >
           <template slot="prepend-inner">
             <span
@@ -147,7 +147,7 @@
 
             block
             :loading="loading"
-            :disabled="!valid && !accept"
+            :disabled="!(valid && accept)"
             @click="submit()"
           >
             <v-icon left>
@@ -184,6 +184,8 @@
   import VueRecaptcha from 'vue-recaptcha'
   import { mapGetters } from 'vuex'
 
+  import { validPhone } from '@/utils/validate'
+
   export default {
     components: {
       VueRecaptcha,
@@ -204,12 +206,12 @@
         visible2: false,
         accept: false,
         emailRules: [
-          v => !!v || 'E-mail обязателен',
+          v => !!v || 'Введите E-mail',
           // v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
           v => /^([\w]+\.)*[\w\+]+@[\w]+(\.[\w]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
         ],
         phoneRules: [
-          v => !!v || 'Телефон обязателен',
+          v => (!!v && validPhone(v)) || 'Введите телефон',
         ],
         passwordRules: [
           v => !!v || 'Пароль обязателен',
@@ -251,6 +253,7 @@
         return p
       },
       submit () {
+        if (!this.$refs.form.validate()) return
         this.$refs.recaptcha.execute()
       },
       async registration (recaptchaToken) {
