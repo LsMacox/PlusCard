@@ -63,7 +63,7 @@ export default {
             const result = await ApiService.get(
                 `/api-cabinet/program/bonus/resource/list/short?program_id=${programId}`,
             )
-
+            console.log(result)
             commit('bonusResources', result)
         },
 
