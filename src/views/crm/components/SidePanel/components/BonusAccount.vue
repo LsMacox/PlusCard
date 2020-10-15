@@ -297,8 +297,8 @@
           if (this.operationMode === 'TO') operation.score_source_id = this.selectedBonusResourceId
           console.log('processing')
           console.log(operation)
-          // await this.$store.dispatch('crm/clientCard/transactionsAdd', operation)
-          // await this.$store.dispatch('crm/clientCard/getAccountBalances', this.clientData) // обнвление баланса
+          await this.$store.dispatch('crm/clientCard/transactionsAdd', operation)
+          await this.$store.dispatch('crm/clientCard/getAccountBalances', this.clientData) // обнвление баланса
           this.$notify({
             type: 'success',
             title: 'Клиенты',
