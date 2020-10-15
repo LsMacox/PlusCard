@@ -122,18 +122,24 @@ const actions = {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.get('/api-cabinet/company/list')
-      // console.log(result)
+      console.log('/api-cabinet/company/list')
+      console.log(result)
       commit('SET_PROGRAMS', result)
       if (result && result.length) {
-        // сравнение моделей программ в ответе и localStorage
         const p = VueSession.get('program')
-        const r = result.find(item => item.id === p.id)
+        // модели программы нет в localStorage
+        if (!p) {
+          commit('SET_PROGRAM', result[0])
+          return VueSession.set('program', result[0]) // выход
+        }
+        const r = result.find(item => p && item.id === p.id)
+        // сравнение моделей программ в ответе и localStorage
         if (JSON.stringify(p) !== JSON.stringify(r)) {
           // программа из localStorage есть в ответе
-          if (p.id === r.id) {
+          if (p && r && p.id === r.id) {
             commit('SET_PROGRAM', r)
             VueSession.set('program', r)
-            // программы из localStorage нет в ответе
+            // программы из localStorage нет в ответе = новый логин
           } else {
             commit('SET_PROGRAM', result[0])
             VueSession.set('program', result[0])
