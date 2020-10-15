@@ -265,6 +265,7 @@
           device_token: this.device.token,
           device_type: this.device.type,
           recaptcha_token: recaptchaToken,
+          new: true,
         }
         console.log(user)
         try {
