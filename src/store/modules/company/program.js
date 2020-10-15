@@ -125,12 +125,28 @@ const actions = {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.get('/api-cabinet/company/list')
-      // console.log(result)
+      console.log('/api-cabinet/company/list')
+      console.log(result)
       commit('SET_PROGRAMS', result)
       if (result && result.length) {
-        if (!VueSession.get('program')) {
+        const p = VueSession.get('program')
+        // модели программы нет в localStorage
+        if (!p) {
           commit('SET_PROGRAM', result[0])
-          VueSession.set('program', result[0])
+          return VueSession.set('program', result[0]) // выход
+        }
+        const r = result.find(item => p && item.id === p.id)
+        // сравнение моделей программ в ответе и localStorage
+        if (JSON.stringify(p) !== JSON.stringify(r)) {
+          // программа из localStorage есть в ответе
+          if (p && r && p.id === r.id) {
+            commit('SET_PROGRAM', r)
+            VueSession.set('program', r)
+            // программы из localStorage нет в ответе = новый логин
+          } else {
+            commit('SET_PROGRAM', result[0])
+            VueSession.set('program', result[0])
+          }
         }
       }
     } catch (error) {
@@ -147,6 +163,38 @@ const actions = {
       commit('SET_PROGRAM_MODEL', result)
     } catch (error) {
       throw error
+    }
+  },
+
+  async setModeration ({ commit }, item) {
+    const result = await ApiService.put('/api-cabinet/company/moderation', item)
+    // console.log('brand/company/setModeration')
+    // console.log(success)
+    commit('SET_PROGRAM', result)
+    this._vm.$notify({
+      type: 'success',
+      title: 'Настройка компании',
+      text: 'Компания отправлена на модерацию',
+    })
+  },
+
+  async setActive ({ commit }, item) {
+    const result = await ApiService.put('/api-cabinet/company/active', item)
+    // console.log('brand/company/active')
+    // console.log(success)
+    commit('SET_PROGRAM', result)
+    if (result.active) {
+      this._vm.$notify({
+        type: 'success',
+        title: 'Настройка компании',
+        text: 'Компания опубликована',
+      })
+    } else {
+      this._vm.$notify({
+        type: 'success',
+        title: 'Настройка компании',
+        text: 'Компания снята с публикации',
+      })
     }
   },
 

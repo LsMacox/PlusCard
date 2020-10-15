@@ -1,6 +1,6 @@
 <template>
   <div
-    class="loyalty-block"
+    class="crm b-segment"
   >
     <toolbar />
     <app-table />
@@ -18,6 +18,10 @@
     },
     data () {
       return {
+        sidePanelEditClient: {
+          status: false,
+          data: null,
+        },
         searchText: '',
         loading: false,
       }
@@ -50,11 +54,11 @@
           this.fetchData()
         }
       },
-      period (v) {
-        if (v) {
-          this.fetchData()
-        }
-      },
+      // period (v) {
+      //   if (v) {
+      //     this.fetchData()
+      //   }
+      // },
     },
     async created () {
       await this.fetchData()
@@ -80,6 +84,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "~@/styles/loyalty-report";
+@import "~@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 </style>
