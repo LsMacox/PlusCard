@@ -183,7 +183,7 @@
   import { mask } from 'vue-the-mask'
   import VueRecaptcha from 'vue-recaptcha'
   import { mapGetters } from 'vuex'
-
+  import { validEmail } from '@/utils/validate.js'
   import { validPhone } from '@/utils/validate'
 
   export default {
@@ -207,8 +207,7 @@
         accept: false,
         emailRules: [
           v => !!v || 'Введите E-mail',
-          // v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
-          v => /^([\w]+\.)*[\w\+]+@[\w]+(\.[\w]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+          v => validEmail(v) || 'E-mail неверного формата',
         ],
         phoneRules: [
           v => (!!v && validPhone(v)) || 'Введите телефон',
@@ -229,6 +228,7 @@
         'merchants',
         'merchant',
         'device',
+        'client',
       ]),
     },
     mounted () {
@@ -265,6 +265,7 @@
           device_token: this.device.token,
           device_type: this.device.type,
           recaptcha_token: recaptchaToken,
+          client: this.client,
         }
         console.log(user)
         try {
