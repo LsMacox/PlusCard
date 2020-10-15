@@ -246,7 +246,11 @@
       },
     },
     watch: {
+      internalActive(v) {
+        console.log('update:internalActive', v)
+      },
       active (v) {
+        console.log('update:active', v)
         this.internalActive = v
       },
     },
@@ -382,13 +386,16 @@
           active: value,
           programId: this.program.id,
         }).then((res) => {
-          // this.internalActive = !value
-        }).catch(() => {
+
+          // this.internalActive = value
+        }).catch((error) => {
+          console.error(error)
           this.$nextTick(() => {
             this.internalActive = this.active
           })
         }).finally(() => {
           this.ChangeActiveAction = false
+          console.log('this.internalActive', this.internalActive)
         })
       },
     },
