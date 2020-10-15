@@ -1,11 +1,13 @@
 import date from './date'
 import app from './app'
+import yandexMap from './yandex-map'
 
 // console.log('app', app)
 
 const config = Object.freeze({
     app,
     date,
+    yandexMap,
     tooltipButtonDelay: 1000,
     tooltipDelay: 500,
     MAX_TRAN_VALUE: 1000000,
@@ -13,7 +15,7 @@ const config = Object.freeze({
 })
 
 
-export { app, date, config }
+export { app, date, yandexMap, config }
 
 export default {
     config,

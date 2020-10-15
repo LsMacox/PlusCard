@@ -1,6 +1,26 @@
 import ApiService from '@/api/api-client'
 import VueSession from '@/utils/session'
 
+const defaultShop = {
+  isNew: true,
+  name: '',
+  city: '',
+  address: '',
+  phone: '',
+  coords: [],
+  lat: '',
+  lng: '',
+  workTimes: [
+    {
+      startTime: '',
+      endTime: '',
+      days: [],
+      breakStart: '',
+      breakEnd: '',
+    },
+  ],
+}
+
 const getDefaultState = () => {
   return {
     programs: [], // компании продавца
@@ -17,24 +37,7 @@ const getDefaultState = () => {
     // -2 все окна закрыты
     // -1 открыто окно новой торговой точки
     shopIndex: -2, // индекс открытого окна торговой точки
-    editedShop: { // редактируемая торговая точка
-      name: '',
-      city: '',
-      address: '',
-      phone: '',
-      coords: [],
-      lat: '',
-      lng: '',
-      workTimes: [
-        {
-          startTime: '',
-          endTime: '',
-          days: [],
-          breakStart: '',
-          breakEnd: '',
-        },
-      ],
-    },
+    editedShop: defaultShop, // редактируемая торговая точка
     mapCenter: [53.757592, 87.136173],
     fullAddress: false,
     addressErrors: [],
@@ -314,6 +317,22 @@ const actions = {
     } catch (error) {
       throw error
     }
+  },
+
+  async CreateProgram ({ commit }, program) {
+    const result = await ApiService.post(
+      '/api-cabinet/company/create',
+      program,
+    )
+    commit('ADD_IN_PROGRAMS', result)
+    commit('SET_PROGRAM', result)
+    return result
+  },
+
+  GenNewShop () {
+    const newShop = Object.copy(defaultShop)
+    newShop.id = this._vm.$uuid()
+    return newShop
   },
 
 }

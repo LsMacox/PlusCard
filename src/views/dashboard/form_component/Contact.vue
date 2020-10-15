@@ -28,71 +28,15 @@
           maxlength="255"
           outlined
           :rules="[
-            v => validURL(v, {protocol: false}) || 'Не верная ссылка',
+            v => (!v || validURL(v, {protocol: false})) || 'Не верная ссылка',
             v => String(v).length <= 255 || 'Адрес сайта должен быть не более 255 символов'
           ]"
         />
       </template>
     </BaseMasterFieldBlock>
+    <!-- socials -->
 
-    <BaseMasterFieldBlock
-      title="Социальные сети"
-      :horisontal="true"
-    >
-      <span
-        slot="description"
-      >Введите адреса ваших профилей и групп в социальных сетях. Вводите только название профиля, которое стоит в самом конце адресной строки после символа “/”.</span>
-      <template v-slot:input>
-        {{ program.social }}
-        <base-text-field
-          v-model="program.socials.vk"
-          :validate-on-blur="true"
-          placeholder="/Группа Вконтакте"
-          prepend-inner-icon="$iconify_ion-logo-vk"
-          prepend-inner-icon-color="logo-vk"
-          :maxlength="MAX_URL_LEN"
-          outlined
-          :rules="[maxLenRule, validURLRule]"
-          @input="changeVK"
-        />
-        <base-text-field
-          v-model="program.socials.youtube"
-          style="margin-top: 20px !important;"
-          :validate-on-blur="true"
-          placeholder="/Канал на Youtube"
-          prepend-inner-icon="$iconify_ant-design-youtube-filled"
-          prepend-inner-icon-color="logo-youtube"
-          :maxlength="MAX_URL_LEN"
-          outlined
-          :rules="[maxLenRule, validURLRule]"
-          @input="changeYoutube"
-        />
-        <base-text-field
-          v-model="program.socials.facebook"
-          style="margin-top: 20px !important;"
-          :validate-on-blur="true"
-          placeholder="/Группа в Facebook"
-          prepend-inner-icon="$iconify_la-facebook-f"
-          prepend-inner-icon-color="logo-facebook"
-          :maxlength="MAX_URL_LEN"
-          outlined
-          :rules="[maxLenRule ,validURLRule]"
-          @input="changeFB"
-        />
-        <base-text-field
-          v-model="program.socials.instagram"
-          style="margin-top: 20px !important;"
-          :validate-on-blur="true"
-          placeholder="/Профиль в Instagram"
-          prepend-inner-icon="$iconify_ion-logo-instagram"
-          prepend-inner-icon-color="logo-instagram"
-          :maxlength="MAX_URL_LEN"
-          outlined
-          :rules="[maxLenRule, validURLRule]"
-          @input="changeInstagram"
-        />
-      </template>
-    </BaseMasterFieldBlock>
+    <social-field-block v-model="program" />
   </div>
 </template>
 
@@ -102,6 +46,9 @@
   import Vue from 'vue'
 
   export default {
+    components: {
+      SocialFieldBlock: () => import('@/views/dashboard/form_component/SocialFieldBlock.vue'),
+    },
     props: {
       program: {
         type: Object,
@@ -132,31 +79,9 @@
       }, this.program.socials))
 
       console.log('program', this.program.social)
-      this.replaceAll()
     },
     methods: {
-      replaceAll () {
-        this.changeVK(this.program.socials.vk)
-        this.changeYoutube(this.program.socials.youtube)
-        this.changeFB(this.program.socials.facebook)
-        this.changeInstagram(this.program.socials.instagram)
-      },
-      changeVK (v) {
-        const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
-        this.program.socials.vk = String(v || '').replace(regex, '')
-      },
-      changeYoutube (v) {
-        const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm
-        this.program.socials.youtube = String(v || '').replace(regex, '')
-      },
-      changeFB (v) {
-        const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
-        this.program.socials.facebook = String(v || '').replace(regex, '')
-      },
-      changeInstagram (v) {
-        const regex = /^(http:\/\/|https:\/\/|)(www.|)(instagram.com)/gm
-        this.program.socials.instagram = String(v || '').replace(regex, '')
-      },
+
       maxLenRule (v) {
         return String(v).length < this.MAX_URL_LEN || `Ссылка должна быть менее ${this.MAX_URL_LEN} символов`
       },

@@ -1,5 +1,6 @@
 const getters = {
   auth: state => state.auth,
+  merchantId: (state, getters) => getters['auth/auth/merchant_id'],
   user: state => state['profile/profile'].profile,
   program: (state, getters) => getters['company/program/program'],
   programId: (state, getters) => getters['company/program/programId'],
