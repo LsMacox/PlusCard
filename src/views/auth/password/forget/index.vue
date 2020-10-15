@@ -101,6 +101,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import BackButton from '@/views/auth/components/BackButton'
+  import { validEmail } from '@/utils/validate.js'
 
   export default {
     components: {
@@ -116,7 +117,7 @@
         visible1: false,
         emailRules: [
           v => !!v || 'E-mail обязателен',
-          v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+          v => validEmail(v) || 'E-mail неверного формата',
         ],
         loading: false,
         emailSend: false,
