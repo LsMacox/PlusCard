@@ -54,11 +54,11 @@
           this.fetchData()
         }
       },
-      period (v) {
-        if (v) {
-          this.fetchData()
-        }
-      },
+      // period (v) {
+      //   if (v) {
+      //     this.fetchData()
+      //   }
+      // },
     },
     async created () {
       await this.fetchData()
