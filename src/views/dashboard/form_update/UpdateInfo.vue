@@ -118,7 +118,7 @@
           const item = {
             id: this.program.id,
             name: this.program.name,
-            logo: this.program.logo,
+            logo: this.program.fileLogo && this.program.fileLogo.data ? this.program.fileLogo : this.program.logo,
             color: this.program.bgcolor1,
             allow_issue: this.program.allow_issue,
           }

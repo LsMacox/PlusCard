@@ -8,7 +8,7 @@
       :loading="loading"
       @cancelbutton="toRoute('/dashboard')"
       @actionbutton=""
-    />
+    />  
     <v-row>
       <v-col>
         <div style="position: relative; height: 100%; margin: -10px -35px;">
@@ -150,15 +150,14 @@
   import ShopItem from '@/views/dashboard/form_component/ShopItem'
   import ShopForm from '@/views/dashboard/form_component/ShopForm'
   import ApiService from '@/api/api-client'
-  import { yandexMap, ymapMarker } from 'vue-yandex-maps'
+  // import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import { mask } from 'vue-the-mask'
   import TopMenu from '@/components/base/TopMenu'
   import Routing from '@/mixins/routing'
 
   export default {
     components: {
-      yandexMap,
-      ymapMarker,
+      // yandexMap, ymapMarker,
       TopMenu,
       ShopItem,
       ShopForm,
@@ -167,12 +166,12 @@
     mixins: [Routing],
     data () {
       return {
-        settings: {
-          apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
-          lang: 'ru_RU',
-          coordorder: 'latlong',
-          version: '2.1',
-        },
+        // settings: {
+        //   apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
+        //   lang: 'ru_RU',
+        //   coordorder: 'latlong',
+        //   version: '2.1',
+        // },
         zoom: 16,
         //
         loading: false,

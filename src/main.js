@@ -45,6 +45,7 @@ import VueUnderScore from 'vue-underscore'
 import { IsDebugQuery } from '@/router/guards/router-handler-log'
 import VueTelInput from 'vue-tel-input'
 import VueClipboard from 'vue-clipboard2'
+import YmapPlugin from 'vue-yandex-maps'
 
 //
 // Vue.use(DateRangePicker)
@@ -63,6 +64,7 @@ Vue.use(VueUnderScore)
 Vue.use(AppConfig)
 Vue.use(MessageBox)
 Vue.use(VueClipboard)
+Vue.use(YmapPlugin, AppConfig.config.yandexMap)
 
 const options = {
   // color: '#bffaf3',
@@ -107,6 +109,7 @@ if (process.env.NODE_ENV !== 'development') {
   console.info('mute console.log')
   window.console.log = () => { }
 }
+
 
 
 const App = new Vue({

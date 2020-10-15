@@ -25,7 +25,7 @@
       v-model="editedShop.address"
       placeholder="Город, улица, дом"
       outlined
-      style="width: 380px"
+      style="width: 100%; max-width: 380px"
       maxlength="250"
       :error-messages="addressErrors"
       :rules="[
@@ -33,6 +33,7 @@
         v => String(v).length <= 250 || 'Адрес должен быть не более 250 символов',
       ]"
       @input="getAddressHandler"
+      @blur="(e) => getAddressHandler(editedShop.address)"
     >
       <template slot="prepend-inner">
         <div>
@@ -47,7 +48,7 @@
         placeholder="Введите телефон"
         outlined
         style="width: 380px"
-         maxlength="100"
+        maxlength="100"
         :rules="[
           v => !!v || 'Телефон точки продаж обязателен',
           v => v.length <= 100 || 'Телефон должен быть не более 100 символов',
@@ -269,6 +270,12 @@
 
   export default {
     directives: { mask },
+    props: {
+      save: {
+        type: Boolean,
+        default: true,
+      },
+    },
     data () {
       return {
         valid: true,
@@ -342,10 +349,11 @@
     },
     created () {
       // обновление state
-      this.fullAddress = false
+      this.fullAddress = this.editedShop && !!this.editedShop.city_id
       this.addressErrors = []
       // есть id города
-      if (typeof this.editedShop.city_id === 'number') this.fullAddress = true
+      // if (typeof this.editedShop.city_id === 'number') this.fullAddress = true
+
       console.log(this.editedShop)
       // копия редактируемой модели
       this.copyModel = JSON.parse(JSON.stringify(this.editedShop))
@@ -385,6 +393,7 @@
        * геолокация
        */
       getAddressHandler (v) {
+        console.log('getAddressHandler')
         if (this.getAddressTimerId) clearTimeout(this.getAddressTimerId)
         this.getAddressTimerId = null
         const timeout = 1500
@@ -705,8 +714,13 @@
             lng: String(Number(this.editedShop.coords[1]).toFixed(6)),
           }
           console.log(item)
-          if (item.id) await this.$store.dispatch('company/program/updateShop', item)
-          else await this.$store.dispatch('company/program/createShop', item)
+          if (this.save) {
+            if (item.id) await this.$store.dispatch('company/program/updateShop', item)
+            else await this.$store.dispatch('company/program/createShop', item)
+          } else {
+            this.$emit('save', item)
+          }
+
           this.close()
         } finally {
           this.loading = false
