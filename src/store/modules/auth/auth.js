@@ -14,6 +14,7 @@ const getDefaultState = () => {
     merchant_id: null, // выбранный мерчант
     merchant: null, // выбранный мерчант
     device: null, // данные тек устройства
+    client: process.env.VUE_APP_CLIENT, // тип web клиента
   }
 }
 
@@ -121,6 +122,7 @@ const getters = {
   merchant: state => state.merchant,
   merchant_id: state => state.merchant_id,
   device: state => state.device,
+  client: state => state.client,
 }
 
 export default {

@@ -127,6 +127,7 @@
         'merchants',
         'merchant',
         'device',
+        'client',
       ]),
     },
     mounted () {
@@ -139,6 +140,7 @@
       async forget () {
         const item = {
           email: this.form.email,
+          client: this.client,
         }
         try {
           this.loading = true

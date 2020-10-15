@@ -229,6 +229,7 @@
         'merchants',
         'merchant',
         'device',
+        'client',
       ]),
     },
     mounted () {
@@ -265,7 +266,7 @@
           device_token: this.device.token,
           device_type: this.device.type,
           recaptcha_token: recaptchaToken,
-          client: 'dev',
+          client: this.client,
         }
         console.log(user)
         try {
