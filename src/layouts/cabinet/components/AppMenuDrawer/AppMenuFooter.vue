@@ -73,11 +73,18 @@
 
     data: () => ({
 
-      balance: 9999,
+      // balance: 9999,
     }),
     computed: {
+
+      balance (){
+          return this.merchant ? this.merchant.balance : '-'
+      },
       profile () {
         return this.$store.getters['profile/profile/profile']
+      },
+      merchant () {
+        return this.$store.getters.merchant
       },
       internalMini: {
         get () {

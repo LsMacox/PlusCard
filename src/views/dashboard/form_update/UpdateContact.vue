@@ -76,17 +76,17 @@
       },
     },
     watch: {
-     
+
     },
     created () {
       console.log('this.programModel', this.programModel)
       const program = JSON.parse(JSON.stringify(this.programModel))
       if (typeof this.programModel.socials === 'string') {
-        
+
         program.socials = JSON.parse(this.programModel.socials)
         console.log('program.socials', program.socials)
       }
-      // 
+      //
       this.program = program
     },
     methods: {
