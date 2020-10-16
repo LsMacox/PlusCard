@@ -195,7 +195,7 @@
         loadingList: false,
         sidePanelStatus: {
           active: false,
-          mode: 'create',
+          mode: 'edit',
           data: null,
         },
         tableOptions: {
@@ -354,7 +354,6 @@
 </script>
 
 <style lang="scss" scoped>
-@import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 
 .cell-text {
   font-style: normal;
