@@ -1,43 +1,42 @@
 <template>
-  <div>
-    <div
-      v-if="getCreateConfiguringIntegrations && getCreateConfiguringIntegrations.length === 0"
-      class="no-data"
+  <v-skeleton-loader
+    :loading="getIntegrationsAction"
+    :style="{height: '100%', width: '100%'}"
+    type="card-heading, image@3"
+  >
+    <v-container
+      v-if="getCreateConfiguringIntegrations.length>0"
+      fluid
+      class="program-settings"
     >
-      <div class="img-no-data">
+      <setting-info-table />     
+    </v-container>
+    <!-- Заглушка -->
+    <base-empty-block-page
+      v-else
+      title="Здесь пока ничего нет :’("
+      action-icon="mdi-plus-circle-outline"
+      action-text="Новая интеграция"
+      action
+      @action="newIntegration"
+    >
+      <template v-slot:image>
         <v-img
           src="@/assets/png/settings-dummy.png"
-          max-width="187"
+          width="193.96px"
+          height="174px"
         />
-      </div>
-      <div class="text-info-no-data">
-        <h3 class="font-size-20">
-          Здесь пока ничего нет :’(
-        </h3>
-        <p class="desc-15">
-          Вы не добавили еще ни одной интеграции с сторонними сервисмами и приложениями
-        </p>
-      </div>
-      <div>
-        <v-btn
-          color="primary"
-          style="width: 210px"
-          @click="newIntegration"
-        >
-          <v-icon left>
-            mdi-plus-circle-outline
-          </v-icon>
-          Новая интеграция
-        </v-btn>
-      </div>
-    </div>
-    <setting-info-table />
-    <navigation-drawers-right-setting />
-  </div>
+      </template>
+      <template v-slot:description>
+        <span>Вы не добавили еще ни одной интеграции с сторонними сервисмами и приложениями</span>
+      </template>
+    </base-empty-block-page>
+     <navigation-drawers-right-setting v-if="checkOpenNavigationRight" />
+  </v-skeleton-loader>
 </template>
 
 <script>
-  import { mapMutations, mapGetters } from 'vuex'
+  import { mapMutations, mapGetters, mapActions } from 'vuex'
   import navigationDrawersRightSetting from './navigationDrawers/navigationDrawersRightSetting'
   import settingInfoTable from './settingInfoTable'
   export default {
@@ -47,21 +46,44 @@
       settingInfoTable,
     },
     data () {
-      return {}
+      return {
+        getIntegrationsAction: false,
+      }
+    },
+    computed: {
+      ...mapGetters({
+        getCreateConfiguringIntegrations: 'configuringIntegrations/configuring_integrations/getCreateConfiguringIntegrations',
+         checkOpenNavigationRight: 'configuringIntegrations/configuring_integrations/getOpenNavigationConfiguring',
+        
+        programId: 'programId',
+      }),
+    },
+    watch: {
+      programId (v) {
+        if (v) this.init()
+      },
+    },
+    created () {
+      this.init()
     },
     methods: {
       ...mapMutations({
         openNavigationRight: 'configuringIntegrations/configuring_integrations/openNavigationConfiguring',
       }),
+      ...mapActions({
+        GetClients: 'configuringIntegrations/configuring_integrations/GetClients',
+      }),
       newIntegration () {
         this.openNavigationRight(true)
       },
+      async init () {
+        this.getIntegrationsAction = true
+        await this.GetClients(this.programId).finally(() => {
+          this.getIntegrationsAction = false
+        })
+      },
     },
-    computed: {
-      ...mapGetters({
-        getCreateConfiguringIntegrations: 'configuringIntegrations/configuring_integrations/getCreateConfiguringIntegrations',
-      }),
-    },
+
   }
 </script>
 

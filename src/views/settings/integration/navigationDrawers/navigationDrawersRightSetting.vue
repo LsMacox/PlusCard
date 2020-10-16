@@ -1,10 +1,12 @@
 <template>
   <v-navigation-drawer
     v-model="drawer"
+    
     fixed
     temporary
     right
     width="500px"
+    permanent
   >
     <div class="navigation-drawers-setting-wrap">
       <div>
@@ -23,7 +25,7 @@
       </div>
       <div class="title-mg-title">
         <h2 class="title-h2 font-weight-bold">
-          Новая интеграция
+          Новая интеграция {{drawer}} {{checkOpenNavigationRight}}
         </h2>
       </div>
       <div class="mbb-20">
@@ -31,7 +33,7 @@
           Название
         </h3>
         <p class="desc-15 color-text-grey">
-          Введите название интеграции, которое отображает ее суть, чтобы в будущем вы не запутались.
+          Введите название интеграции, которое отображаетее суть, чтобы в будущем вы не запутались.
         </p>
       </div>
       <div>
@@ -242,9 +244,11 @@
     },
     watch: {
       checkOpenNavigationRight (val) {
+        console.log('update:checkOpenNavigationRight', val)
         this.drawer = val
       },
       drawer (val) {
+        console.log('update:drawer', val)
         if (!val) {
           this.clearNavigationRight()
         }
