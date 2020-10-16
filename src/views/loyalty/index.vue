@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="programs.length"
-    class="loyalty-block"
+    class="crm b-segment"
   >
     <toolbar />
     <widget-line />
@@ -106,6 +106,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "~@/styles/loyalty-report";
+@import "~@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 </style>
