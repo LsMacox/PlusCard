@@ -1,11 +1,4 @@
 <template>
-  <v-row no-gutters>
-    <v-col
-      :cols="12"
-      :sm="12"
-      :md="12"
-      :lg="8"
-    >
       <div class="toolbar-col toolbar-col-left">
         <div class="toolbar-name">
           Продажи
@@ -20,8 +13,6 @@
           />
         </div>
       </div>
-    </v-col>
-  </v-row>
 </template>
 
 <script>

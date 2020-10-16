@@ -7,7 +7,9 @@
     />
     <shop-form
       v-else
+      :save="save"
       @close="shopIndex = -2"
+      @save="(e) => $emit('save', e)"
     />
   </div>
 </template>
@@ -17,6 +19,7 @@
   import ShopForm from '@/views/dashboard/form_component/ShopForm'
 
   export default {
+
     components: {
       ShopCard,
       ShopForm,
@@ -29,6 +32,10 @@
       index: {
         type: Number,
         default: -2,
+      },
+      save: {
+        type: Boolean,
+        default: true,
       },
     },
     data () {

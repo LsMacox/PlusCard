@@ -113,8 +113,8 @@
             title: 'Ручное начисление и списание',
             desc: 'Начисления и списания бонусов через личный кабинет или приложение',
             activeSwitchShow: true,
-            iconOn: require('@/assets/settings/Lego-On.png'),
-            iconOff: require('@/assets/settings/Lego-On.png'),
+            iconOn: require('@/assets/settings/Wheel-On.png'),
+            iconOff: require('@/assets/settings/Wheel-Off.png'),
             component: ManualSettings,
           }),
           AccountFirstEmissionEvent: Object.assign({}, BonusResBlockTemplate, {

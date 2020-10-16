@@ -131,6 +131,7 @@
         fileLogo: {
           data: null,
           mime: null,
+          ext: null,
         },
         selectedImg: null,
       }
@@ -141,8 +142,10 @@
           this.fileLogo = {
             data: v.data.split(',')[1],
             mime: 'image/png',
+            ext: 'png',
           }
           this.program.logo = v.data
+          this.program.fileLogo =  this.fileLogo
         }
       },
     },
