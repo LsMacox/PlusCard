@@ -102,7 +102,8 @@
     },
     created () {
       const program = JSON.parse(JSON.stringify(this.programModel))
-      program.socials = JSON.parse(this.programModel.socials)
+      console.log(this.programModel)
+      if (typeof this.programModel.socials === 'string') program.socials = JSON.parse(this.programModel.socials)
       this.program = program
     },
     methods: {
