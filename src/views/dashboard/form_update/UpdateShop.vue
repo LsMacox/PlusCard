@@ -8,13 +8,12 @@
       :loading="loading"
       @cancelbutton="toRoute('/dashboard')"
       @actionbutton=""
-    />  
+    />
     <v-row>
       <v-col>
         <div style="position: relative; height: 100%; margin: -10px -35px;">
           <yandex-map
             id="map1"
-            :settings="settings"
             :zoom="zoom"
             class="map"
             :coords="coords"
@@ -321,7 +320,7 @@
     created () {
       // центрируемся на первой торговой точке
       if (this.shops.length) this.coords = [this.shops[0].lat, this.shops[0].lng]
-    },
+    },    
     methods: {
       getMarkerName (str) {
         if (!str) return ''
@@ -469,9 +468,11 @@
         return wtNew
       },
       addShop () {
-        const shop = JSON.parse(JSON.stringify(this.$store.getters['company/program/defaultShop']))
-        this.editedShop = shop
-        this.shopIndex = -1
+        this.$store.dispatch('company/program/GenNewShop').then(newShop => {
+          console.log('GenNewShop', newShop)
+          this.editedShop = newShop
+          this.shopIndex = -1
+        })
       },
     },
   }

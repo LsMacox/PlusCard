@@ -329,7 +329,14 @@
         }
       },
     },
-    created () {},
+    created () {
+      // сброс store
+      this.$store.dispatch('company/program/ResetShopState')
+    },
+    destroyed () {
+      // сброс store
+      this.$store.dispatch('company/program/ResetShopState')
+    },
     methods: {
       getWorkTime (workObj) {
         const days = {
@@ -455,7 +462,6 @@
           this.editedShop = newShop
           this.shopIndex = -1
         })
-        // const shop = JSON.parse(JSON.stringify(this.$store.getters['company/program/defaultShop']))
       },
       onNextClick () {
         this.$emit('continue', true)

@@ -33,6 +33,19 @@ const getDefaultState = () => {
         instagram: null,
       },
     }, // полная модель редактируемой программы
+    // shops: [], // торговые точки
+    // // -2 все окна закрыты
+    // // -1 открыто окно новой торговой точки
+    // shopIndex: -2, // индекс открытого окна торговой точки
+    // editedShop: defaultShop, // редактируемая торговая точка
+    // mapCenter: [53.757592, 87.136173],
+    // fullAddress: false,
+    // addressErrors: [],
+  }
+}
+
+const getDefaultShopState = () => {
+  return {
     shops: [], // торговые точки
     // -2 все окна закрыты
     // -1 открыто окно новой торговой точки
@@ -44,10 +57,11 @@ const getDefaultState = () => {
   }
 }
 
-const state = getDefaultState()
+const state = Object.assign({}, getDefaultState(), getDefaultShopState() ) 
 
 const mutations = {
   RESET_STATE: (state) => Object.assign(state, getDefaultState()),
+  // RESET_SHOP_STATE: (state) => Object.assign(state, getDefaultShopState()),
   SET_PROGRAMS: (state, payload) => state.programs = payload,
   SET_SHOP_INDEX: (state, payload) => state.shopIndex = payload,
   SET_EDITED_SHOP: (state, payload) => state.editedShop = payload,
@@ -119,6 +133,10 @@ const actions = {
 
   resetState ({ commit }) {
     commit('RESET_STATE')
+  },
+
+  ResetShopState ({ state }) {
+    state = Object.assign(state, getDefaultShopState())
   },
 
   async list ({ commit }) {
@@ -351,11 +369,7 @@ const getters = {
   },
   shops: state => state.shops,
   shopIndex: state => state.shopIndex,
-  editedShop: state => state.editedShop,
-  defaultShop: () => {
-    const defState = getDefaultState()
-    return JSON.parse(JSON.stringify(defState.editedShop))
-  },
+  editedShop: state => state.editedShop,  
   mapCenter: state => state.mapCenter,
   fullAddress: state => state.fullAddress,
   addressErrors: state => state.addressErrors,
