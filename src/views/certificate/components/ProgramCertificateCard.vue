@@ -241,12 +241,12 @@
         return `https://cert.onelink.me/MfUW?pid=QR_code&c=tabletens_scan_cert&is_retargeting=true&af_web_dp=http%3A%2F%2Fpluscards.ru%2Fcert-open&af_dp=pluscardsapp%3A%2F%2Fdeeplink%2Fcertificates%3Ftarget_id%3D${this.id}&af_channel=tabletens-cert&action=certificates&certificate_id=${this.id}`
       },
       canCertPublish () {
-        return this.moderationStatus === this.moderationStatusEnum.ACCEPT.id && this.program.active
+        return this.active || (this.moderationStatus === this.moderationStatusEnum.ACCEPT.id && this.program.active)
         // && this.moderationActive ?не работает
       },
     },
     watch: {
-      internalActive(v) {
+      internalActive (v) {
         console.log('update:internalActive', v)
       },
       active (v) {
@@ -365,7 +365,7 @@
       async deleteNominal (nominal) {
         await this.$store.dispatch('certificates/certificate/DeleteCertificateNominalDialog', { nominal })
       },
-      
+
       addNominal () {
         // this.internalActive = !this.active
         this.$router.push({
