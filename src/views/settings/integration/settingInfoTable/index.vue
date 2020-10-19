@@ -145,11 +145,7 @@
         } finally {
           item.changeActiveAction = false
         }
-      },
-      newIntegration () {
-       
-        this.openNavigationRight(true)
-      },
+      },      
     },
   }
 </script>

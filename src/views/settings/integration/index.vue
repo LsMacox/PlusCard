@@ -69,6 +69,7 @@
     methods: {
       ...mapMutations({
         openNavigationRight: 'configuringIntegrations/configuring_integrations/openNavigationConfiguring',
+        setUpdateIntegration: 'configuringIntegrations/configuring_integrations/setUpdateIntegration',
       }),
       ...mapActions({
         GetClients: 'configuringIntegrations/configuring_integrations/GetClients',
@@ -77,6 +78,7 @@
         GetBonusResList: 'company/bonus_resources/GetList',
       }),
       newIntegration () {
+        this.setUpdateIntegration(null)
         this.openNavigationRight(true)
       },
       async init () {

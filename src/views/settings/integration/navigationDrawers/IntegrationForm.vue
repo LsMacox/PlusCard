@@ -109,7 +109,7 @@
           :loading="GetBonusUnitsAction"
           type="image"
         >
-          <div>
+          <div v-if="bonusUnits.length>0">
             <div
               v-for="item in bonusUnitsRes"
               :key="item.unit_id"
@@ -148,6 +148,20 @@
               />
             </div>
           </div>
+          <v-row v-else>
+            <v-col>
+              <v-btn
+                color="secondary"
+                full-width
+                to="/loyalty/setting"
+              >
+                <v-icon left>
+                  $iconify_feather-settings
+                </v-icon>
+                Настроить программу лояльности
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-skeleton-loader>
 
         <div
