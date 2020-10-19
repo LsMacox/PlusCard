@@ -4,7 +4,7 @@ const getDefaultState = () => {
     return {
         clients: [], // клиенты компании
         filter: {
-            query: null,
+            segments: [],
         },
         accountsForFilter: [],
         list: {
@@ -95,6 +95,10 @@ const actions = {
 const getters = {
     clients: state => state.clients,
     filter: state => state.filter,
+    filterDefault: () => {
+        const defaultFilter = getDefaultState()
+        return defaultFilter.filter
+    },
     accountsForFilter: state => state.accountsForFilter,
     list: state => state.list,
     total: state => state.total,
