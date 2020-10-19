@@ -15,6 +15,10 @@
             placeholder="Юридическое название организации"
             outlined
             dense
+            :rules="[
+                  v => !!v || 'Имя обязательно',
+                  v => String(v).length <= 50 || 'Имя должно быть не более 50 символов',
+                ]"
           />
           <div class="block-two-input">
             <base-text-field
@@ -157,6 +161,11 @@
         bankName: '',
         correspondentAccount: '',
       }
+    },
+    computed: {
+      rules () {
+
+      },
     },
   }
 </script>

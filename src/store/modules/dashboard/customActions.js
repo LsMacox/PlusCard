@@ -4,7 +4,7 @@ export default {
     namespaced: true,
     state: {
         loading: false,
-        widgetData: [],
+        widgetData: {},
     },
     mutations: {
         clearState (state) {

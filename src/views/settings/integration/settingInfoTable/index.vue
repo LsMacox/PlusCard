@@ -97,7 +97,7 @@
           },
           { text: 'Название', value: 'name' },
           { text: 'Ключ', value: 'secret', width: 1 },
-          { text: '', value: 'copy', sortable: false, width: 1 },
+          { text: '', value: 'copy',  align: 'start', sortable: false },
           { text: 'Создано', value: 'created_at', width: '9em' },
           { text: 'Обновлено', value: 'updated_at', width: '9em' },
           { text: '', value: 'active', sortable: false, width: 1 },
