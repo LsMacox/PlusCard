@@ -9,7 +9,7 @@
       fluid
       class="program-settings"
     >
-      <setting-info-table />     
+      <setting-info-table />
     </v-container>
     <!-- Заглушка -->
     <base-empty-block-page
@@ -31,18 +31,18 @@
         <span>Вы не добавили еще ни одной интеграции с сторонними сервисмами и приложениями</span>
       </template>
     </base-empty-block-page>
-     <navigation-drawers-right-setting v-if="checkOpenNavigationRight" />
+    <integration-form v-if="checkOpenNavigationRight" />
   </v-skeleton-loader>
 </template>
 
 <script>
   import { mapMutations, mapGetters, mapActions } from 'vuex'
-  import navigationDrawersRightSetting from './navigationDrawers/navigationDrawersRightSetting'
+  import IntegrationForm from './navigationDrawers/IntegrationForm'
   import settingInfoTable from './settingInfoTable'
   export default {
     name: 'Setting',
     components: {
-      navigationDrawersRightSetting,
+      IntegrationForm,
       settingInfoTable,
     },
     data () {
@@ -53,8 +53,8 @@
     computed: {
       ...mapGetters({
         getCreateConfiguringIntegrations: 'configuringIntegrations/configuring_integrations/getCreateConfiguringIntegrations',
-         checkOpenNavigationRight: 'configuringIntegrations/configuring_integrations/getOpenNavigationConfiguring',
-        
+        checkOpenNavigationRight: 'configuringIntegrations/configuring_integrations/getOpenNavigationConfiguring',
+
         programId: 'programId',
       }),
     },
@@ -72,15 +72,24 @@
       }),
       ...mapActions({
         GetClients: 'configuringIntegrations/configuring_integrations/GetClients',
+        GetScopes: 'configuringIntegrations/configuring_integrations/GetScopes',
+        loadBonusUnits: 'company/bonus_units/loadBonusUnits',
+        GetBonusResList: 'company/bonus_resources/GetList',
       }),
       newIntegration () {
         this.openNavigationRight(true)
       },
       async init () {
-        this.getIntegrationsAction = true
-        await this.GetClients(this.programId).finally(() => {
+        try {
+          this.getIntegrationsAction = true
+          await this.GetClients(this.programId)
+          // await this.GetScopes()
+          // await this.loadBonusUnits(this.programId)
+        } catch (error) {
+          console.error(error)
+        } finally {
           this.getIntegrationsAction = false
-        })
+        }
       },
     },
 

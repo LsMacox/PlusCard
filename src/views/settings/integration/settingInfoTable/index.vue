@@ -8,7 +8,7 @@
         color="primary"
         max-width="230"
         width="100%"
-        @click="newIntegration"
+        @click="updateConfiguringIntegrations(null)"
       >
         <v-icon left>
           mdi-plus-circle-outline
@@ -46,7 +46,7 @@
         <template v-slot:item.copy="{ item }">
           <div
             class="img-copy"
-            @click="copySecret(item)"
+            @click="copyClipboard(item.secret, item.name + ': ключ скопирован в буфер')"
           >
             <v-img src="@/icons/svg/copy.svg" />
           </div>
@@ -57,6 +57,7 @@
             :loading="item.changeActiveAction"
             :disabled="item.changeActiveAction"
             inset
+            hide-details
             class="custom-switch"
             @change="activeChange(item, $event)"
           />
@@ -80,10 +81,11 @@
   import { mapGetters, mapMutations } from 'vuex'
   import Vue from 'vue'
   import dateTimeFormat from '@/mixins/dateTimeFormat.js'
+  import copyClipboard from '@/mixins/copyClipboard.js'
 
   export default {
     name: 'SettingInfoTable',
-    mixins: [dateTimeFormat],
+    mixins: [dateTimeFormat, copyClipboard],
     data () {
       return {
         headers: [
@@ -107,7 +109,6 @@
     computed: {
       ...mapGetters({
         getCreateConfiguringIntegrations: 'configuringIntegrations/configuring_integrations/getCreateConfiguringIntegrations',
-        getCheckUpdate: 'configuringIntegrations/configuring_integrations/getCheckUpdate',
       }),
       integrationsDisplay () {
         return this.getCreateConfiguringIntegrations.map(x => {
@@ -118,52 +119,17 @@
       },
     },
     watch: {
-      // getCreateConfiguringIntegrations (val) {
-      //   this.desserts = val
-      // },
-      // getCheckUpdate (val) {
-      //   this.desserts = []
-      //   // console.log(this.getCreateConfiguringIntegrations)
-      //   // this.$forceUpdate()
-      //   // this.desserts = this.getCreateConfiguringIntegrations
-      //   setTimeout(() => {
-      //     this.desserts = this.getCreateConfiguringIntegrations
-      //     this.checkUpdate(false)
-      //   }, 100)
-      // },
+
     },
     methods: {
       ...mapMutations({
         setUpdateIntegration: 'configuringIntegrations/configuring_integrations/setUpdateIntegration',
         openNavigationRight: 'configuringIntegrations/configuring_integrations/openNavigationConfiguring',
-        checkUpdate: 'configuringIntegrations/configuring_integrations/checkUpdate',
       }),
-      async copySecret (item) {
-        this.$copyText(item.secret).then((e) => {
-          // setTimeout(() => {
-          //   this.copyLinkComplite = true
-          // }, 100)
 
-          this.$notify({
-            title: item.name,
-            text: 'Ключ успешно скопирован!',
-            type: 'success',
-          })
-        }).catch((e) => {
-          console.error(e)
-          this.$notify({
-            title: item.name,
-            text: 'Ошибка при копировании ключа!',
-            type: 'error',
-          })
-        })
-      },
       updateConfiguringIntegrations (val) {
-        this.setUpdateIntegration({})
-        setTimeout(() => {
-          this.openNavigationRight(true)
-          this.setUpdateIntegration(val)
-        }, 100)
+        this.setUpdateIntegration(val)
+        this.openNavigationRight(true)
       },
       async activeChange (item, active) {
         try {
@@ -181,6 +147,7 @@
         }
       },
       newIntegration () {
+       
         this.openNavigationRight(true)
       },
     },
