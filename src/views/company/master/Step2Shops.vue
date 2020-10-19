@@ -83,7 +83,7 @@
         </div>
 
         <div
-          v-if="programShops.length >= 1"
+          v-if="programShops.length >= 5"
           class="shop-search"
         >
           <v-text-field
