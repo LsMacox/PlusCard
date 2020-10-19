@@ -109,7 +109,8 @@
         {
           icon: '$iconify_feather-settings',
           title: 'Настройки',
-          to: '/settings',
+          to: '/settings/menu',
+          alias: ['SettingsIntegration', 'SettingsRequisites', 'SettingsStaff', 'Moderations'],
         },
       ],
     }),

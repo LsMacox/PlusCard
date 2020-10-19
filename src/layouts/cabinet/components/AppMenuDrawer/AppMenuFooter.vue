@@ -78,7 +78,7 @@
     computed: {
 
       balance (){
-          return this.merchant ? this.merchant.balance : '-'
+          return this.merchant ? this.merchant.balance_rub : '-'
       },
       profile () {
         return this.$store.getters['profile/profile/profile']

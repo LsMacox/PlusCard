@@ -171,13 +171,11 @@ export default {
     },
     getters: {
         bonusResources (state) {
-            return state.bonusResources.map(x => {
-                console.log('bonusResources.map.before', x)
+            return state.bonusResources.map(x => {                
                 Vue.set(x, 'rules', Object.assign({
                     event: null,
                     expire_days: null,
-                }, x.rules))
-                console.log('bonusResources.map.after', x)
+                }, x.rules))               
                 return x
             })
         },
@@ -195,7 +193,7 @@ export default {
         },
         //
         activeBonusResources (state) {
-            return state.bonusResources.filter(x => x.bonus_score && x.bonus_score.active)
+            return state.bonusResources.filter(activeFilter(true))
         },
         activeBonusResourcesShort (state) {
             return state.activeBonusResourcesShort

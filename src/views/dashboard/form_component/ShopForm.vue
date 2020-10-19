@@ -715,7 +715,7 @@
           }
           console.log(item)
           if (this.save) {
-            if (item.id) await this.$store.dispatch('company/program/updateShop', item)
+            if (this.editedShop && this.editedShop.id && !this.editedShop.isNew) await this.$store.dispatch('company/program/updateShop', item)
             else await this.$store.dispatch('company/program/createShop', item)
           } else {
             this.$emit('save', item)
