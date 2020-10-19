@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="side-panel"
     class="side-panel"
     v-bind="$attrs"
   >
@@ -17,6 +18,7 @@
         />
       </v-overlay>
       <v-navigation-drawer
+        ref="side-panel__nav"
         v-model="active"
         color="#fff"
         :right="true"

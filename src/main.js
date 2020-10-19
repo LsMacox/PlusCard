@@ -32,6 +32,7 @@ import AppConfig from './config/config'
 
 import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'
+import VueClickOutsideDirective from './directives/click-outside.js'
 
 import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
@@ -54,7 +55,6 @@ require('moment/locale/ru')
 moment.locale('ru')
 
 Vue.use(VueMoment, { moment })
-
 Vue.use(Notifications)
 Vue.use(VueConstants)
 Vue.use(VueUnderScore)
@@ -85,6 +85,9 @@ Vue.use(VueSession)
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+
+// Directives
+Vue.directive('click-outside', VueClickOutsideDirective)
 
 Object.copy = (obj) => {
   return JSON.parse(JSON.stringify(obj))

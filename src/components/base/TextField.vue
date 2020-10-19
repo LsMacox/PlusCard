@@ -53,6 +53,7 @@
     @blur="onBlur"
     @focus="onFocus"
     @input="onInput"
+    @click="onClick"
   >
     <template v-slot:prepend-inner>
       <v-icon
@@ -62,7 +63,6 @@
         {{ prependInnerIcon }}
       </v-icon>
       <slot
-        v-else
         name="prepend-inner"
       />
     </template>
@@ -100,7 +100,7 @@
           class="append-slot-row__col"
         >
           <!-- <div class="dev-tooltip">dev-tooltip</div> -->
-          <base-tooltip
+          <!-- <base-tooltip
             v-if="hasDispayErrors && !disabled"
             :value="true"
             :disabled="disabled"
@@ -111,7 +111,7 @@
             :left="validationPlacement === 'left'"
             :bottom="validationPlacement === 'bottom'"           
           >
-          <!-- :attach="$refs.vTextField.$el" -->
+          :attach="$refs.vTextField.$el"
             <v-icon
               v-show="hasDispayErrors"
               color="error"
@@ -127,7 +127,31 @@
                 {{ error }}
               </div>
             </template>
-          </base-tooltip>
+          </base-tooltip> -->
+          <div ref="base-text-field__tooltip" :style="hasDispayErrors && !disabled ? 'opacity: 1' : 'opacity: 0'" class="base-text-field__tooltip error--text">
+            <v-icon
+              class="icon-warning"
+              color="error"
+            >
+              $iconify_ion-warning
+            </v-icon>
+            <div 
+              class="tooltip-content"
+              :class="{show: showError}"
+              :style="validationPlacement == 'top' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.top}px` :
+                      validationPlacement == 'bottom' ? `left: ${tooltipPos.left}px; top: ${tooltipPos.bottom}px` : 
+                      validationPlacement == 'left' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.bottom}px` : 
+                      validationPlacement == 'right' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.bottom}px` : ''"
+              :placement="validationPlacement"
+              ref="tooltip">
+               <div
+                v-for="(error, index) in errorMessagesToDisplay"
+                :key="index"
+              >
+                {{ error }}
+              </div>
+            </div>
+          </div>
         </v-col>
       </v-row>
     </template>
@@ -231,6 +255,11 @@
         showError: false,
         // computedCounterValue: 0,
         computedCounterValue2: 0,
+        tooltipPos: {
+          left: 0,
+          top: 0,
+          bottom: 0,
+        }
       }
     },
     computed: {
@@ -275,22 +304,34 @@
       },
       getClass () {
         return {
+          'base-text-field': true,
           'v-input--counter': !!this.counter,
           'v-input--counter-success-text': this.isSuccessText,
           'v-input--counter-error-text': this.isRequiredText || this.isMaxText,
         }
       },
-
     },
     watch: {
       value (v) {
         // console.log('v.l', this.value.length, this.minlength)
       },
-
+      validationPlacement (v) {
+        this.setTooltipPosition()
+      },
+      hasDispayErrors (v) {
+        if (v) {
+          this.showError = true
+          setTimeout(() => {
+            this.showError = false
+          }, 4000)
+        } else {
+          this.showError = false
+        }
+      },
     },
     mounted () {
       // console.log('this.$refs.vTextField', this.$refs.vTextField)
-
+      this.setTooltipPosition()
     },
     methods: {
       updateError (e) {
@@ -313,20 +354,64 @@
         e && this.$nextTick(() => this.$emit('blur', e))
       },
       onInput (e) {        
-        console.log('onInput', e)
+        // console.log('onInput', e)
         e && this.$nextTick(() => this.$emit('input', e))
       },
-      onClick () {
-      // if (this.isFocused || this.isDisabled || !this.$refs.vTextField) return;
+      onClick (e) {
+        // if (this.isFocused || this.isDisabled || !this.$refs.vTextField) return;
       // this.$refs.input.focus();
+        e && this.$emit('click', e)
       },
+      nodeOffsetWH (node, wh = true) {
+        const clone = node.cloneNode(true)
+        clone.style.display = 'block'
+        clone.style.visibility = 'hidden'
+        node.parentNode.append(clone)
 
+        const offsetW = clone.offsetWidth
+        const offsetH = clone.offsetHeight
+
+        clone.remove()
+
+        if (wh) {
+          return offsetW
+        } else {
+          return offsetH
+        }
+      },
+      setTooltipPosition () {
+        if (this.$refs.tooltip != undefined) 
+        {
+          let tooltipWidth = this.nodeOffsetWH(this.$refs.tooltip)
+          let tooltipHeight = this.nodeOffsetWH(this.$refs.tooltip, false)
+
+          switch (this.validationPlacement) {
+            case 'top':
+              this.tooltipPos.left = -tooltipWidth / 2 - 13
+              this.tooltipPos.top = 20 
+              break;
+            case 'bottom': 
+              this.tooltipPos.left = -tooltipWidth / 2 - 13
+              this.tooltipPos.bottom = 20
+              break;
+            case 'right': 
+              this.tooltipPos.left = 10
+              this.tooltipPos.bottom = -(tooltipHeight / 2)
+              break;
+            case 'left': 
+              this.tooltipPos.left = -tooltipWidth - 33
+              this.tooltipPos.bottom = -(tooltipHeight / 2)
+              break;
+          }
+        }
+      },
     },
   }
 </script>
 
 <style lang="scss" scoped>
 @import "@/styles/_typography";
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 
 .append-slot-row {
   min-height: calc(45px - 12px - 12px);
@@ -337,8 +422,98 @@
     margin-right: 4px;
   }
   .base-counter {
-     @include body-xs-semibold;
-     white-space: nowrap;
+    @include body-xs-semibold;
+    white-space: nowrap;
+  }
+}
+
+.base-text-field__tooltip {
+  position: absolute;
+  opacity: 0;
+  .icon-warning {
+    position: absolute;
+    right: 1px;
+    top: -11px;
+    cursor: pointer;
+    z-index: 2;
+    &:hover {
+      & + .tooltip-content[placement] {
+        visibility: visible;
+        z-index: 3;
+        opacity: 1;
+      }
+      & + .tooltip-content[placement='top'],
+      & + .tooltip-content[placement='bottom'], 
+      & + .tooltip-content[placement='left'],
+      & + .tooltip-content[placement='right']
+      {
+        transform: translate(0, 0);
+      }
+    }
+  }
+  .tooltip-content {
+    position: absolute;
+    background-color: $error;
+    color: $neutral-100;
+    border-radius: 8px;
+    padding: 8px;
+    width: 134px;
+    min-width: 134px;
+    z-index: 20;
+    text-align: center;
+    z-index: 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: all .3s ease-in-out;
+    @include body-s-semibold;
+    &.show {
+      visibility: visible;
+      &[placement] {
+        opacity: 1 !important;
+        z-index: 3 !important;
+        transform: translate(0, 0) !important; 
+      }
+    }
+  }
+  .tooltip-content[placement] {
+    &:before {
+      content: '';
+      position: absolute;
+      border-width: 8px;
+      border-style: solid;
+    }
+  }
+  .tooltip-content[placement='top'] {
+    transform: translate(0, 10%);
+    &:before {
+      bottom: -14px;
+      right: calc(50% - 10px);
+      border-color: $error transparent transparent transparent;
+    }
+  }
+  .tooltip-content[placement='bottom'] {
+    transform: translate(0, -10%);
+    &:before {
+      top: -14px;
+      right: calc(50% - 10px);
+      border-color: transparent transparent $error transparent;
+    }
+  }
+  .tooltip-content[placement='left'] {
+    transform: translate(10%, 0);
+    &:before {
+      top: calc(50% - 8px);
+      right: -14px;
+      border-color: transparent transparent transparent $error;
+    }
+  }
+  .tooltip-content[placement='right'] {
+    transform: translate(-10%, 0);
+    &:before {
+      top: calc(50% - 8px);
+      left: -14px;
+      border-color: transparent $error transparent transparent;
+    }
   }
 }
 </style>

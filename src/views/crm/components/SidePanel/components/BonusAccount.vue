@@ -55,6 +55,7 @@
               v-if="category.mode == 'charge'"
               v-model="chargeData.selectedItem"
               class="card__body-select"
+              item-placeholder="Выберите операцию"
               :items="chargeData.listItems"
             />
             <div class="card__body-group">
@@ -67,15 +68,17 @@
                 outlined
                 hide-details
               />
-              <v-text-field
+              <base-text-field
                 v-if="category.mode == 'charge'"
                 v-model="chargeData.acts"
                 v-mask="'Действуют: ###'"
+                :rules="daysRules"
                 class="panel-crm__form-input card__body-input"
+                validation-placement="bottom"
                 type="text"
                 placeholder="Дейсвуют (дней)"
                 outlined
-                hide-details
+                autocomplete="off"
               />
             </div>
             <div
@@ -115,12 +118,11 @@
 </template>
 
 <script>
-  import BaseSelect from '@/components/base/BaseSelect'
   import { mask } from 'vue-the-mask'
+  import { isFilled } from '@/utils/validate'
 
   export default {
     directives: { mask },
-    components: { BaseSelect },
     data () {
       return {
         generalData: this.getDefaultGeneralData(),
@@ -154,6 +156,9 @@
             mode: 'writeOff', // charge
           },
         ],
+        daysRules: [
+          (v) => isFilled(v) || 'Введите дни',
+        ],
       }
     },
     watch: {},
@@ -176,7 +181,12 @@
       },
       getDefaultChartData () {
         return {
-          listItems: [{ id: 1, title: 'a' }, { id: 2, title: 'b' }, { id: 3, title: 'c' }],
+          listItems: [
+            { id: 1, name: 'g' },
+            { id: 2, name: 'a' },
+            { id: 3, name: 'b' },
+            { id: 4, name: 'c' },
+          ],
           selectedItem: null,
           acts: null,
         }
@@ -198,16 +208,18 @@
       },
       menuSave (category) {
         // === Data === //
-        const sum = this.generalData.sum.replace(/[^\d]+/, '')
+        console.log(this.chargeData)
+        const sum = this.generalData.sum ? this.generalData.sum.replace(/[^\d]+/, '') : 0
         // const description = this.generalData.description
         if (category.mode === 'charge') {
           this.showSuccess(sum, true)
-        //   const acts = this.chargeData.acts.replace(/[^\d]+/, '')
+        //   const acts = this.chargeData.acts ? this.chargeData.acts.replace(/[^\d]+/, '') : 0
         //   const operation = this.chargeData.selectedItem
         } else {
           this.showSuccess(sum, false)
         }
         // === Data === //
+
         this.clearData()
         category.menuShow = false
       },

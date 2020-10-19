@@ -100,7 +100,7 @@
       disabled: {
         type: Boolean,
         default: false,
-      },     
+      },
     },
 
     computed: {

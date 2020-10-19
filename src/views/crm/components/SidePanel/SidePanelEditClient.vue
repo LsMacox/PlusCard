@@ -8,6 +8,7 @@
     <div
       ref="panel-crm_edit_client__header"
       class="panel-crm__header panel-crm_edit_client__header"
+      :class="{usual: !mode, extended: mode}"
     >
       <div class="panel-crm_edit_client__tabs">
         <v-btn
@@ -54,16 +55,18 @@
         ref="panel-crm_edit_client__sub-tabs"
         class="panel-crm_edit_client__sub-tabs"
       >
-        <ul class="tab-list">
+        <ul
+          class="tab-list"
+        >
           <li
-            v-for="tab in extendedTabs"
+            v-for="(tab, index) in extendedTabs"
             :key="'tab-' + tab.id"
             class="tab-item"
-            :class="tab.icon ? 'd-flex' : ''"
+            :class="[tab.icon ? 'd-flex' : '', {active: tab.active}]"
           >
             <p
               class="body-m-medium neutral-500--text"
-              @click="changeExtendedTab"
+              @click="changeExtendedTab($event, index)"
             >
               {{ tab.title }}
             </p>
@@ -77,7 +80,10 @@
         </ul>
       </div>
     </div>
-    <div class="panel-crm__body panel-crm_edit_client__body">
+    <div
+      :class="{usual: !mode, extended: mode}"
+      class="panel-crm__body panel-crm_edit_client__body"
+    >
       <mode-usual
         v-if="!mode && tableData"
         :client-data="tableData"
@@ -85,6 +91,7 @@
       <mode-extended
         v-if="mode && tableData"
         :client-data="tableData"
+        :tabs="extendedTabs"
       />
     </div>
   </side-panel>
@@ -93,23 +100,15 @@
 <script>
   import Convertor from '@/mixins/convertor.js'
   import SidePanel from '@/components/base/SidePanel'
+  // Mode
   import ModeUsual from './components/EditClientModeUsual'
   import ModeExtended from './components/EditClientModeExtended'
-  // Extended tabs
-  // import TabClient from './components/tabs/TabClient'
-  // import TabDocument from './components/tabs/TabDocument'
-  // import TabMap from './components/tabs/TabMap'
-  // import TabOperation from './components/tabs/TabOperation'
 
   export default {
     components: {
       SidePanel,
       ModeUsual,
       ModeExtended,
-      // TabClient,
-      // TabDocument,
-      // TabMap,
-      // TabOperation,
     },
     mixins: [Convertor],
     model: {
@@ -148,17 +147,20 @@
           {
             id: 1,
             title: 'Клиент',
-            active: false,
+            active: true,
+            componentName: 'TabClient',
           },
           {
             id: 2,
             title: 'Карта',
             active: false,
+            componentName: 'TabMap',
           },
           {
             id: 3,
             title: 'Документы',
             active: false,
+            componentName: 'TabDocument',
           },
           {
             id: 4,
@@ -166,6 +168,7 @@
             active: false,
             icon: 'tabler-external-link',
             iconClass: 'icon-external-link neutral-500--text',
+            componentName: 'TabOperation',
           },
         ],
       }
@@ -194,11 +197,13 @@
         if (date) return 'Был(а) в сети ' + this.$moment.utc(date).local().format(this.$config.date.DATETIME_FORMAT_MIN2)
         return 'Был(а) в сети - '
       },
-      changeExtendedTab (event) {
-        this.$refs['panel-crm_edit_client__sub-tabs'].querySelectorAll('.tab-item').forEach((el) => {
-          el.classList.remove('active')
+      changeExtendedTab (event, tabIndex) {
+        this.extendedTabs.map((tab) => {
+          tab.active = false
+          return tab
         })
-        event.target.parentNode.classList.add('active')
+
+        this.extendedTabs[tabIndex].active = true
       },
     },
   }

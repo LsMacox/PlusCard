@@ -1,5 +1,5 @@
 <template>
-  <side-panel
+  <base-side-panel
     v-model="state"
     :width="483"
     class="panel-crm panel-crm_new_client"
@@ -80,7 +80,7 @@
               cols="6"
               style="height: 65px"
             >
-              <date-text-field
+              <base-date-text-field
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Дата рождения"
@@ -89,16 +89,11 @@
               />
             </v-col>
             <v-col cols="12">
-              <v-switch
+              <base-switch
                 v-model="form.sms_invite"
                 class="panel-crm_new_client__switch"
-                hide-details
-              >
-                <span
-                  slot="label"
-                  class="panel-crm_new_client__switch-text body-m-medium neutral-900--text"
-                >Отправить смс-приглашение</span>
-              </v-switch>
+                :label="'Отправить смс-приглашение'"
+              />
             </v-col>
             <v-col cols="12">
               <v-btn
@@ -122,20 +117,14 @@
         </div>
       </v-form>
     </div>
-  </side-panel>
+  </base-side-panel>
 </template>
 
 <script>
   import { mask } from 'vue-the-mask'
   import Convertor from '@/mixins/convertor.js'
-  import SidePanel from '@/components/base/SidePanel'
-  import DateTextField from '@/components/base/DateTextField'
 
   export default {
-    components: {
-      SidePanel,
-      DateTextField,
-    },
     directives: { mask },
     mixins: [Convertor],
     model: {
