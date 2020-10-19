@@ -75,6 +75,8 @@
                 <v-btn
                   color="secondary"
                   @click="$router.push({name: 'ProgramCertificateMaster'})"
+                  width="326"
+                
                 >
                   <v-icon left>
                     $iconify_ant-design-gift-outlined
@@ -88,6 +90,7 @@
                 <v-btn
                   color="primary"
                   @click="$router.push({name: 'ProgramBonusSetting'})"
+                  width="326"
                 >
                   <v-icon left>
                     $iconify_ion-wallet-outline
