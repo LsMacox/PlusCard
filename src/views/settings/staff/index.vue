@@ -66,8 +66,8 @@
             </div>
 
             <role-select
-              class="role__select"
               v-else
+              class="role__select"              
               min-width="260px"
               :items="roles"
               :model.sync="item.role_id"

@@ -14,7 +14,7 @@
           <v-icon
             class="app__date-select-btn-icon"
           >
-            {{ attrs['aria-expanded'] === 'true'? '$iconify_si-glyph-triangle-down' : ' $iconify_si-glyph-triangle-up' }}
+            {{ attrs['aria-expanded'] === 'true'? '$iconify_si-glyph-triangle-up' : ' $iconify_si-glyph-triangle-down' }}
           </v-icon>
         </div>
       </div>
