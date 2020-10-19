@@ -9,7 +9,7 @@
       fluid
       class="program-settings"
     >
-      <setting-info-table />     
+      <setting-info-table />
     </v-container>
     <!-- Заглушка -->
     <base-empty-block-page
@@ -31,7 +31,7 @@
         <span>Вы не добавили еще ни одной интеграции с сторонними сервисмами и приложениями</span>
       </template>
     </base-empty-block-page>
-     <navigation-drawers-right-setting v-if="checkOpenNavigationRight" />
+    <navigation-drawers-right-setting v-if="checkOpenNavigationRight" />
   </v-skeleton-loader>
 </template>
 
@@ -53,8 +53,8 @@
     computed: {
       ...mapGetters({
         getCreateConfiguringIntegrations: 'configuringIntegrations/configuring_integrations/getCreateConfiguringIntegrations',
-         checkOpenNavigationRight: 'configuringIntegrations/configuring_integrations/getOpenNavigationConfiguring',
-        
+        checkOpenNavigationRight: 'configuringIntegrations/configuring_integrations/getOpenNavigationConfiguring',
+
         programId: 'programId',
       }),
     },
