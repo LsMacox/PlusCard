@@ -166,6 +166,7 @@
 
   import { VTextField, VInput } from 'vuetify/lib'
   import Validatable from 'vuetify/lib/mixins/validatable'
+  import Calculation from '@/mixins/calculation.js'
 
   export default {
     name: 'Textfield',
@@ -173,6 +174,7 @@
       VTextField,
       // VInput,
       Validatable,
+      Calculation
     ],
     model: {
       prop: 'value',
@@ -362,23 +364,6 @@
       // this.$refs.input.focus();
         e && this.$emit('click', e)
       },
-      nodeOffsetWH (node, wh = true) {
-        const clone = node.cloneNode(true)
-        clone.style.display = 'block'
-        clone.style.visibility = 'hidden'
-        node.parentNode.append(clone)
-
-        const offsetW = clone.offsetWidth
-        const offsetH = clone.offsetHeight
-
-        clone.remove()
-
-        if (wh) {
-          return offsetW
-        } else {
-          return offsetH
-        }
-      },
       setTooltipPosition () {
         if (this.$refs.tooltip != undefined) 
         {
@@ -400,6 +385,7 @@
               break;
             case 'left': 
               this.tooltipPos.left = -tooltipWidth - 33
+              console.log(this.$refs.tooltip.clientHeight)
               this.tooltipPos.bottom = -(tooltipHeight / 2)
               break;
           }
@@ -415,7 +401,7 @@
 
 .append-slot-row {
   min-height: calc(45px - 12px - 12px);
-  width: max-content;
+  // width: max-content;
   margin: 0px -4px;
   .append-slot-row__col{
     margin-left: 4px;

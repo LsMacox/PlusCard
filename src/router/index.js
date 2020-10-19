@@ -247,7 +247,7 @@ export default new Router({
         },
         {
           path: 'help',
-          component: () => import('@/views/SkeletonPage'),
+          component: () => import('@/views/HelpPage'),
           name: 'Help',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },

@@ -48,6 +48,7 @@
       v-model="sidePanelNewClientStatus"
     />
     <side-panel-edit-client
+      v-if="sidePanelEditClient.status"
       v-model="sidePanelEditClient.status"
       :client-data="sidePanelEditClient.data"
     />

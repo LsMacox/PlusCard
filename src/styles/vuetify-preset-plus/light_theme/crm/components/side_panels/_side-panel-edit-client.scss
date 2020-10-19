@@ -31,7 +31,7 @@
                 &.active {
                     background: linear-gradient(90deg, $primary-base 0%, $secondary-base 100%) !important;
                     span.v-btn__content {
-                        color: $neutral-100; 
+                        color: $neutral-100;
                     }
                 }
                 span.v-btn__content {
@@ -40,7 +40,7 @@
                 }
                 &:nth-child(1) {
                     border-radius: 10px 0px 0px 10px;
-                } 
+                }
                 &:nth-child(2) {
                     border-radius: 0px 10px 10px 0px;
                 }

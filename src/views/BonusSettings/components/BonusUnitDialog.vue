@@ -121,7 +121,7 @@
             </p>
           </div>
           <div class="allow-transfer-currency">
-            <base-switch
+            <base-ext-switch
               v-model="bonusUnitInternal.can_transfer"
               label="Разрешить передавать валюту"
             />
@@ -137,7 +137,7 @@
             </p>
           </div>
           <div class="allow-transfer-currency">
-            <base-switch
+            <base-ext-switch
               v-model="bonusUnitInternal.is_main"
               label="Использовать как основную"
             />
@@ -305,6 +305,10 @@
 
     },
 
+    created () {
+      if (this.bonusUnit) this.init(this.bonusUnit)
+    },
+
     methods: {
       ...mapMutations({
         openNavigationRight: 'createBonusesCurrency/create_bonuses_currency/openNavigationCreateBonuses',
@@ -314,7 +318,7 @@
         updateBonusesItem: 'createBonusesCurrency/create_bonuses_currency/updateBonusesItem',
         getWhatSelect: 'createBonusesCurrency/create_bonuses_currency/getWhatSelect',
         updateWhatSelect: 'createBonusesCurrency/create_bonuses_currency/updateWhatSelect',
-      }),   
+      }),
 
       setCreateBonuses () {
         if (this.update) {
@@ -444,9 +448,7 @@
         }
       },
     },
-    created () {
-      if (this.bonusUnit) this.init(this.bonusUnit)
-    },
+
   }
 </script>
 <style scoped>

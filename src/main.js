@@ -28,7 +28,7 @@ import * as filters from './filters'
 
 import VueSession from './utils/session'
 import MessageBox from './components/message-box'
-import AppConfig from './config/config'
+import AppConfig from './config/index'
 
 import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'

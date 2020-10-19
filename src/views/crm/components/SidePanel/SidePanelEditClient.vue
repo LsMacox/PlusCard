@@ -173,7 +173,11 @@
         ],
       }
     },
-    computed: {},
+    computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+    },
     watch: {
       active () {
         this.state = this.active
@@ -182,7 +186,9 @@
         this.$emit('changeState', this.state)
       },
     },
-    created () {},
+    async created () {
+      await this.fetchData()
+    },
     mounted () {
       this.$refs['panel-crm_edit_client'].$el.querySelector('.v-navigation-drawer__content').addEventListener('scroll', (e) => {
         if (e.srcElement.scrollTop > 10) {
@@ -204,6 +210,15 @@
         })
 
         this.extendedTabs[tabIndex].active = true
+      },
+      async fetchData () {
+        try {
+          this.$store.commit('crm/clientCard/SET_LOADING', true)
+          await this.$store.dispatch('company/bonus_resources/GetList', this.program.id)
+          await this.$store.dispatch('crm/clientCard/getAccountBalances', this.tableData)
+        } finally {
+          this.$store.commit('crm/clientCard/SET_LOADING', false)
+        }
       },
     },
   }

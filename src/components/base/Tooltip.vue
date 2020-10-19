@@ -41,7 +41,7 @@
 </template>
 
 <script>
-  import { config } from '@/config/config'
+  import { config } from '@/config/index'
   import Toggleable from 'vuetify/lib/mixins/toggleable'
 
   export default {
