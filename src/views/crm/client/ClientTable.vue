@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div style="margin: 20px 0 15px 0;">
+      <client-filter />
+    </div>
     <empty-client
       v-if="!clients.length"
     />
