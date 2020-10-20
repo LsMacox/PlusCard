@@ -32,7 +32,7 @@
           color="secondary"
           :text="true"
           :ripple="false"
-          @click="back"
+          @click="save"
         >
           <v-icon class="mro-6">
             $iconify_bx-check-outlined
@@ -58,6 +58,7 @@
   import Operations from './tab/Operations'
   import Accounts from './tab/Accounts'
   import Documents from './tab/Documents'
+  import ApiService from "@/api/api-client";
   export default {
     name: 'SettingRequisites',
     components: {
@@ -91,10 +92,28 @@
             return Documents
         }
       },
+      requisites () {
+        return this.$store.getters['settings/organization/requisites']
+      },
+    },
+    async mounted () {
+      await this.$store.dispatch('settings/organization/details')
     },
     methods: {
       back () {
         console.log(3123)
+      },
+      async save () {
+        try {
+          await this.$store.dispatch('settings/organization/save', this.requisites)
+          this.$notify({
+            title: 'Настройка организации',
+            text: 'Реквизиты обновлены успешно',
+            type: 'success',
+          })
+        } catch (error) {
+          throw error
+        }
       },
     },
   }
