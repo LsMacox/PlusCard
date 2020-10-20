@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="side-panel"
     class="side-panel"
     v-bind="$attrs"
   >
@@ -17,6 +18,7 @@
         />
       </v-overlay>
       <v-navigation-drawer
+        ref="side-panel__nav"
         v-model="active"
         color="#fff"
         :right="true"
@@ -33,7 +35,7 @@
             icon="arrow-left"
             height="21"
           />
-          <a href="#back">Назад</a>
+          Назад
         </div>
         <slot />
       </v-navigation-drawer>
@@ -85,6 +87,8 @@
         position: relative;
         margin-top: 36px;
         margin-left: 59px;
+        color: #4776E6;
+        cursor: pointer;
         a {
             text-decoration: none;
             font-family: Gilroy;

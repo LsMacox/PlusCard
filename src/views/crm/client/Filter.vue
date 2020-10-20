@@ -17,69 +17,45 @@
             $iconify_search-outlined
           </v-icon>
 
-          <!--операции-->
           <div style="width: 100%;">
+            <!-- КЛИЕНТЫ -->
             <div
-              v-for="(item, i) in fastFilter.pbr"
-              :key="`operation${i}`"
-              class="app__filter-chip"
-            >
-              <div class="app__filter-chip-content">
-                {{ item.label }}
-                <v-icon
-                  class="app__filter-chip-icon-append"
-                  @click.stop="clearItemFastFilter('pbr', item)"
-                >
-                  $iconify_jam-close
-                </v-icon>
-              </div>
-            </div>
-
-            <!--валюты-->
-            <div
-              v-for="(item, i) in fastFilter.bu"
-              :key="`unit${i}`"
-              class="app__filter-chip"
-            >
-              <div class="app__filter-chip-content">
-                {{ item.label }}
-                <v-icon
-                  class="app__filter-chip-icon-append"
-                  @click.stop="clearItemFastFilter('bu', item)"
-                >
-                  $iconify_jam-close
-                </v-icon>
-              </div>
-            </div>
-
-            <!--операторы-->
-            <div
-              v-for="(item, i) in fastFilter.operator"
-              :key="`operator${i}`"
-              class="app__filter-chip"
-            >
-              <div class="app__filter-chip-content">
-                {{ item.label }}
-                <v-icon
-                  class="app__filter-chip-icon-append"
-                  @click.stop="clearItemFastFilter('operator', item)"
-                >
-                  $iconify_jam-close
-                </v-icon>
-              </div>
-            </div>
-
-            <!--клиенты-->
-            <div
-              v-for="(item, i) in fastFilter.client"
+              v-for="(item, i) in fastFilter.clients"
               :key="`client${i}`"
               class="app__filter-chip"
+              style="background-color: #EBF1FF;"
             >
-              <div class="app__filter-chip-content">
+              <div
+                class="app__filter-chip-content"
+                style="color: #4776E6;"
+              >
+                {{ item.FIO }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  style="color: #4776E6;"
+                  @click.stop="clearItemFastFilter('clients', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <!-- СЕГМЕНТЫ -->
+            <div
+              v-for="(item, i) in fastFilter.segments"
+              :key="`segment${i}`"
+              class="app__filter-chip"
+              :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
+            >
+              <div
+                class="app__filter-chip-content"
+                :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
+              >
                 {{ item.label }}
                 <v-icon
                   class="app__filter-chip-icon-append"
-                  @click.stop="clearItemFastFilter('client', item)"
+                  :style="`color: ${item.color};`"
+                  @click.stop="clearItemFastFilter('segments', item)"
                 >
                   $iconify_jam-close
                 </v-icon>
@@ -124,6 +100,7 @@
           class="app__filter-block"
           @click.stop=""
         >
+          <!--окно фильтра - поле ввода -->
           <div
             class="app__filter-block-input"
           >
@@ -134,9 +111,10 @@
             </v-icon>
             <input
               ref="search"
-              v-model="filter.query"
+              v-model="query"
               class="app__filter-block-input-field"
               placeholder="Поиск и фильтр"
+              @input="querySearch(query)"
             >
 
             <div class="app__spacer" />
@@ -147,84 +125,57 @@
             >
               $iconify_chrome-close
             </v-icon>
+            <!--
             <v-icon
               class="app__filter-block-input-icon-append app__filter-block-icon-check"
               @click="apply()"
             >
               $iconify_bx-check
             </v-icon>
+            -->
           </div>
+          <!--окно фильтра - содержимое -->
           <div class="app__filter-content">
-            <v-row>
-              <v-col>
-                <div class="app__filter-content-header">
-                  Операции
-                </div>
-                <div
-                  v-for="(item, i) in operations"
-                  :key="i"
-                  :class="getFilterClass('pbr', item)"
-                  @click="setFilter('pbr', item)"
-                >
-                  {{ item.title }}
-                </div>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <div class="app__filter-content-header">
-                  Валюта
-                </div>
-                <div
-                  v-for="(item, i) in units"
-                  :key="i"
-                  :class="getFilterClass('bu', item)"
-                  @click="setFilter('bu', item)"
-                >
-                  {{ item.name }}
-                </div>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <div class="app__filter-content-header">
-                  Операторы
-                </div>
-                <div>
-                  <v-autocomplete
-                    v-model="filter.operator"
-                    :items="operators"
-                    placeholder="Выберите оператора"
-                    item-text="label"
-                    item-value="id"
-                    outlined
-                    multiple
-                    chips
-                    deletable-chips
-                  />
-                </div>
-              </v-col>
-              <v-col>
-                <div class="app__filter-content-header">
-                  Клиенты
-                </div>
-                <div>
-                  <v-autocomplete
-                    v-model="filter.client"
-                    :loading="loading"
-                    :items="foundClients"
-                    :search-input.sync="searchClient"
-                    placeholder="Начните вводить имя клиента"
-                    item-text="label"
-                    item-value="id"
-                    outlined
-                    multiple
-                    chips
-                    deletable-chips
-                  />
-                </div>
-              </v-col>
-            </v-row>
+            <!-- Клиенты -->
+            <div
+              v-if="accountsForFilter && accountsForFilter.length"
+              class="app__filter-content-header"
+            >
+              Клиенты
+            </div>
+            <div
+              v-for="(item, i) in accountsForFilter"
+              :key="i"
+              class="app__filter-content-client"
+              @click="setFilter('clients', item)"
+            >
+              <img
+                class="app__filter-content-client-avatar"
+                :src="item.avatar"
+              >
+              <div>{{ item.FIO }}</div>
+            </div>
+            <!-- Сегменты -->
+            <div
+              v-if="segmentsForFilter && segmentsForFilter.length"
+              class="app__filter-content-header"
+            >
+              Сегменты
+            </div>
+            <div
+              v-for="(item, i) in segmentsForFilter"
+              :key="i"
+              class="app__filter-content-client"
+            >
+              <p
+                class="body-s-semibold mb-0"
+                style="cursor: pointer; display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
+                :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
+                @click="setFilter('segments', item)"
+              >
+                {{ item.name }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -236,8 +187,15 @@
   export default {
     data () {
       return {
-        filter: null,
-        fastFilter: {},
+        query: null,
+        filter: {
+          clients: [],
+          segments: [],
+        },
+        fastFilter: {
+          clients: [],
+          segments: [],
+        },
         show: false,
         searchClient: null,
         loading: false,
@@ -247,44 +205,32 @@
       program () {
         return this.$store.getters['company/program/program']
       },
+      accountsForFilter () {
+        return this.$store.getters['crm/client/accountsForFilter']
+      },
+      segmentsForFilter () {
+        return this.segmentsStore.filter(item => {
+          const name = String(item.name).toLowerCase()
+          const query = String(this.query).toLowerCase()
+          if (name.indexOf(query) !== -1) return item
+        })
+      },
+      segmentsStore () {
+        return this.$store.getters['crm/segment/segments']
+      },
       filterStore () {
         return this.$store.getters['crm/client/filter']
       },
       filterDefault () {
-        return this.$store.getters['crm/client/filter']
-      },
-      foundClients () {
-        return this.$store.getters['widget/filter/foundClients']
-      },
-      operators () {
-        return this.$store.getters['widget/operators/operators']
-      },
-      operations () {
-        return this.$store.getters['company/bonus_resources/activeBonusResourcesShort']
-      },
-      units () {
-        return this.$store.getters['company/bonus_units/bonusUnits']
+        return this.$store.getters['crm/client/filterDefault']
       },
       emptyFastFilter () {
-        if (this.fastFilter.query ||
-          this.fastFilter.pbr.length ||
-          this.fastFilter.bu.length ||
-          this.fastFilter.operator.length ||
-          this.fastFilter.client.length) return false
+        if (this.fastFilter.clients.length ||
+          this.fastFilter.segments.length) return false
         return true
       },
     },
     watch: {
-      show (v) {
-        if (v) {
-          this.filter = JSON.parse(JSON.stringify(this.filterStore))
-        } else {
-          this.filter = Object.assign({}, this.filterDefault)
-        }
-      },
-      searchClient (v) {
-        v && v !== this.filter.client && this.querySearchClient(v)
-      },
       program (v) {
         // обнуление при смене программы
         if (v) {
@@ -293,31 +239,11 @@
           this.setFastFilter(this.filter)
         }
       },
-      foundClients (v) {
-        if (v) {
-          this.setFastFilter(this.filter)
-        }
-      },
-      operators (v) {
-        if (v) {
-          this.setFastFilter(this.filter)
-        }
-      },
-      operations (v) {
-        if (v) {
-          this.setFastFilter(this.filter)
-        }
-      },
-      units (v) {
-        if (v) {
-          this.setFastFilter(this.filter)
-        }
-      },
     },
     created () {
       this.filter = JSON.parse(JSON.stringify(this.filterStore))
       this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
-      this.setFastFilter(this.filter)
+      // this.setFastFilter(this.filter)
 
       document.addEventListener('click', () => {
         if (this.show) {
@@ -327,21 +253,60 @@
     },
     methods: {
       async switchShow () {
-        this.show = !this.show
+        this.show = true
+        // обнуление поиска и найденных клиентов
+        this.query = null
+        this.$store.commit('crm/client/SET_ACCOUNTS_FOR_FILTER', [])
+        //
         await this.$nextTick()
         this.$refs.search.focus()
+      },
+      hexToRgbA (hex, opacity) {
+        let c
+        if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+          c = hex.substring(1).split('')
+          if (c.length === 3) {
+            c = [c[0], c[0], c[1], c[1], c[2], c[2]]
+          }
+          c = '0x' + c.join('')
+          return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ',' + Number(opacity) + ')'
+        }
+        throw new Error('Bad Hex')
       },
       getFilterClass (field, item) {
         if (this.filter && this.filter[field].includes(item.id)) return 'app__filter-content-chip app__filter-content-chip-active'
         return 'app__filter-content-chip'
       },
       setFilter (field, item) {
+        // только один клик - один сегмент
+        this.filter[field] = [item.id]
+        if (field === 'clients') {
+          this.fastFilter[field] = [{
+            id: item.id,
+            FIO: item.FIO,
+          }]
+          // обновляем массив отфильтрованных клиентов
+          this.$store.commit('crm/client/SET_FILTERED_CLIENTS', [item])
+        }
+        if (field === 'segments') {
+          this.fastFilter[field] = [{
+            id: item.id,
+            label: item.name,
+            color: item.color,
+          }]
+        }
+        // сохраняем фильтр в store
+        this.$store.commit('crm/client/SET_FILTER', this.filter)
+        this.show = false
+        /*
         const index = this.filter[field].indexOf(item.id)
         if (index === -1) {
           this.filter[field].push(item.id)
-        } else {
+        }
+        else {
           this.filter[field].splice(index, 1)
         }
+        */
       },
       setFastFilter (filter) {
         if (filter && filter.query) this.fastFilter.query = `Быстрый поиск: ${filter.query}`
@@ -382,35 +347,44 @@
         const j = filter[field].findIndex(elem => elem === item.id)
         if (j !== -1) filter[field].splice(j, 1)
 
-        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(filter)))
+        this.filter = filter
+        this.$store.commit('crm/client/SET_FILTER', JSON.parse(JSON.stringify(filter)))
+        // обнуляем массив отфильтрованных клиентов
+        if (field === 'clients') this.$store.commit('crm/client/SET_FILTERED_CLIENTS', [])
       },
       clearFastFilter () {
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
-        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(this.filter)))
+        this.$store.commit('crm/client/SET_FILTER', JSON.parse(JSON.stringify(this.filter)))
+        // обнуляем массив отфильтрованных клиентов
+        this.$store.commit('crm/client/SET_FILTERED_CLIENTS', [])
       },
-      async querySearchClient (search) {
-        if (search.length >= 3) {
-          this.loading = true
-          const item = {
-            program_id: this.program.id,
-            search,
+      async querySearch (search) {
+        console.log(search)
+        if (search.length >= 2) {
+          try {
+            this.loading = true
+            const item = {
+              program_id: this.program.id,
+              search,
+            }
+            await this.$store.dispatch('crm/client/querySearch', item)
+          } finally {
+            this.loading = false
           }
-          await this.$store.dispatch('widget/filter/foundClients', item)
-          this.loading = false
         }
       },
       clearFilterQuery () {
         this.fastFilter.query = null
         const filter = JSON.parse(JSON.stringify(this.filterStore))
         filter.query = null
-        this.$store.commit('widget/filter/filter', JSON.parse(JSON.stringify(filter)))
+        this.$store.commit('crm/client/SET_FILTER', JSON.parse(JSON.stringify(filter)))
       },
       close () {
         this.show = false
       },
       apply () {
-        this.$store.commit('widget/filter/filter', this.filter)
+        this.$store.commit('crm/client/filter', this.filter)
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
         this.setFastFilter(this.filter)
         this.show = false
@@ -437,6 +411,8 @@
 
     .app__filter-content {
       padding: 8px 20px;
+      max-height: 400px;
+      min-height: 200px;
 
       .app__filter-content-header {
         margin-bottom: 4px;
@@ -446,6 +422,20 @@
         line-height: 21px;
         letter-spacing: 0.1px;
         color: #2A2A34;
+      }
+
+      .app__filter-content-client {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        margin: 10px 0;
+
+        .app__filter-content-client-avatar {
+          width: 29px;
+          height: 29px;
+          border-radius: 29px;
+          margin-right: 8px;
+        }
       }
 
       .app__filter-content-chip {
@@ -465,27 +455,6 @@
       .app__filter-content-chip-active {
         background: #EBF1FF;
         color: #4776E6;
-      }
-
-      .app__filter-content-checkbox {
-        display: inline-block;
-        margin-right: 20px;
-        font-style: normal;
-        font-weight: 500;
-        font-size: 15px;
-        line-height: 21px;
-        color: #9191A1;
-
-        input {
-          display: inline-block;
-          margin-right: 11px;
-        }
-
-        div {
-          display: inline-block;
-          position: relative;
-          top: -1px;
-        }
       }
     }
   }
@@ -536,11 +505,11 @@
 .app__filter-chip {
   display: inline-flex;
   align-items: center;
-  background-color: #EBF1FF;
+  //background-color: #EBF1FF;
   border-radius: 6px;
   max-width: 100%;
   margin: 3px;
-  padding: 0 6px 0 12px;
+  //padding: 0 6px 0 12px;
   height: 37px;
   white-space: nowrap;
 
@@ -549,7 +518,9 @@
     display: inline-flex;
     height: 100%;
     max-width: 100%;
-    color: #4776E6;
+    //color: #4776E6;
+    border-radius: 6px;
+    padding: 0 6px 0 12px;
     font-style: normal;
     font-weight: 600;
     font-size: 13px;
@@ -558,7 +529,7 @@
 
   .app__filter-chip-icon-append {
     margin: 0 0 0 6px;
-    color: #4776E6;
+    //color: #4776E6;
   }
 }
 </style>

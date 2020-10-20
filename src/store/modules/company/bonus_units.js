@@ -5,6 +5,7 @@ export default {
     namespaced: true,
     state: {
         bonusUnits: [],
+        bonusUnits_cachedAt: null,
         bonusUnitIcons: [],
         unitTypesEnum: [
             {
@@ -20,6 +21,7 @@ export default {
     mutations: {
         bonusUnits (state, payload) {
             state.bonusUnits = payload
+            state.bonusUnits_cachedAt = Date.now()
         },
         bonusUnitIcons (state, payload) {
             state.bonusUnitIcons = payload
@@ -46,9 +48,7 @@ export default {
             }
         },
         REMOVE_BONUS_UNIT (state, id) {
-            const index = state.bonusUnits.findIndex(
-                (x) => x.id === id,
-            )
+            const index = state.bonusUnits.findIndex((x) => x.id === id)
             state.bonusUnits.splice(index, 1)
         },
     },
@@ -85,7 +85,9 @@ export default {
             })
         },
         async deleteBonusUnit ({ commit }, bonusUnitId) {
-            await ApiService.delete(`/api-cabinet/bonus_units/delete?id=${bonusUnitId}`)
+            await ApiService.delete(
+                `/api-cabinet/bonus_units/delete?id=${bonusUnitId}`,
+            )
             commit('REMOVE_BONUS_UNIT', bonusUnitId)
             this._vm.$notify({
                 title: 'Удаление бонусной валюты',
@@ -96,23 +98,23 @@ export default {
 
         // READ
         async loadBonusUnits ({ commit, dispatch }, programId) {
-            try {
-                const success = await ApiService.get(
-                    `/api-cabinet/bonus_units/list?program_id=${programId}`,
-                )
-                // console.log('/api/bonus_units/list')
-                // console.log(success)
-                commit('bonusUnits', success)
-            } catch (error) {}
+            const success = await ApiService.get(
+                `/api-cabinet/bonus_units/list?program_id=${programId}`,
+            )
+
+            commit('bonusUnits', success)
         },
     },
     getters: {
         bonusUnits (state) {
             return state.bonusUnits
         },
+        activeBonusUnits (state) {
+            return state.bonusUnits.filter((x) => x.deleted_at === null)
+        },
         mainBonusUnit (state) {
-            const index = state.bonusUnits.findIndex( x => !!x.is_main)
-            return (index >= 0 ) ? state.bonusUnits[index] : null            
+            const index = state.bonusUnits.findIndex((x) => !!x.is_main)
+            return index >= 0 ? state.bonusUnits[index] : null
         },
         bonusUnitIcons (state) {
             return state.bonusUnitIcons

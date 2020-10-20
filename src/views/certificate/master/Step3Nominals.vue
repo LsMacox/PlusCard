@@ -26,6 +26,7 @@
               <v-row
                 v-for="(item, index) in cert.nominals"
                 :key="index"
+                align="baseline"
               >
                 <v-col>
                   <v-text-field
@@ -86,14 +87,9 @@
                     fab
                     x-small
                     color="secondary"
-                    :style="{'margin-top': '12px'}"
                     @click="onRemoveNominalClick(item, index)"
                   >
-                    <span
-                      class="iconify trash_icon"
-                      data-icon="feather:trash"
-                      data-inline="false"
-                    />
+                    <v-icon>$iconify_feather-trash</v-icon>
                   </v-btn>
                   <v-btn
                     v-else
@@ -101,14 +97,9 @@
                     fab
                     x-small
                     color="secondary"
-                    :style="{'margin-top': '12px'}"
                     @click="onClearNominalClick(item, index)"
                   >
-                    <span
-                      class="iconify trash_icon"
-                      data-icon="feather:trash"
-                      data-inline="false"
-                    />
+                    <v-icon>$iconify_feather-trash</v-icon>
                   </v-btn>
                 </v-col>
                 <!-- <v-col v-if="!cert.quantity_unlimit">

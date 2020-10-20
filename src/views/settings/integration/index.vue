@@ -31,18 +31,18 @@
         <span>Вы не добавили еще ни одной интеграции с сторонними сервисмами и приложениями</span>
       </template>
     </base-empty-block-page>
-    <navigation-drawers-right-setting v-if="checkOpenNavigationRight" />
+    <integration-form v-if="checkOpenNavigationRight" />
   </v-skeleton-loader>
 </template>
 
 <script>
   import { mapMutations, mapGetters, mapActions } from 'vuex'
-  import navigationDrawersRightSetting from './navigationDrawers/navigationDrawersRightSetting'
+  import IntegrationForm from './navigationDrawers/IntegrationForm'
   import settingInfoTable from './settingInfoTable'
   export default {
     name: 'Setting',
     components: {
-      navigationDrawersRightSetting,
+      IntegrationForm,
       settingInfoTable,
     },
     data () {
@@ -69,18 +69,29 @@
     methods: {
       ...mapMutations({
         openNavigationRight: 'configuringIntegrations/configuring_integrations/openNavigationConfiguring',
+        setUpdateIntegration: 'configuringIntegrations/configuring_integrations/setUpdateIntegration',
       }),
       ...mapActions({
         GetClients: 'configuringIntegrations/configuring_integrations/GetClients',
+        GetScopes: 'configuringIntegrations/configuring_integrations/GetScopes',
+        loadBonusUnits: 'company/bonus_units/loadBonusUnits',
+        GetBonusResList: 'company/bonus_resources/GetList',
       }),
       newIntegration () {
+        this.setUpdateIntegration(null)
         this.openNavigationRight(true)
       },
       async init () {
-        this.getIntegrationsAction = true
-        await this.GetClients(this.programId).finally(() => {
+        try {
+          this.getIntegrationsAction = true
+          await this.GetClients(this.programId)
+          // await this.GetScopes()
+          // await this.loadBonusUnits(this.programId)
+        } catch (error) {
+          console.error(error)
+        } finally {
           this.getIntegrationsAction = false
-        })
+        }
       },
     },
 

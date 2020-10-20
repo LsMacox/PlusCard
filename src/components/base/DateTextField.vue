@@ -1,14 +1,19 @@
 <template>
-  <div class="date-text-field">
+  <div
+    ref="baseTextField"
+    v-click-outside="hide"
+    class="date-text-field"
+  >
     <div class="date-text-field__input">
-      <v-text-field
+      <base-text-field
         ref="text-field"
         v-model="dateText"
         v-mask="'##.##.####'"
         v-bind="$attrs"
         maxlength="10"
-        autocomplete="off"
-        @focus="showDatePicker = true"
+        autocomplete="none"
+        :autofocus="false"
+        @focus="show()"
       />
       <iconify-icon
         class="icon-feather-calendar"
@@ -17,10 +22,10 @@
       />
     </div>
     <date-range-picker
-      v-if="showDatePicker"
       ref="picker"
       v-model="dateRange"
       class="date-range-picker"
+      :class="{show: showDatePicker}"
       opens="inline"
       :ranges="false"
       :auto-apply="true"
@@ -71,6 +76,7 @@
 </template>
 
 <script>
+  import Calculation from '@/mixins/calculation.js'
   import { mask } from 'vue-the-mask'
   import DateRangePicker from 'vue2-daterange-picker'
   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
@@ -81,6 +87,7 @@
     components: {
       DateRangePicker,
     },
+    mixins: [Calculation],
     inheritAttrs: false,
     data () {
       return {
@@ -91,11 +98,8 @@
         },
       }
     },
-    computed: {
-    },
-    created () {
-      this.clickEventListener()
-    },
+    computed: {},
+    mounted () {},
     methods: {
       updateDatePicker (v) {
         this.showDatePicker = false
@@ -103,18 +107,14 @@
         this.dateText = this.$moment(this.dateText).format('DD.MM.YYYY')
         this.$emit('update:date', this.dateText)
       },
-      clickEventListener () {
-        document.addEventListener('click', (event) => {
-          let isClose = true
-          event.path.forEach((dom) => {
-            if (dom.className !== undefined) {
-              if (String(dom.className).indexOf('date-text-field') > -1) {
-                isClose = false
-              }
-            }
-          })
-          if (isClose) this.showDatePicker = false
+      show () {
+        this.$nextTick(() => {
+          this.calculationPositionEl(this.$refs.picker.$el, this.$refs.baseTextField)
+          this.showDatePicker = true
         })
+      },
+      hide () {
+        this.showDatePicker = false
       },
     },
   }
@@ -128,7 +128,10 @@
     .date-range-picker {
         position: absolute;
         right: 0;
-        z-index: 999;
+        z-index: 99;
+        margin-bottom: 4px;
+        margin-top: 4px;
+        display: none !important;
         .footer-content {
           .actions {
             padding: 15px 20px 15px 23px !important;
@@ -140,6 +143,9 @@
         .date-range_picker__btn {
           height: 34px;
         }
+        &.show {
+          display: block !important;
+        }
     }
     .daterangepicker .calendars .calendars-container .drp-calendar:first-child {
       border-right: none !important;
@@ -147,7 +153,7 @@
 }
 
 .date-text-field__input {
-  position: relative;
+  // position: relative;
 
   .icon-feather-calendar {
     position: absolute;

@@ -1,5 +1,8 @@
 <template>
   <div>
+    <div style="margin: 20px 0 15px 0;">
+      <client-filter />
+    </div>
     <empty-client
       v-if="!clients.length"
     />
@@ -112,7 +115,6 @@
   import ClientFilter from '@/views/crm/client/Filter'
   import EmptyClient from '@/views/crm/components/EmptyClient'
   import SidePanelEditClient from '@/views/crm/components/SidePanel/SidePanelEditClient'
-  import BaseTable from '@/components/base/BaseTable'
   import Convertor from '@/mixins/convertor'
 
   export default {
@@ -120,7 +122,6 @@
       ClientFilter,
       EmptyClient,
       SidePanelEditClient,
-      BaseTable,
     },
     mixins: [Convertor],
     data () {
@@ -146,10 +147,17 @@
         return this.$store.getters['company/program/program']
       },
       clients () {
+        const filteredClients = this.$store.getters['crm/client/filteredClients']
+        if (filteredClients.length) return filteredClients
         return this.$store.getters['crm/client/clients']
       },
       totalClients () {
+        const filteredClients = this.$store.getters['crm/client/filteredClients']
+        if (filteredClients.length) return filteredClients.length
         return this.$store.getters['crm/client/total']
+      },
+      filter () {
+        return this.$store.getters['crm/client/filter']
       },
       list: {
         get () {
@@ -164,6 +172,9 @@
       program (v) {
         if (v) this.fetchData()
       },
+      filter (v) {
+        if (v) this.fetchData()
+      },
       'list.page' (v) {
         if (v) this.fetchData()
       },
@@ -174,8 +185,9 @@
     created () {
     // this.segmentsData = this.$store.getters['crm/segment/segments']
     },
-    mounted () {
-      this.fetchData()
+    async mounted () {
+      await this.fetchData()
+      await this.getSegments()
     },
     methods: {
       createSidePanel (item) {
@@ -200,17 +212,29 @@
         if (date) return 'в ' + this.$moment.utc(date).local().format('HH:mm')
         return 'в -'
       },
-      fetchData () {
-        this.loadingList = true
-        const payload = {
-          program_id: this.program.id,
-          list: {
-            page: this.list.page,
-            limit: this.list.itemsPerPage,
-          },
-        }
+      async fetchData () {
         try {
-          this.$store.dispatch('crm/client/list', payload)
+          this.loadingList = true
+          const payload = {
+            program_id: this.program.id,
+            filter: { segments: this.filter.segments },
+            list: {
+              page: this.list.page,
+              limit: this.list.itemsPerPage,
+            },
+          }
+          await this.$store.dispatch('crm/client/list', payload)
+        } finally {
+          this.loadingList = false
+        }
+      },
+      async getSegments () {
+        try {
+          this.loadingList = true
+          const payload = {
+            program_id: this.program.id,
+          }
+          await this.$store.dispatch('crm/segment/segments', payload)
         } finally {
           this.loadingList = false
         }

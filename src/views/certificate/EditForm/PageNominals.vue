@@ -113,7 +113,6 @@
                       fab
                       x-small
                       color="secondary"
-
                       @click="onClearNominalClick(item, index)"
                     >
                       <v-icon>$iconify_feather-trash</v-icon>

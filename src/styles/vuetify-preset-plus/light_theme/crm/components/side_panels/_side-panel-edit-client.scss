@@ -4,8 +4,10 @@
 
 .panel-crm_edit_client {
     .side-panel__back {
-        z-index: 999;
+        z-index: 99999;
         position: fixed;
+        color: #4776E6;
+        cursor: pointer;
     }
     .v-navigation-drawer__content {
         &::-webkit-scrollbar {
@@ -21,7 +23,7 @@
         margin-top: 0 !important;
         margin-left: 0 !important;
         background-color: #fff;
-        z-index: 998;
+        z-index: 9999;
         padding-top: 29px;
         .panel-crm_edit_client__tabs {
             text-align: right;
@@ -63,7 +65,7 @@
                     .icon-external-link {
                         transition: 0.2s ease-in-out;
                         margin-left: 5px;
-                    }   
+                    }
                     &:hover {
                         p {
                             color: $primary-base !important;
@@ -117,8 +119,52 @@
                 }
             }
         }
+        &.extended {
+            padding-bottom: 26px;
+        }
+    }
+    .info-list {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        list-style: none;
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            p {
+                margin-bottom: 0!important;
+                width: 35%;
+            }
+            .right-text {
+                display: block;
+                width: 65%;
+            }
+        }
+    }
+    .v-input.theme--light {
+        .v-input__control {
+            .v-input__slot {
+                fieldset {
+                    border-radius: 10px;
+                }
+                input {
+                    color: $neutral-900 !important;
+                    @include body-m-medium;
+                    &::placeholder {
+                        color: $neutral-600 !important;
+                        @include body-m-medium;
+                    }
+                }
+            }
+        }
     }
     .panel-crm_edit_client__body {
-        margin-top: 210px !important;
+        &.usual {
+            margin-top: 210px !important;
+        }
+        &.extended {
+            margin-top: 270px !important;
+        }
     }
 }

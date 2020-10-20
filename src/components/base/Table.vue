@@ -24,14 +24,13 @@
             <thead class="v-data-table-header">
               <tr>
                 <th
-                  v-for="(header, i) in props.headers"
+                  v-for="(header) in props.headers"
                   :key="header.text"
                   role="columnheader"
                   scope="col"
                   :class="[
                     {
                       active: isValEqualSort = (header.value === pagination.sortBy),
-                      // 'text-end': i >= 2,
                     },
                     isValEqualSort ? (pagination.descending === 'descending' ? 'desc' : 'ask') : ''
                   ]"

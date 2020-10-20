@@ -279,9 +279,9 @@
       getUnitNameEnding (iNumber, aEndings, name) {
         aEndings = JSON.parse(aEndings)
         if (
-          aEndings == '' ||
+          aEndings === '' ||
           aEndings == null ||
-          aEndings.first == '' ||
+          aEndings.first === '' ||
           aEndings.first == null
         ) {
           return name
@@ -310,17 +310,17 @@
         return sEnding
       },
       clickHereToPrint () {
-        let disp_setting = 'toolbar=yes,location=no,directories=yes,menubar=yes,'
-        disp_setting += 'scrollbars=yes,width=900, height=700, left=100, top=25'
-        const content_value = document.getElementById('content').innerHTML
+        let dispSetting = 'toolbar=yes,location=no,directories=yes,menubar=yes,'
+        dispSetting += 'scrollbars=yes,width=900, height=700, left=100, top=25'
+        const contentValue = document.getElementById('content').innerHTML
 
-        const docprint = window.open('', '', disp_setting)
+        const docprint = window.open('', '', dispSetting)
         docprint.document.open()
         docprint.document.write('<html><head><title>Testing</title>')
         docprint.document.write(
           '</head><body onLoad="self.print()" style="width: 800px; font-size: 13px; font-family: arial;">',
         )
-        docprint.document.write(content_value)
+        docprint.document.write(contentValue)
         docprint.document.close()
         docprint.focus()
       },

@@ -5,9 +5,9 @@ const getDefaultState = () => {
   return {
     openNavigationSetting: false,
     integrations: [],
-    updateIntegration: {},
-    checkStatus: false,
+    updateIntegration: null,
     scopes: [],
+    scopes_cachedAt: null,
   }
 }
 export default {
@@ -17,7 +17,7 @@ export default {
     openNavigationConfiguring (state, payload) {
       state.openNavigationSetting = payload
     },
-    createConfiguringIntegrations (state, payload) {
+    ADD_INTEGRATION (state, payload) {
       state.integrations.push(payload)
     },
     setUpdateIntegration (state, payload) {
@@ -28,23 +28,21 @@ export default {
     },
     UPDATE_INTEGRATION (state, payload) {
       var index = state.integrations.findIndex(x => x.id === payload.id)
-      if (index >= 0 ) Vue.set(state.integrations, index, payload)     
+      if (index >= 0) Vue.set(state.integrations, index, payload)
     },
     UPDATE_STATUS_INTEGRATION (state, payload) {
       var index = state.integrations.findIndex(x => x.id === payload.id)
-      if (index >= 0 ) {
+      if (index >= 0) {
         state.integrations[index].revoked = payload.revoked
-      } 
+      }
     },
     REMOVE_INTEGRATION (state, id) {
       var index = state.integrations.findIndex(x => x.id === id)
-      if (index >= 0 ) state.integrations.splice(index, 1)
-    },
-    checkUpdate (state, payload) {
-      state.checkStatus = payload
+      if (index >= 0) state.integrations.splice(index, 1)
     },
     SET_SCOPES (state, payload) {
       state.scopes = payload
+      state.scopes_cachedAt = Date.now()
     },
   },
   actions: {
@@ -53,9 +51,16 @@ export default {
       commit('SET_INTEGRATIONS', result)
     },
 
-    async GetScopes ({ commit, dispatch, rootState }) {
+    async GetScopes ({ commit, dispatch, state }, { cacheTTL = this._vm.$config.app.cacheTTL }) {
+      // cacheTTL: null - unlimit, <=0 - no cache, >0 - cacheTTL in seconds
+      if (state.scopes_cachedAt && (cacheTTL === null || state.scopes_cachedAt + cacheTTL * 1000 > Date.now())) {
+        console.log('getCached')
+        return state.scopes
+      }
+
       const result = await ApiService.get('/oauth/scopes')
       commit('SET_SCOPES', result)
+      return result
     },
 
     async CreateIntegration ({ commit, dispatch, rootState }, newClient) {
@@ -63,7 +68,7 @@ export default {
         `/oauth/program/${newClient.program_id}/clients`,
         newClient,
       )
-      commit('createConfiguringIntegrations', result)
+      commit('ADD_INTEGRATION', result)
       return result
     },
 
@@ -99,8 +104,8 @@ export default {
     getCurrentIntegrationUpdate (state) {
       return state.updateIntegration
     },
-    getCheckUpdate (state) {
-      return state.checkStatus
+    scopes (state) {
+      return state.scopes
     },
   },
 }

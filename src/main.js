@@ -26,7 +26,6 @@ import i18n from './i18n'
 
 import './AuthGuard'
 
-
 import * as filters from './filters'
 
 import VueSession from './utils/session'
@@ -35,7 +34,7 @@ import AppConfig from './config/index'
 
 import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'
-
+import VueClickOutsideDirective from './directives/click-outside.js'
 
 import { v4 as uuidv4 } from 'uuid'
 import VueConstants from './plugins/vue-constants'
@@ -80,6 +79,9 @@ Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
 
+// Directives
+Vue.directive('click-outside', VueClickOutsideDirective)
+
 Object.copy = (obj) => {
   return JSON.parse(JSON.stringify(obj))
 }
@@ -100,8 +102,6 @@ if (process.env.NODE_ENV !== 'development') {
   window.console.log = () => { }
 }
 
-
-
 const App = new Vue({
   router,
   store,
@@ -117,4 +117,3 @@ const App = new Vue({
 App.$mount('#app')
 
 Vue.prototype.$app = App
-

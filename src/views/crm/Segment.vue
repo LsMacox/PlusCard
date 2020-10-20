@@ -79,7 +79,6 @@
       </template>
     </base-table>
     <side-panel-segment
-      v-if="sidePanelStatus.active"
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"
       :table-data="sidePanelStatus.data"
@@ -90,14 +89,12 @@
 <script>
   import EmptySegment from './components/EmptySegment'
   import SidePanelSegment from './components/SidePanel/SidePanelSegment'
-  import BaseTable from '@/components/base/BaseTable'
   import Convertor from '@/mixins/convertor'
 
   export default {
     components: {
       EmptySegment,
       SidePanelSegment,
-      BaseTable,
     },
     mixins: [Convertor],
     data () {
