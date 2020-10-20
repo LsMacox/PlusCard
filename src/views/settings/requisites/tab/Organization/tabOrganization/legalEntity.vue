@@ -3,29 +3,33 @@
     <div class="container-title-input">
       <v-form
         ref="form"
-        v-model="valid"
+        v-model="details.valid"
       >
         <div class="mto">
           <h3 class="title-h3">
             Общая информация
           </h3>
           <base-text-field
-            v-model="legalName"
+            v-model="details.legalName"
             :validate-on-blur="true"
             placeholder="Юридическое название организации"
             outlined
             dense
+            maxlength="255"
             :rules="[
-                  v => !!v || 'Имя обязательно',
-                  v => String(v).length <= 50 || 'Имя должно быть не более 50 символов',
+                  v => !!v || 'Поле обязательно',
                 ]"
           />
           <div class="block-two-input">
             <base-text-field
-              v-model="address"
+              v-model="details.address"
               placeholder="Адрес"
               outlined
               class="mg-input-custom"
+              maxlength="255"
+              :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
             />
             <!--            <base-text-field-->
             <!--              v-model="phoneFax"-->
@@ -34,23 +38,32 @@
             <!--              class="mg-input-custom"-->
             <!--            />-->
             <vue-tel-input
-              v-model="phoneFax"
+              v-model="details.phoneFax"
               class="mg-input-custom input-country"
               placeholder="Телефон / факс"
+              :maxLen="12"
             />
           </div>
           <div class="block-two-input">
             <base-text-field
-              v-model="fullNameHead"
+              v-model="details.fullNameHead"
               placeholder="ФИО руководителя"
               outlined
               class="mg-input-custom"
+              maxlength="255"
+              :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
             />
             <base-text-field
-              v-model="positionOfHead"
+              v-model="details.positionOfHead"
               placeholder="Должность руководителя"
               outlined
               class="mg-input-custom"
+              maxlength="255"
+              :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
             />
           </div>
         </div>
@@ -64,9 +77,13 @@
                 Введите ОГРН
               </p>
               <base-text-field
-                v-model="enterBin"
+                v-model="details.enterBin"
                 placeholder="Введите ОГРН"
                 outlined
+                maxlength="13"
+                :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
               />
             </div>
             <div class="simple-width-sm mr-20">
@@ -74,9 +91,13 @@
                 Введите ИНН
               </p>
               <base-text-field
-                v-model="enterTin"
+                v-model="details.enterTin"
                 placeholder="Введите ИНН"
                 outlined
+                maxlength="10"
+                :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
               />
             </div>
             <div class="simple-width-sm">
@@ -84,9 +105,13 @@
                 Введите КПП
               </p>
               <base-text-field
-                v-model="enterCheckpoint"
+                v-model="details.enterCheckpoint"
                 placeholder="Введите КПП"
                 outlined
+                maxlength="9"
+                :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
               />
             </div>
           </div>
@@ -96,8 +121,9 @@
                 Расчетный счет
               </p>
               <base-text-field
-                v-model="checkingAccount"
+                v-model="details.checkingAccount"
                 placeholder="Введите № расчетного счета"
+                maxlength="20"
                 outlined
               />
             </div>
@@ -106,8 +132,9 @@
                 БИК
               </p>
               <base-text-field
-                v-model="enterBic"
+                v-model="details.enterBic"
                 placeholder="Введите БИК"
+                maxlength="9"
                 outlined
               />
             </div>
@@ -118,7 +145,8 @@
                 Название банка
               </p>
               <base-text-field
-                v-model="bankName"
+                v-model="details.bankName"
+                maxlength="255"
                 placeholder="Введите название банка"
                 outlined
                 class="mg-input-custom"
@@ -129,10 +157,11 @@
                 Корреспондентский счет
               </p>
               <base-text-field
-                v-model="correspondentAccount"
-                placeholder="Введите № корреспондентского счета"
-                outlined
-                class="mg-input-custom"
+                  maxlength="20"
+                  v-model="details.correspondentAccount"
+                  placeholder="Введите № корреспондентского счета"
+                  outlined
+                  class="mg-input-custom"
               />
             </div>
           </div>
@@ -147,25 +176,63 @@
     name: 'LegalEntity',
     data () {
       return {
-        valid: false,
-        legalName: '',
-        address: '',
-        phoneFax: '',
-        positionOfHead: '',
-        fullNameHead: '',
-        enterBin: '',
-        enterTin: '',
-        enterCheckpoint: '',
-        checkingAccount: '',
-        enterBic: '',
-        bankName: '',
-        correspondentAccount: '',
+        details: {
+          valid: false,
+          legalName: '',
+          address: '',
+          phoneFax: '',
+          positionOfHead: '',
+          fullNameHead: '',
+          enterBin: '',
+          enterTin: '',
+          enterCheckpoint: '',
+          checkingAccount: '',
+          enterBic: '',
+          bankName: '',
+          correspondentAccount: '',
+          org_type: 'UL',
+        },
       }
     },
     computed: {
-      rules () {
-
+      requisites () {
+        return this.$store.getters['settings/organization/requisites']
       },
+      merchant () {
+        return this.$store.getters['settings/organization/merchant']
+      },
+    },
+    watch: {
+      merchant (v) {
+        this.details = this.requisites
+        this.details.org_type = 'UL'
+      },
+      details: {
+        handler (v) {
+          this.$store.commit('settings/organization/requisites', v)
+        },
+        deep: true,
+      },
+    },
+    methods: {
+      validatePhone () {
+        const regex = /^((\+7|7|8)+([0-9]){10})$/i;
+        const str = ''
+        let m
+
+        if ((m = regex.exec(str)) !== null) {
+          // The result can be accessed through the `m`-variable.
+          m.forEach((match, groupIndex) => {
+            console.log(`Found match, group ${groupIndex}: ${match}`)
+          })
+        }
+      },
+    },
+    mounted () {
+      if (this.merchant) {
+        this.details = this.requisites
+        this.details.org_type = 'UL'
+      }
     },
   }
 </script>

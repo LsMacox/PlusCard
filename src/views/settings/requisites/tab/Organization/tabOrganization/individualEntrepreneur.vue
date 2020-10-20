@@ -2,24 +2,32 @@
   <div class="container-title-input">
     <v-form
       ref="form"
-      v-model="valid"
+      v-model="details.valid"
     >
       <div class="mto">
         <h3 class="title-h3">
           Общая информация
         </h3>
         <base-text-field
-          v-model="legalName"
+          v-model="details.legalName"
           :validate-on-blur="true"
           placeholder="Юридическое название организации"
           outlined
+          maxlength="255"
+          :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
           dense
         />
         <div class="block-two-input">
           <base-text-field
-            v-model="address"
+            v-model="details.address"
             placeholder="Адрес"
             outlined
+            maxlength="255"
+            :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
             class="mg-input-custom"
           />
 <!--          <base-text-field-->
@@ -29,16 +37,21 @@
 <!--            class="mg-input-custom"-->
 <!--          />-->
           <vue-tel-input
-            v-model="phoneFax"
+            v-model="details.phoneFax"
             class="mg-input-custom input-country"
             placeholder="Телефон / факс"
+            :maxLen="12"
           />
         </div>
         <div class="simple-width-md">
           <base-text-field
-            v-model="fullNameHead"
+            v-model="details.fullNameHead"
             placeholder="ФИО партнера"
             outlinedclass="mg-input-custom"
+            maxlength="255"
+            :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
           />
         </div>
       </div>
@@ -52,9 +65,13 @@
               ОГРНИП
             </p>
             <base-text-field
-              v-model="enterOgrnip"
+              v-model="details.enterBin"
               placeholder="Введите ОГРНИП"
               outlined
+              maxlength="15"
+              :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
             />
           </div>
           <div class="simple-width-md">
@@ -62,9 +79,13 @@
               ИНН
             </p>
             <base-text-field
-              v-model="enterTin"
+              v-model="details.enterTin"
               placeholder="Введите ИНН"
               outlined
+              maxlength="12"
+              :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
             />
           </div>
         </div>
@@ -74,7 +95,7 @@
               Расчетный счет
             </p>
             <base-text-field
-              v-model="bankName"
+              v-model="details.correspondentAccount"
               placeholder="Введите № расчетного счета"
               outlined
             />
@@ -90,15 +111,47 @@
     name: 'IndividualEntrepreneur',
     data () {
       return {
-        valid: false,
-        legalName: '',
-        address: '',
-        phoneFax: '',
-        fullNameHead: '',
-        enterOgrnip: '',
-        enterTin: '',
-        bankName: '',
+        details: {
+          valid: false,
+          legalName: '',
+          address: '',
+          phoneFax: '',
+          positionOfHead: '',
+          fullNameHead: '',
+          enterBin: '',
+          enterTin: '',
+          enterCheckpoint: '',
+          checkingAccount: '',
+          enterBic: '',
+          bankName: '',
+          correspondentAccount: '',
+          org_type: 'IP',
+        },
       }
+    },
+    computed: {
+      requisites () {
+        return this.$store.getters['settings/organization/requisites']
+      },
+      merchant () {
+        return this.$store.getters['settings/organization/merchant']
+      },
+    },
+    watch: {
+      merchant (v) {
+        this.details = this.requisites
+        this.details.org_type = 'IP'
+      },
+      details: {
+        handler (v) {
+          this.$store.commit('settings/organization/requisites', v)
+        },
+        deep: true,
+      },
+    },
+    mounted () {
+      this.details = this.requisites
+      this.details.org_type = 'IP'
     },
   }
 </script>

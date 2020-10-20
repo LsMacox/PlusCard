@@ -2,25 +2,29 @@
   <div class="container-title-input">
     <v-form
       ref="form"
-      v-model="valid"
+      v-model="details.valid"
     >
       <div class="mto">
         <h3 class="title-h3">
           Общая информация
         </h3>
-        <base-text-field
-          v-model="fullNamePartner"
-          :validate-on-blur="true"
-          placeholder="ФИО партнера"
-          outlined
-          dense
-        />
+<!--        <base-text-field-->
+<!--            v-model="details.legalName"-->
+<!--            :validate-on-blur="true"-->
+<!--            placeholder="Юридическое название организации"-->
+<!--            outlined-->
+<!--            dense-->
+<!--        />-->
         <div class="block-two-input">
           <base-text-field
-            v-model="address"
+            v-model="details.address"
             placeholder="Адрес"
             outlined
             class="mg-input-custom"
+            maxlength="255"
+            :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
           />
 <!--          <base-text-field-->
 <!--            v-model="phoneFax"-->
@@ -29,23 +33,32 @@
 <!--            class="mg-input-custom"-->
 <!--          />-->
           <vue-tel-input
-            v-model="phoneFax"
+            v-model="details.phoneFax"
             class="mg-input-custom input-country"
             placeholder="Телефон / факс"
+            :maxLen="12"
           />
         </div>
         <div class="block-two-input">
           <base-text-field
-            v-model="fullNameHead"
+            v-model="details.fullNameHead"
             placeholder="ФИО партнера"
             outlined
             class="mg-input-custom"
+            maxlength="255"
+            :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
           />
           <base-text-field
-              v-model="partnerTaxID"
+              v-model="details.enterTin"
               placeholder="ИНН партнера"
               outlined
               class="mg-input-custom"
+              maxlength="12"
+              :rules="[
+                  v => !!v || 'Поле обязательно',
+                ]"
           />
         </div>
       </div>
@@ -58,13 +71,47 @@
     name: 'Individual',
     data () {
       return {
-        valid: false,
-        fullNamePartner: '',
-        address: '',
-        phoneFax: '',
-        partnerTaxID: '',
-        fullNameHead: '',
+        details: {
+          valid: false,
+          legalName: '',
+          address: '',
+          phoneFax: '',
+          positionOfHead: '',
+          fullNameHead: '',
+          enterBin: '',
+          enterTin: '',
+          enterCheckpoint: '',
+          checkingAccount: '',
+          enterBic: '',
+          bankName: '',
+          correspondentAccount: '',
+          org_type: 'FL',
+        },
       }
+    },
+    computed: {
+      requisites () {
+        return this.$store.getters['settings/organization/requisites']
+      },
+      merchant () {
+        return this.$store.getters['settings/organization/merchant']
+      },
+    },
+    watch: {
+      merchant (v) {
+        this.details = this.requisites
+        this.details.org_type = 'FL'
+      },
+      details: {
+        handler (v) {
+          this.$store.commit('settings/organization/requisites', v)
+        },
+        deep: true,
+      },
+    },
+    mounted () {
+      this.details = this.requisites
+      this.details.org_type = 'FL'
     },
   }
 </script>
