@@ -7,9 +7,8 @@
         class="auth-content-box"
       >
         <v-img
-          src="@/assets/svg/auth-side-password-changed.svg"
-          width="92px"
-          height="79px"
+          src="@/assets/png/loyalty-dummy.png"
+          width="187px"
           style="margin: 0 auto 34px auto;"
         />
         <div
@@ -19,16 +18,18 @@
           <div
             class="header"
           >
-            Ссылка для восстановления пароля недействительна!
+            Ссылка недействительна :’(
           </div>
           <div
             class="header-text"
-          />
+          >
+            Истек срок действия ссылки для восстановления пароля. Запросите новую ссылку.
+          </div>
         </div>
         <div style="text-align: center;">
           <v-btn
             color="primary"
-            @click="toRoute('/login/email')"
+            @click="toRoute('/password/forget')"
           >
             <span
               class="iconify"
@@ -36,7 +37,7 @@
               data-icon="ion:log-out-outline"
               data-inline="false"
             />
-            Войти в аккаунт
+            Восстановить пароль
           </v-btn>
         </div>
       </div>
