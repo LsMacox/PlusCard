@@ -1,11 +1,14 @@
 <template>
-  <div style="display: flex;">
+  <v-row
+    v-if="false"
+    no-gutters
+  >
     <div>
       <v-icon
         x-large
-        @click="play()"
+        @click="startPlay()"
       >
-        play_circle_outline
+        fa-play-circle
       </v-icon>
     </div>
 
@@ -15,7 +18,21 @@
         class="image-thumb"
       />
     </div>
-  </div>
+  </v-row>
+  <v-row v-else>
+    <v-col>
+      <audio controls>
+
+        <source
+          :src="content.url"
+          type="audio/mpeg"
+          :preload="preload"
+          autoplay="false"
+        >
+
+      </audio>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -32,7 +49,8 @@
     },
     data () {
       return {
-
+        play: false,
+        preload: 'metadata', // auto (полностью), metadata (небольшую часть, чтобы определить основные метаданные) и none (без загрузки)
       }
     },
     computed: {
@@ -45,9 +63,10 @@
         if (this.sender === this.chatUser.id) return this.content.osc_light
         return this.content.osc_dark
       },
-      play () {
-        const audio = new Audio(this.content.url)
-        audio.play()
+      startPlay () {
+        this.play = true
+        // const audio = new Audio(this.content.url)
+        // audio.play()
       },
     },
   }

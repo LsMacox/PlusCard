@@ -163,7 +163,6 @@
         visible1: false,
         emailRules: [
           v => !!v || 'E-mail обязателен',
-          // v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
           v => validEmail(v) || 'E-mail неверного формата',
         ],
         passwordRules: [

@@ -27,7 +27,16 @@
             </p>
           </v-row>
           <v-row
-            v-if="action"
+            v-if="$slots.actions"
+            justify="center"
+            class="action-row"
+          >
+            <v-col>
+              <slot name="actions" />
+            </v-col>
+          </v-row>
+          <v-row
+            v-else-if="action"
             justify="center"
             class="action-row"
           >

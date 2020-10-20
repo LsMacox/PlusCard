@@ -4,4 +4,5 @@ module.exports = Object.freeze({
     DATETIME_FORMAT: 'DD.MM.YYYY\u00A0HH:mm:ss',
     DATETIME_FORMAT_MIN: 'DD.MM.YYYY\u00A0HH:mm',
     DATETIME_FORMAT_MIN2: 'DD.MM.YYYY\u00A0в\u00A0HH:mm',
+    TIME_MIN_FORMAT: 'HH:mm',
 })

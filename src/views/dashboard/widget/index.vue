@@ -128,6 +128,31 @@
           end_period: v.end,
         })
       },
+      program (v) {
+        this.$store.dispatch('dashboard/clients/widget', {
+          program_id: v.id,
+          start_period: this.period.start,
+          end_period: this.period.end,
+        })
+
+        this.$store.dispatch('dashboard/purchase/widget', {
+          program_id: v.id,
+          start_period: this.period.start,
+          end_period: this.period.end,
+        })
+
+        this.$store.dispatch('dashboard/bonuses/widget', {
+          program_id: v.id,
+          start_period: this.period.start,
+          end_period: this.period.end,
+        })
+
+        this.$store.dispatch('dashboard/customActions/widget', {
+          program_id: v.id,
+          start_period: this.period.start,
+          end_period: this.period.end,
+        })
+      },
     },
     mounted () {
       this.start_period = this.period.start

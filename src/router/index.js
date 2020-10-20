@@ -7,6 +7,9 @@ import CabinetLayout from '@/layouts/cabinet'
 import CrmRouters from './modules/crm'
 import ChatRouters from './modules/chat'
 
+import GuardEmptyPrograms from '@/router/guards/guard-empty-programs'
+import GuardLoadingApp from '@/router/guards/guard-loading-app'
+
 /* Router Modules */
 
 Vue.use(Router)
@@ -37,11 +40,12 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/login',
+      path: '/login',      
       component: AuthLayout,
       children: [
         {
           path: '',
+          name: 'Login',
           redirect: 'email',
         },
         {
@@ -54,6 +58,7 @@ export default new Router({
         },
         {
           path: 'phone/confirm',
+          props: (route) => ({ phone: route.query.phone }),
           component: () => import('@/views/auth/login/phone/confirm'),
         },
       ],
@@ -111,6 +116,7 @@ export default new Router({
     },
     {
       path: '/',
+      beforeEnter: GuardLoadingApp,
       component: CabinetLayout,
       meta: { auth: true },
       children: [
@@ -158,17 +164,31 @@ export default new Router({
         {
           path: '/program/bonus/settings',
           component: () => import('@/views/BonusSettings'),
+          beforeEnter: GuardEmptyPrograms,
           name: 'ProgramBonusSetting',
-          meta: { title: 'ProgramBonusSetting', icon: 'ui_kit' },
+          meta: {  auth: true, title: 'ProgramBonusSetting', icon: 'ui_kit' },
         },
         {
-          path: '/master',
+          path: '/master/old',
           component: () => import('@/views/master/Master'),
-          name: 'Master',
+          name: 'MasterOld',
           meta: { auth: true, title: 'Master', icon: 'master' },
         },
         {
+          path: '/master',
+          component: () => import('@/views/company/master'),
+          name: 'Master',
+          meta: { auth: true, title: 'Master', icon: 'master' },
+        },
+        // {
+        //   path: '/loyalty',
+        //   component: () => import('@/views/loyalty/index'),
+        //   name: 'loyalty',
+        //   meta: { auth: true },
+        // },
+        {
           path: '/loyalty',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/loyalty/index'),
           name: 'loyalty',
           meta: { auth: true },
@@ -207,7 +227,7 @@ export default new Router({
           component: () => import('@/views/certificate/EditForm/index.vue'),
           props: (route) => ({ certId: +route.params.cert_id, startPage: route.hash || '#main' }),
           name: 'ProgramCertificateForm',
-          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },         
+          meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
         },
         {
           path: '/certificate/master',
@@ -217,33 +237,65 @@ export default new Router({
         },
         {
           path: '/account/certificates',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/account/certificate/table/index'),
           name: 'UserCertificates',
-          meta: { title: 'Certificates', icon: 'certificates' },
+          meta: { auth: true, title: 'Certificates', icon: 'certificates' },
         },
         {
           path: 'actions',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/SkeletonPage'),
           name: 'Actions',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {
           path: 'sendings',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/SkeletonPage'),
           name: 'Sendings',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {
-          path: 'settings',
-          component: () => import('@/views/settings/ProgramSettings.vue'),
-          name: 'Settings',
-          meta: { auth: true, title: 'Settings', icon: 'dashboard' },
+          path: 'moderations',
+          beforeEnter: GuardEmptyPrograms,
+          component: () => import('@/views/SkeletonPage'),
+          name: 'Moderations',
+          meta: { auth: false, title: 'Moderations', icon: 'dashboard' },
         },
         {
-          path: 'staff',
-          component: () => import('@/views/settings/staff/index'),
-          name: 'CompanySettingsStaff',
-          meta: { auth: true },
+          path: 'settings',
+          beforeEnter: GuardEmptyPrograms,
+          component: () => import('@/views/settings/index'),
+          name: 'Settings',
+          redirect: 'settings/menu',
+          meta: { auth: true, title: 'Settings', icon: 'dashboard' },
+          children: [
+            {
+              path: 'menu',
+              component: () => import('@/views/settings/ProgramSettings.vue'),
+              name: 'SettingsMenu',
+              meta: { auth: true },
+            },
+            {
+              path: 'requisites',
+              component: () => import('@/views/settings/requisites/index'),
+              name: 'SettingsRequisites',
+              meta: { auth: true },
+            },
+            {
+              path: 'staff',
+              component: () => import('@/views/settings/staff/index'),
+              name: 'SettingsStaff',
+              meta: { auth: true },
+            },
+            {
+              path: 'integration',
+              component: () => import('@/views/settings/integration/index'),
+              name: 'SettingsIntegration',
+              meta: { auth: true },
+            },
+          ],
         },
         {
           path: 'help',

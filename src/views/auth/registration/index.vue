@@ -30,7 +30,7 @@
           outlined
           required
           :rules="emailRules"
-          validate-on-blur
+          :validate-on-blur="false"
         >
           <template slot="prepend-inner">
             <span
@@ -49,7 +49,7 @@
           outlined
           required
           :rules="phoneRules"
-          validate-on-blur
+          :validate-on-blur="false"
         >
           <template slot="prepend-inner">
             <v-img
@@ -66,7 +66,7 @@
           outlined
           required
           :rules="passwordRules"
-          validate-on-blur
+          :validate-on-blur="false"
         >
           <template slot="prepend-inner">
             <span
@@ -99,7 +99,7 @@
           outlined
           required
           :rules="passwordConfirmRules"
-          validate-on-blur
+          :validate-on-blur="false"
         >
           <template slot="prepend-inner">
             <span
@@ -147,7 +147,7 @@
 
             block
             :loading="loading"
-            :disabled="!valid && !accept"
+            :disabled="!(valid && accept)"
             @click="submit()"
           >
             <v-icon left>
@@ -162,7 +162,7 @@
     <vue-recaptcha
       ref="recaptcha"
       size="invisible"
-      :sitekey="$store.state.RECAPTCHA_SITE_KEY"
+      :sitekey="$config.app.RECAPTCHA_SITE_KEY"
       :load-recaptcha-script="true"
       @verify="registration"
       @expired="onCaptchaExpired"
@@ -183,6 +183,8 @@
   import { mask } from 'vue-the-mask'
   import VueRecaptcha from 'vue-recaptcha'
   import { mapGetters } from 'vuex'
+  import { validEmail } from '@/utils/validate.js'
+  import { validPhone } from '@/utils/validate'
 
   export default {
     components: {
@@ -204,12 +206,11 @@
         visible2: false,
         accept: false,
         emailRules: [
-          v => !!v || 'E-mail обязателен',
-          // v => /^([a-z0-9_-]+\.)*[a-z0-9_-]+@[a-z0-9_-]+(\.[a-z0-9_-]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
-          v => /^([\w]+\.)*[\w\+]+@[\w]+(\.[\w]+)*\.[a-z]{2,10}$/.test(v) || 'E-mail неверного формата',
+          v => !!v || 'Введите E-mail',
+          v => validEmail(v) || 'E-mail неверного формата',
         ],
         phoneRules: [
-          v => !!v || 'Телефон обязателен',
+          v => (!!v && validPhone(v)) || 'Введите телефон',
         ],
         passwordRules: [
           v => !!v || 'Пароль обязателен',
@@ -227,6 +228,7 @@
         'merchants',
         'merchant',
         'device',
+        'client',
       ]),
     },
     mounted () {
@@ -251,6 +253,7 @@
         return p
       },
       submit () {
+        if (!this.$refs.form.validate()) return
         this.$refs.recaptcha.execute()
       },
       async registration (recaptchaToken) {
@@ -262,6 +265,7 @@
           device_token: this.device.token,
           device_type: this.device.type,
           recaptcha_token: recaptchaToken,
+          client: this.client,
         }
         console.log(user)
         try {

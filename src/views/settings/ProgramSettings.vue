@@ -54,7 +54,7 @@
             icon: require('@/assets/settings/Card-On.png'),
             title: 'Реквизиты',
             description: 'Управление реквизитами компании, просмотр соглашений и отчетов по платежам.',
-            to: '/todo',
+            to: '/settings/requisites',
           },
           {
             icon: require('@/assets/settings/Bag-On.png'),
@@ -83,20 +83,26 @@
           {
             icon: require('@/assets/settings/Chat-On.png'),
             title: 'Чаты',
-            description: 'Описание придумаю, когда буду заниматься разделом чатов, чтобы понимать что тут писать.',
+            description: 'Настройка приветственных сообщений, аватара и имени представителя в чате компании.',
             to: '/communications/chat',
           },
           {
             icon: require('@/assets/settings/Stuff-On.png'),
             title: 'Сотрудники',
             description: 'Настройка и редактирование прав доступа сотрудников комапнии, добавление новых.',
-            to: '/staff',
+            to: '/settings/staff',
           },
           {
             icon: require('@/assets/settings/Embed-On.png'),
             title: 'Интеграции',
             description: 'Подключение и настройка интеграций с различными сервисами.',
-            to: '/todo',
+            to: '/settings/integration',
+          },
+          {
+            icon: require('@/assets/settings/Moderations-On.png'),
+            title: 'История модераций',
+            description: 'История всех изменений настроек вашей компании.',
+            to: '/moderations',
           },
         ]
       },

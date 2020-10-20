@@ -1,6 +1,13 @@
-function asMixin (name,fun) {
-    const methods = {}
-    methods[name] = fun
+function asMixin (list) {
+    const methods = Object.assign({}, list)
+
+    // for (const key in list) {
+    //     if (list.hasOwnProperty(key)) {
+    //         methods[name] = fun
+    //         const element = list[key];
+
+    //     }
+    // }
 
     return { methods }
 }
@@ -26,9 +33,22 @@ function validUsername (str) {
  * @param {string} url
  * @returns {Boolean}
  */
-function validURL (url) {
-    const reg = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
-    return reg.test(url)
+function validURL (url, options = {
+    protocol: true,
+}) {
+    // const { groups: { token } } = /Bearer (?<token>[^ $]*)/.exec(auth)
+    // console.log('validURL', url, options)
+
+    const reg = /^(?<protocol>(https?|ftp):\/\/)?([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
+    const res = reg.exec(url)
+    if (res) {
+        // console.log('exec', res)
+        return (!options.protocol || (res.groups && !!res.groups.protocol))
+    } else {
+        return false
+    }
+
+    // if (reg.exec(url)) { return reg.test(url) }
 }
 
 /**
@@ -69,6 +89,19 @@ function validEmail (email) {
 }
 
 /**
+ * @param {string} email
+ * @returns {Boolean}
+ */
+function validPhone (phone) {
+    if (!phone) return false
+    const phoneReplaced = phone.trim()
+        .replace(/(\ |-|\(|\))/g, '')
+
+    const reg = /^(\+7|7|8)+(\d{10})$/
+    return reg.test(phoneReplaced)
+}
+
+/**
  * @param {string} str
  * @returns {Boolean}
  */
@@ -102,7 +135,7 @@ function isNumeric (val) {
  * @param {any} val
  * @returns {Boolean}
  */
-function isInteger (val) {   
+function isInteger (val) {
   return /^-?[0-9]+$/.test(String(val))
 }
 
@@ -164,6 +197,7 @@ export {
     validLowerCase,
     validAlphabets,
     validEmail,
+    validPhone,
     isString,
     isNumber,
     isNumeric,
@@ -173,4 +207,5 @@ export {
     isFilled,
     isEmpty,
     maxLen,
+    maxNumber,
 }

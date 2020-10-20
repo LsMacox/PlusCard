@@ -1,6 +1,6 @@
 <template>
   <v-row
-    v-if="programs && programs.length > 0"
+    v-if="programsStore && programsStore.length > 0"
     id="app-program-select-row"
     no-gutters
   >
@@ -84,15 +84,16 @@
 
   export default {
     name: 'AppProgramSelect',
-
     props: {
       mini: Boolean,
     },
-
     data: () => ({
       expandProgramList: false,
     }),
     computed: {
+      drawer () {
+        return this.$store.getters.drawer
+      },
       bgcolor1 () {
         return this.program.bgcolor1 ? this.program.bgcolor1 : '#000000'
       },
@@ -104,6 +105,9 @@
       },
       profile () {
         return this.$store.getters['profile/profile/profile']
+      },
+      programsStore () {
+        return this.$store.getters['company/program/programs']
       },
       programs () {
         return this.$store.getters['company/program/programs'].filter(
@@ -130,11 +134,11 @@
       },
       goToMaster () {
         this.$router.push('/master')
-        this.$refs.programListGroup.click()
+        // this.$refs.programListGroup.click()
       },
       changeCompany (item) {
         this.program = Object.assign({}, item)
-      // this.$refs.programListGroup.click()
+        // this.$refs.programListGroup.click()
       },
     },
   }

@@ -1,10 +1,8 @@
 <template>
-  <v-app>
-    <div class="layouts-auth">
-      <side-panel />
-      <router-view />
-    </div>
-  </v-app>
+  <div class="layouts-auth">
+    <side-panel />
+    <router-view />
+  </div>
 </template>
 
 <script>

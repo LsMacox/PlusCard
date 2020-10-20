@@ -8,9 +8,10 @@
       v-model="editedShop.name"
       placeholder="Введите название точки"
       outlined
+      maxlength="250"
       :rules="[
         v => !!v || 'Название точки продаж обязательно',
-        v => v.length <= 250 || 'Название должно быть не более 250 символов',
+        v => String(v).length <= 250 || 'Название должно быть не более 250 символов',
       ]"
       style="width: 380px"
     >
@@ -24,13 +25,15 @@
       v-model="editedShop.address"
       placeholder="Город, улица, дом"
       outlined
-      style="width: 380px"
+      style="width: 100%; max-width: 380px"
+      maxlength="250"
       :error-messages="addressErrors"
       :rules="[
         v => !!v || 'Адрес точки продаж обязателен',
-        v => v.length <= 250 || 'Адрес должен быть не более 100 символов',
+        v => String(v).length <= 250 || 'Адрес должен быть не более 250 символов',
       ]"
       @input="getAddressHandler"
+      @blur="(e) => getAddressHandler(editedShop.address)"
     >
       <template slot="prepend-inner">
         <div>
@@ -45,6 +48,7 @@
         placeholder="Введите телефон"
         outlined
         style="width: 380px"
+        maxlength="100"
         :rules="[
           v => !!v || 'Телефон точки продаж обязателен',
           v => v.length <= 100 || 'Телефон должен быть не более 100 символов',
@@ -266,6 +270,12 @@
 
   export default {
     directives: { mask },
+    props: {
+      save: {
+        type: Boolean,
+        default: true,
+      },
+    },
     data () {
       return {
         valid: true,
@@ -339,10 +349,11 @@
     },
     created () {
       // обновление state
-      this.fullAddress = false
+      this.fullAddress = this.editedShop && !!this.editedShop.city_id
       this.addressErrors = []
       // есть id города
-      if (typeof this.editedShop.city_id === 'number') this.fullAddress = true
+      // if (typeof this.editedShop.city_id === 'number') this.fullAddress = true
+
       console.log(this.editedShop)
       // копия редактируемой модели
       this.copyModel = JSON.parse(JSON.stringify(this.editedShop))
@@ -382,6 +393,7 @@
        * геолокация
        */
       getAddressHandler (v) {
+        console.log('getAddressHandler')
         if (this.getAddressTimerId) clearTimeout(this.getAddressTimerId)
         this.getAddressTimerId = null
         const timeout = 1500
@@ -481,34 +493,32 @@
         return str
       },
       checkLength (label, index) {
-        if (label === 'startTime') {
-          if (this.editedShop.workTimes[index].startTime && this.editedShop.workTimes[index].startTime.length === 2) {
-            this.editedShop.workTimes[index].startTime += ':00'
-          } else if (this.editedShop.workTimes[index].startTime && this.editedShop.workTimes[index].startTime.length === 1) {
-            this.editedShop.workTimes[index].startTime = '0' + this.editedShop.workTimes[index].startTime + ':00'
+        let timeStr = this.editedShop.workTimes[index][label]
+        if (timeStr) {
+          timeStr = String(timeStr)
+          if (timeStr.length === 1) {
+            timeStr = `0${timeStr}:00`
+          }
+          if (timeStr.length === 2) {
+            timeStr = `${timeStr}:00`
+          }
+          if (timeStr.length === 4) {
+            const time = timeStr.split(':')
+            if (time.length === 2) {
+              if (time[1].length === 1) time[1] = `0${time[1]}`
+              timeStr = `${time[0]}:${time[1]}`
+            }
+          }
+          if (timeStr.length === 5) {
+            const time = timeStr.split(':')
+            if (time.length === 2) {
+              if (Number(time[0]) > 23) time[0] = '23'
+              if (Number(time[1]) > 59) time[1] = '59'
+              timeStr = `${time[0]}:${time[1]}`
+            }
           }
         }
-        if (label === 'endTime') {
-          if (this.editedShop.workTimes[index].endTime && this.editedShop.workTimes[index].endTime.length === 2) {
-            this.editedShop.workTimes[index].endTime += ':00'
-          } else if (this.editedShop.workTimes[index].endTime && this.editedShop.workTimes[index].endTime.length === 1) {
-            this.editedShop.workTimes[index].endTime = '0' + this.editedShop.workTimes[index].endTime + ':00'
-          }
-        }
-        if (label === 'breakStart') {
-          if (this.editedShop.workTimes[index].breakStart && this.editedShop.workTimes[index].breakStart.length === 2) {
-            this.editedShop.workTimes[index].breakStart += ':00'
-          } else if (this.editedShop.workTimes[index].breakStart && this.editedShop.workTimes[index].breakStart.length === 1) {
-            this.editedShop.workTimes[index].breakStart = '0' + this.editedShop.workTimes[index].breakStart + ':00'
-          }
-        }
-        if (label === 'breakEnd') {
-          if (this.editedShop.workTimes[index].breakEnd && this.editedShop.workTimes[index].breakEnd.length === 2) {
-            this.editedShop.workTimes[index].breakEnd += ':00'
-          } else if (this.editedShop.workTimes[index].breakEnd && this.editedShop.workTimes[index].breakEnd.length === 1) {
-            this.editedShop.workTimes[index].breakEnd = '0' + this.editedShop.workTimes[index].breakEnd + ':00'
-          }
-        }
+        this.editedShop.workTimes[index][label] = timeStr
       },
       getSelectedWorkDays (index) {
         // //console.log('index', index)
@@ -704,8 +714,13 @@
             lng: String(Number(this.editedShop.coords[1]).toFixed(6)),
           }
           console.log(item)
-          if (item.id) await this.$store.dispatch('company/program/updateShop', item)
-          else await this.$store.dispatch('company/program/createShop', item)
+          if (this.save) {
+            if (this.editedShop && this.editedShop.id && !this.editedShop.isNew) await this.$store.dispatch('company/program/updateShop', item)
+            else await this.$store.dispatch('company/program/createShop', item)
+          } else {
+            this.$emit('save', item)
+          }
+
           this.close()
         } finally {
           this.loading = false

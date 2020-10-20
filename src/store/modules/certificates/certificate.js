@@ -69,9 +69,9 @@ export default {
         }
       }
     },
-    UPDATE_STATUS_CERTIFICATE (state, payload) {
+    UPDATE_STATUS_CERTIFICATE (state, payload) {      
       var index = state.certificates.findIndex(x => x.id === payload.id)
-      state.certificates[index].active = payload.active
+      if (index >= 0) state.certificates[index].active = payload.active
     },
     REMOVE_CERTIFICATE (state, id) {
       var index = state.certificates.findIndex(x => x.id === id)
@@ -110,7 +110,7 @@ export default {
     },
 
     async ChangeActive ({ commit }, { id, active, programId }) {
-      const result = ApiService.post('/api-cabinet/program/certificates/active', {
+      const result = await ApiService.post('/api-cabinet/program/certificates/active', {
         id, active, program_id: programId,
       })
 

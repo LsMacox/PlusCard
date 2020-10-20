@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <v-skeleton-loader
     :loading="GetCertListAction"
     :style="{height: '100%', width: '100%'}"

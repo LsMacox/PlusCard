@@ -1,5 +1,7 @@
 <template>
       <div>
+        <v-row>
+          <v-col>
             <v-data-table
               :headers="headers"
               :items="certificates"
@@ -155,37 +157,40 @@
         </div>
       </template>
     </v-data-table>
-
+          </v-col>
+      </v-row>
         <v-row
-          align="center"
-          class="pagination"
+            align="center"
+            class="pagination"
         >
-          <v-col cols="3" class="pagination-total">
-            <span>{{ totalCount }} операций на {{ pagesCount }} страницах</span>
-          </v-col>
+          <v-col>
+            <div class="table-pagination-block">
+              <div
+                  style="margin-right: 20px;"
+              >
+                Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}
+              </div>
 
-          <v-col cols="2" class="pagination-per-page">
-            <v-select
-                v-model="tableOptions.itemsPerPage"
-                class="pagination-select"
-                :items="paginationOptions"
-                item-text="text"
-                item-value="value"
-                append-icon="fas fa-chevron-down"
-                dense
-            />
-          </v-col>
-
-          <v-col cols="7">
-            <div class="text-center">
-              <v-pagination
-                v-model="tableOptions.page"
-                next-icon="fas fa-chevron-right"
-                prev-icon="fas fa-chevron-left"
-                :length="pagesCount"
-                :total-visible="7"
-                circle
+              <select-page-limit
+                  min-width="200px"
+                  :items="paginationOptions"
+                  :model.sync="tableOptions.itemsPerPage"
+                  item-value="value"
+                  item-label="text"
               />
+
+              <div class="app__spacer" />
+
+              <div class="text-center">
+                <v-pagination
+                    v-model="tableOptions.page"
+                    next-icon="fas fa-chevron-right"
+                    prev-icon="fas fa-chevron-left"
+                    :length="pagesCount"
+                    :total-visible="7"
+                    circle
+                />
+              </div>
             </div>
           </v-col>
         </v-row>
@@ -374,8 +379,13 @@
 </template>
 
 <script>
+  import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
+
   export default {
     name: 'Certificates',
+    components: {
+      SelectPageLimit,
+    },
     data () {
       return {
         showDetails: false,
@@ -383,22 +393,18 @@
         filterDrawer: false,
         tableOptions: {
           page: 1,
-          itemsPerPage: 5,
+          itemsPerPage: 25,
         },
         paginationOptions: [
-          {
-            text: '5 на странице',
-            value: 5,
-          },
-          {
-            text: '10 на странице',
-            value: 10,
-          },
-          {
-            text: '15 на странице',
-            value: 15,
-          },
+          { text: '25 на странице', value: 25 },
+          { text: '50 на странице', value: 50 },
+          { text: '100 на странице', value: 100 },
+          { text: '150 на странице', value: 150 },
+          { text: '250 на странице', value: 250 },
+          { text: '500 на странице', value: 500 },
         ],
+        wordPages: ['странице', 'страницах', 'страницах'],
+        wordOperations: ['сертификат', 'сертификаты', 'сертификатов'],
         expanded: [],
         headers: [
           {
@@ -490,7 +496,11 @@
         if (v) this.fetchData()
       },
       program (v) {
-        if (v) this.fetchData()
+        if (v) {
+          this.$store.dispatch('account/certificate/certificate/programCertificates', v.id)
+          this.$store.dispatch('account/certificate/buyers/buyers', v.id)
+          this.fetchData()
+        }
       },
       'filter.archiveStatus.id' (v) {
         if (v) {
@@ -502,6 +512,10 @@
       this.fetchData()
     },
     methods: {
+      getWord (number, words) {
+        const cases = [2, 0, 1, 1, 1, 2]
+        return words[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
+      },
       paymentSystemType (type) {
         let result = ''
         switch (type) {
@@ -687,6 +701,20 @@
   //    //};
   //  }
   //}
+
+  .table-pagination-block {
+    margin-left: 22px;
+    margin-top: -30px;
+    display: flex;
+    align-items: center;
+
+    .table-pagination-block-select {
+      position: relative;
+      top: 6px;
+      left: 20px;
+      width: 250px;
+    }
+  }
 
   .status-icon {
     margin-left: 40%!important;

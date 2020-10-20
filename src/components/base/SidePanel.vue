@@ -23,7 +23,7 @@
         color="#fff"
         :right="true"
         :width="width"
-        absolute
+        fixed
         class="side-panel__navigation"
       >
         <div

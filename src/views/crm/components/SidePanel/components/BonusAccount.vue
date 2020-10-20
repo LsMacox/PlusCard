@@ -95,39 +95,8 @@
           class="card__body"
         >
           <div class="card__body-form">
-            <base-select
-              v-if="category.mode == 'charge'"
-              v-model="chargeData.selectedItem"
-              class="card__body-select"
-              item-placeholder="Выберите операцию"
-              :items="chargeData.listItems"
-            />
-            <div class="card__body-group">
-              <v-text-field
-                v-model="generalData.sum"
-                v-mask="getMask(category.mode)"
-                class="panel-crm__form-input card__body-input"
-                type="text"
-                :placeholder="category.mode == 'writeOff' ? 'Списать:' : 'Начислить:'"
-                outlined
-                hide-details
-              />
-              <base-text-field
-                v-if="category.mode == 'charge'"
-                v-model="chargeData.acts"
-                v-mask="'Действуют: ###'"
-                :rules="daysRules"
-                class="panel-crm__form-input card__body-input"
-                validation-placement="bottom"
-                type="text"
-                placeholder="Дейсвуют (дней)"
-                outlined
-                autocomplete="off"
-              />
-            </div>
-            <div
-              class="panel-crm__form-textarea"
-              style="margin-bottom: 20px"
+            <v-form
+              v-model="valid"
             >
               <div class="card__body-select">
                 <v-select
@@ -208,7 +177,7 @@
                 />
                 <div class="textarea---angle" />
               </div>
-            </div>
+            </v-form>
           </div>
         </div>
       </div>
@@ -218,7 +187,6 @@
 
 <script>
   import { mask } from 'vue-the-mask'
-  import { isFilled } from '@/utils/validate'
 
   export default {
     directives: { mask },
@@ -241,33 +209,6 @@
           expired_days: null,
           comment: null,
         },
-        categories: [
-          {
-            id: 1,
-            title: 'Бонусные рубли',
-            count: 1364,
-            menuShow: false,
-            mode: 'writeOff', // charge
-          },
-          {
-            id: 2,
-            title: 'Бонусы',
-            count: 1993,
-            menuShow: false,
-            mode: 'writeOff', // charge
-          },
-          {
-            id: 3,
-            title: 'Чашки кофе',
-            count: 4,
-            of: 10,
-            menuShow: false,
-            mode: 'writeOff', // charge
-          },
-        ],
-        daysRules: [
-          (v) => isFilled(v) || 'Введите дни',
-        ],
       }
     },
     computed: {
@@ -277,11 +218,17 @@
       bonusResources () {
         return this.$store.getters['company/bonus_resources/bonusResources']
       },
-      availableOperations () { // доступные ручные бонусные ресурсы
+      // доступные ручные бонусные ресурсы
+      availableOperations () {
         let type = null
         if (this.operationMode === 'FROM') type = 'TYPE_TARGET'
         if (this.operationMode === 'TO') type = 'TYPE_SOURCE'
-        return this.bonusResources.filter(item => (item.bonus_score.units_id === this.editedItem.unit_id && item.resource_type_enum === type && !item.rules))
+        return this.bonusResources.filter(item => {
+          return item.bonus_score.units_id == this.editedItem.unit_id &&
+            item.resource_type_enum == type &&
+            item.bonus_score && item.bonus_score.active &&
+            (!item.rules || !item.rules.event)
+        })
       },
       accountBalances () {
         const result = this.$store.getters['crm/clientCard/accountBalances']
@@ -298,25 +245,20 @@
         return mode === 'FROM' ? 'Списать: ###########' : 'Начислить: ###########'
       },
       isManual (unit, type) {
-        const res = this.bonusResources.find(item => (item.bonus_score.units_id === unit.unit_id && item.resource_type_enum === type && !item.rules))
+        const res = this.bonusResources.find(item => {
+          return item.bonus_score.units_id == unit.unit_id &&
+            item.resource_type_enum == type &&
+            item.bonus_score && item.bonus_score.active &&
+            (!item.rules || !item.rules.event)
+        })
         if (res) return true
         return false
-      },
-      getDefaultChartData () {
-        return {
-          listItems: [
-            { id: 1, name: 'g' },
-            { id: 2, name: 'a' },
-            { id: 3, name: 'b' },
-            { id: 4, name: 'c' },
-          ],
-          selectedItem: null,
-          acts: null,
-        }
       },
       menuOperation (item, operation) {
         this.operationMode = operation
         this.editedItem = item
+        console.log('menuOperation')
+        console.log(this.availableOperations)
         if (this.availableOperations.length === 1) {
           this.selectedBonusResourceId = this.availableOperations[0].score_id
         }
@@ -340,23 +282,6 @@
       clearDays (v) {
         v = String(v).replace('Действуют: ', '')
         return Number(v)
-      },
-      menuSave (category) {
-        // === Data === //
-        console.log(this.chargeData)
-        const sum = this.generalData.sum ? this.generalData.sum.replace(/[^\d]+/, '') : 0
-        // const description = this.generalData.description
-        if (category.mode === 'charge') {
-          this.showSuccess(sum, true)
-        //   const acts = this.chargeData.acts ? this.chargeData.acts.replace(/[^\d]+/, '') : 0
-        //   const operation = this.chargeData.selectedItem
-        } else {
-          this.showSuccess(sum, false)
-        }
-        // === Data === //
-
-        this.clearData()
-        category.menuShow = false
       },
       async processing () {
         try {

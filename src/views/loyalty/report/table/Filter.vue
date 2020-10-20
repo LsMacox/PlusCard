@@ -391,13 +391,16 @@
       },
       async querySearchClient (search) {
         if (search.length >= 3) {
-          this.loading = true
-          const item = {
-            program_id: this.program.id,
-            search,
+          try {
+            this.loading = true
+            const item = {
+              program_id: this.program.id,
+              search,
+            }
+            await this.$store.dispatch('widget/filter/foundClients', item)
+          } finally {
+            this.loading = false
           }
-          await this.$store.dispatch('widget/filter/foundClients', item)
-          this.loading = false
         }
       },
       clearFilterQuery () {
