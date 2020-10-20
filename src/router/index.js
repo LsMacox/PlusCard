@@ -40,7 +40,7 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/login',      
+      path: '/login',
       component: AuthLayout,
       children: [
         {
@@ -79,6 +79,10 @@ export default new Router({
           path: 'confirm',
           component: () => import('@/views/auth/registration/confirm'),
         },
+        {
+          path: 'expired',
+          component: () => import('@/views/auth/registration/expired'),
+        },
       ],
     },
     {
@@ -96,6 +100,10 @@ export default new Router({
         {
           path: 'change',
           component: () => import('@/views/auth/password/change/index'),
+        },
+        {
+          path: 'expired',
+          component: () => import('@/views/auth/password/expired/index'),
         },
       ],
     },
@@ -166,7 +174,7 @@ export default new Router({
           component: () => import('@/views/BonusSettings'),
           beforeEnter: GuardEmptyPrograms,
           name: 'ProgramBonusSetting',
-          meta: {  auth: true, title: 'ProgramBonusSetting', icon: 'ui_kit' },
+          meta: { auth: true, title: 'ProgramBonusSetting', icon: 'ui_kit' },
         },
         {
           path: '/master/old',

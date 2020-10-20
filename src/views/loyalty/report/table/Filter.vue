@@ -436,7 +436,7 @@
     box-sizing: border-box;
     box-shadow: 0px 12px 24px rgba(88, 93, 106, 0.1);
     border-radius: 10px;
-    z-index: 1000;
+    z-index: 100;
 
     .app__filter-content {
       padding: 8px 20px;

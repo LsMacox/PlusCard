@@ -136,6 +136,13 @@
           </div>
           <!--окно фильтра - содержимое -->
           <div class="app__filter-content">
+            <!-- Пустота -->
+            <div
+              v-if="accountsForFilter && !accountsForFilter.length && segmentsForFilter && !segmentsForFilter.length"
+              class="app__filter-content-dummy"
+            >
+              Пока ничего не найдено
+            </div>
             <!-- Клиенты -->
             <div
               v-if="accountsForFilter && accountsForFilter.length"
@@ -145,7 +152,7 @@
             </div>
             <div
               v-for="(item, i) in accountsForFilter"
-              :key="i"
+              :key="`accountsForFilter${i}`"
               class="app__filter-content-client"
               @click="setFilter('clients', item)"
             >
@@ -153,7 +160,16 @@
                 class="app__filter-content-client-avatar"
                 :src="item.avatar"
               >
-              <div>{{ item.FIO }}</div>
+              <div class="body-m-regular neutral-700--text">
+                {{ item.FIO }}
+              </div>
+              <div
+                v-if="getAdditionalSearch(item)"
+                class="body-s-regular neutral-500--text"
+                style="padding: 1px 0 0 12px;"
+              >
+                {{ getAdditionalSearch(item) }}
+              </div>
             </div>
             <!-- Сегменты -->
             <div
@@ -164,7 +180,7 @@
             </div>
             <div
               v-for="(item, i) in segmentsForFilter"
-              :key="i"
+              :key="`segmentsForFilter${i}`"
               class="app__filter-content-client"
             >
               <p
@@ -212,7 +228,7 @@
         return this.segmentsStore.filter(item => {
           const name = String(item.name).toLowerCase()
           const query = String(this.query).toLowerCase()
-          if (name.indexOf(query) !== -1) return item
+          if (name && query && name.indexOf(query) !== -1) return item
         })
       },
       segmentsStore () {
@@ -236,7 +252,7 @@
         if (v) {
           this.filter = JSON.parse(JSON.stringify(this.filterStore))
           this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
-          this.setFastFilter(this.filter)
+          // this.setFastFilter(this.filter)
         }
       },
     },
@@ -359,6 +375,32 @@
         // обнуляем массив отфильтрованных клиентов
         this.$store.commit('crm/client/SET_FILTERED_CLIENTS', [])
       },
+      getAdditionalSearch (account) {
+        let found = false
+        if (account) {
+          const query = String(this.query).toLowerCase()
+          // приоритет поиска в обратном порядке
+          if (query && account.created_at && String(account.created_at).indexOf(query) !== -1) {
+            found = `Создан: ${account.created_at}`
+          }
+          if (query && account.last_activity && String(account.last_activity).indexOf(query) !== -1) {
+            found = `Был(а) в сети ${account.last_activity}`
+          }
+          if (query && account.number && String(account.number).indexOf(query) !== -1) {
+            found = `№ карты: ${account.number}`
+          }
+          if (query && account.barcode && String(account.barcode).indexOf(query) !== -1) {
+            found = `Штрих-код: ${account.barcode}`
+          }
+          if (query && account.email && String(account.email).indexOf(query) !== -1) {
+            found = `${account.email}`
+          }
+          if (query && account.phone && String(account.phone).indexOf(query) !== -1) {
+            found = `Телефон: ${account.phone}`
+          }
+        }
+        return found
+      },
       async querySearch (search) {
         console.log(search)
         if (search.length >= 2) {
@@ -407,15 +449,26 @@
     box-sizing: border-box;
     box-shadow: 0px 12px 24px rgba(88, 93, 106, 0.1);
     border-radius: 10px;
-    z-index: 1000;
+    z-index: 100;
 
     .app__filter-content {
-      padding: 8px 20px;
+      padding: 0 20px 8px 20px;
       max-height: 400px;
-      min-height: 200px;
+      min-height: 42px;
+      overflow: auto;
+
+      .app__filter-content-dummy {
+        margin-top: 10px;
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 21px;
+        letter-spacing: 0.1px;
+        color: #9191A1;
+      }
 
       .app__filter-content-header {
-        margin-bottom: 4px;
+        margin: 20px 0 4px 0;
         font-style: normal;
         font-weight: 600;
         font-size: 15px;
