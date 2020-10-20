@@ -59,6 +59,21 @@
         radioDefault: 'legalEntity',
       }
     },
+    computed: {
+      requisites () {
+        return this.$store.getters['settings/organization/requisites']
+      },
+    },
+    watch: {
+      requisites (v) {
+        switch (v.org_type) {
+          case 'UL': this.radioDefault = 'legalEntity'; break
+          case 'IP': this.radioDefault = 'individualEntrepreneur'; break
+          case 'FL': this.radioDefault = 'individual'; break
+          default: this.radioDefault = 'legalEntity'
+        }
+      },
+    },
   }
 </script>
 

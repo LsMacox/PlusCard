@@ -16,9 +16,6 @@ export default {
             state.loading = payload
         },
         requisites (state, payload) {
-            console.log('PAYLOAD')
-            console.log(payload)
-            console.log('PAYLOAD')
             state.requisites = payload
         },
         merchant (state, payload) {
@@ -69,10 +66,6 @@ export default {
                 }
             }
 
-            console.log('save details...')
-            console.log(merchant)
-            console.log('save details...')
-
             Object.assign(merchant, { details: data })
 
             merchant.org_type = details.org_type
@@ -86,11 +79,7 @@ export default {
 
         async details ({ commit }) {
             commit('loading', true)
-
             const result = await ApiService.get('/api-cabinet/merchantDetails')
-            console.log('MERCHANT!!!')
-            console.log(result)
-
             // address: "г. Новокузнецк, Кемеровская область, ул. Пролетарская 5"
             // bank_code: "043207612"
             // bank_name: "КЕМЕРОВСКОЕ ОТДЕЛЕНИЕ N8615 ПАО СБЕРБАНК"
@@ -152,13 +141,7 @@ export default {
             return state.requisites
         },
         merchant (state) {
-            console.log('MERCHANT')
-            console.log(state.merchant)
-            console.log('MERCHANT')
             return state.merchant
         },
-    },
-    setters: {
-
     },
 }

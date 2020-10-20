@@ -14,7 +14,7 @@
           Запросы докуметов отсутствуют
         </h3>
         <p class="desc-15">
-          Здесь отображаются актуальные запросы по загрузке документов. На данный момент никаких запросов нет.
+          Здесь отображаются актуальные запросы по загрузке документов. На данный момент никаких запросов нет.
         </p>
       </div>
     </div>
@@ -26,7 +26,7 @@
     <div>
       <v-data-table
         :headers="headers"
-        :items="desserts"
+        :items="documents"
         :page.sync="page"
         :items-per-page="itemsPerPage"
         hide-default-footer
@@ -84,34 +84,42 @@
           { text: 'Подписание', value: 'signing' },
           { text: 'Статус', value: 'typeOperation' },
         ],
-        desserts: [
-          {
-            id: 2,
-            type: 'Агентский договор',
-            document: '2020-1-7',
-            request: '19.08.2020',
-            signing: '19.08.2020',
-            typeOperation: {
-              text: 'На рассмотрении',
-              type: 'pending',
-            },
-          },
-          {
-            id: 3,
-            type: 'Агентский договор',
-            document: '2020-1-7',
-            request: '19.08.2020',
-            signing: '19.08.2020',
-            typeOperation: {
-              text: 'На рассмотрении',
-              type: 'pending',
-            },
-          },
+        documents: [
         ],
         page: 1,
         pageCount: 0,
         itemsPerPage: 10,
       }
+    },
+    computed: {
+      merchant () {
+        return this.$store.getters['auth/auth/merchant']
+      },
+      docs () {
+        return this.$store.getters['settings/document/documents']
+      },
+    },
+    watch: {
+      docs (v) {
+        v.forEach(item => {
+          this.documents.push(
+            {
+              id: item.id,
+              type: item.documents_type.type_title,
+              document: item.number,
+              request: this.$moment(item.created_at).format('DD.MM.YYYY'),
+              signing: item.document_date ? this.$moment(item.document_date).format('DD.MM.YYYY') : 'Дата не указана',
+              typeOperation: {
+                text: 'На рассмотрении',
+                type: 'pending',
+              },
+            },
+          )
+        })
+      },
+    },
+    mounted () {
+      this.$store.dispatch('settings/document/list', this.merchant.id)
     },
     methods: {
       checkStatus (item) {
