@@ -147,9 +147,13 @@
         return this.$store.getters['company/program/program']
       },
       clients () {
+        const filteredClients = this.$store.getters['crm/client/filteredClients']
+        if (filteredClients.length) return filteredClients
         return this.$store.getters['crm/client/clients']
       },
       totalClients () {
+        const filteredClients = this.$store.getters['crm/client/filteredClients']
+        if (filteredClients.length) return filteredClients.length
         return this.$store.getters['crm/client/total']
       },
       filter () {
@@ -213,7 +217,7 @@
           this.loadingList = true
           const payload = {
             program_id: this.program.id,
-            filter: this.filter,
+            filter: { segments: this.filter.segments },
             list: {
               page: this.list.page,
               limit: this.list.itemsPerPage,

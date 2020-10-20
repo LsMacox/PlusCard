@@ -18,6 +18,29 @@
           </v-icon>
 
           <div style="width: 100%;">
+            <!-- КЛИЕНТЫ -->
+            <div
+              v-for="(item, i) in fastFilter.clients"
+              :key="`client${i}`"
+              class="app__filter-chip"
+              style="background-color: #EBF1FF;"
+            >
+              <div
+                class="app__filter-chip-content"
+                style="color: #4776E6;"
+              >
+                {{ item.FIO }}
+                <v-icon
+                  class="app__filter-chip-icon-append"
+                  style="color: #4776E6;"
+                  @click.stop="clearItemFastFilter('clients', item)"
+                >
+                  $iconify_jam-close
+                </v-icon>
+              </div>
+            </div>
+
+            <!-- СЕГМЕНТЫ -->
             <div
               v-for="(item, i) in fastFilter.segments"
               :key="`segment${i}`"
@@ -124,7 +147,7 @@
               v-for="(item, i) in accountsForFilter"
               :key="i"
               class="app__filter-content-client"
-              @click="setClients(item)"
+              @click="setFilter('clients', item)"
             >
               <img
                 class="app__filter-content-client-avatar"
@@ -166,9 +189,13 @@
       return {
         query: null,
         filter: {
+          clients: [],
           segments: [],
         },
-        fastFilter: {},
+        fastFilter: {
+          clients: [],
+          segments: [],
+        },
         show: false,
         searchClient: null,
         loading: false,
@@ -198,7 +225,8 @@
         return this.$store.getters['crm/client/filterDefault']
       },
       emptyFastFilter () {
-        if (this.fastFilter.segments.length) return false
+        if (this.fastFilter.clients.length ||
+          this.fastFilter.segments.length) return false
         return true
       },
     },
@@ -237,7 +265,7 @@
         let c
         if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
           c = hex.substring(1).split('')
-          if (c.length == 3) {
+          if (c.length === 3) {
             c = [c[0], c[0], c[1], c[1], c[2], c[2]]
           }
           c = '0x' + c.join('')
@@ -252,11 +280,21 @@
       setFilter (field, item) {
         // только один клик - один сегмент
         this.filter[field] = [item.id]
-        this.fastFilter[field] = [{
-          id: item.id,
-          label: item.name,
-          color: item.color,
-        }]
+        if (field === 'clients') {
+          this.fastFilter[field] = [{
+            id: item.id,
+            FIO: item.FIO,
+          }]
+          // обновляем массив отфильтрованных клиентов
+          this.$store.commit('crm/client/SET_FILTERED_CLIENTS', [item])
+        }
+        if (field === 'segments') {
+          this.fastFilter[field] = [{
+            id: item.id,
+            label: item.name,
+            color: item.color,
+          }]
+        }
         // сохраняем фильтр в store
         this.$store.commit('crm/client/SET_FILTER', this.filter)
         this.show = false
@@ -311,11 +349,15 @@
 
         this.filter = filter
         this.$store.commit('crm/client/SET_FILTER', JSON.parse(JSON.stringify(filter)))
+        // обнуляем массив отфильтрованных клиентов
+        if (field === 'clients') this.$store.commit('crm/client/SET_FILTERED_CLIENTS', [])
       },
       clearFastFilter () {
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
         this.$store.commit('crm/client/SET_FILTER', JSON.parse(JSON.stringify(this.filter)))
+        // обнуляем массив отфильтрованных клиентов
+        this.$store.commit('crm/client/SET_FILTERED_CLIENTS', [])
       },
       async querySearch (search) {
         console.log(search)
@@ -337,11 +379,6 @@
         const filter = JSON.parse(JSON.stringify(this.filterStore))
         filter.query = null
         this.$store.commit('crm/client/SET_FILTER', JSON.parse(JSON.stringify(filter)))
-      },
-      setClients (item) {
-        // показываем в списке одного клиента
-        this.$store.commit('crm/client/SET_CLIENTS', [item])
-        this.show = false
       },
       close () {
         this.show = false
