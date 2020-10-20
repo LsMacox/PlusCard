@@ -4,8 +4,10 @@
 
 .panel-crm_edit_client {
     .side-panel__back {
-        z-index: 999;
+        z-index: 99999;
         position: fixed;
+        color: #4776E6;
+        cursor: pointer;
     }
     .v-navigation-drawer__content {
         &::-webkit-scrollbar {
@@ -63,7 +65,7 @@
                     .icon-external-link {
                         transition: 0.2s ease-in-out;
                         margin-left: 5px;
-                    }   
+                    }
                     &:hover {
                         p {
                             color: $primary-base !important;

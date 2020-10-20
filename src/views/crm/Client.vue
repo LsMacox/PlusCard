@@ -7,21 +7,6 @@
       <v-btn
         class="crm__header_new-btn"
         color="primary"
-        @click="sidePanelEditClient.status = true"
-      >
-        <iconify-icon
-          icon="plus-circle"
-          width="21"
-        />
-        <p
-          class="body-m-semibold neutral-100--text"
-        >
-          Редактировать клиент
-        </p>
-      </v-btn>
-      <v-btn
-        class="crm__header_new-btn"
-        color="primary"
         @click="sidePanelNewClientStatus = true"
       >
         <iconify-icon
