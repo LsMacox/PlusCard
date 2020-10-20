@@ -36,7 +36,6 @@ import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'
 import VueClickOutsideDirective from './directives/click-outside.js'
 
-import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
 import VueConstants from './plugins/vue-constants'
 import random from 'random'
@@ -48,7 +47,6 @@ import VueClipboard from 'vue-clipboard2'
 import YmapPlugin from 'vue-yandex-maps'
 
 Vue.use(VueTelInput)
-Vue.use(VueMoment, { moment })
 Vue.use(Notifications)
 Vue.use(VueConstants)
 Vue.use(VueUnderScore)

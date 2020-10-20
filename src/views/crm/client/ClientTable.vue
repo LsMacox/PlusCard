@@ -112,14 +112,14 @@
 </template>
 
 <script>
-  // import ClientFilter from '@/views/crm/client/Filter'
+  import ClientFilter from '@/views/crm/client/Filter'
   import EmptyClient from '@/views/crm/components/EmptyClient'
   import SidePanelEditClient from '@/views/crm/components/SidePanel/SidePanelEditClient'
   import Convertor from '@/mixins/convertor'
 
   export default {
     components: {
-      // ClientFilter,
+      ClientFilter,
       EmptyClient,
       SidePanelEditClient,
     },
