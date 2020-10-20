@@ -259,9 +259,9 @@ export default new Router({
         {
           path: 'moderations',
           beforeEnter: GuardEmptyPrograms,
-          component: () => import('@/views/SkeletonPage'),
+          component: () => import('@/views/moderations/index'),
           name: 'Moderations',
-          meta: { auth: false, title: 'Moderations', icon: 'dashboard' },
+          meta: { auth: true, title: 'Moderations', icon: 'dashboard' },
         },
         {
           path: 'settings',

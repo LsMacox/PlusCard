@@ -68,7 +68,7 @@
           </template>
 
           <template
-            v-for="hItem in headers"
+            v-for="hItem in headersSlots"
             v-slot:[`item.${hItem.value}`]="{ item }"
           >
             <slot
@@ -123,6 +123,7 @@
   import Convertor from '@/mixins/convertor.js'
 
   export default {
+    name: 'Table',
     components: {
       SelectPageLimit,
     },
@@ -211,6 +212,9 @@
       }
     },
     computed: {
+      headersSlots () {
+        return this.headers.filter(x => this.$slots[`item.${x.value}`] || this.$scopedSlots[`item.${x.value}`])
+      },
       pagesCount () {
         const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
         if (count) {

@@ -48,9 +48,13 @@ const options = {
         info: '#00CAE3',
         warning: 'FFA338',
         success: '#00D15D',
-        error: '#EA4C2A',
+        error: '#EA4C2A', 
 
         // plus color
+        'success-500': '#00D15D',
+        'warning-500': '#FFA338',
+        'error-500': '#EA4C2A',
+        
         'primary-100': '#EBF1FF',
         'primary-700': '#C7D7FF',
         'primary-600': '#E0E9FF',
@@ -65,6 +69,8 @@ const options = {
         'neutral-250': '#f2f2f7',
         'neutral-100': '#ffffff',
         'chart-500': '#95C5DA',
+       
+      
 
         // brand color
         'logo-vk': '#4a76a8',
