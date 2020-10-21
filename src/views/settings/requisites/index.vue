@@ -6,6 +6,7 @@
           color="#B5B5C4"
           :text="true"
           :ripple="false"
+          @click="back"
         >
           <v-icon class="mro-6">
             $iconify_close-circle
@@ -101,7 +102,7 @@
     },
     methods: {
       back () {
-        console.log(3123)
+        this.$router.back()
       },
       async save () {
         try {

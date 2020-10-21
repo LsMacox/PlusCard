@@ -8,13 +8,13 @@
         <h3 class="title-h3">
           Общая информация
         </h3>
-<!--        <base-text-field-->
-<!--            v-model="details.legalName"-->
-<!--            :validate-on-blur="true"-->
-<!--            placeholder="Юридическое название организации"-->
-<!--            outlined-->
-<!--            dense-->
-<!--        />-->
+        <!--        <base-text-field-->
+        <!--            v-model="details.legalName"-->
+        <!--            :validate-on-blur="true"-->
+        <!--            placeholder="Юридическое название организации"-->
+        <!--            outlined-->
+        <!--            dense-->
+        <!--        />-->
         <div class="block-two-input">
           <base-text-field
             v-model="details.address"
@@ -23,23 +23,23 @@
             class="mg-input-custom"
             maxlength="255"
             :rules="[
-                  v => !!v || 'Поле обязательно',
-                ]"
+              v => !!v || 'Поле обязательно',
+            ]"
           />
-<!--          <base-text-field-->
-<!--            v-model="phoneFax"-->
-<!--            placeholder="Телефон / факс"-->
-<!--            outlined-->
-<!--            class="mg-input-custom"-->
-<!--          />-->
+          <!--          <base-text-field-->
+          <!--            v-model="phoneFax"-->
+          <!--            placeholder="Телефон / факс"-->
+          <!--            outlined-->
+          <!--            class="mg-input-custom"-->
+          <!--          />-->
           <vue-tel-input
             v-model="details.phoneFax"
             class="mg-input-custom input-country"
             placeholder="Телефон / факс"
-            :maxLen="12"
+            :max-len="12"
           />
         </div>
-        <div class="block-two-input">
+        <div class="block-two-input" style="margin-bottom: 64px">
           <base-text-field
             v-model="details.fullNameHead"
             placeholder="ФИО партнера"
@@ -47,18 +47,19 @@
             class="mg-input-custom"
             maxlength="255"
             :rules="[
-                  v => !!v || 'Поле обязательно',
-                ]"
+              v => !!v || 'Поле обязательно',
+            ]"
           />
           <base-text-field
-              v-model="details.enterTin"
-              placeholder="ИНН партнера"
-              outlined
-              class="mg-input-custom"
-              maxlength="12"
-              :rules="[
-                  v => !!v || 'Поле обязательно',
-                ]"
+            v-model="details.enterTin"
+            placeholder="ИНН партнера"
+            outlined
+            class="mg-input-custom"
+            maxlength="12"
+            :rules="[
+              v => !!v || 'Поле обязательно',
+              v => !!isNumber(v) || ''
+            ]"
           />
         </div>
       </div>
@@ -113,15 +114,26 @@
       this.details = this.requisites
       this.details.org_type = 'FL'
     },
+    methods: {
+      isNumber: function (v) {
+        var reg = new RegExp('^[\\+\\-]?\\d*\\.?\\d+(?:[Ee][\\+\\-]?\\d+)?$')
+        if (reg.test(v) === false) {
+          this.details.enterTin = ''
+        }
+        return reg.test(v)
+      },
+    },
   }
 </script>
 
 <style scoped>
   .mto {
     margin-top: 34px;
+    margin-bottom: 26px;
   }
   .title-h3 {
-    margin: 0 0 24px;
+    //margin: 0 0 24px;
+    margin: 0;
   }
   .block-two-input {
     display: flex;
@@ -138,6 +150,7 @@
     margin-bottom: 26px;
     border-radius: 10px;
     outline: none;
+    margin-top: 26px;
   }
   .input-country.vue-tel-input:focus-within {
     box-shadow: none;

@@ -43,7 +43,7 @@
             :maxLen="12"
           />
         </div>
-        <div class="simple-width-md">
+        <div class="simple-width-md-a">
           <base-text-field
             v-model="details.fullNameHead"
             placeholder="ФИО партнера"
@@ -56,7 +56,7 @@
         </div>
       </div>
       <div>
-        <h3 class="title-h3">
+        <h3 style="margin-top: 0!important;">
           Реквизиты
         </h3>
         <div class="block-two-input">
@@ -70,8 +70,9 @@
               outlined
               maxlength="15"
               :rules="[
-                  v => !!v || 'Поле обязательно',
-                ]"
+                    v => !!v || 'Поле обязательно',
+                    v => !!isNumber(v, 'enterBin') || ''
+              ]"
             />
           </div>
           <div class="simple-width-md">
@@ -84,12 +85,13 @@
               outlined
               maxlength="12"
               :rules="[
-                  v => !!v || 'Поле обязательно',
-                ]"
+                    v => !!v || 'Поле обязательно',
+                    v => !!isNumber(v, 'enterTin') || ''
+              ]"
             />
           </div>
         </div>
-        <div class="block-two-input">
+        <div class="block-two-input" style="margin-bottom: 64px">
           <div class="simple-width-md mr-20">
             <p class="desc-13 color-text-dark font-weight-600">
               Расчетный счет
@@ -98,6 +100,11 @@
               v-model="details.correspondentAccount"
               placeholder="Введите № расчетного счета"
               outlined
+              maxlength="20"
+              :rules="[
+                    v => !!v || 'Поле обязательно',
+                    v => !!isNumber(v, 'correspondentAccount') || ''
+              ]"
             />
           </div>
         </div>
@@ -149,6 +156,15 @@
         deep: true,
       },
     },
+    methods: {
+      isNumber: function (v, field) {
+        var reg = new RegExp('^[\\+\\-]?\\d*\\.?\\d+(?:[Ee][\\+\\-]?\\d+)?$')
+        if (reg.test(v) === false) {
+          this.details[field] = ''
+        }
+        return reg.test(v)
+      },
+    },
     mounted () {
       this.details = this.requisites
       this.details.org_type = 'IP'
@@ -159,6 +175,7 @@
 <style scoped>
   .mto {
     margin-top: 34px;
+    margin-bottom: 26px;
   }
   .title-h3 {
     margin: 0 0 24px;
@@ -170,10 +187,16 @@
   }
   .mr-20 {
     margin-right: 20px;
+    margin-top: 24px;
+  }
+  .simple-width-md-a {
+    max-width: 328px;
+    width: 100%;
   }
   .simple-width-md {
     max-width: 328px;
     width: 100%;
+    margin-top: 24px;
   }
   .desc-13 {
     margin-bottom: 8px!important;
@@ -188,6 +211,7 @@
     margin-bottom: 26px;
     border-radius: 10px;
     outline: none;
+    margin-top: 26px;
   }
   .input-country.vue-tel-input:focus-within {
     box-shadow: none;
