@@ -53,8 +53,8 @@ export default {
                 chart: chartData,
                 totalCount: state.widgetData.total_count,
                 byProgramCount: state.widgetData.by_program_count,
-                totalSum: state.widgetData.total_sum_current,
-                byProgramSum: state.widgetData.by_program_sum_current,
+                totalSum: state.widgetData.total_sum_current / 100,
+                byProgramSum: state.widgetData.by_program_sum_current / 100,
                 totalSumPrev: state.widgetData.total_sum_prev,
                 byProgramSumPrev: state.widgetData.by_program_sum_prev,
             }
