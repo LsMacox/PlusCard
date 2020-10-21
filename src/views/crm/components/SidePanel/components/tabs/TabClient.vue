@@ -6,6 +6,7 @@
         <li class="info-item">
           <p class="body-s-semibold neutral-900--text">
             ID пользователя
+            {{ clientData }}
           </p>
           <div class="right-text">
             <span class="body-m-medium neutral-700--text">103112</span>
@@ -71,10 +72,13 @@
         </p>
       </div>
       <div class="tab-client__content segment__content">
+        {{ clientData.segments }}
         <base-combobox
-          v-model="segments"
+          v-model="clientData.segments"
           not-found-placeholder="Сегменты не найдены!"
-          :items="segmentItems"
+          :items="segments"
+          item-value="id"
+          item-text="name"
         />
       </div>
     </div>
@@ -136,33 +140,41 @@
     components: {
       BonusAccount,
     },
+    props: {
+      clientData: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
+    },
     data () {
       return {
+        clientSegments: [],
         userBirthday: null,
         userName: '',
-        segments: [],
-        segmentItems: [
-          { id: 1, color: '#ff008a', name: 'Gaming' },
-          { id: 2, color: '#00d15d', name: 'Programming' },
-          { id: 3, color: '#ff008a', name: 'Vue' },
-          { id: 4, color: '#00d15d', name: 'Vuetify' },
-          { id: 5, color: '#00d15d', name: 'Vuetify' },
-          { id: 6, color: '#00d15d', name: 'Vuetify' },
-          { id: 7, color: '#00d15d', name: 'Vuetify' },
-          { id: 8, color: '#00d15d', name: 'Vuetify' },
-        ],
         userRules: [
           v => !!v || 'Обязательно для заполнения',
         ],
       }
     },
-    watch: {
-      segment (v) {
-        console.log(v)
+    computed: {
+      segments () {
+        return this.$store.getters['crm/segment/segments']
       },
+    },
+    created () {
+      /*
+      const segments = this.clientData.segments
+      if (segments && segments.length) {
+        this.clientSegments = segments.map(item => item.id)
+      }
+
+       */
     },
   }
 </script>
+
 <style lang="scss" scoped>
 .tab-client {
   .tab-client__head {
