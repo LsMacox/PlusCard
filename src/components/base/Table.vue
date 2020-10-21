@@ -11,6 +11,7 @@
           :options="tableOptions"
           item-key="uuid"
           :class="className"
+          :item-class="itemClass"
           class="plus-table"
           :show-expand="Boolean(expanded.length)"
           :expanded.sync="expanded"
@@ -34,6 +35,10 @@
                     },
                     isValEqualSort ? (pagination.descending === 'descending' ? 'desc' : 'ask') : ''
                   ]"
+                  :style="header.width? {
+                    width: header.width,
+                    'min-width': header.width,
+                  }: {}"
                   :aria-sort="header.value === pagination.sortBy ? pagination.descending : 'none'"
                   @click="changeSort(header.value)"
                 >
@@ -67,7 +72,7 @@
           </template>
 
           <template
-            v-for="hItem in headers"
+            v-for="hItem in headersSlots"
             v-slot:[`item.${hItem.value}`]="{ item }"
           >
             <slot
@@ -122,6 +127,7 @@
   import Convertor from '@/mixins/convertor.js'
 
   export default {
+    name: 'Table',
     components: {
       SelectPageLimit,
     },
@@ -131,6 +137,10 @@
       className: {
         type: String,
         default: '',
+      },
+      itemClass: {
+        type: Function,
+        default: undefined,
       },
       headers: {
         type: Array,
@@ -210,6 +220,9 @@
       }
     },
     computed: {
+      headersSlots () {
+        return this.headers.filter(x => this.$slots[`item.${x.value}`] || this.$scopedSlots[`item.${x.value}`])
+      },
       pagesCount () {
         const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
         if (count) {
