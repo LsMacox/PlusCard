@@ -377,25 +377,31 @@
       },
       getAdditionalSearch (account) {
         let found = false
-        if (account) {
+        if (account && this.query) {
           const query = String(this.query).toLowerCase()
           // приоритет поиска в обратном порядке
-          if (query && account.created_at && String(account.created_at).indexOf(query) !== -1) {
-            found = `Создан: ${account.created_at}`
+          if (account.last_activity) {
+            const lastActivity = this.$moment.utc(account.last_activity).local().format(this.$config.date.DATETIME_FORMAT_MIN2)
+            if (String(lastActivity).indexOf(query) !== -1) {
+              found = `Был(а) в сети ${lastActivity}`
+            }
           }
-          if (query && account.last_activity && String(account.last_activity).indexOf(query) !== -1) {
-            found = `Был(а) в сети ${account.last_activity}`
+          if (account.created_at) {
+            const createdAt = this.$moment.utc(account.created_at).local().format(this.$config.date.DATETIME_FORMAT_MIN2)
+            if (String(createdAt).indexOf(query) !== -1) {
+              found = `Создан: ${createdAt}`
+            }
           }
-          if (query && account.number && String(account.number).indexOf(query) !== -1) {
+          if (account.number && String(account.number).indexOf(query) !== -1) {
             found = `№ карты: ${account.number}`
           }
-          if (query && account.barcode && String(account.barcode).indexOf(query) !== -1) {
+          if (account.barcode && String(account.barcode).indexOf(query) !== -1) {
             found = `Штрих-код: ${account.barcode}`
           }
-          if (query && account.email && String(account.email).indexOf(query) !== -1) {
+          if (account.email && String(account.email).indexOf(query) !== -1) {
             found = `${account.email}`
           }
-          if (query && account.phone && String(account.phone).indexOf(query) !== -1) {
+          if (account.phone && String(account.phone).indexOf(query) !== -1) {
             found = `Телефон: ${account.phone}`
           }
         }
