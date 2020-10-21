@@ -11,8 +11,8 @@ requireComponent.keys().forEach(fileName => {
 
   const componentName = upperFirst(
     camelCase(fileName.replace(/^\.\//, '').replace(/\.\w+$/, '')),
-  )
-
+  ).replace('Base', '')
+  // console.log('install component:', `Base${componentName}`)
   Vue.component(`Base${componentName}`, componentConfig.default || componentConfig)
 })
 

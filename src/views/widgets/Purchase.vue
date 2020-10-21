@@ -6,7 +6,7 @@
     :diagram-height="46"
     title="Покупки"
     :sub-titles="subTitles()"
-    :counts="[this.widgetData.byProgramSum, this.widgetData.totalSum]"
+    :counts="[formatNumberString(widgetData.byProgramSum), formatNumberString(widgetData.totalSum)]"
     :percentage-differences="[byProgramPD, totalPD]"
   />
 </template>
