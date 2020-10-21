@@ -4,6 +4,7 @@ import Vue from 'vue'
 const getDefaultState = () => {
     return {
         moderations: [],
+        moderations_full: {}, // hash-array
     }
 }
 
@@ -88,6 +89,10 @@ export default {
         SET_MODERATIONS (state, payload) {
             state.moderations = payload
         },
+        SET_MODERATION_FULL (state, payload) {
+            Vue.set(state.moderations_full, payload.id, payload)
+            // state.moderations_full[payload.id] = payload
+        },
 
         UPDATE_MODERATION (state, payload) {
             var index = state.moderations.findIndex((x) => x.id === payload.id)
@@ -104,7 +109,6 @@ export default {
         },
 
         async GetModerationList ({ commit }, programId) {
-            console.log('GetCertList this.programId', programId)
             const result = await ApiService.get(
                 '/api-cabinet/company/moderations/list',
                 {
@@ -115,10 +119,26 @@ export default {
             )
             commit('SET_MODERATIONS', result)
         },
+
+        async GetModeration ({ commit }, { id, programId }) {
+            const result = await ApiService.get(
+                '/api-cabinet/company/moderations/full',
+                {
+                    params: {
+                        id: id,
+                        program_id: programId,
+                    },
+                },
+            )
+            commit('SET_MODERATION_FULL', result)
+        },
     },
     getters: {
         moderations (state) {
             return state.moderations
+        },
+        moderations_full (state) {
+            return state.moderations_full
         },
         moderationsMaped (state) {
             return state.moderations.map((x) => {

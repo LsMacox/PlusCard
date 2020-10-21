@@ -20,7 +20,11 @@
           История модераций
         </v-col>
         <!-- <v-spacer /> -->
-        <v-col cols="6">
+        <v-col
+          cols="6"
+          sm="12"
+          md="6"
+        >
           <v-row>
             <v-col>
               <base-text-field
@@ -38,13 +42,13 @@
       <v-row>
         <v-col>
           <base-table
-
             class-name="table-moderations"
             :headers="headers"
             :data="filtered_moderations"
+            :item-class="() => 'clickable-row'"
 
             :total-count="filtered_moderations.length"
-            :word-operations="['модераций', 'модераций', 'модераций']"
+            :word-operations="['модерация', 'модерации', 'модераций']"
             :pagination="{
               sortBy: 'updated_at',
               descending: 'descending',
@@ -58,25 +62,16 @@
             <template v-slot:[`item.updated_at`]="{ item }">
               <date-column :value="item.updated_at" />
             </template>
-            <template v-slot:item.fields="{ item }">
+            <template v-slot:[`item.fields`]="{ item }">
               <span> {{ getFieldNameList(item) }} </span>
             </template>
-            <template v-slot:item.user="{ item }">
+            <template v-slot:[`item.user`]="{ item }">
               <user-column :user="item.user" />
             </template>
-            <template v-slot:item.status="{ item }">
-              <v-row no-gutters style="margin: 0px -4px" align="center">
-                <v-col cols="auto" style="margin: 0px 4px"> <v-img height="21px" width="21px" size="9" :src="MODERATION_STATUS_ENUM.find(item.status).icon"/> </v-col>
-                <v-col style="margin: 0px 4px"> <span :class="`${MODERATION_STATUS_ENUM.find(item.status).color}--text`">
-                 {{MODERATION_STATUS_ENUM.find(item.status).name }}
-              </span>
-              </v-col>
-             
-              </v-row>
-              
-             
+            <template v-slot:[`item.status`]="{ item }">
+              <moderation-status-label :status="item.status" />
             </template>
-            <template v-slot:item.actions="{ item }">
+            <template v-slot:[`item.actions`]="{ item }">
               <v-icon @click="openModerationClick(item)">
                 mdi-chevron-right
               </v-icon>
@@ -85,6 +80,12 @@
           </base-table>
         </v-col>
       </v-row>
+      <moderation-form
+        v-if="showDialog"
+        v-model="showDialog"
+        :moderation-id="moderationId"
+        :program-id="programId"
+      />
     </v-container>
     <!-- Заглушка -->
     <base-empty-block-page
@@ -105,17 +106,20 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
+  import Vue from 'vue'
   import dateTimeFormat from '@/mixins/dateTimeFormat.js'
-    import { MODERATION_STATUS_ENUM } from '@/models/enums'
+  import { MODERATION_STATUS_ENUM } from '@/models/enums'
 
   export default {
     components: {
       DateColumn: () => import('@/components/colums/DateColumn.vue'),
       UserColumn: () => import('@/components/colums/UserColumn.vue'),
+      ModerationForm: () => import('./ModerationForm.vue'),
+      ModerationStatusLabel: () => import('./ModerationStatusLabel.vue'),
       // BaseTable: () => import('@/components/base/BaseTable'),
     },
     mixins: [dateTimeFormat],
-    constants:{
+    constants: {
       MODERATION_STATUS_ENUM: MODERATION_STATUS_ENUM,
     },
     data () {
@@ -127,54 +131,59 @@
             text: 'ID',
             align: 'start',
             value: 'id',
-            width: '5em',
+            width: '7em',
           },
-          {
-            text: 'Что редактировалось',
-            value: 'EntityName',
-          },
-          {
-            text: 'Какие поля',
-            value: 'fields',
-          },
-          {
-            text: 'Оператор',
-            value: 'user',
-          },
-          { text: 'Дата', value: 'updated_at' },
-          { text: 'Статус', value: 'status' },
-          { text: '', value: 'actions' },
+          { text: 'Что редактировалось', value: 'EntityName' },
+          { text: 'Какие поля', value: 'fields' },
+          { text: 'Оператор', value: 'user' },
+          { text: 'Дата', value: 'updated_at', width: '9em' },
+          { text: 'Статус', value: 'status', width: '15em' },
+          { text: '', value: 'actions', width: '1em' },
         ],
+        moderationId: null,
+        showDialog: false,
 
       }
     },
-    watch: {
-      programId (v) {
-        this.loadData()
-      },
-    },
+
     computed: {
       ...mapGetters({
         programId: 'programId',
         moderations: 'company/moderations/moderationsMaped',
       }),
+      moderationsMaped () {
+        return this.moderations.map(x => {
+          Vue.set(x, 'updated_at_format', this.$moment.utc(x.updated_at).local().format(this.$config.date.DATETIME_FORMAT))
+          Vue.set(x, 'status_text', MODERATION_STATUS_ENUM.find(x.status).name)
 
+          return x
+        })
+      },
       filtered_moderations () {
         if (this.search_comp) {
-          return this.moderations.filter((item) =>
+          return this.moderationsMaped.filter((item) =>
             item.id === +this.search_comp ||
-            (item.name && item.name.toLowerCase().includes(this.search_comp)) ||
-            (item.short_description && item.short_description.toLowerCase().includes(this.search_comp)),
+            (item.EntityName && item.EntityName.toLowerCase().includes(this.search_comp)) ||
+            (this.getFieldNameList(item).toLowerCase().includes(this.search_comp)) ||
+            (item.user && item.user.UserName && item.user.UserName.toLowerCase().includes(this.search_comp)) ||
+            (item.updated_at_format.toLowerCase().includes(this.search_comp)) ||
+            (item.status_text.toLowerCase().includes(this.search_comp)),
 
           )
         } else {
-          return this.moderations
+          return this.moderationsMaped
         }
       },
       search_comp () {
         return this.search ? this.search.trim().toLowerCase() : ''
       },
 
+    },
+
+    watch: {
+      programId (v) {
+        this.loadData()
+      },
     },
     created () {
       this.loadData()
@@ -205,8 +214,16 @@
       },
       openModerationClick (item) {
         console.log('openModerationClick', item)
+        this.moderationId = item.id
+        this.showDialog = true
       },
 
     },
   }
 </script>
+
+<style lang="scss" scoped>
+.moderation-row{
+  cursor: pointer;
+}
+</style>

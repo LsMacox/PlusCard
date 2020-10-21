@@ -12,9 +12,8 @@ requireComponent.keys().forEach(fileName => {
   const componentName = upperFirst(
     camelCase(fileName.replace(/^\.\//, '').replace(/\.\w+$/, '')),
   ).replace('Base', '')
-  console.log('install component:', `Base${componentName}`)
+  // console.log('install component:', `Base${componentName}`)
   Vue.component(`Base${componentName}`, componentConfig.default || componentConfig)
 })
 
-
-Vue.component('BaseMessageBox',  import('@/components/message-box/MessageBox.vue') )
+Vue.component('BaseMessageBox', import('@/components/message-box/MessageBox.vue'))

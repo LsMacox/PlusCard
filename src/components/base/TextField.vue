@@ -313,7 +313,7 @@
         e && this.$nextTick(() => this.$emit('blur', e))
       },
       onInput (e) {        
-        console.log('onInput', e)
+        // console.log('onInput', e)
         e && this.$nextTick(() => this.$emit('input', e))
       },
       onClick () {
