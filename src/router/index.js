@@ -221,6 +221,7 @@ export default new Router({
         },
         {
           path: '/program/certificate/list',
+          beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/certificate/ProgramCertificateView.vue'),
           name: 'ProgramCertificateList',
           meta: { auth: true, title: 'ui_kit', icon: 'ui_kit' },
@@ -273,7 +274,7 @@ export default new Router({
         },
         {
           path: 'settings',
-          beforeEnter: GuardEmptyPrograms,
+          // beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/settings/index'),
           name: 'Settings',
           redirect: 'settings/menu',
@@ -299,6 +300,7 @@ export default new Router({
             },
             {
               path: 'integration',
+              beforeEnter: GuardEmptyPrograms,
               component: () => import('@/views/settings/integration/index'),
               name: 'SettingsIntegration',
               meta: { auth: true },

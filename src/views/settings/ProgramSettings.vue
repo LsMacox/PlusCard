@@ -48,7 +48,7 @@
             icon: require('@/assets/settings/Rocket-On.png'),
             title: 'Компания',
             description: 'Управление названием компании, бонусной картой, точками продаж и контактными данными.',
-            to: this.program ? `/company/${this.program.id}/info` : null,
+            to: this.program ? `/company/${this.program.id}/info` : '/dashboard',
           },
           {
             icon: require('@/assets/settings/Card-On.png'),
