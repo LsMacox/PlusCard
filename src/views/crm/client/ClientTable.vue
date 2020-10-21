@@ -59,12 +59,19 @@
         </template>
 
         <template v-slot:[`item.segments`]="{ item }">
-          <div
-            class="body-s-semibold mb-0"
-            style="display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
-            :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
-          >
-            {{ (item.segments && item.segments.length) ? item.segments : '-' }}
+          <div v-if="item.segments && item.segments.length">
+            <div
+              v-for="(segment, i) in item.segments"
+              :key="`segment${i}`"
+              class="body-s-semibold mb-0"
+              style="display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
+              :style="segment.color != undefined ? `color: ${segment.color}; background: ${hexToRgbA(segment.color, '0.15')}` : ''"
+            >
+              {{ segment.name }}
+            </div>
+          </div>
+          <div v-else>
+            -
           </div>
         </template>
 

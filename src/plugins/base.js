@@ -16,5 +16,4 @@ requireComponent.keys().forEach(fileName => {
   Vue.component(`Base${componentName}`, componentConfig.default || componentConfig)
 })
 
-
-Vue.component('BaseMessageBox',  import('@/components/message-box/MessageBox.vue') )
+Vue.component('BaseMessageBox', import('@/components/message-box/MessageBox.vue'))
