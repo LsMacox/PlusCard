@@ -88,6 +88,8 @@ export const ICONIFY_ICONS = [
 
     // ion
     { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
+    { id: 'ion-archive-outline', component: () => import('@iconify/icons-ion/archive-outline') },   
+    // { id: 'ion-archive-outline', component: () => import('@iconify/icons-ion/archive-outline') },   
     {
         id: 'ion-close-circle-outline',
         component: () => import('@iconify/icons-ion/close-circle-outline'),
