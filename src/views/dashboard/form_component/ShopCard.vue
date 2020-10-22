@@ -56,8 +56,8 @@
         <v-icon class="shop-card-work-time-icon">
           $iconify_feather-clock
         </v-icon>
-        <div style="width: 100px;">
-          {{ worktime.startTime + '-' + worktime.endTime }}
+        <div style="width: 8em;">
+          {{ isFullWorkDay(worktime) ? 'Круглосуточно' : (worktime.startTime||'?') + '-' + (worktime.endTime||'?') }}
         </div>
       </div>
       <div class="shop-card-work-time-item body-m-regular">
@@ -112,6 +112,9 @@
       }
     },
     methods: {
+      isFullWorkDay (worktime) {
+        return worktime && !worktime.endTime && !worktime.startTime
+      },
       getSelectedDays (array) {
         let str = ''
         let length = 0

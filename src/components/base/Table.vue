@@ -18,10 +18,10 @@
           :sort-by="pagination.sortBy"
           :sort-desc="pagination.descending === 'descending' ? true : false"
           hide-default-footer
-          hide-default-header
+          :hide-default-header="isCustomHeader"
           v-on="inputListeners"
         >
-          <template v-slot:[`header`]="{ props }">
+          <template v-if="isCustomHeader" v-slot:[`header`]="{ props }">
             <thead class="v-data-table-header">
               <tr>
                 <th
@@ -134,6 +134,10 @@
     mixins: [Convertor],
     inheritAttrs: false,
     props: {
+      isCustomHeader:{
+        type: Boolean,
+        default: true,
+      },
       className: {
         type: String,
         default: '',

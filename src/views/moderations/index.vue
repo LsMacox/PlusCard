@@ -46,6 +46,7 @@
             :headers="headers"
             :data="filtered_moderations"
             :item-class="() => 'clickable-row'"
+            :isCustomHeader="false"
 
             :total-count="filtered_moderations.length"
             :word-operations="['модерация', 'модерации', 'модераций']"

@@ -1,8 +1,7 @@
 <template>
   <v-tooltip
     ref="vTooltip"
-    v-model="isActive"
-    :value="isActive"
+    v-model="isActive"    
     :activator="activator"
     :open-delay="openDelay"
     :top="top"
@@ -13,6 +12,8 @@
     :color="color"
     :absolute="absolute"
     :open-on-hover="openOnHover"
+    :open-on-click="openOnClick"
+    :open-on-focus="openOnFocus"
     :z-index="zIndex"
     :disabled="disabled"
     :attach="attach"
@@ -48,6 +49,13 @@
     name: 'Tooltip',
     mixins: [Toggleable],
     props: {
+      // custom
+      static: {
+        type: Boolean,
+        default: false,
+      },
+
+      // base
       activator: {
         type: [String, Object],
         default: undefined,
@@ -93,6 +101,14 @@
         type: Boolean,
         default: true,
       },
+      openOnClick: {
+        type: Boolean,
+        default: false,
+      },
+      openOnFocus: {
+        type: Boolean,
+        default: false,
+      },
       zIndex: {
         type: [String, Number],
         default: undefined,
@@ -104,6 +120,9 @@
     },
 
     computed: {
+      isActiveInternal () {
+        return this.static ? this.value : this.isActive
+      },
       placement () {
         if (this.top) return 'top'
         else if (this.right) return 'right'
