@@ -1,7 +1,10 @@
 <template>
   <div>
     <keep-alive>
-      <component :is="activeTab.componentName" /> -->
+      <component
+        :is="activeTab.componentName"
+        :client-data="clientData"
+      />
     </keep-alive>
   </div>
 </template>

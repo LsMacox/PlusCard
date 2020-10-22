@@ -8,7 +8,7 @@
             ID пользователя
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">103112</span>
+            <span class="body-m-medium neutral-700--text">{{ user.id }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -16,7 +16,7 @@
             Зарегистрирован
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">23 июля, 2020 в 14:20</span>
+            <span class="body-m-medium neutral-700--text">{{ this.$moment.utc(user.created_at).local().format(this.$config.date.DATETIME_FORMAT_MIN2) }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -24,7 +24,7 @@
             Город
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">Body M</span>
+            <span class="body-m-medium neutral-700--text">{{ user.city ? user.city : '-' }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -32,7 +32,7 @@
             Дата рождения
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">-</span>
+            <span class="body-m-medium neutral-700--text">{{ user.birthday ? this.$moment.utc(user.birthday).local().format(this.$config.date.DATETIME_FORMAT_MIN2) : '-' }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -40,7 +40,7 @@
             Пол
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">-</span>
+            <span class="body-m-medium neutral-700--text">{{ getGender(user.gender) }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -48,7 +48,7 @@
             Телефон
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">-</span>
+            <span class="body-m-medium neutral-700--text">{{ user.phone ? user.phone : '-' }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -56,7 +56,7 @@
             Email
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">-</span>
+            <span class="body-m-medium neutral-700--text">{{ user.email ? user.email : '-' }}</span>
           </div>
         </li>
       </ul>
@@ -72,9 +72,11 @@
       </div>
       <div class="tab-client__content segment__content">
         <base-combobox
-          v-model="segments"
+          v-model="clientSegments"
           not-found-placeholder="Сегменты не найдены!"
-          :items="segmentItems"
+          :items="segments"
+          item-value="id"
+          item-text="name"
         />
       </div>
     </div>
@@ -89,9 +91,8 @@
       </div>
       <div class="tab-client__content user__content">
         <base-text-field
-          v-model="userName"
+          v-model="clientData.client_name"
           placeholder="Введите реальное имя клиента"
-          :rules="userRules"
           validation-placement="left"
         />
       </div>
@@ -107,7 +108,7 @@
       </div>
       <div class="tab-client__content birthday__content">
         <base-date-text-field
-          v-model="userBirthday"
+          v-model="clientData.birthday"
           placeholder="Дата рождения клиента (дд.мм.гггг)"
         />
       </div>
@@ -115,6 +116,9 @@
     <v-btn
       class="btn-success"
       color="primary"
+      :loading="loading"
+      :disabled="false"
+      @click="accountUpdate()"
     >
       <iconify-icon
         class="icon-success"
@@ -136,33 +140,56 @@
     components: {
       BonusAccount,
     },
+    props: {
+      clientData: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
+    },
     data () {
       return {
-        userBirthday: null,
-        userName: '',
-        segments: [],
-        segmentItems: [
-          { id: 1, color: '#ff008a', name: 'Gaming' },
-          { id: 2, color: '#00d15d', name: 'Programming' },
-          { id: 3, color: '#ff008a', name: 'Vue' },
-          { id: 4, color: '#00d15d', name: 'Vuetify' },
-          { id: 5, color: '#00d15d', name: 'Vuetify' },
-          { id: 6, color: '#00d15d', name: 'Vuetify' },
-          { id: 7, color: '#00d15d', name: 'Vuetify' },
-          { id: 8, color: '#00d15d', name: 'Vuetify' },
-        ],
-        userRules: [
-          v => !!v || 'Обязательно для заполнения',
-        ],
+        loading: false,
+        clientSegments: [],
       }
     },
-    watch: {
-      segment (v) {
-        console.log(v)
+    computed: {
+      user () {
+        return this.$store.getters['crm/clientCard/user']
+      },
+      segments () {
+        return this.$store.getters['crm/segment/segments']
+      },
+    },
+    async created () {
+      this.clientSegments = Object.copy(this.clientData.segments)
+    },
+    methods: {
+      getGender (gender) {
+        if (gender === 'm') return 'мужской'
+        if (gender === 'f') return 'женский'
+        return '-'
+      },
+      async accountUpdate () {
+        try {
+          this.loading = true
+          const payload = {
+            id: this.clientData.id,
+            client_name: this.clientData.client_name,
+            birthday: this.clientData.birthday,
+            segments: this.clientSegments.map(item => item.id),
+          }
+          console.log(payload)
+          await this.$store.dispatch('crm/clientCard/updateAccount', payload)
+        } finally {
+          this.loading = false
+        }
       },
     },
   }
 </script>
+
 <style lang="scss" scoped>
 .tab-client {
   .tab-client__head {
@@ -179,6 +206,10 @@
   margin-top: 36px;
 }
 .info-item {
+  p {
+    position: relative;
+    top: 3px;
+  }
   &:nth-child(2) {
     margin-bottom: 24px !important;
   }

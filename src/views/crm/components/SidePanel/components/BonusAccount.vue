@@ -31,9 +31,9 @@
           <p class="card__header-count title-m-bold success--text">
             <span>{{ item.balance | spacesBetweenNumbers }}</span>
             <span
-              v-if="item.of != undefined"
+              v-if="item.max_value"
               class="neutral-400--text"
-            >/{{ item.of }}</span>
+            >/{{ item.max_value }}</span>
           </p>
           <div class="card__header-control">
             <!-- списание/отмена -->
