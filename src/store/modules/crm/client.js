@@ -100,6 +100,12 @@ const actions = {
             console.log('/api-cabinet/crm/account')
             console.log(result)
             commit('UPDATE', result)
+
+            this._vm.$notify({
+                type: 'success',
+                title: 'Клиенты',
+                text: 'Клиент успешно обновлен',
+            })
         } catch (error) {
             throw error
         }

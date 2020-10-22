@@ -9,9 +9,7 @@
     <div
       v-else
     >
-      <!--
       <client-filter />
-      -->
       <base-table
         v-if="clients.length"
         class-name="table-segment"
@@ -42,17 +40,17 @@
           <div class="table-cell_avatar">
             <img
               class="table-cell_avatar-img"
-              :src="item.user ? item.user.avatar : ''"
+              :src="(item.user && item.user.avatar) ? item.user.avatar : ''"
             >
             <div>
               <div class="body-s-semibold neutral-900--text">
-                {{ item.user ? item.user.FIO : '' }}
+                {{ (item.user && item.user.FIO) ? item.user.FIO : '-' }}
               </div>
               <div
                 class="body-xs-semibold neutral-600--text"
                 style="margin-top: 4px;"
               >
-                {{ item.user ? getLastActivity(item.user.last_activity) : '' }}
+                {{ (item.user && item.user.last_activity) ? getLastActivity(item.user.last_activity) : '' }}
               </div>
             </div>
           </div>
@@ -77,13 +75,13 @@
 
         <template v-slot:[`item.contacts`]="{ item }">
           <div class="body-s-semibold neutral-900--text">
-            {{ item.user ? (item.user.phone ? item.user.phone : '-') : '-' }}
+            {{ (item.user && item.user.phone) ? item.user.phone : '-' }}
           </div>
           <div
             class="body-xs-semibold neutral-600--text"
             style="margin-top: 4px;"
           >
-            {{ item.user ? (item.user.email ? item.user.email : '-') : '-' }}
+            {{ (item.user && item.user.email) ? item.user.email : '-' }}
           </div>
         </template>
 
@@ -110,6 +108,7 @@
       </base-table>
     </div>
     <side-panel-edit-client
+      v-if="sidePanelStatus.active"
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"
       :table-data="sidePanelStatus.data"
@@ -118,14 +117,14 @@
 </template>
 
 <script>
-  // import ClientFilter from './Filter'
+  import ClientFilter from './Filter'
   import EmptyClient from './Empty'
   import SidePanelEditClient from './components/SidePanelEditClient'
   import Convertor from '@/mixins/convertor'
 
   export default {
     components: {
-      // ClientFilter,
+      ClientFilter,
       EmptyClient,
       SidePanelEditClient,
     },

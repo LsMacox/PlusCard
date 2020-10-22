@@ -32,21 +32,21 @@
         <div class="contacts__block-right">
           <div class="contacts-full_name">
             <p class="title-m-bold">
-              {{ tableData ? tableData.user.name : '-' }}
+              {{ (tableData && tableData.user && tableData.user.name) ? tableData.user.name : '-' }}
             </p>
             <p class="title-m-bold">
-              {{ tableData ? tableData.user.lastname : '-' }}
+              {{ (tableData && tableData.user && tableData.user.lastname) ? tableData.user.lastname : '-' }}
             </p>
           </div>
           <div class="contacts-online">
             <p class="body-s-semibold neutral-600--text">
-              {{ tableData ? getLastActivity(tableData.user.last_activity) : '-' }}
+              {{ (tableData && tableData.user && tableData.user.last_activity) ? getLastActivity(tableData.user.last_activity) : '-' }}
             </p>
           </div>
         </div>
         <div class="contacts__block-left">
           <img
-            :src="[tableData ? tableData.user.avatar : '']"
+            :src="[(tableData && tableData.user && tableData.user.avatar) ? tableData.user.avatar : '']"
           >
         </div>
       </div>
@@ -122,20 +122,7 @@
       tableData: {
         type: Object,
         default: () => {
-          return {
-            id: '103112',
-            gender: true,
-            birthday: '10.03.1990',
-            city: 'Новокузнецк',
-            name: 'Константин',
-            lastname: 'Константинопольский',
-            last_activity: '02.08.2020 04:32',
-            phone: '79832525202',
-            email: 'rs.bikeev@yandex.ru',
-            barcode: '1640000000145437',
-            card: '432156',
-            avatar: require('@/assets/png/custom/beardedman.png'),
-          }
+          return {}
         },
       },
     },
