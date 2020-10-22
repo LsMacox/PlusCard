@@ -156,7 +156,8 @@
     },
     computed: {
       user () {
-        return this.$store.getters['crm/clientCard/user']
+        if (this.clientData) return this.clientData.user
+        return {}
       },
       segments () {
         return this.$store.getters['crm/segment/segments']
@@ -181,7 +182,7 @@
             segments: this.clientSegments.map(item => item.id),
           }
           console.log(payload)
-          await this.$store.dispatch('crm/clientCard/updateAccount', payload)
+          await this.$store.dispatch('crm/client/updateAccount', payload)
         } finally {
           this.loading = false
         }

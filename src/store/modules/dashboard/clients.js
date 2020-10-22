@@ -37,12 +37,20 @@ export default {
 
             if (state.widgetData.new) {
                 state.widgetData.new.forEach(item => {
-                    chartData[0].push(item.count)
+                    chartData[0].push({
+                        count: item.count,
+                        date_start: item.date_start,
+                        date_end: item.date_end,
+                    })
                 })
             }
             if (state.widgetData.total) {
                 state.widgetData.total.forEach(item => {
-                    chartData[1].push(item.count)
+                    chartData[1].push({
+                        count: item.count,
+                        date_start: item.date_start,
+                        date_end: item.date_end,
+                    })
                 })
             }
             return chartData
