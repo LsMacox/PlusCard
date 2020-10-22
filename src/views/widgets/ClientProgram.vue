@@ -1,10 +1,11 @@
 <template>
   <double-diagram-frame
     class="w-client-program"
-    :diagram-data="[newData, totalData]"
-    :diagram-labels="[newData, totalData]"
+    :diagram-data="[diagramNewData, diagramTotalData]"
+    :diagram-labels="[diagramNewLabels, diagramTotalLabels]"
     :diagram-height="46"
     title="Клиенты программы"
+    :titles="titles"
     :sub-titles="['Новые', 'Всего']"
     :counts="[newCount, totalCount]"
     :percentage-differences="[newPercentageDifference, totalPercentageDifference]"
@@ -22,7 +23,11 @@
       widgetData: {
         type: Array,
         default () {
-          return []
+          return [4].fill({
+            count: 0,
+            date_start: '2020-09-08',
+            date_end: '2020-09-08',
+          })
         },
       },
     },
@@ -30,21 +35,22 @@
       return {
         newData: [0, 0, 0, 0],
         totalData: [0, 0, 0, 0],
-        diagramOptions: {
-          pointRadius: 43,
-          pointBorderWidth: 2.5,
-          tooltips: {
-            display: false,
-          },
-        },
+        // diagramOptions: {
+        //   pointRadius: 43,
+        //   pointBorderWidth: 2.5,
+        //   tooltips: {
+        //     display: false,
+        //   },
+        // },
+        titles: ['клиент', 'клиента', 'клиентов'],
       }
     },
     computed: {
       newCount () {
-        return this.newData.length ? this.newData[this.newData.length - 1] : 0
+        return this.widgetData.length ? this.widgetData[0][this.widgetData.length - 1].count : 0
       },
       totalCount () {
-        return this.totalData.length ? this.totalData[this.newData.length - 1] : 0
+        return this.widgetData.length ? this.widgetData[1][this.widgetData.length - 1].count : 0
       },
       newPercentageDifference () {
         if (this.newData && this.newData.length >= 2) {
@@ -62,8 +68,17 @@
         }
         return 0
       },
-      diagramLabels () {
-        return this.newData
+      diagramNewLabels () {
+        return this.prepareDiagramLabels(this.widgetData[0], 'count')
+      },
+      diagramTotalLabels () {
+        return this.prepareDiagramLabels(this.widgetData[1], 'count')
+      },
+      diagramNewData () {
+        return this.$_.map(this.widgetData[0], 'count')
+      },
+      diagramTotalData () {
+        return this.$_.map(this.widgetData[1], 'count')
       },
     },
     watch: {

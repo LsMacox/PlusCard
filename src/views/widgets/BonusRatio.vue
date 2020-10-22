@@ -2,7 +2,7 @@
   <vertical-progress-frame
     class="w-bonus-ratio"
     title="Cоотношение бонусов"
-    :sub-titles="['Начислено', 'Списано', 'Сгорело']"
+    :sub-titles="['Начислений', 'Списаний', 'Сгораний']"
     :percentage-differences="[creditRatio, debitRatio, expiredRatio]"
   />
 </template>
