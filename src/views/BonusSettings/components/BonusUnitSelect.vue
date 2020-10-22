@@ -2,7 +2,7 @@
   <div>
     <base-tooltip
       :activator="$refs.bonusUnitSelectBtn"
-      :value="showError && errorMessageText"
+      :value="showError && !!errorMessageText"
       :disabled="!errorMessageText"
       :text="errorMessageText"
       color="error"

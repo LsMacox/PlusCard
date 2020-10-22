@@ -1,7 +1,7 @@
 <template>
   <v-navigation-drawer
-    style="z-index: 9999"
     v-model="drawer"
+    style="z-index: 9999"
     fixed
     temporary
     right
@@ -44,6 +44,7 @@
               :validation-placement="'bottom'"
               class="input-lg input-bonuses"
               placeholder="Например, бонусы"
+              error-style="vuetify"
 
               counter
               minlength="1"

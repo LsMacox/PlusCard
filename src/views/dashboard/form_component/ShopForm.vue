@@ -155,6 +155,7 @@
                   v-mask="'##:##'"
                   placeholder="С"
                   outlined
+                  hide-details
                   @blur="checkLength('startTime', globalIndex)"
                 />
               </div>
@@ -169,10 +170,21 @@
                   v-mask="'##:##'"
                   placeholder="По"
                   outlined
+                  hide-details
                   @blur="checkLength('endTime', globalIndex)"
                 />
               </div>
             </div>
+            <v-row>
+              <v-col>
+                <base-ext-switch
+                  :input-value="isFullWorkDay(worktime)"
+                  label="Круглосуточно"
+                  class="mt-0"
+                  @change="changeFullWorkDay(worktime, $event)"
+                />
+              </v-col>
+            </v-row>
           </div>
         </div>
         <div
@@ -359,6 +371,17 @@
       this.copyModel = JSON.parse(JSON.stringify(this.editedShop))
     },
     methods: {
+      changeFullWorkDay (worktime, v) {
+        if (v) {
+          worktime.startTime = worktime.endTime = null
+        } else if (!worktime.startTime && !worktime.endTime) {
+          worktime.startTime = '09:00'
+          worktime.endTime = '18:00'
+        }
+      },
+      isFullWorkDay (worktime) {
+        return worktime && !worktime.endTime && !worktime.startTime
+      },
       cancel () {
         // сброс модели при отмене редактирования
         this.shops.forEach((item, i) => {
@@ -452,8 +475,8 @@
         } else {
           this.editedShop.workTimes.push(
             {
-              startTime: '',
-              endTime: '',
+              startTime: null,
+              endTime: null,
               days: [],
               breakStart: '',
               breakEnd: '',

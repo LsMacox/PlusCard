@@ -108,14 +108,38 @@
           return [0, 0]
         },
       },
+      titles: {
+        type: Array,
+        default () {
+          return []
+        },
+      },
     },
     data () {
+      var _this = this
       return {
         diagramOptions: {
           pointRadius: 4,
           pointBorderWidth: 2.5,
           tooltips: {
-            display: false,
+            display: true,
+            callbacks: {
+              title: function (tooltipItem, data) {
+                console.log('tooltipItem')
+                console.log(tooltipItem)
+                console.log('tooltipItem')
+                return tooltipItem[0].xLabel.count + ' ' + _this.declOfNum(tooltipItem[0].xLabel.count, _this.titles)
+              },
+              label: function (tooltipItem, data) {
+                var startDate = tooltipItem.xLabel.start_period
+                var endDate = tooltipItem.xLabel.end_period
+
+                const formatStart = _this.$moment(startDate, 'YYYY-MM-DD').format('D.MM.YYYY')
+                const formatEnd = _this.$moment(endDate, 'YYYY-MM-DD').format('D.MM.YYYY')
+
+                return formatStart + '-' + formatEnd
+              },
+            },
           },
         },
       }

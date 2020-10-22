@@ -102,6 +102,7 @@ $shopIconRed: #EA4C2A;
 
     .shop-form-work-time {
         display: flex;
+        margin: 10px 0px;
 
         .shop-form-work-time-control {
             width: 50%;
@@ -121,9 +122,11 @@ $shopIconRed: #EA4C2A;
             text-align: center;
         }
 
-        .shop-form-period-action {
+        
+    }
+    .shop-form-period-action {
+        padding: 10px 0px;
 
-        }
     }
 
     .shop-form-action {

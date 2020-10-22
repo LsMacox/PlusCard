@@ -41,20 +41,41 @@ export default {
 
             if (state.widgetData.chart && state.widgetData.chart.by_program) {
                 state.widgetData.chart.by_program.forEach(item => {
-                    chartData[0].push(item.sum)
+                    chartData[0].push({
+                        count: item.sum,
+                        date_start: item.date_start,
+                        date_end: item.date_end,
+                    })
                 })
             }
             if (state.widgetData.chart && state.widgetData.chart.total) {
                 state.widgetData.chart.total.forEach(item => {
-                    chartData[1].push(item.sum)
+                    chartData[1].push({
+                        count: item.sum,
+                        date_start: item.date_start,
+                        date_end: item.date_end,
+                    })
                 })
             }
+            console.log('DATA')
+            console.log(
+                {
+                    chart: chartData,
+                    totalCount: state.widgetData.total_count,
+                    byProgramCount: state.widgetData.by_program_count,
+                    totalSum: state.widgetData.total_sum_current / 100,
+                    byProgramSum: state.widgetData.by_program_sum_current / 100,
+                    totalSumPrev: state.widgetData.total_sum_prev,
+                    byProgramSumPrev: state.widgetData.by_program_sum_prev,
+                }
+            )
+            console.log('DATA')
             return {
                 chart: chartData,
                 totalCount: state.widgetData.total_count,
                 byProgramCount: state.widgetData.by_program_count,
-                totalSum: state.widgetData.total_sum_current,
-                byProgramSum: state.widgetData.by_program_sum_current,
+                totalSum: state.widgetData.total_sum_current / 100,
+                byProgramSum: state.widgetData.by_program_sum_current / 100,
                 totalSumPrev: state.widgetData.total_sum_prev,
                 byProgramSumPrev: state.widgetData.by_program_sum_prev,
             }

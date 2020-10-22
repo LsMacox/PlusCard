@@ -9,7 +9,7 @@
             width="21"
           />
           <p class="body-m-medium neutral-700--text">
-            {{ clientData.phone || '-' }}
+            {{ clientData ? clientData.user.phone : '-' }}
           </p>
         </li>
         <li class="contacts-info__item">
@@ -19,7 +19,7 @@
             width="21"
           />
           <p class="body-m-medium neutral-700--text">
-            {{ clientData.email || '-' }}
+            {{ clientData ? clientData.user.email : '-' }}
           </p>
         </li>
         <li class="contacts-info__item">

@@ -12,6 +12,9 @@
             @include body-s-medium;
             color: $neutral-900
           }
+          &.clickable-row{
+            cursor: pointer;
+          }
         }
       }
     }  

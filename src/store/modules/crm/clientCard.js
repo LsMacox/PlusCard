@@ -17,22 +17,6 @@ const mutations = {
     SET_ACCOUNT_SCORES: (state, payload) => state.accountScores = payload,
     SET_ACCOUNT_BALANCES: (state, payload) => state.accountBalances = payload,
     SET_TRANSACTIONS: (state, payload) => state.transactions = payload,
-    ADD (state, payload) {
-        const items = state.clients
-        items.push(payload)
-    },
-    UPDATE (state, payload) {
-        const items = state.clients
-        items.forEach((item, index) => {
-            if (item.id === payload.id) Object.assign(items[index], payload)
-        })
-    },
-    REMOVE (state, payload) {
-        const items = state.clients
-        items.forEach((item, index) => {
-            if (item.id === payload.id) items.splice(index, 1)
-        })
-    },
 }
 
 const actions = {
@@ -86,7 +70,6 @@ const actions = {
             throw error
         }
     },
-
 }
 
 const getters = {

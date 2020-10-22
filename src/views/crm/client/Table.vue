@@ -42,17 +42,17 @@
           <div class="table-cell_avatar">
             <img
               class="table-cell_avatar-img"
-              :src="item.avatar"
+              :src="item.user ? item.user.avatar : ''"
             >
             <div>
               <div class="body-s-semibold neutral-900--text">
-                {{ item.FIO }}
+                {{ item.user ? item.user.FIO : '' }}
               </div>
               <div
                 class="body-xs-semibold neutral-600--text"
                 style="margin-top: 4px;"
               >
-                {{ getLastActivity(item.last_activity) }}
+                {{ item.user ? getLastActivity(item.user.last_activity) : '' }}
               </div>
             </div>
           </div>
@@ -77,13 +77,13 @@
 
         <template v-slot:[`item.contacts`]="{ item }">
           <div class="body-s-semibold neutral-900--text">
-            {{ item.phone ? item.phone : '-' }}
+            {{ item.user ? (item.user.phone ? item.user.phone : '-') : '-' }}
           </div>
           <div
             class="body-xs-semibold neutral-600--text"
             style="margin-top: 4px;"
           >
-            {{ item.email ? item.email : '-' }}
+            {{ item.user ? (item.user.email ? item.user.email : '-') : '-' }}
           </div>
         </template>
 

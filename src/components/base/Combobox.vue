@@ -120,7 +120,7 @@
       items: {
         type: Array,
         default () {
-          return [{ id: 1, color: '#ff008a', name: 'test' }]
+          return []
         },
       },
       notFoundPlaceholder: {
@@ -167,7 +167,9 @@
         this.$emit('change', v)
       },
     },
-    mounted () {},
+    created () {
+      this.internalSelectedItems = Object.copy(this.selectedItems)
+    },
     methods: {
       selectItem (id) {
         const item = this.internalItems[this.internalItems.findIndex(item => item.id === id)]
