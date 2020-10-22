@@ -158,10 +158,10 @@
             >
               <img
                 class="app__filter-content-client-avatar"
-                :src="item.avatar"
+                :src="item.user ? item.user.avatar : ''"
               >
               <div class="body-m-regular neutral-700--text">
-                {{ item.FIO }}
+                {{ item.user ? item.user.FIO : '' }}
               </div>
               <div
                 v-if="getAdditionalSearch(item)"
@@ -295,16 +295,17 @@
       },
       setFilter (field, item) {
         // только один клик - один сегмент
-        this.filter[field] = [item.id]
         if (field === 'clients') {
+          this.filter[field] = [item.user.id]
           this.fastFilter[field] = [{
-            id: item.id,
-            FIO: item.FIO,
+            id: item.user.id,
+            FIO: item.user.FIO,
           }]
           // обновляем массив отфильтрованных клиентов
           this.$store.commit('crm/client/SET_FILTERED_CLIENTS', [item])
         }
         if (field === 'segments') {
+          this.filter[field] = [item.id]
           this.fastFilter[field] = [{
             id: item.id,
             label: item.name,
@@ -398,11 +399,11 @@
           if (account.barcode && String(account.barcode).indexOf(query) !== -1) {
             found = `Штрих-код: ${account.barcode}`
           }
-          if (account.email && String(account.email).indexOf(query) !== -1) {
-            found = `${account.email}`
+          if (account.user && account.user.email && String(account.user.email).indexOf(query) !== -1) {
+            found = `${account.user.email}`
           }
-          if (account.phone && String(account.phone).indexOf(query) !== -1) {
-            found = `Телефон: ${account.phone}`
+          if (account.user && account.user.phone && String(account.user.phone).indexOf(query) !== -1) {
+            found = `Телефон: ${account.user.phone}`
           }
         }
         return found
