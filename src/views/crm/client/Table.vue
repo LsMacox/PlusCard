@@ -100,7 +100,6 @@
       </base-table>
     </div>
     <side-panel-edit-client
-      v-if="sidePanelStatus.active"
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"
       :table-data="sidePanelStatus.data"
@@ -109,9 +108,9 @@
 </template>
 
 <script>
-  // import ClientFilter from '@/views/crm/client/Filter'
-  import EmptyClient from '@/views/crm/components/EmptyClient'
-  import SidePanelEditClient from '@/views/crm/components/SidePanel/SidePanelEditClient'
+  // import ClientFilter from './Filter'
+  import EmptyClient from './Empty'
+  import SidePanelEditClient from './components/SidePanelEditClient'
   import Convertor from '@/mixins/convertor'
 
   export default {

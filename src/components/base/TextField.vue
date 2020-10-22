@@ -138,10 +138,10 @@
             <div 
               class="tooltip-content"
               :class="{show: showError}"
-              :style="validationPlacement == 'top' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.top}px` :
-                      validationPlacement == 'bottom' ? `left: ${tooltipPos.left}px; top: ${tooltipPos.bottom}px` : 
-                      validationPlacement == 'left' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.bottom}px` : 
-                      validationPlacement == 'right' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.bottom}px` : ''"
+              :style="validationPlacement == 'top' ? `left: ${tooltipPos.x}px; bottom: ${tooltipPos.y}px` :
+                      validationPlacement == 'bottom' ? `left: ${tooltipPos.x}px; top: ${tooltipPos.y}px` : 
+                      validationPlacement == 'left' ? `left: ${tooltipPos.x}px; bottom: ${tooltipPos.y}px` : 
+                      validationPlacement == 'right' ? `left: ${tooltipPos.x}px; bottom: ${tooltipPos.y}px` : ''"
               :placement="validationPlacement"
               ref="tooltip">
                <div
@@ -258,9 +258,8 @@
         // computedCounterValue: 0,
         computedCounterValue2: 0,
         tooltipPos: {
-          left: 0,
-          top: 0,
-          bottom: 0,
+          x: 0,
+          y: 0,
         }
       }
     },
@@ -322,10 +321,9 @@
       },
       hasDispayErrors (v) {
         if (v) {
+          this.setTooltipPosition()
           this.showError = true
-          setTimeout(() => {
-            this.showError = false
-          }, 4000)
+          setTimeout(() => this.showError = false, 4000)
         } else {
           this.showError = false
         }
@@ -364,31 +362,31 @@
       // this.$refs.input.focus();
         e && this.$emit('click', e)
       },
-      setTooltipPosition () {
+      async setTooltipPosition () {
         if (this.$refs.tooltip != undefined) 
         {
+          this.$refs.tooltip.style.transition = 'none';
           let tooltipWidth = this.nodeOffsetWH(this.$refs.tooltip)
-          let tooltipHeight = this.nodeOffsetWH(this.$refs.tooltip, false)
 
           switch (this.validationPlacement) {
             case 'top':
-              this.tooltipPos.left = -tooltipWidth / 2 - 13
-              this.tooltipPos.top = 20 
+              this.tooltipPos.x = -tooltipWidth / 2 - 13
               break;
             case 'bottom': 
-              this.tooltipPos.left = -tooltipWidth / 2 - 13
-              this.tooltipPos.bottom = 20
+              this.tooltipPos.x = -tooltipWidth / 2 - 13
               break;
             case 'right': 
-              this.tooltipPos.left = 10
-              this.tooltipPos.bottom = -(tooltipHeight / 2)
+              this.tooltipPos.x = 10
               break;
             case 'left': 
-              this.tooltipPos.left = -tooltipWidth - 33
-              console.log(this.$refs.tooltip.clientHeight)
-              this.tooltipPos.bottom = -(tooltipHeight / 2)
+              this.tooltipPos.x = -tooltipWidth - 33
               break;
           }
+          await this.$nextTick() 
+          let tooltipHeight = this.nodeOffsetWH(this.$refs.tooltip, false)
+          if (this.validationPlacement == 'top' || this.validationPlacement == 'bottom') this.tooltipPos.y = 20 
+          if (this.validationPlacement == 'left' || this.validationPlacement == 'right') this.tooltipPos.y = -(tooltipHeight / 2)
+          setTimeout(() => this.$refs.tooltip.style.transition = 'all .3s ease-in-out', 0);
         }
       },
     },
@@ -404,7 +402,6 @@
   // width: max-content;
   margin: 0px -4px;
   .append-slot-row__col{
-    margin-left: 4px;
     margin-right: 4px;
   }
   .base-counter {
@@ -449,8 +446,8 @@
     text-align: center;
     z-index: 1;
     opacity: 0;
+    box-shadow: 1px 1px 5px #7b7b7b;
     visibility: hidden;
-    transition: all .3s ease-in-out;
     @include body-s-semibold;
     &.show {
       visibility: visible;

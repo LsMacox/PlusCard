@@ -2,13 +2,13 @@ export default {
     children: [
         {
             path: '/program/accounts',
-            component: () => import('@/views/crm/Client'),
+            component: () => import('@/views/crm/client/Client'),
             name: 'ProgramAccounts',
             meta: { auth: true, title: 'Клиенты', icon: 'dashboard' },
         },
         {
             path: '/program/segments',
-            component: () => import('@/views/crm/Segment'),
+            component: () => import('@/views/crm/segment/Segment'),
             name: 'ProgramSegments',
             meta: { auth: true, title: 'Сегменты', icon: 'dashboard' },
         },

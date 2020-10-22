@@ -224,7 +224,7 @@
 </template>
 
 <script>
-  import BonusAccount from './BonusAccount'
+  import BonusAccount from '../BonusAccount'
   import { mask } from 'vue-the-mask'
 
   export default {

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="tab-client">
     <bonus-account />
-    <div class="tab-client tab-client__info">
+    <div class="tab-client__block tab-client__info">
       <ul class="info-list">
         <li class="info-item">
           <p class="body-s-semibold neutral-900--text">
@@ -61,7 +61,7 @@
         </li>
       </ul>
     </div>
-    <div class="tab-client tab-client__segment">
+    <div class="tab-client__block tab-client__segment">
       <div class="tab-client__head segment__head">
         <p class="body-l-semibold neutral-900--text">
           Сегменты
@@ -78,7 +78,7 @@
         />
       </div>
     </div>
-    <div class="tab-client tab-client__user">
+    <div class="tab-client__block tab-client__user">
       <div class="tab-client__head user__head">
         <p class="body-l-semibold neutral-900--text">
           Имя пользователя
@@ -96,7 +96,7 @@
         />
       </div>
     </div>
-    <div class="tab-client tab-client__birthday">
+    <div class="tab-client__block tab-client__birthday">
       <div class="tab-client__head birthday__head">
         <p class="body-l-semibold neutral-900--text">
           Дата рождения
@@ -115,6 +115,8 @@
     <v-btn
       class="btn-success"
       color="primary"
+      :disabled="!validate"
+      @click="edit"
     >
       <iconify-icon
         class="icon-success"
@@ -129,7 +131,7 @@
 </template>
 
 <script>
-  import BonusAccount from '../BonusAccount'
+  import BonusAccount from '../../BonusAccount'
 
   export default {
     name: 'TabClient',
@@ -138,9 +140,10 @@
     },
     data () {
       return {
-        userBirthday: null,
+        userBirthday: '',
         userName: '',
         segments: [],
+        validate: false,
         segmentItems: [
           { id: 1, color: '#ff008a', name: 'Gaming' },
           { id: 2, color: '#00d15d', name: 'Programming' },
@@ -157,38 +160,56 @@
       }
     },
     watch: {
-      segment (v) {
-        console.log(v)
+      segments (v) {
+        this.validator()
+      },
+      userBirthday () {
+        this.validator()
+      },
+      userName () {
+        this.validator()
+      },
+    },
+    mounted () {},
+    methods: {
+      validator () {
+        if (!!this.segments.length && !!this.userName.length && !!this.userBirthday.length) this.validate = true
+        else this.validate = false
+      },
+      edit () {
+
       },
     },
   }
 </script>
 <style lang="scss" scoped>
 .tab-client {
-  .tab-client__head {
+  .tab-client__block {
+    .tab-client__head {
+      margin-top: 34px;
+      p:nth-child(1) {
+        margin-bottom: 6px;
+      }
+      p:nth-child(2) {
+        margin-bottom: 20px;
+      }
+    }
+  }
+  .tab-client__info {
+    margin-top: 36px;
+  }
+  .info-item {
+    &:nth-child(2) {
+      margin-bottom: 24px !important;
+    }
+  }
+  .btn-success {
     margin-top: 34px;
-    p:nth-child(1) {
-      margin-bottom: 6px;
+    margin-bottom: 34px;
+    vertical-align: middle;
+    .icon-success {
+      margin-right: 10px;
     }
-    p:nth-child(2) {
-      margin-bottom: 20px;
-    }
-  }
-}
-.tab-client__info {
-  margin-top: 36px;
-}
-.info-item {
-  &:nth-child(2) {
-    margin-bottom: 24px !important;
-  }
-}
-.btn-success {
-  margin-top: 34px;
-  margin-bottom: 34px;
-  vertical-align: middle;
-  .icon-success {
-    margin-right: 10px;
   }
 }
 </style>

@@ -80,7 +80,7 @@
         </v-icon>
       </template>
     </base-table>
-    <side-panel-segment
+    <side-panel-new-segment
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"
       :table-data="sidePanelStatus.data"
@@ -89,14 +89,14 @@
 </template>
 
 <script>
-  import EmptySegment from './components/EmptySegment'
-  import SidePanelSegment from './components/SidePanel/SidePanelSegment'
+  import EmptySegment from './Empty'
+  import SidePanelNewSegment from './components/SidePanelNewSegment'
   import Convertor from '@/mixins/convertor'
 
   export default {
     components: {
       EmptySegment,
-      SidePanelSegment,
+      SidePanelNewSegment,
     },
     mixins: [Convertor],
     data () {

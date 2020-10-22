@@ -230,6 +230,10 @@ export const ICONIFY_ICONS = [
         id: 'ion-warning',
         component: () => import('@iconify/icons-ion/warning'),
     },
+    {
+        id: 'ion-attach',
+        component: () => import('@iconify/icons-ion/attach-outline'),
+    },
 
     // feather
     {

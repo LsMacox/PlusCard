@@ -89,7 +89,7 @@
               />
             </v-col>
             <v-col cols="12">
-              <base-switch
+              <v-switch
                 v-model="form.sms_invite"
                 class="panel-crm_new_client__switch"
                 :label="'Отправить смс-приглашение'"

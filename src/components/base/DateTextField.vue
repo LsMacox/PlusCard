@@ -89,6 +89,20 @@
     },
     mixins: [Calculation],
     inheritAttrs: false,
+    model: {
+      prop: 'date',
+      event: 'changeDate',
+    },
+    props: {
+      date: {
+        type: String,
+        default: '',
+      },
+      dateFormat: {
+        type: String,
+        default: 'DD.MM.YYYY',
+      },
+    },
     data () {
       return {
         dateText: '',
@@ -104,8 +118,8 @@
       updateDatePicker (v) {
         this.showDatePicker = false
         this.dateText = v.startDate.toISOString().split('T')[0]
-        this.dateText = this.$moment(this.dateText).format('DD.MM.YYYY')
-        this.$emit('update:date', this.dateText)
+        this.dateText = this.$moment(this.dateText).format(this.dateFormat)
+        this.$emit('changeDate', this.dateText)
       },
       show () {
         this.$nextTick(() => {

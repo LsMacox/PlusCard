@@ -1,5 +1,7 @@
 <template>
-  <div class="bonus-accounts">
+  <div
+    class="bonus-accounts"
+  >
     <div class="bonus-accounts__header">
       <p class="body-l-semibold">
         Бонусные счета
@@ -63,12 +65,11 @@
             </v-btn>
 
             <!-- начисление/подтверждение -->
-            <!-- блокируем операцию если нет ручного бонусного ресурса -->
+            <!-- блокируем операцию если нет ручного бонусного ресурса  :disabled="!isManual(item, 'TYPE_SOURCE') || !valid-->
             <v-btn
               v-if="editedItem.unit_id !== item.unit_id"
               class="control-btn"
               color="primary-100"
-              :disabled="!isManual(item, 'TYPE_SOURCE') || !valid"
               @click="menuOperation(item, 'TO')"
             >
               <iconify-icon
@@ -95,119 +96,82 @@
           class="card__body"
         >
           <div class="card__body-form">
-            <base-select
-              v-if="category.mode == 'charge'"
-              v-model="chargeData.selectedItem"
-              class="card__body-select"
-              item-placeholder="Выберите операцию"
-              :items="chargeData.listItems"
-            />
+            <div class="card__body-select">
+              <base-select
+                v-if="availableOperations.length > 1"
+                v-model="selectedBonusResourceId"
+                class="panel-crm__form-input card__body-input"
+                :items="availableOperations"
+                item-text="title"
+                item-value="score_id"
+                placeholder="Выберите операцию"
+              >
+                <template v-slot:item="data">
+                  <div style="display: flex; align-items: center;">
+                    <div
+                      v-if="data.attrs.inputValue"
+                      :key="data.item.title + 'active'"
+                      class="active"
+                    >
+                      <span
+                        class="iconify"
+                        data-icon="eva:checkmark-square-2-fill"
+                        data-inline="false"
+                      />
+                    </div>
+                    <div
+                      v-else
+                      :key="data.item.title + 'inactive'"
+                      class="inactive"
+                    >
+                      <span
+                        class="iconify"
+                        data-icon="eva:square-outline"
+                        data-inline="false"
+                      />
+                    </div>
+                    <span>{{ data.item.title }}</span>
+                  </div>
+                </template>
+              </base-select>
+            </div>
             <div class="card__body-group">
-              <v-text-field
-                v-model="generalData.sum"
-                v-mask="getMask(category.mode)"
+              <base-text-field
+                v-model="operation.value"
+                v-mask="getMask(operationMode)"
                 class="panel-crm__form-input card__body-input"
                 type="text"
-                :placeholder="category.mode == 'writeOff' ? 'Списать:' : 'Начислить:'"
-                outlined
+                :placeholder="operationMode === 'FROM' ? 'Списать:' : 'Начислить:'"
                 hide-details
               />
               <base-text-field
-                v-if="category.mode == 'charge'"
-                v-model="chargeData.acts"
+                v-if="operationMode === 'TO'"
+                v-model="operation.expired_days"
                 v-mask="'Действуют: ###'"
-                :rules="daysRules"
                 class="panel-crm__form-input card__body-input"
-                validation-placement="bottom"
                 type="text"
                 placeholder="Дейсвуют (дней)"
-                outlined
-                autocomplete="off"
+                :rules="daysRules"
+                validation-placement="right"
               />
             </div>
             <div
               class="panel-crm__form-textarea"
               style="margin-bottom: 20px"
             >
-              <div class="card__body-select">
-                <v-select
-                  v-if="availableOperations.length > 1"
-                  v-model="selectedBonusResourceId"
-                  :items="availableOperations"
-                  item-text="title"
-                  item-value="score_id"
-                  placeholder="Выберите операцию"
-                  outlined
-                  :ripple="false"
-                >
-                  <template v-slot:item="data">
-                    <div style="display: flex; align-items: center;">
-                      <div
-                        v-if="data.attrs.inputValue"
-                        :key="data.item.text + 'active'"
-                        class="active"
-                      >
-                        <span
-                          class="iconify"
-                          data-icon="eva:checkmark-square-2-fill"
-                          data-inline="false"
-                        />
-                      </div>
-                      <div
-                        v-else
-                        :key="data.item.text + 'inactive'"
-                        class="inactive"
-                      >
-                        <span
-                          class="iconify"
-                          data-icon="eva:square-outline"
-                          data-inline="false"
-                        />
-                      </div>
-                      <span>{{ data.item.text + ' ' + data.attrs.inputValue }}</span>
-                    </div>
-                  </template>
-                </v-select>
-              </div>
-              <div class="card__body-group">
-                <v-text-field
-                  v-model="operation.value"
-                  v-mask="getMask(operationMode)"
-                  class="panel-crm__form-input card__body-input"
-                  type="text"
-                  :placeholder="operationMode === 'FROM' ? 'Списать:' : 'Начислить:'"
-                  outlined
-                  hide-details
-                />
-                <v-text-field
-                  v-if="operationMode === 'TO'"
-                  v-model="operation.expired_days"
-                  v-mask="'Действуют: ###'"
-                  class="panel-crm__form-input card__body-input"
-                  type="text"
-                  placeholder="Дейсвуют (дней)"
-                  outlined
-                  hide-details
-                />
-              </div>
-              <div
-                class="panel-crm__form-textarea"
-                style="margin-bottom: 20px"
-              >
-                <v-textarea
-                  v-model="operation.comment"
-                  class="panel-crm__form-input card__body-input"
-                  rows="4"
-                  placeholder="Введите комментарий (необязательно)"
-                  outlined
-                  auto-grow
-                  hide-details
-                  :rules="[
-                    v => String(v).length <= 255 || 'Комментарий должен быть не более 255 символов'
-                  ]"
-                />
-                <div class="textarea---angle" />
-              </div>
+              <v-textarea
+                v-model="operation.comment"
+                class="panel-crm__form-input card__body-input"
+                rows="4"
+                placeholder="Введите комментарий (необязательно)"
+                outlined
+                auto-grow
+                hide-details
+                :rules="[
+                  v => String(v).length <= 255 || 'Комментарий должен быть не более 255 символов'
+                ]"
+              />
+              <div class="textarea---angle" />
             </div>
           </div>
         </div>
@@ -222,7 +186,6 @@
 
   export default {
     directives: { mask },
-    // components: { vueSelect },
     props: {
       clientData: {
         type: Object,
@@ -241,30 +204,6 @@
           expired_days: null,
           comment: null,
         },
-        categories: [
-          {
-            id: 1,
-            title: 'Бонусные рубли',
-            count: 1364,
-            menuShow: false,
-            mode: 'writeOff', // charge
-          },
-          {
-            id: 2,
-            title: 'Бонусы',
-            count: 1993,
-            menuShow: false,
-            mode: 'writeOff', // charge
-          },
-          {
-            id: 3,
-            title: 'Чашки кофе',
-            count: 4,
-            of: 10,
-            menuShow: false,
-            mode: 'writeOff', // charge
-          },
-        ],
         daysRules: [
           (v) => isFilled(v) || 'Введите дни',
         ],
@@ -302,18 +241,6 @@
         if (res) return true
         return false
       },
-      getDefaultChartData () {
-        return {
-          listItems: [
-            { id: 1, name: 'g' },
-            { id: 2, name: 'a' },
-            { id: 3, name: 'b' },
-            { id: 4, name: 'c' },
-          ],
-          selectedItem: null,
-          acts: null,
-        }
-      },
       menuOperation (item, operation) {
         this.operationMode = operation
         this.editedItem = item
@@ -341,22 +268,8 @@
         v = String(v).replace('Действуют: ', '')
         return Number(v)
       },
-      menuSave (category) {
-        // === Data === //
-        console.log(this.chargeData)
-        const sum = this.generalData.sum ? this.generalData.sum.replace(/[^\d]+/, '') : 0
-        // const description = this.generalData.description
-        if (category.mode === 'charge') {
-          this.showSuccess(sum, true)
-        //   const acts = this.chargeData.acts ? this.chargeData.acts.replace(/[^\d]+/, '') : 0
-        //   const operation = this.chargeData.selectedItem
-        } else {
-          this.showSuccess(sum, false)
-        }
-        // === Data === //
-
-        this.clearData()
-        category.menuShow = false
+      getInfo (info) {
+        console.log(info)
       },
       async processing () {
         try {

@@ -100,9 +100,9 @@
 <script>
   import Convertor from '@/mixins/convertor.js'
   import SidePanel from '@/components/base/SidePanel'
-  // Mode
-  import ModeUsual from './components/EditClientModeUsual'
-  import ModeExtended from './components/EditClientModeExtended'
+  // Modes
+  import ModeUsual from './sidepanel/EditClientModeUsual'
+  import ModeExtended from './sidepanel/EditClientModeExtended'
 
   export default {
     components: {
@@ -190,13 +190,7 @@
       await this.fetchData()
     },
     mounted () {
-      this.$refs['panel-crm_edit_client'].$el.querySelector('.v-navigation-drawer__content').addEventListener('scroll', (e) => {
-        if (e.srcElement.scrollTop > 10) {
-          this.$refs['panel-crm_edit_client__header'].style.boxShadow = '0px 7px 20px rgba(88, 93, 106, 0.1)'
-        } else {
-          this.$refs['panel-crm_edit_client__header'].style.boxShadow = 'none'
-        }
-      })
+      this.shadowHeaderAtScroll()
     },
     methods: {
       getLastActivity (date) {
@@ -210,6 +204,15 @@
         })
 
         this.extendedTabs[tabIndex].active = true
+      },
+      shadowHeaderAtScroll () {
+        this.$refs['panel-crm_edit_client'].$el.querySelector('.v-navigation-drawer__content').addEventListener('scroll', (e) => {
+          if (e.srcElement.scrollTop > 5) {
+            this.$refs['panel-crm_edit_client__header'].style.boxShadow = '0px 7px 20px rgba(88, 93, 106, 0.1)'
+          } else {
+            this.$refs['panel-crm_edit_client__header'].style.boxShadow = 'none'
+          }
+        })
       },
       async fetchData () {
         try {

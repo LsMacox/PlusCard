@@ -48,7 +48,6 @@
       v-model="sidePanelNewClientStatus"
     />
     <side-panel-edit-client
-      v-if="sidePanelEditClient.status"
       v-model="sidePanelEditClient.status"
       :client-data="sidePanelEditClient.data"
     />
@@ -56,9 +55,9 @@
 </template>
 
 <script>
-  import ClientTable from '@/views/crm/client/ClientTable'
-  import SidePanelNewClient from './components/SidePanel/SidePanelNewClient'
-  import SidePanelEditClient from './components/SidePanel/SidePanelEditClient'
+  import ClientTable from './Table'
+  import SidePanelNewClient from './components/SidePanelNewClient'
+  import SidePanelEditClient from './components/SidePanelEditClient'
 
   export default {
     components: {
