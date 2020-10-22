@@ -1,5 +1,7 @@
 const getters = {
   auth: state => state.auth,
+  merchant: (state, getters) => getters['auth/auth/merchant'],
+  merchantId: (state, getters) => getters['auth/auth/merchant_id'],
   user: state => state['profile/profile'].profile,
   program: (state, getters) => getters['company/program/program'],
   programId: (state, getters) => getters['company/program/programId'],
@@ -10,7 +12,7 @@ const getters = {
   // barImage: state => state.app.barImage,
   // sidebar: state => state.app.sidebar,
   // size: state => state.app.size,
-  // device: state => state.app.device,
+  device: state => state['auth/auth'].device,
   // visitedViews: state => state.tagsView.visitedViews,
   // cachedViews: state => state.tagsView.cachedViews,
   // permission_routes: state => state.permission.routes,

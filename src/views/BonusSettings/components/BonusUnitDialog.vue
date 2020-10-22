@@ -1,5 +1,6 @@
 <template>
   <v-navigation-drawer
+    style="z-index: 9999"
     v-model="drawer"
     fixed
     temporary

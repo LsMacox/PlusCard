@@ -21,6 +21,10 @@
         await this.fetchData()
       }
     },
+    destroyed () {
+      // сброс store
+      this.$store.dispatch('company/program/ResetShopState')
+    },
     methods: {
       async fetchData () {
         try {

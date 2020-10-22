@@ -55,16 +55,14 @@
                 <div
                   class="body-s-medium"
                   style="cursor: pointer;"
-                  @click.stop="toRoute(`/accounts/client/${item.account.user.id}`)"
+                  @click.stop="userSidePanel(item.account)"
                   v-if="item && item.account && item.account.user"
                 >
                   {{ item.account.user.name }} {{ item.account.user.lastname }}
                 </div>
                 <div
-                    class="body-s-medium"
-                    style="cursor: pointer;"
-                    @click.stop="toRoute(`/accounts/client/${item.account.user.id}`)"
-                    v-else
+                  class="body-s-medium"
+                  v-else
                 >
                   -
                 </div>
@@ -169,6 +167,14 @@
         </div>
       </v-col>
     </v-row>
+
+    <side-panel-edit-client
+        v-if="sidePanelStatus.active"
+        v-model="sidePanelStatus.active"
+        :mode="sidePanelStatus.mode"
+        :table-data="sidePanelStatus.data"
+    />
+
   </div>
 </template>
 
@@ -176,15 +182,22 @@
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
+  import SidePanelEditClient from '@/views/crm/client/components/SidePanelEditClient'
 
   export default {
     components: {
       SelectPageLimit,
+      SidePanelEditClient,
     },
     mixins: [FormatNumber, Routing],
     data () {
       return {
         loadingList: false,
+        sidePanelStatus: {
+          active: false,
+          mode: 'edit',
+          data: null,
+        },
         tableOptions: {
           page: 1,
           itemsPerPage: 25,
@@ -230,7 +243,7 @@
           },
         ],
         wordPages: ['странице', 'страницах', 'страницах'],
-        wordOperations: ['операция', 'операции', 'операций'],
+        wordOperations: ['продажа', 'продажи', 'продаж'],
       }
     },
     computed: {
@@ -287,6 +300,13 @@
       this.fetchData()
     },
     methods: {
+      userSidePanel (item) {
+        const user = item.user
+        user.id = item.id
+        this.sidePanelStatus.mode = 'edit'
+        this.sidePanelStatus.data = user
+        this.sidePanelStatus.active = true
+      },
       getDate (date) {
         if (date) return this.$moment.utc(date).local().format(this.$config.date.DATE_FORMAT)
         return '-'
@@ -311,7 +331,7 @@
         const cases = [2, 0, 1, 1, 1, 2]
         return words[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
       },
-      fetchData () {
+      async fetchData () {
         this.loadingList = true
         const list = {
           program_id: this.program.id,
@@ -324,7 +344,7 @@
         // console.log('table/list')
         // console.log(list)
         try {
-          this.$store.dispatch('selling/table/table', list)
+          await this.$store.dispatch('selling/table/table', list)
         } finally {
           this.loadingList = false
         }
@@ -334,6 +354,7 @@
 </script>
 
 <style lang="scss" scoped>
+
 .cell-text {
   font-style: normal;
   font-weight: 400;

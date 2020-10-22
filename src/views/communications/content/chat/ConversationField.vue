@@ -17,8 +17,8 @@
     </div>
   </div>
   <v-skeleton-loader
-    v-else
-    :loading="loadingConversations || loadingMessage"
+    v-else-if="(loadingConversations || loadingMessage)"
+    :loading="(loadingConversations || loadingMessage)"
     :style="{height: '100%', width: '100%'}"
     type="header, body, actions"
     :types="{
@@ -26,69 +26,70 @@
       header: 'list-item-avatar-two-line',
       body: 'image@3',
     }"
+  />  
+  <div
+    v-else
+    id="conversationWrap"
+    class="app--conversationWrapper"
   >
-    <div
-      id="conversationWrap"
-      class="app--conversationWrapper"
-    >
-      <conversation-status-bar
-        :conversation-id="currentConversationId"
-        :visible-search.sync="visibleSearch"
-        :search-string.sync="searchString"
-      />
-      <div class="app--conversation--drop--wrap">
-        Перетащите сюда фотографии, чтобы отправить их
-      </div>
-
-      <!-- лента чатов conversation-scroll-y -->
-      <div
-        id="conversationField"
-        ref="conversationField"
-        class="app--conversation--content"
-        @scroll="scrollFeed"
-      >
-        <!-- прелоадер старых сообщений -->
-        <v-skeleton-loader
-          :loading="loadingMessagePage"
-          height="100%"
-          type="list-item-avatar-three-line@5"
-        >
-          <div
-            v-for="(item, i) in messages"
-            :key="i"
-          >
-            <div :ref="`message${item.id}`">
-              <message
-                :item="item"
-                :conversation-id="currentConversationId"
-                :my-message="chatUser.id == item.sender_id && ( profile.id == item.real_sender_id || !realChatName)"
-                :dialog-reply-message.sync="dialogReplyMessage"
-                :quoted-message.sync="quotedMessage"
-                :quoted-message-sender.sync="quotedMessageSender"
-                :send-type.sync="sendType"
-                :overlay-chat.sync="overlayChat"
-              />
-            </div>
-          </div>
-        </v-skeleton-loader>
-      </div>
-
-      <!-- строка typing -->
-      <div style="padding: 2px 3px 2px 4px">
-        <app-typing :conversation-id="currentConversationId" />
-      </div>
-
-      <!-- форма отправки -->
-      <conversation-send-box
-        :conversation-id="currentConversationId"
-        :dialog-reply-message.sync="dialogReplyMessage"
-        :quoted-message.sync="quotedMessage"
-        :quoted-message-sender.sync="quotedMessageSender"
-        :send-type.sync="sendType"
-        @send-message="toBottomFeed()"
-      />
+    <conversation-status-bar
+      :conversation-id="currentConversationId"
+      :visible-search.sync="visibleSearch"
+      :search-string.sync="searchString"
+    />
+    <div class="app--conversation--drop--wrap">
+      Перетащите сюда фотографии, чтобы отправить их
     </div>
-  </v-skeleton-loader>
+
+    <!-- лента чатов conversation-scroll-y -->
+    <div
+      id="conversationField"
+      ref="conversationField"
+      class="app--conversation--content"
+      @scroll="scrollFeed"
+    >
+      <!-- прелоадер старых сообщений -->
+      <v-skeleton-loader
+        :loading="loadingMessagePage"
+        height="100%"
+        type="list-item-avatar-three-line@5"
+      >
+        <div
+          v-for="(item, i) in messages"
+          :key="i"
+        >
+          <div :ref="`message${item.id}`">
+            <message
+              :item="item"
+              :conversation-id="currentConversationId"
+              :my-message="chatUser.id == item.sender_id && ( profile.id == item.real_sender_id || !realChatName)"
+              :dialog-reply-message.sync="dialogReplyMessage"
+              :quoted-message.sync="quotedMessage"
+              :quoted-message-sender.sync="quotedMessageSender"
+              :send-type.sync="sendType"
+              :overlay-chat.sync="overlayChat"
+            />
+          </div>
+        </div>
+      </v-skeleton-loader>
+    </div>
+
+    <!-- строка typing -->
+    <div style="padding: 2px 3px 2px 4px">
+      <app-typing :conversation-id="currentConversationId" />
+    </div>
+
+    <!-- форма отправки -->
+    <conversation-send-box
+      :conversation-id="currentConversationId"
+      :dialog-reply-message.sync="dialogReplyMessage"
+      :quoted-message.sync="quotedMessage"
+      :quoted-message-sender.sync="quotedMessageSender"
+      :send-type.sync="sendType"
+      @send-message="toBottomFeed()"
+    />
+  </div>
+  <!-- </v-skeleton-loader> -->
 </template>
 
 <script>
@@ -1255,7 +1256,7 @@ div.file-listing {
   display: flex;
   flex-direction: column;
   min-height: 310px;
-  height: 100%;
+  height: calc(100vh - 100px);
 
   .app--conversation--content {
     flex-grow: 1;

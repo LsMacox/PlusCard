@@ -19,6 +19,8 @@ import './plugins/base'
 // import './plugins/vee-validate'
 import vuetify from './plugins/vuetify'
 import './plugins/iconify'
+import './plugins/socket'
+import './plugins/moment'
 
 import i18n from './i18n'
 
@@ -34,33 +36,24 @@ import VueProgressBar from 'vue-progressbar'
 import Notifications from 'vue-notification'
 import VueClickOutsideDirective from './directives/click-outside.js'
 
-import moment from 'moment'
 import { v4 as uuidv4 } from 'uuid'
-import VueMoment from 'vue-moment'
 import VueConstants from './plugins/vue-constants'
 import random from 'random'
 import VueUnderScore from 'vue-underscore'
 // import DateRangePicker from 'vue2-daterange-picker'
-import { IsDebugQuery } from './router/router-handler-log'
-
+import { IsDebugQuery } from '@/router/guards/router-handler-log'
+import VueTelInput from 'vue-tel-input'
 import VueClipboard from 'vue-clipboard2'
+import YmapPlugin from 'vue-yandex-maps'
 
-//
-// Vue.use(DateRangePicker)
-
-// Load Locales ('en' comes loaded by default)
-require('moment/locale/ru')
-
-// Choose Locale
-moment.locale('ru')
-
-Vue.use(VueMoment, { moment })
+Vue.use(VueTelInput)
 Vue.use(Notifications)
 Vue.use(VueConstants)
 Vue.use(VueUnderScore)
 Vue.use(AppConfig)
 Vue.use(MessageBox)
 Vue.use(VueClipboard)
+Vue.use(YmapPlugin, AppConfig.config.yandexMap)
 
 const options = {
   // color: '#bffaf3',
@@ -96,7 +89,7 @@ Object.copy = (obj) => {
 Vue.prototype.$IsDebugMode = function () {
   return IsDebugQuery(this.$route)
 }
-Vue.prototype.$sleep = function (ms) {
+Vue.prototype.$sleep = function (ms = 3000) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 

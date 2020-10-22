@@ -1,6 +1,7 @@
 import axios from 'axios'
 // import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
+import {app} from '@/config'
 
 // const NEW_LINE = '&#13'
 const NEW_LINE = '<br/>'
@@ -25,6 +26,9 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   // timeout: 5000, // request timeout
+  headers: {
+    Build: app.build,
+  }
 })
 
 // request interceptor

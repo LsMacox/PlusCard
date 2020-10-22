@@ -6,14 +6,17 @@
       class="container-switch"
     >
       <div class="switch-wrap">
-        <div class="img-title">
+        <div
+          class="img-title"
+          @click="bonusResBlock.expand = !bonusResBlock.expand"
+        >
           <img
             class="img-simple"
             :src="bonusResBlock.curIcon()"
           >
           <div>
-            <h3 class="title-h3">
-              <span @click="bonusResBlock.expand = !bonusResBlock.expand">{{ bonusResBlock.title }} </span>
+            <h3 class="title-h3 bonus-block-title">
+              <span>{{ bonusResBlock.title }} </span>
               <span v-if="$IsDebugMode()">{{ bonusResBlock.hasChanges }}</span>
             </h3>
             <p class="desc-15 color-text-grey">
@@ -46,6 +49,7 @@
 
 <script>
   import BuyBonusSettings from '../BonusSettingBlocks/BuyBonusSettings'
+  import ManualSettings from '../BonusSettingBlocks/ManualSettings'
   import NewAccountBonusSettings from '../BonusSettingBlocks/NewAccountBonusSettings'
   import BirthDayBonusSettings from '../BonusSettingBlocks/BirthDayBonusSettings'
   import { mapGetters } from 'vuex'
@@ -103,6 +107,16 @@
             iconOff: require('@/assets/png/Bag-On.png'),
             component: BuyBonusSettings,
           }),
+          Manual: Object.assign({}, BonusResBlockTemplate, {
+            id: 'Manual',
+            event: null,
+            title: 'Ручное начисление и списание',
+            desc: 'Начисления и списания бонусов через личный кабинет или приложение',
+            activeSwitchShow: true,
+            iconOn: require('@/assets/settings/Wheel-On.png'),
+            iconOff: require('@/assets/settings/Wheel-Off.png'),
+            component: ManualSettings,
+          }),
           AccountFirstEmissionEvent: Object.assign({}, BonusResBlockTemplate, {
             id: 'AccountFirstEmissionEvent',
             event: EVENTS_ENUM.AccountFirstEmissionEvent,
@@ -141,6 +155,7 @@
               this.AccountBuyEvent,
               this.AccountFirstEmissionEvent,
               this.AccountClientBirthDayEvent,
+              this.Manual,
             ]
           },
         },
@@ -233,7 +248,9 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped >
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+
   .switch-control {
     margin-top: 20px;
   }
@@ -257,7 +274,15 @@
   .img-title {
     display: flex;
     align-items: center;
+    cursor: pointer;
+    
+    &:hover {
+      .bonus-block-title{
+         color: $primary-base;
+      }
+    }
   }
+
   .img-simple {
     margin-right: 22px;
     width: 47px;

@@ -1,5 +1,46 @@
 <template>
-  <div class="app__date-select">
+  <v-menu
+    offset-y
+  >
+    <template v-slot:activator="{ on, attrs }">
+      <div
+        class="app__date-select-btn"
+        v-on="on"
+      >
+        <div class="app__date-select-btn-text">
+          {{ getItemLabel(model) }}
+        </div>
+        <div>
+          <v-icon
+            class="app__date-select-btn-icon"
+          >
+            {{ attrs['aria-expanded'] === 'true'? '$iconify_si-glyph-triangle-up' : ' $iconify_si-glyph-triangle-down' }}
+          </v-icon>
+        </div>
+      </div>
+    </template>
+    <v-list dense>
+      <v-list-item
+        v-for="(item, index) in itemsSelect"
+        :key="index"
+        @click="selectItem(item)"
+      >
+        <v-list-item-title
+          :class=" {
+            'body-s-medium' : true,
+            'neutral-600--text':true,
+          }"
+        >
+          {{ item[itemLabel] }}
+        </v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-menu>
+
+  <!-- <div
+    v-else
+    class="app__date-select"
+  >
     <div
       class="app__date-select-btn"
       @click.stop="show = !show"
@@ -48,7 +89,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 </template>
 
 <script>
@@ -65,6 +106,11 @@
         show: false,
       }
     },
+    computed: {
+      itemsSelect () {
+        return this.items.filter(x => x[this.itemValue] !== this.model)
+      },
+    },
     watch: {
       model (v) {
         console.log('changerole')
@@ -72,11 +118,11 @@
       },
     },
     created () {
-      document.addEventListener('click', () => {
-        if (this.show) {
-          this.show = !this.show
-        }
-      })
+      // document.addEventListener('click', () => {
+      //   if (this.show) {
+      //     this.show = !this.show
+      //   }
+      // })
     },
     methods: {
       getItemLabel (model) {
@@ -108,8 +154,8 @@
 </script>
 
 <style lang="scss" scoped>
-.app__date-select {
-  position: relative;
+// .app__date-select {
+//   position: relative;
 
   .app__date-select-btn {
     display: flex;
@@ -181,5 +227,5 @@
       }
     }
   }
-}
+// }
 </style>

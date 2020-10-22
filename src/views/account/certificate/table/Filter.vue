@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-col>
+    <v-col style="margin-top: 24px; margin-left: -10px!important">
       <div class="app__filter">
         <div
           class="app__filter-block-input"
@@ -168,6 +168,7 @@
                 </div>
                 <div
                   v-for="(item, i) in programCertificates"
+                  v-if="totalCount > 0"
                   :key="i"
                   :class="getFilterClass('certificates', item)"
                   @click="setFilter('certificates', item)"
@@ -183,6 +184,7 @@
                 </div>
                 <div
                   v-for="(item, i) in certPaymentStatusEnum"
+                  v-if="totalCount > 0"
                   :key="i"
                   :class="getFilterClass('certPaymentStatus', item)"
                   @click="setFilter('certPaymentStatus', item)"
@@ -205,6 +207,7 @@
                 </div>
                 <div
                   v-for="(item, i) in certOrderStatusEnum"
+                  v-if="totalCount > 0"
                   :key="i"
                   :class="getFilterClass('certOrderStatus', item)"
                   @click="setFilter('certOrderStatus', item)"
@@ -225,6 +228,7 @@
                 </div>
                 <div
                   v-for="(item, i) in certMerchantOrderStatusEnum"
+                  v-if="totalCount > 0"
                   :key="i"
                   :class="getFilterClass('certMerchantOrderStatus', item)"
                   @click="setFilter('certMerchantOrderStatus', item)"
@@ -243,7 +247,7 @@
                 <div class="app__filter-content-header">
                   Выпущен
                 </div>
-                <div>
+                <div v-if="totalCount > 0">
                   <date-range-picker
                     ref="picker"
                     v-model="filter.issueDate"
@@ -443,6 +447,9 @@
           return false
         }
         return true
+      },
+      totalCount () {
+        return this.$store.getters['account/certificate/certificate/totalCount']
       },
     },
     watch: {
@@ -661,7 +668,7 @@
     box-sizing: border-box;
     box-shadow: 0px 12px 24px rgba(88, 93, 106, 0.1);
     border-radius: 10px;
-    z-index: 1000;
+    z-index: 100;
 
     .app__filter-content {
       padding: 8px 20px;

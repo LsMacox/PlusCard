@@ -176,7 +176,7 @@
         required: true,
       },
     },
-    mixins: [asMixin('isFilled', isFilled), BonusResBlockMixin],
+    mixins: [asMixin({isFilled}), BonusResBlockMixin],
     data () {
       return {
 

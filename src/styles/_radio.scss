@@ -1,0 +1,41 @@
+.v-application .v-radio .v-label {
+  color: #9191A1;
+}
+.radio-custom .v-icon.v-icon{
+  color: #B5B5C4;
+}
+
+.v-application .v-radio.radio-grey .v-label {
+  color: #9191A1;
+}
+.radio-custom.radio-grey .v-icon.v-icon{
+  color: #2A2A34;
+}
+
+.v-application .v-radio.v-item--active .v-label {
+  color: #2A2A34;
+}
+.v-application .radio-custom .primary--text {
+  color: #4776E6!important;
+  caret-color: #4776E6!important;
+}
+.radio-custom .v-input--selection-controls .v-input__slot > .v-label,
+.v-input--selection-controls .v-radio > .v-label {
+  font-size: 15px;
+}
+
+.radio-custom-mb.v-input--selection-controls{
+  margin-top: 0;
+  padding-top: 0;
+}
+.v-application .v-input--radio-group--column .v-radio:not(:last-child):not(:only-child) {
+  margin-bottom: 12px;
+}
+
+.radio-column.v-input--selection-controls {
+  margin-top: 0;
+  padding-top: 0;
+}
+.v-application .radio-column.v-input--radio-group--column .v-radio:not(:last-child):not(:only-child){
+  margin-bottom: 8px;
+}

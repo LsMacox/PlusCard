@@ -1,6 +1,26 @@
 import ApiService from '@/api/api-client'
 import VueSession from '@/utils/session'
 
+const defaultShop = {
+  isNew: true,
+  name: '',
+  city: '',
+  address: '',
+  phone: '',
+  coords: [],
+  lat: '',
+  lng: '',
+  workTimes: [
+    {
+      startTime: '',
+      endTime: '',
+      days: [],
+      breakStart: '',
+      breakEnd: '',
+    },
+  ],
+}
+
 const getDefaultState = () => {
   return {
     programs: [], // компании продавца
@@ -13,38 +33,35 @@ const getDefaultState = () => {
         instagram: null,
       },
     }, // полная модель редактируемой программы
+    // shops: [], // торговые точки
+    // // -2 все окна закрыты
+    // // -1 открыто окно новой торговой точки
+    // shopIndex: -2, // индекс открытого окна торговой точки
+    // editedShop: defaultShop, // редактируемая торговая точка
+    // mapCenter: [53.757592, 87.136173],
+    // fullAddress: false,
+    // addressErrors: [],
+  }
+}
+
+const getDefaultShopState = () => {
+  return {
     shops: [], // торговые точки
     // -2 все окна закрыты
     // -1 открыто окно новой торговой точки
     shopIndex: -2, // индекс открытого окна торговой точки
-    editedShop: { // редактируемая торговая точка
-      name: '',
-      city: '',
-      address: '',
-      phone: '',
-      coords: [],
-      lat: '',
-      lng: '',
-      workTimes: [
-        {
-          startTime: '',
-          endTime: '',
-          days: [],
-          breakStart: '',
-          breakEnd: '',
-        },
-      ],
-    },
+    editedShop: defaultShop, // редактируемая торговая точка
     mapCenter: [53.757592, 87.136173],
     fullAddress: false,
     addressErrors: [],
   }
 }
 
-const state = getDefaultState()
+const state = Object.assign({}, getDefaultState(), getDefaultShopState() ) 
 
 const mutations = {
   RESET_STATE: (state) => Object.assign(state, getDefaultState()),
+  // RESET_SHOP_STATE: (state) => Object.assign(state, getDefaultShopState()),
   SET_PROGRAMS: (state, payload) => state.programs = payload,
   SET_SHOP_INDEX: (state, payload) => state.shopIndex = payload,
   SET_EDITED_SHOP: (state, payload) => state.editedShop = payload,
@@ -81,6 +98,10 @@ const mutations = {
     }
     state.programModel = payload
   },
+  ADD_IN_PROGRAMS (state, payload) {
+    const items = state.programs
+    items.push(payload)
+  },
   UPDATE_IN_PROGRAMS (state, payload) {
     const items = state.programs
     items.forEach((item, index) => {
@@ -114,16 +135,36 @@ const actions = {
     commit('RESET_STATE')
   },
 
+  ResetShopState ({ state }) {
+    state = Object.assign(state, getDefaultShopState())
+  },
+
   async list ({ commit }) {
     // eslint-disable-next-line no-useless-catch
     try {
       const result = await ApiService.get('/api-cabinet/company/list')
-      // console.log(result)
+      console.log('/api-cabinet/company/list')
+      console.log(result)
       commit('SET_PROGRAMS', result)
       if (result && result.length) {
-        if (!VueSession.get('program')) {
+        const p = VueSession.get('program')
+        // модели программы нет в localStorage
+        if (!p) {
           commit('SET_PROGRAM', result[0])
-          VueSession.set('program', result[0])
+          return VueSession.set('program', result[0]) // выход
+        }
+        const r = result.find(item => p && item.id === p.id)
+        // сравнение моделей программ в ответе и localStorage
+        if (JSON.stringify(p) !== JSON.stringify(r)) {
+          // программа из localStorage есть в ответе
+          if (p && r && p.id === r.id) {
+            commit('SET_PROGRAM', r)
+            VueSession.set('program', r)
+            // программы из localStorage нет в ответе = новый логин
+          } else {
+            commit('SET_PROGRAM', result[0])
+            VueSession.set('program', result[0])
+          }
         }
       }
     } catch (error) {
@@ -140,6 +181,38 @@ const actions = {
       commit('SET_PROGRAM_MODEL', result)
     } catch (error) {
       throw error
+    }
+  },
+
+  async setModeration ({ commit }, item) {
+    const result = await ApiService.put('/api-cabinet/company/moderation', item)
+    // console.log('brand/company/setModeration')
+    // console.log(success)
+    commit('SET_PROGRAM', result)
+    this._vm.$notify({
+      type: 'success',
+      title: 'Настройка компании',
+      text: 'Компания отправлена на модерацию',
+    })
+  },
+
+  async setActive ({ commit }, item) {
+    const result = await ApiService.put('/api-cabinet/company/active', item)
+    // console.log('brand/company/active')
+    // console.log(success)
+    commit('SET_PROGRAM', result)
+    if (result.active) {
+      this._vm.$notify({
+        type: 'success',
+        title: 'Настройка компании',
+        text: 'Компания опубликована',
+      })
+    } else {
+      this._vm.$notify({
+        type: 'success',
+        title: 'Настройка компании',
+        text: 'Компания снята с публикации',
+      })
     }
   },
 
@@ -264,6 +337,22 @@ const actions = {
     }
   },
 
+  async CreateProgram ({ commit }, program) {
+    const result = await ApiService.post(
+      '/api-cabinet/company/create',
+      program,
+    )
+    commit('ADD_IN_PROGRAMS', result)
+    commit('SET_PROGRAM', result)
+    return result
+  },
+
+  GenNewShop () {
+    const newShop = Object.copy(defaultShop)
+    newShop.id = this._vm.$uuid()
+    return newShop
+  },
+
 }
 
 const getters = {
@@ -280,11 +369,7 @@ const getters = {
   },
   shops: state => state.shops,
   shopIndex: state => state.shopIndex,
-  editedShop: state => state.editedShop,
-  defaultShop: () => {
-    const defState = getDefaultState()
-    return JSON.parse(JSON.stringify(defState.editedShop))
-  },
+  editedShop: state => state.editedShop,  
   mapCenter: state => state.mapCenter,
   fullAddress: state => state.fullAddress,
   addressErrors: state => state.addressErrors,

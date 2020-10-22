@@ -65,6 +65,9 @@
       </div>
     </div>
     <div class="content-wrapper">
+      <!--
+        ИНФОРМАЦИЯ О КОМПАНИИ
+      -->
       <div
         v-if="currentStep === 0 || currentStep === 1"
         class="content-firstStep"
@@ -97,8 +100,11 @@
                   placeholder="Название комании"
                   outlined
                   counter="20"
-                  :class="{'v-input--counter': true,'success-text': program.companyName.length > 0 && program.companyName.length < 21}"
-                  :rules="[rules.required, rules.counter]"
+                  :class="{'v-input--counter': true,'success-text': program.companyName.length > 0 && program.companyName.length <= 20}"
+                  :rules="[
+                    v => !!v || 'Название компании обязательно',
+                    v => String(v).length <= 20 || 'Название не должно быть более 20 символов',
+                  ]"
                   maxlength="20"
                   @input="program.companyName.length ? currentStep = 1 : currentStep = 0"
                 />
@@ -123,7 +129,7 @@
               <div class="right-block">
                 <div
                   class="card-wrapper"
-                  :style="'background: linear-gradient(140deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%); border: 1px solid ' + getBorderColor()"
+                  :style="'background: linear-gradient(108deg,'+ program.bgcolor[0] + ' 0% ,' + program.bgcolor[1] + ' 99.35%); border: 1px solid ' + getBorderColor()"
                 >
                   <div class="card-bg">
                     <v-img
@@ -252,7 +258,7 @@
               <v-btn
                 color="primary"
                 style="width: 123px"
-                :disabled="!program.companyName || !program.logo"
+                :disabled="!validInfo"
                 @click="updateCompany()"
               >
                 Далее
@@ -268,6 +274,9 @@
         </v-container>
       </div>
 
+      <!--
+        МАГАЗИНЫ
+      -->
       <div
         v-if="currentStep === 2"
         class="content-secondStep"
@@ -296,9 +305,16 @@
                     imageHref: require('@/assets/svg/Bottom-tail.svg'),
                     imageSize: [150, 55],
                     imageOffset: [-75, -50],
-                    content: item.name,
+                    content: getMarkerName(item.name) ,
                     contentOffset: [0, 0],
                     contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+                  }"
+                  :balloon="{
+                    header: item.name,
+                    body:
+                      `<div>Адрес: ${item.address}</div>
+                       <div>Телефон: ${item.phone}</div>`,
+                    footer: ''
                   }"
                 />
                 <ymap-marker
@@ -310,11 +326,29 @@
                     imageHref: require('@/assets/svg/Bottom-tail.svg'),
                     imageSize: [150, 55],
                     imageOffset: [-75, -50],
-                    content: newShop.name,
+                    content: getMarkerName(newShop.name) ,
                     contentOffset: [0, 0],
                     contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
                   }"
-                />
+                  :balloon="{
+                    header: newShop.name,
+                    body:
+                      `<div>Адрес: ${newShop.address}</div>
+                       <div>Телефон: ${newShop.phone}</div>`,
+                    footer: ''
+                  }"
+                >
+                  <!-- :balloon="{
+                    header: newShop.name,
+                    body: newShop.address,
+                    footer: ''
+                    }" -->
+                  <!-- <v-row slot="balloon" >
+
+                    <v-row><v-col>Наименование: {{ newShop.name }}</v-col></v-row>
+                    <v-row><v-col>Адрес: {{ newShop.address }}</v-col></v-row>
+                  </v-row> -->
+                </ymap-marker>
               </yandex-map>
             </div>
             <div class="shop-block__right">
@@ -460,6 +494,12 @@
                       v-model="newShop.name"
                       class="shop-card__name_input"
                       placeholder="Введите название точки"
+                      maxlength="250"
+                      outlined
+                      :rules="[
+                        v => !!v || 'Название точки продаж обязательно',
+                        v => String(v).length <= 250 || 'Название должно быть не более 250 символов',
+                      ]"
                     />
                   </div>
                   <div class="shop-card__city">
@@ -469,6 +509,7 @@
                       :search-input.sync="searchCity"
                       hide-details
                       hide-no-data
+                      outlined
                       placeholder="Выберите город"
                       class="shop-card__city_select"
                       style="width: 380px;"
@@ -517,6 +558,11 @@
                     <v-text-field
                       v-if="markerGenerated"
                       v-model="newShop.address"
+                      maxlength="250"
+                      :rules="[
+                        v => !!v || 'Адрес точки продаж обязателен',
+                        v => String(v).length <= 250 || 'Адрес должен быть не более 250 символов',
+                      ]"
                     >
                       <template slot="prepend-inner">
                         <div>
@@ -531,6 +577,7 @@
                       :search-input.sync="searchString"
                       hide-details
                       hide-no-data
+                      outlined
                       placeholder="Введите адрес"
                       class="shop-card__city_select"
                       style="width: 380px"
@@ -538,6 +585,10 @@
                       item-value="pos"
                       aria-autocomplete="none"
                       autocomplete="new-street-address"
+                      :rules="[
+                        v => !!v || 'Адрес точки продаж обязателен',
+                        v => String(v).length <= 250 || 'Адрес должен быть не более 100 символов',
+                      ]"
                       @change="generate(newShop.address)"
                     >
                       <template slot="prepend-inner">
@@ -579,6 +630,8 @@
                     <v-text-field
                       v-model="newShop.phone"
                       placeholder="Введите телефон"
+                      :rules="[v => String(v).length <= 100 || 'Номер телефона должен быть не более 100 символов']"
+                      maxlength="100"
                       outlined
                       style="width: 380px"
                     >
@@ -756,6 +809,7 @@ line-height: 17px;"
                         color="secondary"
                         small
                         style="width: 265px; margin-right: 0"
+                        :disabled="!validShopForm"
                         @click="saveShop()"
                       >
                         Сохранить
@@ -781,6 +835,7 @@ line-height: 17px;"
                   <v-btn
                     color="primary"
                     style="width: 123px"
+                    :disabled="!validShop"
                     @click="currentStep = 3"
                   >
                     Далее
@@ -798,6 +853,7 @@ line-height: 17px;"
         </div>
       </div>
 
+      <!-- СОЦ. ПРОФИЛЬ -->
       <div
         v-if="currentStep === 3"
         class="content-thirdStep"
@@ -831,7 +887,9 @@ line-height: 17px;"
                     <v-text-field
                       v-model="program.phone"
                       placeholder="Номер горячей линии"
+                      maxlength="255"
                       outlined
+                      :rules="[v => String(v).length <= 255 || 'Номер телефона должен быть не более 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -845,7 +903,12 @@ line-height: 17px;"
                     <v-text-field
                       v-model="program.website"
                       placeholder="Адрес сайта"
+                      maxlength="255"
                       outlined
+                      :rules="[
+                        v => validURL(v, {protocol: false}) || 'Не верная ссылка',
+                        v => String(v).length <= 255 || 'Адрес сайта должен быть не более 255 символов'
+                      ]"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -878,6 +941,7 @@ line-height: 17px;"
                       v-model="program.social.vk"
                       placeholder="/Группа Вконтакте"
                       outlined
+                      :rules="[validURLRule, v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -890,6 +954,7 @@ line-height: 17px;"
                       v-model="program.social.youtube"
                       placeholder="/Канал на Youtube"
                       outlined
+                      :rules="[validURLRule, v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -899,9 +964,10 @@ line-height: 17px;"
                       </template>
                     </v-text-field>
                     <v-text-field
-                      v-model="program.social.fb"
+                      v-model="program.social.facebook"
                       placeholder="/Группа в Facebook"
                       outlined
+                      :rules="[validURLRule, v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -918,6 +984,7 @@ line-height: 17px;"
                       v-model="program.social.instagram"
                       placeholder="/Профиль в Instagram"
                       outlined
+                      :rules="[validURLRule, v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
                       style="width: 300px;"
                     >
                       <template slot="prepend-inner">
@@ -932,6 +999,7 @@ line-height: 17px;"
                   <v-btn
                     color="primary"
                     style="width: 123px"
+                    :loading="loading"
                     @click="createProgram()"
                   >
                     Завершить
@@ -998,14 +1066,14 @@ line-height: 17px;"
                 align="center"
                 justify="center"
               >
-                <div
-                  style="margin-top:2.4rem; text-align:center; color: #70707D"
-                  class="body-m-regular"
+                <v-col
+                  :cols="12"
+                  style="margin-top: 24px;"
                 >
                   <v-btn
                     color="secondary"
-                    style="width: 335px; margin-bottom: 16px"
-                    @click="$router.push('/master')"
+                    style="display: block; width: 335px; margin: 0 auto;"
+                    @click="$router.push('/account/certificates')"
                   >
                     <span
                       class="iconify"
@@ -1014,10 +1082,14 @@ line-height: 17px;"
                     />
                     Выпустить подарочный сертификат
                   </v-btn>
+                </v-col>
+                <v-col
+                  :cols="12"
+                >
                   <v-btn
                     color="primary"
-                    style="width: 335px"
-                    @click="$router.push('/master')"
+                    style="display: block; width: 335px; margin: -4px auto;"
+                    @click="$router.push('/loyalty')"
                   >
                     <span
                       class="iconify"
@@ -1026,7 +1098,7 @@ line-height: 17px;"
                     />
                     Создать программу лояльности
                   </v-btn>
-                </div>
+                </v-col>
               </v-row>
             </v-col>
           </v-row>
@@ -1060,6 +1132,7 @@ line-height: 17px;"
   import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import Color from 'color'
   import { mask } from 'vue-the-mask'
+  import { asMixin, validURL } from '@/utils/validate'
 
   export default {
 
@@ -1069,9 +1142,11 @@ line-height: 17px;"
       yandexMap,
       ymapMarker,
     },
+    mixins: [asMixin({ validURL })],
     directives: { mask },
     data () {
       return {
+        loading: false,
         markerGenerated: false,
         newShopEdit: false,
         resultAdr: '',
@@ -1197,7 +1272,26 @@ line-height: 17px;"
       sorted_work_array () {
         return this.sortById(this.newShop.workTimes)
       },
-
+      // валидация форм
+      validInfo () {
+        if (this.program.companyName && this.program.logo) return true
+        return false
+      },
+      validShop () {
+        let check = true
+        this.shops.forEach(item => {
+          if (!item.name) check = false
+          if (!item.address) check = false
+        })
+        return check
+      },
+      validShopForm () {
+        let check = true
+        if (!this.newShop.name || !this.newShop.address) {
+          check = false
+        }
+        return check
+      },
     },
     watch: {
       'worktime.endTime' (v) {
@@ -1239,9 +1333,9 @@ line-height: 17px;"
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(vk.com)/gm
         this.program.social.vk = v.replace(regex, '')
       },
-      'program.social.fb' (v) {
+      'program.social.facebook' (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|ru-ru.|www.ru-ru.|)(facebook.com|fb.com)/gm
-        this.program.social.fb = v.replace(regex, '')
+        this.program.social.facebook = v.replace(regex, '')
       },
       'program.social.youtube' (v) {
         const regex = /^(http:\/\/|https:\/\/|)(www.|)(youtube.com)/gm
@@ -1272,35 +1366,45 @@ line-height: 17px;"
       this.changeColor(this.program.bgcolor[0])
     },
     methods: {
+      validURLRule (v) {
+        if (!v) return true
+        const url = `https://fake.ru${v}`
+        console.log('validURLRule', url)
+        return validURL(url) || 'Не верная ссылка'
+      },
+      getMarkerName (str) {
+        if (!str) return ''
+        const maxLen = 16
+        const strTrim = str.trim()
+        return strTrim.length > maxLen ? strTrim.substring(0, maxLen) + '...' : strTrim
+      },
       checkLength (label, index) {
-        if (label === 'startTime') {
-          if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 2) {
-            this.newShop.workTimes[index].startTime += ':00'
-          } else if (this.newShop.workTimes[index].startTime && this.newShop.workTimes[index].startTime.length === 1) {
-            this.newShop.workTimes[index].startTime = '0' + this.newShop.workTimes[index].startTime + ':00'
+        let timeStr = this.newShop.workTimes[index][label]
+        if (timeStr) {
+          timeStr = String(timeStr)
+          if (timeStr.length === 1) {
+            timeStr = `0${timeStr}:00`
+          }
+          if (timeStr.length === 2) {
+            timeStr = `${timeStr}:00`
+          }
+          if (timeStr.length === 4) {
+            const time = timeStr.split(':')
+            if (time.length === 2) {
+              if (time[1].length === 1) time[1] = `0${time[1]}`
+              timeStr = `${time[0]}:${time[1]}`
+            }
+          }
+          if (timeStr.length === 5) {
+            const time = timeStr.split(':')
+            if (time.length === 2) {
+              if (Number(time[0]) > 23) time[0] = '23'
+              if (Number(time[1]) > 59) time[1] = '59'
+              timeStr = `${time[0]}:${time[1]}`
+            }
           }
         }
-        if (label === 'endTime') {
-          if (this.newShop.workTimes[index].endTime && this.newShop.workTimes[index].endTime.length === 2) {
-            this.newShop.workTimes[index].endTime += ':00'
-          } else if (this.newShop.workTimes[index].endTime && this.newShop.workTimes[index].endTime.length === 1) {
-            this.newShop.workTimes[index].endTime = '0' + this.newShop.workTimes[index].endTime + ':00'
-          }
-        }
-        if (label === 'breakStart') {
-          if (this.newShop.workTimes[index].breakStart && this.newShop.workTimes[index].breakStart.length === 2) {
-            this.newShop.workTimes[index].breakStart += ':00'
-          } else if (this.newShop.workTimes[index].breakStart && this.newShop.workTimes[index].breakStart.length === 1) {
-            this.newShop.workTimes[index].breakStart = '0' + this.newShop.workTimes[index].breakStart + ':00'
-          }
-        }
-        if (label === 'breakEnd') {
-          if (this.newShop.workTimes[index].breakEnd && this.newShop.workTimes[index].breakEnd.length === 2) {
-            this.newShop.workTimes[index].breakEnd += ':00'
-          } else if (this.newShop.workTimes[index].breakEnd && this.newShop.workTimes[index].breakEnd.length === 1) {
-            this.newShop.workTimes[index].breakEnd = '0' + this.newShop.workTimes[index].breakEnd + ':00'
-          }
-        }
+        this.newShop.workTimes[index][label] = timeStr
       },
       selectCity () {
         const shop = this.cities.filter(item => item.id === this.newShop.city)[0]
@@ -1395,14 +1499,23 @@ line-height: 17px;"
         this.cancelShop()
       },
       async createProgram () {
-        const program = Object.assign({}, this.program)
-        program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
-        program.shops = this.shops
-        program.merchant_id = this.merchant_id
-        await ApiService.post(
-          '/api-cabinet/company/create',
-          program,
-        )
+        try {
+          this.loading = true
+          const program = Object.assign({}, this.program)
+          program.logo = this.fileLogo.data ? this.fileLogo : this.program.logo
+          program.shops = this.shops
+          program.merchant_id = this.merchant_id
+          const result = await ApiService.post(
+            '/api-cabinet/company/create',
+            program,
+          )
+          console.log(result)
+          this.$store.commit('ADD_IN_PROGRAMS', result)
+          this.$store.commit('SET_PROGRAM', result)
+          this.currentStep = 4
+        } finally {
+          this.loading = false
+        }
       },
       getUnitColor () {
         if (this.program.color === '#FFFFFF') { return 'rgba(255, 255, 255, 0.5)' } else { return 'rgba(0, 0, 0, 0.5)' }
@@ -1556,15 +1669,19 @@ line-height: 17px;"
           .toString(16)
       },
       changeColor (str) {
+        console.log('changeColor', str)
         const color = Color(str)
+        console.log('changeColor', color.rgb().array())
         let alpha, mask
         if (color.isLight()) {
+          console.log('isLight')
           alpha = 0.04
           mask = 0
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
           this.program.color = '#2A2A34'
         // //console.log('color', this.program.bgcolor[1])
         } else {
+          console.log('!isLight')
           alpha = 0.1
           mask = 255
           this.program.bgcolor[1] = this.ColorToStr(color.rgb().array(), mask, alpha)
@@ -1575,7 +1692,7 @@ line-height: 17px;"
       changeStep (step) {
         this.currentStep = step
       },
-      async updateCompany () {
+      updateCompany () {
         // console.log('merchant_id', this.merchant_id)
         // await this.$store.dispatch("brand/company/updateDesign", program)
         this.changeStep(2)
@@ -1658,7 +1775,6 @@ line-height: 17px;"
 <style lang="sass" scoped>
 @import '~@/styles/vuetify-preset-plus/light_theme/_variables.sass'
 #master
-  height: 100%
 
   .app-bar
     min-height: 100px
@@ -1694,10 +1810,9 @@ line-height: 17px;"
       background-color: #F2F2F7
 
   .content-wrapper
-    height: calc(100% - 100px)
+    margin: 67px -34px 0 -34px
 
     .content-firstStep, .content-secondStep, .content-thirdStep
-      height: 100%
 
       .row
         height: 100%
@@ -1712,7 +1827,7 @@ line-height: 17px;"
           height: calc(100vh - 100px)
           flex-direction: column
           justify-content: flex-start
-          overflow-y: scroll
+          // overflow-y: scroll
 
         .content-block
           display: flex
@@ -1880,32 +1995,39 @@ line-height: 17px;"
 .shop-block
   display: flex
   flex-direction: row
-  height: calc(100vh - 100px)
   @media(max-width: 992px)
     flex-direction: column
-    overflow-y: scroll
+    // overflow-y: scroll
 
   .shop-block__left
+    width: 50%
+    // top: 0px
     @media(max-width: 992px)
+      position: relative
       display: flex
       justify-content: center
 
     .map
+      position: fixed
+      width: 40%
       height: calc(100vh - 100px)
-      width: 523px
+      //width: 523px
       margin: 0
       padding: 0
       @media (max-width: 776px)
         height: calc(30vh)
 
   .shop-block__right
+    width: 50%
     display: flex
     flex-grow: 1
     justify-content: center
-    padding: 68px 0
-    overflow-y: scroll
+    padding: 68px 0 0 0
+    // overflow-y: scroll
     @media(max-width: 992px)
-      overflow-y: visible
+      // overflow-y: visible
+      // margin-top: 827px
+      margin-left: 0
 
     .content-block
       &__title

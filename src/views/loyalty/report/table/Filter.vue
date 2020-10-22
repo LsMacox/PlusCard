@@ -391,13 +391,16 @@
       },
       async querySearchClient (search) {
         if (search.length >= 3) {
-          this.loading = true
-          const item = {
-            program_id: this.program.id,
-            search,
+          try {
+            this.loading = true
+            const item = {
+              program_id: this.program.id,
+              search,
+            }
+            await this.$store.dispatch('widget/filter/foundClients', item)
+          } finally {
+            this.loading = false
           }
-          await this.$store.dispatch('widget/filter/foundClients', item)
-          this.loading = false
         }
       },
       clearFilterQuery () {
@@ -433,7 +436,7 @@
     box-sizing: border-box;
     box-shadow: 0px 12px 24px rgba(88, 93, 106, 0.1);
     border-radius: 10px;
-    z-index: 1000;
+    z-index: 100;
 
     .app__filter-content {
       padding: 8px 20px;

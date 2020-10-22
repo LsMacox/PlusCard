@@ -207,7 +207,7 @@
     components: {
       BonusUnitSelect: () => import('../../BonusUnitSelect'),
     },
-    mixins: [asMixin('isFilled', isFilled), BonusResBlockMixin],
+    mixins: [asMixin({ isFilled }), BonusResBlockMixin],
     props: {
 
     },

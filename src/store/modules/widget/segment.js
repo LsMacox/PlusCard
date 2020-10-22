@@ -8,9 +8,6 @@ export default {
     },
     mutations: {
         segmentsTransform (state, payload) {
-            console.log('P A Y L O A D')
-            console.log(payload)
-            console.log('P A Y L O A D')
             state.segments = []
             payload.forEach(item => {
                 state.segments.push(
@@ -33,8 +30,6 @@ export default {
     actions: {
         async segments ({ commit }, payload) {
             commit('loading', true)
-            console.log('table data.......')
-
             const result = await ApiService.get('/api-cabinet/program/client/segment/list', {
                 params: payload,
             })

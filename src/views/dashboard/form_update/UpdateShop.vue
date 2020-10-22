@@ -14,7 +14,6 @@
         <div style="position: relative; height: 100%; margin: -10px -35px;">
           <yandex-map
             id="map1"
-            :settings="settings"
             :zoom="zoom"
             class="map"
             :coords="coords"
@@ -32,9 +31,16 @@
                 imageHref: require('@/assets/svg/Bottom-tail.svg'),
                 imageSize: [150, 55],
                 imageOffset: [-75, -50],
-                content: item.name,
+                content: getMarkerName(item.name) ,
                 contentOffset: [0, 0],
                 contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+              }"
+              :balloon="{
+                header: item.name,
+                body:
+                  `<div>Адрес: ${item.address}</div>
+                       <div>Телефон: ${item.phone}</div>`,
+                footer: ''
               }"
             />
             <ymap-marker
@@ -46,9 +52,16 @@
                 imageHref: require('@/assets/svg/Bottom-tail.svg'),
                 imageSize: [150, 55],
                 imageOffset: [-75, -50],
-                content: editedShop.name,
+                content: getMarkerName(editedShop.name) ,
                 contentOffset: [0, 0],
                 contentLayout: '<div class=classMarker>$[properties.iconContent]</div>',
+              }"
+              :balloon="{
+                header: editedShop.name,
+                body:
+                  `<div>Адрес: ${editedShop.address}</div>
+                       <div>Телефон: ${editedShop.phone}</div>`,
+                footer: ''
               }"
             />
           </yandex-map>
@@ -136,15 +149,14 @@
   import ShopItem from '@/views/dashboard/form_component/ShopItem'
   import ShopForm from '@/views/dashboard/form_component/ShopForm'
   import ApiService from '@/api/api-client'
-  import { yandexMap, ymapMarker } from 'vue-yandex-maps'
+  // import { yandexMap, ymapMarker } from 'vue-yandex-maps'
   import { mask } from 'vue-the-mask'
   import TopMenu from '@/components/base/TopMenu'
   import Routing from '@/mixins/routing'
 
   export default {
     components: {
-      yandexMap,
-      ymapMarker,
+      // yandexMap, ymapMarker,
       TopMenu,
       ShopItem,
       ShopForm,
@@ -153,12 +165,12 @@
     mixins: [Routing],
     data () {
       return {
-        settings: {
-          apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
-          lang: 'ru_RU',
-          coordorder: 'latlong',
-          version: '2.1',
-        },
+        // settings: {
+        //   apiKey: 'e994d83e-a10e-47e4-bb45-94038d17ba64',
+        //   lang: 'ru_RU',
+        //   coordorder: 'latlong',
+        //   version: '2.1',
+        // },
         zoom: 16,
         //
         loading: false,
@@ -308,8 +320,14 @@
     created () {
       // центрируемся на первой торговой точке
       if (this.shops.length) this.coords = [this.shops[0].lat, this.shops[0].lng]
-    },
+    },    
     methods: {
+      getMarkerName (str) {
+        if (!str) return ''
+        const maxLen = 16
+        const strTrim = str.trim()
+        return strTrim.length > maxLen ? strTrim.substring(0, maxLen) + '...' : strTrim
+      },
       async setMarker (e) {
         // не делаем запрос если
         // не открыта карточка торговой точки
@@ -450,9 +468,11 @@
         return wtNew
       },
       addShop () {
-        const shop = JSON.parse(JSON.stringify(this.$store.getters['company/program/defaultShop']))
-        this.editedShop = shop
-        this.shopIndex = -1
+        this.$store.dispatch('company/program/GenNewShop').then(newShop => {
+          console.log('GenNewShop', newShop)
+          this.editedShop = newShop
+          this.shopIndex = -1
+        })
       },
     },
   }

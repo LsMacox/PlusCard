@@ -1,0 +1,19 @@
+
+@import "@/styles/_typography.sass";
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+
+.v-data-table {  
+  .v-data-table__wrapper {
+    table {
+      tbody {
+        tr {
+          td {
+            //default font + color
+            @include body-s-medium;
+            color: $neutral-900
+          }
+        }
+      }
+    }  
+  }    
+}

@@ -216,11 +216,17 @@
       bonusResources () {
         return this.$store.getters['company/bonus_resources/bonusResources']
       },
-      availableOperations () { // доступные ручные бонусные ресурсы
+      // доступные ручные бонусные ресурсы
+      availableOperations () {
         let type = null
         if (this.operationMode === 'FROM') type = 'TYPE_TARGET'
         if (this.operationMode === 'TO') type = 'TYPE_SOURCE'
-        return this.bonusResources.filter(item => (item.bonus_score.units_id === this.editedItem.unit_id && item.resource_type_enum === type && !item.rules))
+        return this.bonusResources.filter(item => {
+          return item.bonus_score.units_id === this.editedItem.unit_id &&
+            item.resource_type_enum === type &&
+            item.bonus_score && item.bonus_score.active &&
+            (!item.rules || !item.rules.event)
+        })
       },
       accountBalances () {
         const result = this.$store.getters['crm/clientCard/accountBalances']
@@ -237,13 +243,20 @@
         return mode === 'FROM' ? 'Списать: ###########' : 'Начислить: ###########'
       },
       isManual (unit, type) {
-        const res = this.bonusResources.find(item => (item.bonus_score.units_id === unit.unit_id && item.resource_type_enum === type && !item.rules))
+        const res = this.bonusResources.find(item => {
+          return item.bonus_score.units_id === unit.unit_id &&
+            item.resource_type_enum === type &&
+            item.bonus_score && item.bonus_score.active &&
+            (!item.rules || !item.rules.event)
+        })
         if (res) return true
         return false
       },
       menuOperation (item, operation) {
         this.operationMode = operation
         this.editedItem = item
+        console.log('menuOperation')
+        console.log(this.availableOperations)
         if (this.availableOperations.length === 1) {
           this.selectedBonusResourceId = this.availableOperations[0].score_id
         }
@@ -267,9 +280,6 @@
       clearDays (v) {
         v = String(v).replace('Действуют: ', '')
         return Number(v)
-      },
-      getInfo (info) {
-        console.log(info)
       },
       async processing () {
         try {

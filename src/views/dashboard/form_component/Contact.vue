@@ -14,8 +14,9 @@
           placeholder="Номер горячей линии"
           prepend-inner-icon="$iconify_feather-phone"
           prepend-inner-icon-color="neutral-500"
+          maxlength="255"
           outlined
-          :rules="[v => String(v).length < 255 || 'Телефон должен быть менее 255 символов']"
+          :rules="[v => String(v).length <= 255 || 'Телефон должен быть не более 255 символов']"
         />
         <base-text-field
           v-model="program.website"
@@ -24,66 +25,30 @@
           placeholder="Адрес сайта"
           prepend-inner-icon="$iconify_feather-mouse-pointer"
           prepend-inner-icon-color="neutral-500"
+          maxlength="255"
           outlined
-          :rules="[v => String(v).length < 255 || 'Адрес сайта должен быть менее 255 символов']"
+          :rules="[
+            v => (!v || validURL(v, {protocol: false})) || 'Не верная ссылка',
+            v => String(v).length <= 255 || 'Адрес сайта должен быть не более 255 символов'
+          ]"
         />
       </template>
     </BaseMasterFieldBlock>
+    <!-- socials -->
 
-    <BaseMasterFieldBlock
-      title="Социальные сети"
-      :horisontal="true"
-    >
-      <span
-        slot="description"
-      >Введите адреса ваших профилей и групп в социальных сетях. Вводите только название профиля, которое стоит в самом конце адресной строки после символа “/”.</span>
-      <template v-slot:input>
-        <base-text-field
-          v-model="program.socials.vk"
-          :validate-on-blur="true"
-          placeholder="/Группа Вконтакте"
-          prepend-inner-icon="$iconify_ion-logo-vk"
-          prepend-inner-icon-color="logo-vk"
-          outlined
-          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
-        />
-        <base-text-field
-          v-model="program.socials.youtube"
-          style="margin-top: 20px !important;"
-          :validate-on-blur="true"
-          placeholder="/Канал на Youtube"
-          prepend-inner-icon="$iconify_ant-design-youtube-filled"
-          prepend-inner-icon-color="logo-youtube"
-          outlined
-          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
-        />
-        <base-text-field
-          v-model="program.socials.facebook"
-          style="margin-top: 20px !important;"
-          :validate-on-blur="true"
-          placeholder="/Группа в Facebook"
-          prepend-inner-icon="$iconify_la-facebook-f"
-          prepend-inner-icon-color="logo-facebook"
-          outlined
-          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
-        />
-        <base-text-field
-          v-model="program.socials.instagram"
-          style="margin-top: 20px !important;"
-          :validate-on-blur="true"
-          placeholder="/Профиль в Instagram"
-          prepend-inner-icon="$iconify_ion-logo-instagram"
-          prepend-inner-icon-color="logo-instagram"
-          outlined
-          :rules="[v => String(v).length < 255 || 'Ссылка должна быть менее 255 символов']"
-        />
-      </template>
-    </BaseMasterFieldBlock>
+    <social-field-block v-model="program" />
   </div>
 </template>
 
 <script>
+  import { asMixin, validURL } from '@/utils/validate'
+
+  import Vue from 'vue'
+
   export default {
+    components: {
+      SocialFieldBlock: () => import('@/views/dashboard/form_component/SocialFieldBlock.vue'),
+    },
     props: {
       program: {
         type: Object,
@@ -92,8 +57,41 @@
         },
       },
     },
+    mixins: [asMixin({ validURL })],
     data () {
       return {}
+    },
+    constants: {
+      MAX_URL_LEN: 255,
+    },
+    computed: {
+
+    },
+    watch: {
+
+    },
+    created () {
+      Vue.set(this.program, 'socials', Object.assign({
+        vk: '',
+        youtube: '',
+        facebook: '',
+        instagram: '',
+      }, this.program.socials))
+
+      console.log('program', this.program.social)
+    },
+    methods: {
+
+      maxLenRule (v) {
+        return String(v).length < this.MAX_URL_LEN || `Ссылка должна быть менее ${this.MAX_URL_LEN} символов`
+      },
+      validURLRule (v) {
+        if (!v) return true
+        const url = `https://fake.ru${v}`
+        console.log('validURLRule', url)
+        return validURL(url) || 'Не верная ссылка'
+      },
+
     },
   }
 </script>

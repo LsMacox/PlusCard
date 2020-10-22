@@ -65,7 +65,7 @@
                 <div
                   class="cell-text-bold"
                   style="cursor: pointer;"
-                  @click.stop="toRoute(`/accounts/client/${item.bsid}`)"
+                  @click.stop="userSidePanel(item)"
                 >
                   {{ item.client }}
                 </div>
@@ -145,6 +145,13 @@
         </div>
       </v-col>
     </v-row>
+
+    <side-panel-edit-client
+        v-if="sidePanelStatus.active"
+        v-model="sidePanelStatus.active"
+        :mode="sidePanelStatus.mode"
+        :table-data="sidePanelStatus.data"
+    />
   </div>
 </template>
 
@@ -152,10 +159,13 @@
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
+  import SidePanelEditClient from '@/views/crm/client/components/SidePanelEditClient.vue'
+  import ApiService from '@/api/api-client'
 
   export default {
     components: {
       SelectPageLimit,
+      SidePanelEditClient,
     },
     mixins: [FormatNumber, Routing],
     data () {
@@ -164,6 +174,11 @@
         tableOptions: {
           page: 1,
           itemsPerPage: 25,
+        },
+        sidePanelStatus: {
+          active: false,
+          mode: 'edit',
+          data: null,
         },
         paginationOptions: [
           { text: '25 на странице', value: 25 },
@@ -258,6 +273,29 @@
       this.fetchData()
     },
     methods: {
+      async userSidePanel (item) {
+        console.log('user.....')
+        console.log(item)
+        console.log('user.....')
+
+        if (item.client_id) {
+          const result = await ApiService.get('/api-cabinet/widget/client', {
+            params: {
+              client_id: item.client_id,
+              program_id: this.program.id,
+            },
+          })
+          console.log(result)
+
+          if (result.client && result.client.accounts) {
+            item = result.client
+            item.id = result.client.accounts[0].id
+            this.sidePanelStatus.mode = 'edit'
+            this.sidePanelStatus.data = item
+            this.sidePanelStatus.active = true
+          }
+        }
+      },
       getDate (date) {
         if (date) return this.$moment.utc(date).local().format(this.$config.date.DATE_FORMAT)
         return '-'
@@ -305,6 +343,8 @@
 </script>
 
 <style lang="scss" scoped>
+@import "~@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
+
 .cell-text {
   font-style: normal;
   font-weight: 400;

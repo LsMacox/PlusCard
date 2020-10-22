@@ -383,6 +383,7 @@
 
             if (this.chatUser && this.chatUser.id) {
               await this.loadConversationList()
+              await this.$store.dispatch("auth/redis/connect")
             }
           }
         } catch (e) {

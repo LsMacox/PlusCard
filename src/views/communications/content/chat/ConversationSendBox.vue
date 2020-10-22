@@ -69,56 +69,62 @@
               id="messageWrapper"
               style="position:relative; width:95%;"
             >
-              <div
-                v-if="isRecording"
-                class="app--conversation--sendForm__recorder__wrapper"
-              >
-                <div class="app--conversation--sendForm__recorder__indicator">
-                  <i />
-                </div>
-                <div class="app--conversation--sendForm__recorder__timer">
-                  {{ recordedTime }}
-                </div>
-              </div>
-              <span
-                class="app--conversation--sendForm__message__button app--conversation--sendForm__message__button__microphone"
-              >
-                <img
-                  v-if="!isRecording"
-                  id="record"
-                  src="@/assets/chat/microphone.svg"
-                  alt
-                  @click="toggleRecorder($event)"
-                >
-                <i
+              <v-row no-gutters>
+                <div
                   v-if="isRecording"
-                  class="far fa-stop-circle app--conversation--sendForm__message__button__stop"
-                  @click="sendRecord()"
-                />
-                <i
-                  v-if="isRecording"
-                  class="far fa-times-circle app--conversation--sendForm__message__button__cancel"
-                  @click="cancelRecorder()"
-                />
-              </span>
-              <span
-                class="app--conversation--sendForm__message__button app--conversation--sendForm__message__button__send"
-                @click="send(sendType)"
-              >
-                <img
-                  src="@/assets/chat/sendButton.svg"
-                  alt
+                  class="app--conversation--sendForm__recorder__wrapper"
                 >
-              </span>
+                  <div class="app--conversation--sendForm__recorder__indicator">
+                    <i />
+                  </div>
+                  <div class="app--conversation--sendForm__recorder__timer">
+                    {{ recordedTime }}
+                  </div>
+                </div>
+                <span
+                  class="app--conversation--sendForm__message__button app--conversation--sendForm__message__button__microphone"
+                >
+                  <img
+                    v-if="!isRecording"
+                    id="record"
+                    src="@/assets/chat/microphone.svg"
+                    alt
+                    @click="toggleRecorder($event)"
+                  >
+                  <i
+                    v-if="isRecording"
+                    class="far fa-stop-circle app--conversation--sendForm__message__button__stop"
+                    @click="sendRecord()"
+                  />
+                  <i
+                    v-if="isRecording"
+                    class="far fa-times-circle app--conversation--sendForm__message__button__cancel"
+                    @click="cancelRecorder()"
+                  />
+                </span>
+                <span
+                  class="app--conversation--sendForm__message__button app--conversation--sendForm__message__button__send"
+                  :style="{
+                    cursor: sending? 'pointer': 'unset'
+                  }"
+                  @click="send(sendType)"
+                >
+                  <img
+                    src="@/assets/chat/sendButton.svg"
+                    alt
+                  >
+                </span>
 
-              <textarea
-                id="message"
-                v-model="message"
-                class="app-conversation--sendForm__message__area"
-                @change="changeCurrent"
-                @keyup.ctrl.13="addLine($event)"
-                @keyup.enter.exact="send(sendType)"
-              />
+                <textarea
+                  id="message"
+                  v-model="message"
+                  :disabled="sending"
+                  class="app-conversation--sendForm__message__area"
+                  @change="changeCurrent"
+                  @keyup.ctrl.enter="addLine($event)"
+                  @keypress.enter.exact.stop="send(sendType)"
+                />
+              </v-row>
 
               <div
                 id="attachments--wrapper"
@@ -703,39 +709,48 @@
       },
       // отправляем сообщение
       async send (type) {
+        if (this.sending) return
         /// /console.log('quotedMessage', this.quotedMessage);
+        console.log({
+          quotedMessage: this.quotedMessage,
+          selectedTopicId: this.selectedTopicId,
+          message: this.message,
+          recipients: this.recipients,
+          recipients: this.recipients,
+          formDataFiles: this.formDataFiles,
+        })
         if (this.validateSendMessage) {
           /// /console.log('topic', this.selectedTopicId);
-
-          this.sending = true
-          const message = new FormData()
-          message.set('conversation_id', this.conversationId)
-          // message.append('conversation_id', +this.conversationId);
-          // message.append('conversation_id', parseInt(this.conversationId));
-
-          if (this.quotedMessage && this.quotedMessage.id) {
-            message.set('message_id', this.quotedMessage.id)
-          }
-          if (this.selectedTopicId) { message.append('topic_id', this.selectedTopicId) }
-          if (this.message) message.set('message', this.message)
-          let recipients = []
-          recipients = Array.from(new Set(this.recipients))
-
-          // отправка файлов
-          if (Array.isArray(this.formDataFiles)) {
-            for (let i = 0; i < this.formDataFiles.length; i++) {
-              const file = this.formDataFiles[i]
-              message.append('files[' + i + ']', file)
-            }
-          }
-
-          // получатели
-          for (let i = 0; i < recipients.length; i++) {
-            const recipient = recipients[i]
-            message.append('recipients[' + i + ']', recipient)
-          }
-
           try {
+            this.sending = true
+            const message = new FormData()
+            message.set('conversation_id', this.conversationId)
+            // message.append('conversation_id', +this.conversationId);
+            // message.append('conversation_id', parseInt(this.conversationId));
+
+            if (this.quotedMessage && this.quotedMessage.id) {
+              message.set('message_id', this.quotedMessage.id)
+            }
+            if (this.selectedTopicId) { message.append('topic_id', this.selectedTopicId) }
+            if (this.message) message.set('message', this.message)
+            let recipients = []
+            recipients = Array.from(new Set(this.recipients))
+
+            // отправка файлов
+
+            if (Array.isArray(this.formDataFiles)) {
+              for (let i = 0; i < this.formDataFiles.length; i++) {
+                const file = this.formDataFiles[i]
+                message.append('files[' + i + ']', file)
+              }
+            }
+
+            // получатели
+            for (let i = 0; i < recipients.length; i++) {
+              const recipient = recipients[i]
+              message.append('recipients[' + i + ']', recipient)
+            }
+
             /*
                         const message = {
                             conversation_id: this.conversationId,
@@ -749,9 +764,12 @@
                         */
             /// /console.log(message)
             await this.$store.dispatch('chat/message/send', { type, message })
-          } catch (e) {}
-          this.sending = false
-          this.clearForm()
+          } catch (e) {
+            console.error('send', e)
+          } finally {
+            this.sending = false
+            this.clearForm()
+          }
         }
       },
       init () {

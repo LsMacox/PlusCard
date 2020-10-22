@@ -24,7 +24,7 @@
       </template>
     </BaseMasterFieldBlock>
 
-    <v-row>
+    <v-row>      
       <v-col>
         <BaseMasterFieldBlock
           title="Карта клиента"

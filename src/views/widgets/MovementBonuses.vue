@@ -41,19 +41,19 @@
         console.log('current credit')
         console.log(this.credit)
         console.log('current credit')
-        return this.credit[0]
+        return this.credit[this.credit.length - 1]
       },
       debitCurrent () {
         console.log('current debit')
         console.log(this.debit)
         console.log('current debit')
-        return this.debit[0]
+        return this.debit[this.debit.length - 1]
       },
       expiredCurrent () {
         console.log('current expired')
         console.log(this.expired)
         console.log('current expired')
-        return this.expired[0]
+        return this.expired[this.expired.length - 1]
       },
       percentageDiffs () {
         let creditDiff = 0
@@ -61,15 +61,15 @@
         let expireDiff = 0
 
         if (this.credit) {
-          creditDiff = this.relativeChange(this.credit[0], this.credit[1])
+          creditDiff = this.relativeChange(this.credit[this.credit.length - 1], this.credit[this.credit.length - 2])
         }
 
         if (this.debit) {
-          debitDiff = this.relativeChange(this.debit[0], this.debit[1])
+          debitDiff = this.relativeChange(this.debit[this.debit.length - 1], this.debit[this.debit.length - 2])
         }
 
         if (this.expired) {
-          expireDiff = this.relativeChange(this.expired[0], this.expired[1])
+          expireDiff = this.relativeChange(this.expired[this.expired.length - 1], this.expired[this.expired.length - 2])
         }
 
         return [creditDiff, debitDiff, expireDiff]
@@ -79,16 +79,16 @@
         let debitDiff = 0
         let expireDiff = 0
 
-        if (this.total && this.credit && this.credit[1] > 0) {
-          creditDiff = (this.credit[0] / this.total) * 100
+        if (this.total && this.credit && this.credit[this.credit.length - 2] > 0) {
+          creditDiff = (this.credit[this.credit.length - 1] / this.total) * 100
         }
 
-        if (this.total && this.debit && this.debit[1] > 0) {
-          debitDiff = (this.debit[0] / this.total) * 100
+        if (this.total && this.debit && this.debit[this.debit.length - 2] > 0) {
+          debitDiff = (this.debit[this.debit.length - 1] / this.total) * 100
         }
 
-        if (this.total && this.expired && this.expired[1] > 0) {
-          expireDiff = (this.expired[0] / this.total) * 100
+        if (this.total && this.expired && this.expired[this.expired.length - 2] > 0) {
+          expireDiff = (this.expired[this.expired.length - 1] / this.total) * 100
         }
 
         return [creditDiff.toFixed(2), debitDiff.toFixed(2), expireDiff.toFixed(2)]
