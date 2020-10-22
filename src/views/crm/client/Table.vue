@@ -1,15 +1,14 @@
 <template>
   <div>
-    <div style="margin: 20px 0 15px 0;">
-      <client-filter />
-    </div>
     <empty-client
-      v-if="!clients.length"
+      v-if="!clientsStore.length"
     />
     <div
       v-else
     >
-      <client-filter />
+      <div style="margin: 20px 0 15px 0;">
+        <client-filter />
+      </div>
       <base-table
         v-if="clients.length"
         class-name="table-segment"
@@ -106,6 +105,9 @@
           </v-icon>
         </template>
       </base-table>
+      <empty-client
+        v-else
+      />
     </div>
     <side-panel-edit-client
       v-if="sidePanelStatus.active"
@@ -150,6 +152,9 @@
     computed: {
       program () {
         return this.$store.getters['company/program/program']
+      },
+      clientsStore () {
+        return this.$store.getters['crm/client/clients']
       },
       clients () {
         const filteredClients = this.$store.getters['crm/client/filteredClients']
