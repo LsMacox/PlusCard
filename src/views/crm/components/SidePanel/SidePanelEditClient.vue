@@ -216,6 +216,7 @@
           this.$store.commit('crm/clientCard/SET_LOADING', true)
           await this.$store.dispatch('company/bonus_resources/GetList', this.program.id)
           await this.$store.dispatch('crm/clientCard/getAccountBalances', this.tableData)
+          await this.$store.dispatch('crm/clientCard/getAccountUser', this.tableData)
         } finally {
           this.$store.commit('crm/clientCard/SET_LOADING', false)
         }
