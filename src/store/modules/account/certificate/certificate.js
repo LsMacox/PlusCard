@@ -106,9 +106,14 @@ const actions = {
         commit('update_statuses', result)
     },
     async Continue ({ commit, dispatch }, postData) {
-        const response = await ApiService.post('/api/program/certificate/order/continue', postData)
+        const result = await ApiService.post('/api/program/certificate/order/continue', postData)
         /// /console.log(success)
-        commit('update_statuses', response.data.data)
+        commit('update_statuses', result)
+    },
+    async CertOrderPaid ({ commit, dispatch }, { id, type, transactionId, comment }) {
+        const result = await ApiService.post('/api/program/certificate/order/paid', { id, type, transaction_id: transactionId, comment })
+        /// /console.log(success)
+        commit('update_statuses', result)
     },
 
     async updateShop ({ commit, dispatch }, shop) {

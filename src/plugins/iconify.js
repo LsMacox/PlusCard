@@ -46,6 +46,7 @@ export const ICONIFY_ICONS = [
     { id: 'bi-phone', component: () => import('@iconify/icons-bi/phone') },
 
     // bx
+    { id: 'bx-bx-ruble', component: () => import('@iconify/icons-bx/bx-ruble') },
     { id: 'bx-check', component: () => import('@iconify/icons-bx/bx-check') },
     {
         id: 'arrow-back',

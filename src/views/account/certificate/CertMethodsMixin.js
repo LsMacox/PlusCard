@@ -1,45 +1,40 @@
-import { mapGetters, mapActions } from 'vuex' 
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'CertStatusMixin',
     methods: {
+
         ...mapActions({
             changeCertArchiveStatus: 'account/certificate/certificate/changeArchiveStatus',
             restoreCert: 'account/certificate/certificate/Restore',
+            CertOrderPaid: 'account/certificate/certificate/CertOrderPaid',
         }),
+
         statusDate (item) {
-            let date
+            let date = null
             switch (item.status) {
                 case 'deleted':
-                    date = this.$moment(item.deleted_at).format(
-                        'DD.MM.YYYY,\u00A0HH:mm',
-                    )
+                    date = item.deleted_at
                     break
                 case 'paid':
-                    date = this.$moment(item.paid_at).format(
-                        'DD.MM.YYYY,\u00A0HH:mm',
-                    )
+                    date = item.paid_at
                     break
                 case 'wait_payment':
                     date = ''
                     break
                 case 'used':
-                    date = this.$moment(item.used_at).format(
-                        'DD.MM.YYYY,\u00A0HH:mm',
-                    )
+                    date = item.used_at
                     break
                 case 'new':
-                    date = this.$moment(item.date_issued).format(
-                        'DD.MM.YYYY,\u00A0HH:mm',
-                    )
+                    date = item.created_at
                     break
                 case 'issued':
-                    date = this.$moment(item.date_issued).format(
-                        'DD.MM.YYYY,\u00A0HH:mm',
-                    )
+                    date = item.date_issued
                     break
             }
-            return date
+            return date ? this.$moment.utc(date).local().format(
+                'DD.MM.YYYY,\u00A0HH:mm',
+            ) : ''
         },
         paymentStatusIcon (status) {
             switch (status) {
@@ -131,13 +126,15 @@ export default {
                 case 'PLUS_CASH':
                     result = 'Оплачено на кассе'
                     break
+                case 'PLUS_OTHER':
+                    result = 'Другой способ'
+                    break
                 default:
-                    result = ''
+                    result = '?'
                     break
             }
             return result
         },
 
-      
     },
 }

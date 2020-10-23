@@ -187,7 +187,7 @@
       </div>
 
       <div
-        v-if="detailedCert.certificate"
+        v-if="detailedCert.order"
         class="cert-details-property d-flex"
       >
         <div class="cert-details-prop-name body-s-semibold">
@@ -208,7 +208,7 @@
           v-if="detailedCert.paid_at"
           class="cert-details-status-date body-m-medium"
         >
-          <span>{{ this.$moment(detailedCert.paid_at).format('DD.MM.YYYY,\u00A0HH:mm') }}</span>
+          <span>{{ this.$moment.utc(detailedCert.paid_at).local().format('DD.MM.YYYY,\u00A0HH:mm') }}</span>
         </div>
       </div>
 
@@ -238,132 +238,157 @@
         <v-divider />
       </div>
 
-      <div
-        v-if="detailedCert.certificate"
-        class="cert-details-block d-flex"
-      >
-        <div class="body-l-semibold">
-          Оплата
-        </div>
-      </div>
-
-      <div
-        v-if="detailedCert.certificate && detailedCert.order"
-        class="cert-details-property d-flex"
-      >
-        <div class="cert-details-prop-name body-s-semibold">
-          ID
-        </div>
-        <div class="cert-details-prop-value body-m-medium">
-          {{ detailedCert.order.id }}
-        </div>
-      </div>
-
-      <div
-        v-if="detailedCert.order && detailedCert.order.last_paid_payment && detailedCert.order.last_paid_payment.paid_at"
-        class="cert-details-property d-flex"
-      >
-        <div class="cert-details-prop-name body-s-semibold">
-          Статус
-        </div>
-        <div
-          style="display: flex; align-items: center;"
-          class="cert-details-success-status body-m-medium"
-        >
-          <v-icon>$iconify_bx-check</v-icon>
-          <span>Выполнена</span>
-        </div>
-        <div class="cert-details-status-date body-m-medium">
-          {{ $moment(detailedCert.order.last_paid_payment.paid_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
-        </div>
-      </div>
-
-      <div
+      <v-row
         v-if="detailedCert.order"
-        class="cert-details-property d-flex"
+        no-gutters
       >
-        <div class="cert-details-prop-name body-s-semibold">
-          Тип
-        </div>
-        <div
-          v-if="detailedCert.order.last_paid_payment"
-          class="cert-details-prop-value body-m-medium"
-        >
-          {{ paymentSystemType(detailedCert.order.last_paid_payment.type) }}
-        </div>
-        <div
-          v-else
-          class="cert-details-prop-value body-m-medium"
-        >
-          -
-        </div>
-      </div>
+        <v-col>
+          <div
+            class="cert-details-block d-flex"
+          >
+            <div class="body-l-semibold">
+              Оплата
+            </div>
+          </div>
+
+          <v-row v-if="!detailedCert.paid">
+            <v-col>
+              <v-btn
+                color="primary"
+                @click="paidClick()"
+              >
+                <v-icon left>
+                  $iconify_bx-bx-ruble
+                </v-icon> Оплатить сертификат
+              </v-btn>
+            </v-col>
+          </v-row>
+
+          <div
+            v-if="detailedCert.certificate && detailedCert.order"
+            class="cert-details-property d-flex"
+          >
+            <div class="cert-details-prop-name body-s-semibold">
+              ID
+            </div>
+            <div class="cert-details-prop-value body-m-medium">
+              {{ detailedCert.order.id }}
+            </div>
+          </div>
+
+          <div
+            v-if="detailedCert.order && detailedCert.order.last_paid_payment && detailedCert.order.last_paid_payment.paid_at"
+            class="cert-details-property d-flex"
+          >
+            <div class="cert-details-prop-name body-s-semibold">
+              Статус
+            </div>
+            <div
+              style="display: flex; align-items: center;"
+              class="cert-details-success-status body-m-medium"
+            >
+              <v-icon>$iconify_bx-check</v-icon>
+              <span>Выполнена</span>
+            </div>
+            <div class="cert-details-status-date body-m-medium">
+              {{ $moment(detailedCert.order.last_paid_payment.paid_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
+            </div>
+          </div>
+
+          <div
+            v-if="detailedCert.order"
+            class="cert-details-property d-flex"
+          >
+            <div class="cert-details-prop-name body-s-semibold">
+              Тип
+            </div>
+            <div
+              v-if="detailedCert.order.last_paid_payment"
+              class="cert-details-prop-value body-m-medium"
+            >
+              {{ paymentSystemType(detailedCert.order.last_paid_payment.type) }}
+            </div>
+            <div
+              v-else
+              class="cert-details-prop-value body-m-medium"
+            >
+              -
+            </div>
+          </div>
+
+          <div
+            v-if="detailedCert.order"
+            class="cert-details-property d-flex"
+          >
+            <div class="cert-details-prop-name body-s-semibold">
+              Создана
+            </div>
+            <div
+              v-if="detailedCert.order.last_paid_payment"
+              class="cert-details-status-date body-m-medium"
+            >
+              {{ $moment(detailedCert.order.last_paid_payment.created_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
+            </div>
+            <div
+              v-else
+              class="cert-details-status-date body-m-medium"
+            >
+              -
+            </div>
+          </div>
+
+          <div
+            v-if="detailedCert.order && detailedCert.order.last_paid_payment && !detailedCert.order.last_paid_payment.paid_at"
+            class="cert-details-property d-flex"
+          >
+            <div class="cert-details-prop-name body-s-semibold">
+              Истекает
+            </div>
+            <div
+              v-if="detailedCert.order.last_paid_payment && detailedCert.order.last_paid_payment.IsExpired"
+              class="cert-details-status-date body-m-medium"
+            >
+              {{ $moment(detailedCert.order.last_paid_payment.expired_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
+            </div>
+            <div
+              v-else
+              class="cert-details-status-date body-m-medium"
+            >
+              -
+            </div>
+          </div>
+
+          <div
+            v-if="detailedCert.order && detailedCert.order.last_paid_payment"
+            class="cert-details-property d-flex"
+          >
+            <div class="cert-details-prop-name body-s-semibold">
+              Реквизиты
+            </div>
+            <div
+              class="cert-details-prop-value body-m-medium"
+            >
+              {{ detailedCert.order.last_paid_payment.transaction_id || '-' }}
+            </div>
+          </div>
+          <div
+            v-if="detailedCert.order && detailedCert.order.last_paid_payment && detailedCert.order.last_paid_payment.comment"
+            class="cert-details-property d-flex"
+          >
+            <div class="cert-details-prop-name body-s-semibold">
+              Комментарий
+            </div>
+            <div
+              class="cert-details-prop-value body-m-medium"
+            >
+              {{ detailedCert.order.last_paid_payment.comment || '-' }}
+            </div>
+          </div>
+        </v-col>
+      </v-row>
 
       <div
-        v-if="detailedCert.order"
-        class="cert-details-property d-flex"
-      >
-        <div class="cert-details-prop-name body-s-semibold">
-          Создана
-        </div>
-        <div
-          v-if="detailedCert.order.last_paid_payment"
-          class="cert-details-status-date body-m-medium"
-        >
-          {{ $moment(detailedCert.order.last_paid_payment.created_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
-        </div>
-        <div
-          v-else
-          class="cert-details-status-date body-m-medium"
-        >
-          -
-        </div>
-      </div>
-
-      <div
-        v-if="detailedCert.order"
-        class="cert-details-property d-flex"
-      >
-        <div class="cert-details-prop-name body-s-semibold">
-          Истекает
-        </div>
-        <div
-          v-if="detailedCert.order.last_paid_payment && detailedCert.order.last_paid_payment.IsExpired"
-          class="cert-details-status-date body-m-medium"
-        >
-          {{ $moment(detailedCert.order.last_paid_payment.expired_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
-        </div>
-        <div
-          v-else
-          class="cert-details-status-date body-m-medium"
-        >
-          -
-        </div>
-      </div>
-
-      <div
-        v-if="detailedCert.order && detailedCert.order.last_paid_payment"
-        class="cert-details-property d-flex"
-      >
-        <div class="cert-details-prop-name body-s-semibold">
-          Реквизиты
-        </div>
-        <div
-          v-if="detailedCert.order.last_paid_payment"
-          class="cert-details-prop-value body-m-medium"
-        >
-          {{ detailedCert.order.last_paid_payment.transaction_id }}
-        </div>
-        <div
-          v-else
-          class="cert-details-prop-value body-m-medium"
-        >
-          -
-        </div>
-      </div>
-
-      <div
-        v-if="detailedCert"
+        v-if="detailedCert.user"
         class="cert-details-user-block"
       >
         <div class="cert-details-user-content">
@@ -414,22 +439,22 @@
         </div>
       </div>
     </div>
+    <certificate-paid-dialog
+      v-if="paidDialog"
+      v-model="paidDialog"
+      :cert="detailedCert"
+    />
   </v-navigation-drawer>
 </template>
 
 <script>
-
   import dialogable from '@/mixins/dialogable.js'
   import CertMethodsMixin from './CertMethodsMixin'
+  import CertificatePaidDialog from './CertificatePaidDialog'
 
   export default {
-    components: {
-
-    },
-    mixins: [
-      dialogable,
-      CertMethodsMixin,
-    ],
+    components: { CertificatePaidDialog },
+    mixins: [dialogable, CertMethodsMixin],
     props: {
       detailedCert: {
         type: Object,
@@ -440,14 +465,12 @@
       return {
         // detailedCert: null,
         changeArchiveStatusAction: false,
+        paidDialog: false,
       }
     },
-    computed: {
-
-    },
+    computed: {},
     mounted () {
-      // this.dialog = true
-      console.log('mounted', this)
+
     },
     methods: {
       changeArchiveStatus (archive) {
@@ -465,11 +488,12 @@
           this.restoreCertAction = false
         })
       },
-
+      paidClick () {
+        this.paidDialog = true
+      },
     },
   }
 </script>
 
 <style scoped>
-
 </style>
