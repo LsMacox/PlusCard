@@ -159,7 +159,7 @@
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
-  import SidePanelEditClient from '@/views/crm/components/SidePanel/SidePanelEditClient'
+  import SidePanelEditClient from '@/views/crm/client/components/SidePanelEditClient.vue'
   import ApiService from '@/api/api-client'
 
   export default {

@@ -4,7 +4,7 @@
 
 .panel-crm_edit_client {
     .side-panel__back {
-        z-index: 99999;
+        z-index: 124;
         position: fixed;
         color: #4776E6;
         cursor: pointer;
@@ -23,7 +23,7 @@
         margin-top: 0 !important;
         margin-left: 0 !important;
         background-color: #fff;
-        z-index: 9999;
+        z-index: 123;
         padding-top: 29px;
         .panel-crm_edit_client__tabs {
             text-align: right;
