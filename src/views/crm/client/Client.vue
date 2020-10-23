@@ -30,35 +30,24 @@
     </div>
     <client-table />
     <side-panel-new-client
+      v-if="sidePanelNewClientStatus"
       v-model="sidePanelNewClientStatus"
-    />
-    <side-panel-edit-client
-      v-if="sidePanelEditClient.status"
-      v-model="sidePanelEditClient.status"
-      :client-data="sidePanelEditClient.data"
     />
   </div>
 </template>
 
 <script>
-  import ClientTable from '@/views/crm/client/ClientTable'
-  import SidePanelNewClient from './components/SidePanel/SidePanelNewClient'
-  import SidePanelEditClient from './components/SidePanel/SidePanelEditClient'
+  import ClientTable from './Table'
+  import SidePanelNewClient from './components/SidePanelNewClient'
 
   export default {
     components: {
       ClientTable,
       SidePanelNewClient,
-      SidePanelEditClient,
     },
     data () {
       return {
-        clientData: null,
         sidePanelNewClientStatus: false,
-        sidePanelEditClient: {
-          status: false,
-          data: null,
-        },
       }
     },
     computed: {
@@ -67,18 +56,12 @@
       },
     },
     watch: {},
-    created () {
-      this.clientData = this.$store.getters['crm/client/clients']
-      // example
-      this.sidePanelEditClient.data = this.clientData[0]
-    },
+    created () {},
     mounted () {},
     methods: {},
   }
 </script>
 
 <style lang="scss">
-
   @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
-
 </style>

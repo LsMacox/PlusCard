@@ -1,4 +1,5 @@
 import ApiService from '@/api/api-client'
+import Vue from 'vue'
 
 const state = {
     certificates: [],
@@ -90,28 +91,32 @@ const actions = {
         }
     },
     async changeArchiveStatus ({ commit, dispatch }, postData) {
-        const response = await ApiService.post('/client/certificate/status/archive', postData)
+        const result = await ApiService.post('/api-cabinet/client/certificate/status/archive', postData)
         /// /console.log(success)
-        commit('update_archive_status', response.data.data)
+        commit('update_archive_status', result)
     },
     async Restore ({ commit, dispatch }, postData) {
-        const response = await ApiService.post('/api/program/certificate/order/restore', postData)
+        const result = await ApiService.post('/api/program/certificate/order/restore', postData)
         /// /console.log(success)
-        commit('update_statuses', response.data.data)
+        commit('update_statuses', result)
     },
     async Delete ({ commit, dispatch }, postData) {
-        const response = await ApiService.delete('/api/program/certificate/order/delete', postData)
+        const result = await ApiService.delete('/api/program/certificate/order/delete', postData)
         /// /console.log(success)
-        commit('update_statuses', response.data.data)
+        commit('update_statuses', result)
     },
     async Continue ({ commit, dispatch }, postData) {
-        const response = await ApiService.post('/api/program/certificate/order/continue', postData)
+        const result = await ApiService.post('/api/program/certificate/order/continue', postData)
         /// /console.log(success)
-        commit('update_statuses', response.data.data)
+        commit('update_statuses', result)
+    },
+    async CertOrderPaid ({ commit, dispatch }, { id, type, transactionId, comment }) {
+        const result = await ApiService.post('/api/program/certificate/order/paid', { id, type, transaction_id: transactionId, comment })
+        /// /console.log(success)
+        commit('update_statuses', result)
     },
 
     async updateShop ({ commit, dispatch }, shop) {
-        try {
             const success = await ApiService.post('/api/partner/certificates/update', shop)
             /// ///console.log(success)
             commit('updateIncertificates', success.data.data)
@@ -120,9 +125,6 @@ const actions = {
                 message: 'Магазин обновлен',
                 type: 'success',
             }, { root: true })
-        } catch (error) {
-            throw error
-        }
     },
 
 }

@@ -28,14 +28,14 @@
     <template v-slot:tab-2>
       <ul class="custom-actions__list">
         <li
-            v-for="item in widgetData['purchases']"
-            :key="item.id"
-            class="custom-actions__item"
+          v-for="item in widgetData['purchases']"
+          :key="item.id"
+          class="custom-actions__item"
         >
           <div class="custom-actions__item-img">
             <img
-                style="width: 24px; border-radius: 50%;"
-                :src="item.avatar"
+              style="width: 24px; border-radius: 50%;"
+              :src="item.avatar"
             >
           </div>
           <div class="custom-actions__item-text">
