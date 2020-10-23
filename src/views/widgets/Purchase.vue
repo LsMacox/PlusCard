@@ -5,10 +5,10 @@
     :diagram-labels="[diagramNewLabels, diagramNewLabels]"
     :diagram-height="46"
     title="Покупки"
-    :titles="titles"
     :sub-titles="subTitles()"
     :counts="[formatNumberString(widgetData.byProgramSum), formatNumberString(widgetData.totalSum)]"
-    :percentage-differences="[byProgramPD, totalPD]"
+    :percentage-differences="[byProgramPercentageDifference, totalPercentageDifference]"
+    name="purchase"
   />
 </template>
 
@@ -18,6 +18,7 @@
   import FormatNumber from '@/mixins/formatNumber'
 
   export default {
+    name: 'Purchase',
     components: { DoubleDiagramFrame },
     mixins: [WidgetFunctions, FormatNumber],
     props: {
@@ -36,42 +37,11 @@
       return {
         totalWD: [0, 0, 0, 0, 0, 0, 0],
         byProgramWD: [0, 0, 0, 0, 0, 0, 0],
-        // diagramOptions: {
-        //   pointRadius: 4,
-        //   pointBorderWidth: 2.5,
-        //   tooltips: {
-        //     display: false,
-        //   },
-        // },
-        titles: ['покупка', 'покупки', 'покупок'],
+        byProgramPercentageDifference: 0,
+        totalPercentageDifference: 0,
       }
     },
     computed: {
-      byProgramPurchases () {
-        console.log('this.byProgramWD')
-        console.log(this.byProgramWD)
-        console.log('this.byProgramWD')
-        return this.byProgramWD.length ? this.byProgramWD[0][this.byProgramWD.length - 1].sum / 100 : 0
-      },
-      totalPurchases () {
-        return this.totalWD.length ? this.totalWD[1][this.totalWD.length - 1].sum / 100 : 0
-      },
-      totalPD () {
-        if (this.totalWD && this.totalWD.length >= 2) {
-          if (this.totalWD[1] > 0) {
-            return this.relativeChange(this.totalWD[this.totalWD.length - 1].sum, this.totalWD[this.totalWD.length - 2].sum)
-          }
-        }
-        return 0
-      },
-      byProgramPD () {
-        if (this.byProgramWD && this.byProgramWD.length >= 2) {
-          if (this.byProgramWD[1] > 0) {
-            return this.relativeChange(this.byProgramWD[this.byProgramWD.length - 1], this.byProgramWD[this.byProgramWD.length - 2])
-          }
-        }
-        return 0
-      },
       diagramNewLabels () {
         return this.prepareDiagramLabels(this.widgetData.chart[0], 'count')
       },
@@ -82,20 +52,27 @@
         return this.$_.map(this.widgetData.chart[0], 'count')
       },
       diagramTotalData () {
+        console.log('this.widgetData.chart[1]')
+        console.log(this.widgetData.chart[1])
+        console.log('this.widgetData.chart[1]')
         return this.$_.map(this.widgetData.chart[1], 'count')
       },
     },
     watch: {
       widgetData (v) {
         if (v && v.chart[0] && v.chart[1]) {
-          this.byProgramWD = v.chart[0].reverse()
-          this.totalWD = v.chart[1].reverse()
+          const byProgramData = v.chart[0]
+          const totalData = v.chart[1]
+          this.byProgramPercentageDifference = this.relativeChange(byProgramData[byProgramData.length - 1], byProgramData[byProgramData.length - 2])
+          this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1], totalData[totalData.length - 2])
         }
       },
     },
     mounted () {
-      this.byProgramWD = this.widgetData.chart[0].reverse()
-      this.totalWD = this.widgetData.chart[1].reverse()
+      const byProgramData = this.widgetData.chart[0]
+      const totalData = this.widgetData.chart[1]
+      this.byProgramPercentageDifference = this.relativeChange(byProgramData[byProgramData.length - 1], byProgramData[byProgramData.length - 2])
+      this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1], totalData[totalData.length - 2])
     },
     methods: {
       subTitles () {

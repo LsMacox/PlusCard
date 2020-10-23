@@ -70,6 +70,12 @@
     mixins: [WidgetFunctions],
     inheritAttrs: false,
     props: {
+      name: {
+        type: String,
+        default () {
+          return undefined
+        },
+      },
       diagramData: {
         type: Array,
         default () {
@@ -125,10 +131,11 @@
             display: true,
             callbacks: {
               title: function (tooltipItem, data) {
-                console.log('tooltipItem')
-                console.log(tooltipItem)
-                console.log('tooltipItem')
-                return tooltipItem[0].xLabel.count + ' ' + _this.declOfNum(tooltipItem[0].xLabel.count, _this.titles)
+                if (_this.name === 'purchase') {
+                  return tooltipItem[0].value + ' руб.'
+                } else {
+                  return tooltipItem[0].value + ' ' + _this.declOfNum(parseInt(tooltipItem[0].value), _this.titles)
+                }
               },
               label: function (tooltipItem, data) {
                 var startDate = tooltipItem.xLabel.start_period

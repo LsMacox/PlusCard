@@ -33,41 +33,14 @@
     },
     data () {
       return {
-        newData: [0, 0, 0, 0],
-        totalData: [0, 0, 0, 0],
-        // diagramOptions: {
-        //   pointRadius: 43,
-        //   pointBorderWidth: 2.5,
-        //   tooltips: {
-        //     display: false,
-        //   },
-        // },
+        newCount: 0,
+        totalCount: 0,
+        newPercentageDifference: 0,
+        totalPercentageDifference: 0,
         titles: ['клиент', 'клиента', 'клиентов'],
       }
     },
     computed: {
-      newCount () {
-        return this.widgetData.length ? this.widgetData[0][this.widgetData.length - 1].count : 0
-      },
-      totalCount () {
-        return this.widgetData.length ? this.widgetData[1][this.widgetData.length - 1].count : 0
-      },
-      newPercentageDifference () {
-        if (this.newData && this.newData.length >= 2) {
-          if (this.newData[1] > 0) {
-            return this.relativeChange(this.newData[this.newData.length - 1], this.newData[this.newData.length - 2])
-          }
-        }
-        return 0
-      },
-      totalPercentageDifference () {
-        if (this.totalData && this.totalData.length >= 2) {
-          if (this.totalData[1] > 0) {
-            return this.relativeChange(this.totalData[this.newData.length - 1], this.totalData[this.newData.length - 2])
-          }
-        }
-        return 0
-      },
       diagramNewLabels () {
         return this.prepareDiagramLabels(this.widgetData[0], 'count')
       },
@@ -84,14 +57,22 @@
     watch: {
       widgetData (v) {
         if (v && v[0] && v[1]) {
-          this.newData = v[0].reverse()
-          this.totalData = v[1].reverse()
+          const newData = v[0]
+          const totalData = v[1]
+          this.newCount = newData.length ? newData[newData.length - 1].count : 0
+          this.totalCount = totalData.length ? totalData[totalData.length - 1].count : 0
+          this.newPercentageDifference = this.relativeChange(newData[newData.length - 1].count, newData[newData.length - 2].count) ?? 0
+          this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1].count, totalData[totalData.length - 2].count) ?? 0
         }
       },
     },
     mounted () {
-      this.newData = this.widgetData[0].reverse()
-      this.totalData = this.widgetData[1].reverse()
+      const newData = this.widgetData[0]
+      const totalData = this.widgetData[1]
+      this.newCount = newData.length ? newData[newData.length - 1].count : 0
+      this.totalCount = totalData.length ? totalData[totalData.length - 1].count : 0
+      this.newPercentageDifference = this.relativeChange(newData[newData.length - 1].count, newData[newData.length - 2].count) ?? 0
+      this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1].count, totalData[totalData.length - 2].count) ?? 0
     },
   }
 </script>

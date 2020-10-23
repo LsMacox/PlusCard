@@ -90,9 +90,6 @@
         return this.$store.getters['widget/filter/period']
       },
       programClients () {
-        console.log("$store.getters")
-        console.log(this.$store.getters['dashboard/clients/widgetData'])
-        console.log("$store.getters")
         return this.$store.getters['dashboard/clients/widgetData']
       },
       purchases () {
