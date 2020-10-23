@@ -156,8 +156,7 @@
     },
     computed: {
       user () {
-        if (this.clientData) return this.clientData.user
-        return {}
+        return this.$store.getters['crm/clientCard/user']
       },
       segments () {
         return this.$store.getters['crm/segment/segments']
