@@ -6,7 +6,7 @@ const getDefaultState = () => {
         accountScores: [], // счета клиента
         accountBalances: [], // баланс счетов клиента
         transactions: [], // транзакции счетов
-        user: {}, // пользователь карты
+        client: {}, // пользователь карты
     }
 }
 
@@ -18,7 +18,7 @@ const mutations = {
     SET_ACCOUNT_SCORES: (state, payload) => state.accountScores = payload,
     SET_ACCOUNT_BALANCES: (state, payload) => state.accountBalances = payload,
     SET_TRANSACTIONS: (state, payload) => state.transactions = payload,
-    SET_USER: (state, payload) => state.user = payload,
+    SET_CLIENT: (state, payload) => state.client = payload,
 }
 
 const actions = {
@@ -79,13 +79,13 @@ const actions = {
         }
     },
 
-    async getAccountUser ({ commit }, item) {
+    async getAccountClient ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
             const result = await ApiService.get(`/api-cabinet/crm/account/user?id=${item.id}`)
             console.log(`/api-cabinet/crm/account/user?id=${item.id}`)
             console.log(result)
-            commit('SET_USER', result)
+            commit('SET_CLIENT', result)
         } catch (error) {
             throw error
         }
@@ -97,7 +97,7 @@ const getters = {
     accountScores: state => state.accountScores,
     accountBalances: state => state.accountBalances,
     transactions: state => state.transactions,
-    user: state => state.user,
+    client: state => state.client,
 }
 
 export default {

@@ -155,15 +155,22 @@
       }
     },
     computed: {
+      accountClient () {
+        return this.$store.getters['crm/clientCard/client']
+      },
       user () {
-        return this.$store.getters['crm/clientCard/user']
+        const client = this.$store.getters['crm/clientCard/client']
+        if (client && client.user) return client.user
+        return {}
       },
       segments () {
         return this.$store.getters['crm/segment/segments']
       },
     },
-    async created () {
-      this.clientSegments = Object.copy(this.clientData.segments)
+    watch: {
+      accountClient (v) {
+        if (v && v.segments) this.clientSegments = Object.copy(v.segments)
+      },
     },
     methods: {
       getGender (gender) {

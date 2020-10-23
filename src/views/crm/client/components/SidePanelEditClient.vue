@@ -32,21 +32,21 @@
         <div class="contacts__block-right">
           <div class="contacts-full_name">
             <p class="title-m-bold">
-              {{ (tableData && tableData.user && tableData.user.name) ? tableData.user.name : '-' }}
+              {{ (accountClient.user && accountClient.user.name) ? accountClient.user.name : '-' }}
             </p>
             <p class="title-m-bold">
-              {{ (tableData && tableData.user && tableData.user.lastname) ? tableData.user.lastname : '-' }}
+              {{ (accountClient.user && accountClient.user.lastname) ? accountClient.user.lastname : '-' }}
             </p>
           </div>
           <div class="contacts-online">
             <p class="body-s-semibold neutral-600--text">
-              {{ (tableData && tableData.user && tableData.user.last_activity) ? getLastActivity(tableData.user.last_activity) : '-' }}
+              {{ (accountClient.user && accountClient.user.last_activity) ? getLastActivity(accountClient.user.last_activity) : '-' }}
             </p>
           </div>
         </div>
         <div class="contacts__block-left">
           <img
-            :src="[(tableData && tableData.user && tableData.user.avatar) ? tableData.user.avatar : '']"
+            :src="[(accountClient.user && accountClient.user.avatar) ? accountClient.user.avatar : '']"
           >
         </div>
       </div>
@@ -164,6 +164,9 @@
       program () {
         return this.$store.getters['company/program/program']
       },
+      accountClient () {
+        return this.$store.getters['crm/clientCard/client']
+      },
     },
     watch: {
       active () {
@@ -174,6 +177,8 @@
       },
     },
     async created () {
+      // обнуляем пользователя карты
+      this.$store.commit('crm/clientCard/SET_CLIENT', {})
       await this.fetchData()
     },
     mounted () {
@@ -205,8 +210,9 @@
         try {
           this.$store.commit('crm/clientCard/SET_LOADING', true)
           await this.$store.dispatch('company/bonus_resources/GetList', this.program.id)
+          await this.$store.dispatch('crm/segment/segments', { program_id: this.program.id })
           await this.$store.dispatch('crm/clientCard/getAccountBalances', this.tableData)
-          await this.$store.dispatch('crm/clientCard/getAccountUser', this.tableData)
+          await this.$store.dispatch('crm/clientCard/getAccountClient', this.tableData)
         } finally {
           this.$store.commit('crm/clientCard/SET_LOADING', false)
         }

@@ -9,7 +9,7 @@
             width="21"
           />
           <p class="body-m-medium neutral-700--text">
-            {{ (clientData.user && clientData.user.phone) ? clientData.user.phone : '-' }}
+            {{ (accountClient.user && accountClient.user.phone) ? accountClient.user.phone : '-' }}
           </p>
         </li>
         <li class="contacts-info__item">
@@ -19,7 +19,7 @@
             width="21"
           />
           <p class="body-m-medium neutral-700--text">
-            {{ (clientData.user && clientData.user.email) ? clientData.user.email : '-' }}
+            {{ (accountClient.user && accountClient.user.email) ? accountClient.user.email : '-' }}
           </p>
         </li>
         <li class="contacts-info__item">
@@ -29,7 +29,7 @@
             width="21"
           />
           <p class="body-m-medium neutral-700--text">
-            {{ clientData.barcode || '-' }}
+            {{ accountClient.barcode || '-' }}
           </p>
         </li>
         <li class="contacts-info__item">
@@ -39,7 +39,7 @@
             width="21"
           />
           <p class="body-m-medium neutral-700--text">
-            {{ clientData.id || '-' }}
+            {{ accountClient.id || '-' }}
           </p>
         </li>
       </ul>
@@ -249,6 +249,9 @@
       }
     },
     computed: {
+      accountClient () {
+        return this.$store.getters['crm/clientCard/client']
+      },
       accountBalances () {
         const result = this.$store.getters['crm/clientCard/accountBalances']
         result.forEach(item => {
