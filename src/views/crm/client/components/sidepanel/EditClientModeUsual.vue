@@ -9,7 +9,7 @@
             width="21"
           />
           <p class="body-m-medium neutral-700--text">
-            {{ clientData ? clientData.user.phone : '-' }}
+            {{ (clientData.user && clientData.user.phone) ? clientData.user.phone : '-' }}
           </p>
         </li>
         <li class="contacts-info__item">
@@ -19,7 +19,7 @@
             width="21"
           />
           <p class="body-m-medium neutral-700--text">
-            {{ clientData ? clientData.user.email : '-' }}
+            {{ (clientData.user && clientData.user.email) ? clientData.user.email : '-' }}
           </p>
         </li>
         <li class="contacts-info__item">
@@ -224,7 +224,7 @@
 </template>
 
 <script>
-  import BonusAccount from './BonusAccount'
+  import BonusAccount from '@/views/crm/client/components/BonusAccount'
   import { mask } from 'vue-the-mask'
 
   export default {

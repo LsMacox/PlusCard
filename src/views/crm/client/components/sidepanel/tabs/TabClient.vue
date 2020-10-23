@@ -133,7 +133,7 @@
 </template>
 
 <script>
-  import BonusAccount from '../BonusAccount'
+  import BonusAccount from '@/views/crm/client/components/BonusAccount'
 
   export default {
     name: 'TabClient',

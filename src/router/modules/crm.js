@@ -5,15 +5,15 @@ export default {
     children: [
         {
             path: '/program/accounts',
+            component: () => import('@/views/crm/client/Client'),
             beforeEnter: GuardEmptyPrograms,
-            component: () => import('@/views/crm/Client'),
             name: 'ProgramAccounts',
             meta: { auth: true, title: 'Клиенты', icon: 'dashboard' },
         },
         {
             path: '/program/segments',
+            component: () => import('@/views/crm/segment/Segment'),
             beforeEnter: GuardEmptyPrograms,
-            component: () => import('@/views/crm/Segment'),
             name: 'ProgramSegments',
             meta: { auth: true, title: 'Сегменты', icon: 'dashboard' },
         },

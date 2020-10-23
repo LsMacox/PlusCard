@@ -32,21 +32,21 @@
         <div class="contacts__block-right">
           <div class="contacts-full_name">
             <p class="title-m-bold">
-              {{ tableData ? tableData.user.name : '-' }}
+              {{ (tableData && tableData.user && tableData.user.name) ? tableData.user.name : '-' }}
             </p>
             <p class="title-m-bold">
-              {{ tableData ? tableData.user.lastname : '-' }}
+              {{ (tableData && tableData.user && tableData.user.lastname) ? tableData.user.lastname : '-' }}
             </p>
           </div>
           <div class="contacts-online">
             <p class="body-s-semibold neutral-600--text">
-              {{ tableData ? getLastActivity(tableData.user.last_activity) : '-' }}
+              {{ (tableData && tableData.user && tableData.user.last_activity) ? getLastActivity(tableData.user.last_activity) : '-' }}
             </p>
           </div>
         </div>
         <div class="contacts__block-left">
           <img
-            :src="[tableData ? tableData.user.avatar : '']"
+            :src="[(tableData && tableData.user && tableData.user.avatar) ? tableData.user.avatar : '']"
           >
         </div>
       </div>
@@ -100,9 +100,9 @@
 <script>
   import Convertor from '@/mixins/convertor.js'
   import SidePanel from '@/components/base/SidePanel'
-  // Mode
-  import ModeUsual from './components/EditClientModeUsual'
-  import ModeExtended from './components/EditClientModeExtended'
+  // Modes
+  import ModeUsual from './sidepanel/EditClientModeUsual'
+  import ModeExtended from './sidepanel/EditClientModeExtended'
 
   export default {
     components: {
@@ -122,20 +122,7 @@
       tableData: {
         type: Object,
         default: () => {
-          return {
-            id: '103112',
-            gender: true,
-            birthday: '10.03.1990',
-            city: 'Новокузнецк',
-            name: 'Константин',
-            lastname: 'Константинопольский',
-            last_activity: '02.08.2020 04:32',
-            phone: '79832525202',
-            email: 'rs.bikeev@yandex.ru',
-            barcode: '1640000000145437',
-            card: '432156',
-            avatar: require('@/assets/png/custom/beardedman.png'),
-          }
+          return {}
         },
       },
     },
@@ -190,13 +177,7 @@
       await this.fetchData()
     },
     mounted () {
-      this.$refs['panel-crm_edit_client'].$el.querySelector('.v-navigation-drawer__content').addEventListener('scroll', (e) => {
-        if (e.srcElement.scrollTop > 10) {
-          this.$refs['panel-crm_edit_client__header'].style.boxShadow = '0px 7px 20px rgba(88, 93, 106, 0.1)'
-        } else {
-          this.$refs['panel-crm_edit_client__header'].style.boxShadow = 'none'
-        }
-      })
+      this.shadowHeaderAtScroll()
     },
     methods: {
       getLastActivity (date) {
@@ -210,6 +191,15 @@
         })
 
         this.extendedTabs[tabIndex].active = true
+      },
+      shadowHeaderAtScroll () {
+        this.$refs['panel-crm_edit_client'].$el.querySelector('.v-navigation-drawer__content').addEventListener('scroll', (e) => {
+          if (e.srcElement.scrollTop > 5) {
+            this.$refs['panel-crm_edit_client__header'].style.boxShadow = '0px 7px 20px rgba(88, 93, 106, 0.1)'
+          } else {
+            this.$refs['panel-crm_edit_client__header'].style.boxShadow = 'none'
+          }
+        })
       },
       async fetchData () {
         try {

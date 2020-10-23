@@ -66,6 +66,12 @@ const actions = {
             const result = await ApiService.post('/api/account/bonus/transactions/add', item)
             console.log('/api/account/bonus/transactions/add')
             console.log(result)
+
+            this._vm.$notify({
+                type: 'success',
+                title: 'Клиенты',
+                text: 'Операция успешно проведена',
+            })
         } catch (error) {
             throw error
         }

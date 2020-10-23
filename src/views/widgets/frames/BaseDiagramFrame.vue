@@ -94,6 +94,9 @@
             display: true,
             callbacks: {
               title: function (tooltipItem, data) {
+                console.log('tooltipItem')
+                console.log(tooltipItem)
+                console.log('tooltipItem')
                 return tooltipItem[0].xLabel.count + ' ' + _this.declOfNum(tooltipItem[0].xLabel.count, _this.titles)
               },
               label: function (tooltipItem, data) {
