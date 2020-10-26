@@ -34,9 +34,9 @@ export const ICONIFY_ICONS = [
     },
     {
         id: 'question-circle-outlined',
-        component: () =>
-            import('@iconify/icons-ant-design/question-circle-outlined'),
+        component: () => import('@iconify/icons-ant-design/question-circle-outlined'),
     },
+
 
     // bi
     {
@@ -85,9 +85,21 @@ export const ICONIFY_ICONS = [
         id: 'chevron-right',
         component: () => import('@iconify/icons-entypo/chevron-right'),
     },
+    {
+        id: 'chevron-left',
+        component: () => import('@iconify/icons-entypo/chevron-left'),
+    },
+     
+     // tabler 
+    {
+        id: 'tabler-external-link',
+        component: () => import('@iconify/icons-tabler/external-link'),
+    },
+
 
     // ion
     { id: 'ion-close', component: () => import('@iconify/icons-ion/close') },
+    { id: 'ion-close-circle', component: () => import('@iconify/icons-ion/close-circle') },
     {
         id: 'ion-close-circle-outline',
         component: () => import('@iconify/icons-ion/close-circle-outline'),
@@ -123,10 +135,6 @@ export const ICONIFY_ICONS = [
     {
         id: 'ion-color-fill-outline',
         component: () => import('@iconify/icons-ion/color-fill-outline'),
-    },
-    {
-        id: 'ion-checkmark-circle-outline',
-        component: () => import('@iconify/icons-ion/checkmark-circle-outline'),
     },
     {
         id: 'ion-document-outline',
@@ -167,10 +175,6 @@ export const ICONIFY_ICONS = [
         component: () => import('@iconify/icons-ion/close-circle-outline'),
     },
     {
-        id: 'ion-checkmark-circle-outline',
-        component: () => import('@iconify/icons-ion/checkmark-circle-outline'),
-    },
-    {
         id: 'ion-stats-chart',
         component: () => import('@iconify/icons-ion/stats-chart'),
     },
@@ -197,10 +201,6 @@ export const ICONIFY_ICONS = [
     {
         id: 'ion-color-fill-outline',
         component: () => import('@iconify/icons-ion/color-fill-outline'),
-    },
-    {
-        id: 'ion-checkmark-circle-outline',
-        component: () => import('@iconify/icons-ion/checkmark-circle-outline'),
     },
     {
         id: 'ion-document-outline',

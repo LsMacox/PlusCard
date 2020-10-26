@@ -81,11 +81,12 @@
               style="height: 65px"
             >
               <date-text-field
+                v-model="form.birthday"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Дата рождения"
+                date-format="DD.MM.YYYY"
                 outlined
-                :date.sync="form.birthday"
               />
             </v-col>
             <v-col cols="12">

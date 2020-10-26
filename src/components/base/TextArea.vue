@@ -36,6 +36,7 @@
 
 <style lang="scss">
 @import '@/styles/vuetify-preset-plus/light_theme/_variables.sass';
+@import '@/styles/_typography.sass';
 
 .base-textarea {
   position: relative;
@@ -46,6 +47,12 @@
       position: absolute !important;
       bottom: 10px !important;
       right: 0px !important;
+    }
+    .v-text-field__slot {
+      textarea {
+        color: $neutral-900;
+        @include body-m-medium;
+      }
     }
   }
   .textarea---angle {

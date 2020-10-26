@@ -95,12 +95,12 @@
     },
     props: {
       date: {
-        type: String,
-        default: '',
+        type: [Date, String],
+        default: '00.00.0000',
       },
       dateFormat: {
         type: String,
-        default: 'DD.MM.YYYY',
+        default: '',
       },
     },
     data () {
@@ -113,13 +113,29 @@
       }
     },
     computed: {},
+    watch: {
+      date: {
+        immediate: true,
+        handler (v) {
+          const dateRaw = this.$moment(v).format(this.dateFormat)
+          const dateFormat = this.$moment(v, this.dateFormat).format(this.dateFormat)
+
+          this.dateText = dateRaw !== 'Invalid date' ? dateRaw : dateFormat
+        },
+      },
+      dateText (v) {
+        this.$emit('changeDate', this.$moment(v, this.dateFormat).toString())
+      },
+    },
     mounted () {},
     methods: {
       updateDatePicker (v) {
         this.showDatePicker = false
         this.dateText = v.startDate.toISOString().split('T')[0]
-        this.dateText = this.$moment(this.dateText).format(this.dateFormat)
-        this.$emit('changeDate', this.dateText)
+        if (this.dateFormat.length) {
+          this.dateText = this.$moment(v.startDate).format(this.dateFormat)
+        }
+        this.$emit('changeDate', v.startDate.toString())
       },
       show () {
         this.$nextTick(() => {

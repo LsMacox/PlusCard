@@ -144,7 +144,6 @@
         })
 
         if (this.findBy.length > 0) {
-          console.log('sortBy:', this.findBy)
           const sortItems = items.filter((item) => {
             if (
               item.name
@@ -154,7 +153,6 @@
               return item
             }
           })
-          console.log('sortItems:', sortItems)
 
           return sortItems
         }

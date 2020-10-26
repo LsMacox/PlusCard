@@ -108,6 +108,7 @@
       <div class="tab-client__content birthday__content">
         <base-date-text-field
           v-model="userBirthday"
+          date-format="DD.MM.YYYY"
           placeholder="Дата рождения клиента (дд.мм.гггг)"
         />
       </div>
@@ -137,6 +138,14 @@
     name: 'TabClient',
     components: {
       BonusAccount,
+    },
+    props: {
+      clientData: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
     },
     data () {
       return {

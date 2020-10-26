@@ -1,0 +1,64 @@
+@import '../variables';
+
+.v-carousel {
+  .v-window__prev, .v-window__next {
+    button {
+      background: $primary-base;
+      width: 31px;
+      height: 31px;
+      &:hover {
+        background: $primary-base;
+        box-shadow: 0 0 2px $neutral-400;
+      }
+    }
+    .v-icon--is-component {
+      font-size: 19px !important;
+      width: 19px !important;
+      height: 19px !important;
+    }
+  }
+  .v-carousel__controls {
+    .v-item-group {
+      margin-top: -4px;
+    }
+    button {
+      width: 6px;
+      height: 6px;
+      background: transparent;
+      margin: 0 4px 0 4px;
+      &:hover {
+        &:before {
+          opacity: 1 !important;
+        }
+      }
+      &.v-btn:not(.v-btn--text):not(.v-btn--outlined).v-btn--active {
+        background: $primary-base;
+        &:before {
+          opacity: 1 !important;
+          border: 1px solid $primary-base;
+        }
+      }
+      &:before {
+        border: 1px solid $primary-base;
+        opacity: 1;
+        background: transparent;
+      }
+      .v-btn__content {
+        width: 6px;
+        height: 6px;
+        i {
+          &:before {
+            content: none;
+          }
+          &:after {
+            content: none;
+            position: absolute;
+            height: 6px;
+            opacity: 1;
+            background: $primary-base;
+          }
+        }
+      }
+    }
+  }
+} 

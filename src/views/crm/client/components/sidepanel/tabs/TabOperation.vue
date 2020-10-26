@@ -5,6 +5,14 @@
 <script>
   export default {
     name: 'TabOperation',
+    props: {
+      clientData: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
+    },
   }
 </script>
 
