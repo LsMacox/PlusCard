@@ -42,6 +42,7 @@ export const ICONIFY_ICONS = {
     'chevron-right': () => import('@iconify/icons-entypo/chevron-right'),
 
     // ion
+    'ion-checkmark-done': () => import('@iconify/icons-ion/checkmark-done'),
     'ion-close': () => import('@iconify/icons-ion/close'),
     'ion-archive-outline': () => import('@iconify/icons-ion/archive-outline'),
     'ion-close-circle-outline': () => import('@iconify/icons-ion/close-circle-outline'),
@@ -65,6 +66,7 @@ export const ICONIFY_ICONS = {
     'ion-attach': () => import('@iconify/icons-ion/attach-outline'),
 
     // feather
+    'feather-refresh-ccw': () => import('@iconify/icons-feather/refresh-ccw'),
     'feather-settings': () => import('@iconify/icons-feather/settings'),
     'feather-trash': () => import('@iconify/icons-feather/trash'),
     'feather-download': () => import('@iconify/icons-feather/download'),
