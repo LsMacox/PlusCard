@@ -21,9 +21,10 @@ function IconifyIconWrap (id) {
 
 function LoadIconifyIcons (iconList) {
   const icons = {}
-  for (const icon of iconList) {
-      const name = `iconify_${icon.id}`
-      icons[name] = IconifyIconWrap(icon.id)
+  for (const icon in iconList) {
+      const name = `iconify_${icon}`
+      // console.log('LoadIconifyIcons',name)
+      icons[name] = IconifyIconWrap(icon)
   }
   return icons
 }
@@ -51,6 +52,10 @@ const options = {
         error: '#EA4C2A',
 
         // plus color
+        'success-500': '#00D15D',
+        'warning-500': '#FFA338',
+        'error-500': '#EA4C2A',
+
         'primary-100': '#EBF1FF',
         'primary-700': '#C7D7FF',
         'primary-600': '#E0E9FF',

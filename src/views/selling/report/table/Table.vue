@@ -118,10 +118,10 @@
           <template v-slot:item.bonuses="{ item }">
             <div  style="display: flex; align-items: center">
               <div v-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value > 0" class="body-s-semibold cell-text-success">
-                {{ '+'+formatNumberString(item.tran_group.abst_view[0].value) }}
+                {{ '+'+formatNumberString(bonusValue(item.tran_group.abst_view)) }}
               </div>
               <div v-else-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value < 0" class="body-s-semibold cell-text-error">
-                {{ formatNumberString(item.tran_group.abst_view[0].value) }}
+                {{ formatNumberString(bonusValue(item.tran_group.abst_view)) }}
               </div>
               <div v-else class="body-s-semibold">
                 -
@@ -300,6 +300,16 @@
       this.fetchData()
     },
     methods: {
+      bonusValue (data) {
+        let sum = 0
+        data.forEach(item => {
+          sum += parseInt(item.value)
+        })
+        console.log('bonusValue')
+        console.log(sum)
+        console.log('bonusValue')
+        return sum
+      },
       userSidePanel (item) {
         const user = item.user
         user.id = item.id

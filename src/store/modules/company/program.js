@@ -1,5 +1,6 @@
 import ApiService from '@/api/api-client'
 import VueSession from '@/utils/session'
+import Vue from 'vue'
 
 const defaultShop = {
   isNew: true,
@@ -116,10 +117,12 @@ const mutations = {
     items.push(payload)
   },
   UPDATE_IN_SHOPS (state, payload) {
-    const items = state.shops
-    items.forEach((item, index) => {
-      if (item.id === payload.id) Object.assign(items[index], payload)
-    })
+    const index = state.shops.findIndex(x => x.id === payload.id)
+    if (index >= 0) Vue.set(state.shops, index, payload)
+    // const items = state.shops
+    // items.forEach((item, index) => {
+    //   if (item.id === payload.id) Object.assign(items[index], payload)
+    // })
   },
   REMOVE_IN_SHOPS (state, payload) {
     const items = state.shops

@@ -110,8 +110,8 @@
               request: this.$moment(item.created_at).format('DD.MM.YYYY'),
               signing: item.document_date ? this.$moment(item.document_date).format('DD.MM.YYYY') : 'Дата не указана',
               typeOperation: {
-                text: 'На рассмотрении',
-                type: 'pending',
+                text: item.confirmed === true ? 'Подтвержден' : 'На рассмотрении',
+                type: item.confirmed === true ? 'paidUp' : 'pending',
               },
             },
           )

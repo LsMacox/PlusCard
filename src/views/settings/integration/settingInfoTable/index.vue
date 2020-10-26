@@ -22,6 +22,7 @@
         :items="integrationsDisplay"
         hide-default-footer
         class="elevation-0 custom-table"
+        :item-class="'itemClass'"
       >
         <template v-slot:item.created_at="{ item }">
           <div>
@@ -151,6 +152,7 @@
 </script>
 
 <style scoped>
+
   .table-wrap {
     /* max-width: 1024px; */
     width: 100%;

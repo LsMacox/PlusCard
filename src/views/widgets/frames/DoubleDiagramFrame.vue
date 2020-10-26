@@ -70,6 +70,12 @@
     mixins: [WidgetFunctions],
     inheritAttrs: false,
     props: {
+      name: {
+        type: String,
+        default () {
+          return undefined
+        },
+      },
       diagramData: {
         type: Array,
         default () {
@@ -108,14 +114,39 @@
           return [0, 0]
         },
       },
+      titles: {
+        type: Array,
+        default () {
+          return []
+        },
+      },
     },
     data () {
+      var _this = this
       return {
         diagramOptions: {
           pointRadius: 4,
           pointBorderWidth: 2.5,
           tooltips: {
-            display: false,
+            display: true,
+            callbacks: {
+              title: function (tooltipItem, data) {
+                if (_this.name === 'purchase') {
+                  return tooltipItem[0].value + ' руб.'
+                } else {
+                  return tooltipItem[0].value + ' ' + _this.declOfNum(parseInt(tooltipItem[0].value), _this.titles)
+                }
+              },
+              label: function (tooltipItem, data) {
+                var startDate = tooltipItem.xLabel.start_period
+                var endDate = tooltipItem.xLabel.end_period
+
+                const formatStart = _this.$moment(startDate, 'YYYY-MM-DD').format('D.MM.YYYY')
+                const formatEnd = _this.$moment(endDate, 'YYYY-MM-DD').format('D.MM.YYYY')
+
+                return formatStart + '-' + formatEnd
+              },
+            },
           },
         },
       }

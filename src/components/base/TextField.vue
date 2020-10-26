@@ -11,7 +11,7 @@
     :clear-icon="clearIcon"
     :clearable="clearable"
     :color="color"
-    :counter="counter"
+    :counter="vCounter"
     :dark="dark"
     :dense="dense"
     :disabled="disabled"
@@ -22,7 +22,7 @@
     :flat="flat"
     :full-width="fullWidth"
     :height="height"
-    :hide-details="hideDetails"
+    :hide-details="hideDetails || ['tooltip', 'custom'].includes(errorStyle)"
     :hint="hint"
     :label="label"
     :light="light"
@@ -70,7 +70,7 @@
       <v-row
         no-gutters
         class="append-slot-row"
-        align="center"        
+        align="center"
       >
         <v-col
           v-if="false"
@@ -81,6 +81,7 @@
         </v-col>
 
         <v-col
+         v-if="!!counter"
           cols="auto"
           class="append-slot-row__col body-xs-semibold"
         >
@@ -95,56 +96,37 @@
             {{ computedMaxCounter ? `${computedCounterValue} / ${computedMaxCounter}` : String(computedCounterValue) }}
           </span>
         </v-col>
+
         <v-col
-          cols="auto"          
+          v-if=" ['tooltip', 'custom'].includes(errorStyle)"
+          cols="auto"
           class="append-slot-row__col"
         >
           <!-- <div class="dev-tooltip">dev-tooltip</div> -->
-          <!-- <base-tooltip
-            v-if="hasDispayErrors && !disabled"
-            :value="true"
-            :disabled="disabled"
-            text=""
-            color="error"
-            :top="validationPlacement === 'top'"
-            :right="validationPlacement === 'right'"
-            :left="validationPlacement === 'left'"
-            :bottom="validationPlacement === 'bottom'"           
+
+          <div
+            v-if="errorStyle === 'custom'"
+            ref="base-text-field__tooltip"
+            :style="hasDispayErrors && !disabled ? 'opacity: 1' : 'opacity: 0'"
+            class="base-text-field__tooltip error--text"
           >
-          :attach="$refs.vTextField.$el"
             <v-icon
-              v-show="hasDispayErrors"
-              color="error"
-              @click="showError = !showError"
-            >
-              $iconify_ion-warning
-            </v-icon>
-            <template v-slot:content>
-              <div
-                v-for="(error, index) in errorMessagesToDisplay"
-                :key="index"
-              >
-                {{ error }}
-              </div>
-            </template>
-          </base-tooltip> -->
-          <div ref="base-text-field__tooltip" :style="hasDispayErrors && !disabled ? 'opacity: 1' : 'opacity: 0'" class="base-text-field__tooltip error--text">
-            <v-icon
-              class="icon-warning"
+              class="icon-warning error-style-custom"
               color="error"
             >
               $iconify_ion-warning
             </v-icon>
-            <div 
+            <div
+              ref="tooltip"
               class="tooltip-content"
               :class="{show: showError}"
-              :style="validationPlacement == 'top' ? `left: ${tooltipPos.x}px; bottom: ${tooltipPos.y}px` :
-                      validationPlacement == 'bottom' ? `left: ${tooltipPos.x}px; top: ${tooltipPos.y}px` : 
-                      validationPlacement == 'left' ? `left: ${tooltipPos.x}px; bottom: ${tooltipPos.y}px` : 
-                      validationPlacement == 'right' ? `left: ${tooltipPos.x}px; bottom: ${tooltipPos.y}px` : ''"
+              :style="validationPlacement == 'top' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.top}px` :
+                validationPlacement == 'bottom' ? `left: ${tooltipPos.left}px; top: ${tooltipPos.bottom}px` :
+                validationPlacement == 'left' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.bottom}px` :
+                validationPlacement == 'right' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.bottom}px` : ''"
               :placement="validationPlacement"
-              ref="tooltip">
-               <div
+            >
+              <div
                 v-for="(error, index) in errorMessagesToDisplay"
                 :key="index"
               >
@@ -152,9 +134,57 @@
               </div>
             </div>
           </div>
+          <base-tooltip
+            v-else-if=" errorStyle === 'tooltip' && hasDispayErrors && !disabled"
+            :value="true"
+            :disabled="disabled"
+            :open-on-hover="false"
+            text=""
+            color="error"
+            :top="validationPlacement === 'top'"
+            :right="validationPlacement === 'right'"
+            :left="validationPlacement === 'left'"
+            :bottom="validationPlacement === 'bottom'"
+          >
+            <!-- :attach="$refs.vTextField.$el" -->
+            <v-icon
+              v-show="hasDispayErrors"
+              color="error"
+              class="error-style-tooltip"
+              @click="showError = !showError"
+            >
+              $iconify_ion-warning
+            </v-icon>
+            <template v-slot:content>
+              <div
+                v-for="(errorMessage, index) in errorMessagesToDisplay"
+                :key="index"
+              >
+                {{ errorMessage }}
+              </div>
+            </template>
+          </base-tooltip>
+        </v-col>
+        <v-col
+          v-else
+          cols="auto"
+          class="append-slot-row__col"
+        >
+          <v-icon
+            v-show="hasDispayErrors"
+            class="error-style-base"
+            color="error"
+            @click="showError = !showError"
+          >
+            $iconify_ion-warning
+          </v-icon>
         </v-col>
       </v-row>
     </template>
+    <!-- Слот отображения ошибки -->
+    <!-- <template v-slot:message="{key, message}">
+      <div>!!!{{ message }}</div>
+    </template> -->
   </v-text-field>
 </template>
 
@@ -164,7 +194,7 @@
  * todo  counter + clearable
  */
 
-  import { VTextField, VInput } from 'vuetify/lib'
+  import { VTextField } from 'vuetify/lib'
   import Validatable from 'vuetify/lib/mixins/validatable'
   import Calculation from '@/mixins/calculation.js'
 
@@ -174,15 +204,24 @@
       VTextField,
       // VInput,
       Validatable,
-      Calculation
+      Calculation,
     ],
     model: {
       prop: 'value',
       event: 'input',
     },
     props: {
-      //
-      maxlength: [String, Number],
+      // стиль отображения ошибки 'vuetify' - базовый vuetify  'tooltip' через tooltip, 'custom' - от LsMacox
+      errorStyle: {
+        type: String,
+        default: 'tooltip',
+      },
+
+      maxlength: {
+        type: [String, Number],
+        default: undefined,
+      },
+
       validationPlacement: {
         type: String,
         default: 'right',
@@ -193,15 +232,36 @@
       //   default: null,
       // },
 
-      appendIcon: String,
-      appendOuterIcon: String,
+      appendIcon: {
+        type: String,
+        default: undefined,
+      },
+      appendOuterIcon: {
+        type: String,
+        default: undefined,
+      },
       autofocus: Boolean,
-      backgroundColor: String,
-      clearIcon: String,
+      backgroundColor: {
+        type: String,
+        default: undefined,
+      },
+      clearIcon: {
+        type: String,
+        default: undefined,
+      },
       clearable: Boolean,
-      color: String,
-      counter: [Boolean, String, Number],
-      counterValue: Function, // ---
+      color: {
+        type: String,
+        default: undefined,
+      },
+      counter: {
+        type: [Boolean, String, Number],
+        default: undefined,
+      },
+      counterValue: {
+        type: Function,
+        default: undefined,
+      }, // ---
       dark: Boolean,
       dense: Boolean,
       disabled: Boolean,
@@ -211,27 +271,57 @@
       filled: Boolean,
       flat: Boolean,
       fullWidth: Boolean,
-      height: [Number, String],
+      height: {
+        type: [Number, String],
+        default: undefined,
+      },
       hideDetails: {
         type: Boolean,
-        default: true,
+        default: false,
       },
-      hint: String,
-      id: String,
-      label: String,
+      hint: {
+        type: String,
+        default: undefined,
+      },
+      id: {
+        type: String,
+        default: undefined,
+      },
+      label: {
+        type: String,
+        default: undefined,
+      },
       light: Boolean,
-      loaderHeight: [Number, String],
-      loading: [Boolean, String],
+      loaderHeight: {
+        type: [Number, String],
+        default: undefined,
+      },
+      loading: {
+        type: [Boolean, String],
+        default: undefined,
+      },
       // messages: [String, Array],
       outlined: {
         type: Boolean,
         default: true,
       },
       persistentHint: Boolean,
-      placeholder: String,
-      prefix: String,
-      prependIcon: String,
-      prependInnerIcon: String,
+      placeholder: {
+        type: String,
+        default: undefined,
+      },
+      prefix: {
+        type: String,
+        default: undefined,
+      },
+      prependIcon: {
+        type: String,
+        default: undefined,
+      },
+      prependInnerIcon: {
+        type: String,
+        default: undefined,
+      },
       prependInnerIconColor: {
         type: String,
         default: 'neutral-500',
@@ -242,8 +332,14 @@
       singleLine: Boolean,
       // success: Boolean,
       // successMessages: [Array, String],
-      suffix: String,
-      type: String,
+      suffix: {
+        type: String,
+        default: undefined,
+      },
+      type: {
+        type: String,
+        default: undefined,
+      },
       // validateOnBlur: Boolean,
 
       // New
@@ -254,13 +350,15 @@
     },
     data () {
       return {
+        vCounter: false,
         showError: false,
         // computedCounterValue: 0,
         computedCounterValue2: 0,
         tooltipPos: {
-          x: 0,
-          y: 0,
-        }
+          left: 0,
+          top: 0,
+          bottom: 0,
+        },
       }
     },
     computed: {
@@ -321,9 +419,10 @@
       },
       hasDispayErrors (v) {
         if (v) {
-          this.setTooltipPosition()
           this.showError = true
-          setTimeout(() => this.showError = false, 4000)
+          setTimeout(() => {
+            this.showError = false
+          }, 4000)
         } else {
           this.showError = false
         }
@@ -353,40 +452,39 @@
         this.isFocused = false
         e && this.$nextTick(() => this.$emit('blur', e))
       },
-      onInput (e) {        
+      onInput (e) {
         // console.log('onInput', e)
         e && this.$nextTick(() => this.$emit('input', e))
       },
       onClick (e) {
         // if (this.isFocused || this.isDisabled || !this.$refs.vTextField) return;
-      // this.$refs.input.focus();
+        // this.$refs.input.focus();
         e && this.$emit('click', e)
       },
-      async setTooltipPosition () {
-        if (this.$refs.tooltip != undefined) 
-        {
-          this.$refs.tooltip.style.transition = 'none';
-          let tooltipWidth = this.nodeOffsetWH(this.$refs.tooltip)
+      setTooltipPosition () {
+        if (this.$refs.tooltip != undefined) {
+          const tooltipWidth = this.nodeOffsetWH(this.$refs.tooltip)
+          const tooltipHeight = this.nodeOffsetWH(this.$refs.tooltip, false)
 
           switch (this.validationPlacement) {
             case 'top':
-              this.tooltipPos.x = -tooltipWidth / 2 - 13
-              break;
-            case 'bottom': 
-              this.tooltipPos.x = -tooltipWidth / 2 - 13
-              break;
-            case 'right': 
-              this.tooltipPos.x = 10
-              break;
-            case 'left': 
-              this.tooltipPos.x = -tooltipWidth - 33
-              break;
+              this.tooltipPos.left = -tooltipWidth / 2 - 13
+              this.tooltipPos.top = 20
+              break
+            case 'bottom':
+              this.tooltipPos.left = -tooltipWidth / 2 - 13
+              this.tooltipPos.bottom = 20
+              break
+            case 'right':
+              this.tooltipPos.left = 10
+              this.tooltipPos.bottom = -(tooltipHeight / 2)
+              break
+            case 'left':
+              this.tooltipPos.left = -tooltipWidth - 33
+              console.log(this.$refs.tooltip.clientHeight)
+              this.tooltipPos.bottom = -(tooltipHeight / 2)
+              break
           }
-          await this.$nextTick() 
-          let tooltipHeight = this.nodeOffsetWH(this.$refs.tooltip, false)
-          if (this.validationPlacement == 'top' || this.validationPlacement == 'bottom') this.tooltipPos.y = 20 
-          if (this.validationPlacement == 'left' || this.validationPlacement == 'right') this.tooltipPos.y = -(tooltipHeight / 2)
-          setTimeout(() => this.$refs.tooltip.style.transition = 'all .3s ease-in-out', 0);
         }
       },
     },
@@ -402,6 +500,7 @@
   // width: max-content;
   margin: 0px -4px;
   .append-slot-row__col{
+    margin-left: 4px;
     margin-right: 4px;
   }
   .base-counter {
@@ -426,7 +525,7 @@
         opacity: 1;
       }
       & + .tooltip-content[placement='top'],
-      & + .tooltip-content[placement='bottom'], 
+      & + .tooltip-content[placement='bottom'],
       & + .tooltip-content[placement='left'],
       & + .tooltip-content[placement='right']
       {
@@ -446,15 +545,15 @@
     text-align: center;
     z-index: 1;
     opacity: 0;
-    box-shadow: 1px 1px 5px #7b7b7b;
     visibility: hidden;
+    transition: all .3s ease-in-out;
     @include body-s-semibold;
     &.show {
       visibility: visible;
       &[placement] {
         opacity: 1 !important;
         z-index: 3 !important;
-        transform: translate(0, 0) !important; 
+        transform: translate(0, 0) !important;
       }
     }
   }

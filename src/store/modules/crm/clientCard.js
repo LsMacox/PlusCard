@@ -6,6 +6,7 @@ const getDefaultState = () => {
         accountScores: [], // счета клиента
         accountBalances: [], // баланс счетов клиента
         transactions: [], // транзакции счетов
+        client: {}, // пользователь карты
     }
 }
 
@@ -17,22 +18,7 @@ const mutations = {
     SET_ACCOUNT_SCORES: (state, payload) => state.accountScores = payload,
     SET_ACCOUNT_BALANCES: (state, payload) => state.accountBalances = payload,
     SET_TRANSACTIONS: (state, payload) => state.transactions = payload,
-    ADD (state, payload) {
-        const items = state.clients
-        items.push(payload)
-    },
-    UPDATE (state, payload) {
-        const items = state.clients
-        items.forEach((item, index) => {
-            if (item.id === payload.id) Object.assign(items[index], payload)
-        })
-    },
-    REMOVE (state, payload) {
-        const items = state.clients
-        items.forEach((item, index) => {
-            if (item.id === payload.id) items.splice(index, 1)
-        })
-    },
+    SET_CLIENT: (state, payload) => state.client = payload,
 }
 
 const actions = {
@@ -82,11 +68,28 @@ const actions = {
             const result = await ApiService.post('/api/account/bonus/transactions/add', item)
             console.log('/api/account/bonus/transactions/add')
             console.log(result)
+
+            this._vm.$notify({
+                type: 'success',
+                title: 'Клиенты',
+                text: 'Операция успешно проведена',
+            })
         } catch (error) {
             throw error
         }
     },
 
+    async getAccountClient ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.get(`/api-cabinet/crm/account/user?id=${item.id}`)
+            console.log(`/api-cabinet/crm/account/user?id=${item.id}`)
+            console.log(result)
+            commit('SET_CLIENT', result)
+        } catch (error) {
+            throw error
+        }
+    },
 }
 
 const getters = {
@@ -94,6 +97,7 @@ const getters = {
     accountScores: state => state.accountScores,
     accountBalances: state => state.accountBalances,
     transactions: state => state.transactions,
+    client: state => state.client,
 }
 
 export default {

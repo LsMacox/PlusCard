@@ -1,13 +1,14 @@
 <template>
   <double-diagram-frame
     class="w-purchase"
-    :diagram-data="[byProgramWD, totalWD]"
-    :diagram-labels="[totalWD, byProgramWD]"
+    :diagram-data="[diagramNewData, diagramTotalData]"
+    :diagram-labels="[diagramNewLabels, diagramNewLabels]"
     :diagram-height="46"
     title="Покупки"
     :sub-titles="subTitles()"
-    :counts="[widgetData.byProgramSum, widgetData.totalSum]"
-    :percentage-differences="[byProgramPD, totalPD]"
+    :counts="[formatNumberString(widgetData.byProgramSum), formatNumberString(widgetData.totalSum)]"
+    :percentage-differences="[byProgramPercentageDifference, totalPercentageDifference]"
+    name="purchase"
   />
 </template>
 
@@ -17,13 +18,18 @@
   import FormatNumber from '@/mixins/formatNumber'
 
   export default {
+    name: 'Purchase',
     components: { DoubleDiagramFrame },
     mixins: [WidgetFunctions, FormatNumber],
     props: {
       widgetData: {
         type: Object,
         default: () => {
-          return {}
+          return [7].fill({
+            count: 0,
+            date_start: '2020-09-08',
+            date_end: '2020-09-08',
+          })
         },
       },
     },
@@ -31,60 +37,54 @@
       return {
         totalWD: [0, 0, 0, 0, 0, 0, 0],
         byProgramWD: [0, 0, 0, 0, 0, 0, 0],
-        diagramOptions: {
-          pointRadius: 4,
-          pointBorderWidth: 2.5,
-          tooltips: {
-            display: false,
-          },
-        },
+        byProgramPercentageDifference: 0,
+        totalPercentageDifference: 0,
       }
     },
     computed: {
-      totalPurchases () {
-        return this.totalWD.length ? this.totalWD[this.totalWD.length - 1] / 100 : 0
+      diagramNewLabels () {
+        return this.prepareDiagramLabels(this.widgetData.chart[0], 'count')
       },
-      byProgramPurchases () {
-        return this.byProgramWD.length ? this.byProgramWD[this.byProgramWD.length - 1] / 100 : 0
+      diagramTotalLabels () {
+        return this.prepareDiagramLabels(this.widgetData.chart[1], 'count')
       },
-      totalPD () {
-        if (this.totalWD && this.totalWD.length >= 2) {
-          if (this.totalWD[1] > 0) {
-            return this.relativeChange(this.totalWD[this.totalWD.length - 1], this.totalWD[this.totalWD.length - 2])
-          }
-        }
-        return 0
+      diagramNewData () {
+        return this.$_.map(this.widgetData.chart[0], 'count')
       },
-      byProgramPD () {
-        if (this.byProgramWD && this.byProgramWD.length >= 2) {
-          if (this.byProgramWD[1] > 0) {
-            return this.relativeChange(this.byProgramWD[this.byProgramWD.length - 1], this.byProgramWD[this.byProgramWD.length - 2])
-          }
-        }
-        return 0
-      },
-      diagramLabels () {
-        return this.total
+      diagramTotalData () {
+        console.log('this.widgetData.chart[1]')
+        console.log(this.widgetData.chart[1])
+        console.log('this.widgetData.chart[1]')
+        return this.$_.map(this.widgetData.chart[1], 'count')
       },
     },
     watch: {
       widgetData (v) {
         if (v && v.chart[0] && v.chart[1]) {
-          this.byProgramWD = v.chart[0].reverse()
-          this.totalWD = v.chart[1].reverse()
+          const byProgramData = v.chart[0]
+          const totalData = v.chart[1]
+          this.byProgramPercentageDifference = this.relativeChange(byProgramData[byProgramData.length - 1], byProgramData[byProgramData.length - 2])
+          this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1], totalData[totalData.length - 2])
         }
       },
     },
     mounted () {
-      this.byProgramWD = this.widgetData.chart[0].reverse()
-      this.totalWD = this.widgetData.chart[1].reverse()
+      const byProgramData = this.widgetData.chart[0]
+      const totalData = this.widgetData.chart[1]
+      this.byProgramPercentageDifference = this.relativeChange(byProgramData[byProgramData.length - 1], byProgramData[byProgramData.length - 2])
+      this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1], totalData[totalData.length - 2])
     },
     methods: {
       subTitles () {
+        const words = ['покупка', 'покупки', 'покупок']
         return [
-          this.formatNumberString(this.widgetData.byProgramCount) + ' покупки по программе',
-          this.formatNumberString(this.widgetData.totalCount) + ' покупки всего',
+          this.formatNumberString(this.widgetData.byProgramCount) + ' ' + this.getWord(this.widgetData.byProgramCount, words) + ' по программе',
+          this.formatNumberString(this.widgetData.totalCount) + ' ' + this.getWord(this.widgetData.totalCount, words) + ' всего',
         ]
+      },
+      getWord (number, words) {
+        const cases = [2, 0, 1, 1, 1, 2]
+        return words[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
       },
     },
   }

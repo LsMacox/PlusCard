@@ -1,10 +1,11 @@
 <template>
   <double-diagram-frame
     class="w-client-program"
-    :diagram-data="[newData, totalData]"
-    :diagram-labels="[newData, totalData]"
+    :diagram-data="[diagramNewData, diagramTotalData]"
+    :diagram-labels="[diagramNewLabels, diagramTotalLabels]"
     :diagram-height="46"
     title="Клиенты программы"
+    :titles="titles"
     :sub-titles="['Новые', 'Всего']"
     :counts="[newCount, totalCount]"
     :percentage-differences="[newPercentageDifference, totalPercentageDifference]"
@@ -22,61 +23,56 @@
       widgetData: {
         type: Array,
         default () {
-          return []
+          return [4].fill({
+            count: 0,
+            date_start: '2020-09-08',
+            date_end: '2020-09-08',
+          })
         },
       },
     },
     data () {
       return {
-        newData: [0, 0, 0, 0],
-        totalData: [0, 0, 0, 0],
-        diagramOptions: {
-          pointRadius: 43,
-          pointBorderWidth: 2.5,
-          tooltips: {
-            display: false,
-          },
-        },
+        newCount: 0,
+        totalCount: 0,
+        newPercentageDifference: 0,
+        totalPercentageDifference: 0,
+        titles: ['клиент', 'клиента', 'клиентов'],
       }
     },
     computed: {
-      newCount () {
-        return this.newData.length ? this.newData[this.newData.length - 1] : 0
+      diagramNewLabels () {
+        return this.prepareDiagramLabels(this.widgetData[0], 'count')
       },
-      totalCount () {
-        return this.totalData.length ? this.totalData[this.newData.length - 1] : 0
+      diagramTotalLabels () {
+        return this.prepareDiagramLabels(this.widgetData[1], 'count')
       },
-      newPercentageDifference () {
-        if (this.newData && this.newData.length >= 2) {
-          if (this.newData[1] > 0) {
-            return this.relativeChange(this.newData[this.newData.length - 1], this.newData[this.newData.length - 2])
-          }
-        }
-        return 0
+      diagramNewData () {
+        return this.$_.map(this.widgetData[0], 'count')
       },
-      totalPercentageDifference () {
-        if (this.totalData && this.totalData.length >= 2) {
-          if (this.totalData[1] > 0) {
-            return this.relativeChange(this.totalData[this.newData.length - 1], this.totalData[this.newData.length - 2])
-          }
-        }
-        return 0
-      },
-      diagramLabels () {
-        return this.newData
+      diagramTotalData () {
+        return this.$_.map(this.widgetData[1], 'count')
       },
     },
     watch: {
       widgetData (v) {
         if (v && v[0] && v[1]) {
-          this.newData = v[0].reverse()
-          this.totalData = v[1].reverse()
+          const newData = v[0]
+          const totalData = v[1]
+          this.newCount = newData.length ? newData[newData.length - 1].count : 0
+          this.totalCount = totalData.length ? totalData[totalData.length - 1].count : 0
+          this.newPercentageDifference = this.relativeChange(newData[newData.length - 1].count, newData[newData.length - 2].count) ?? 0
+          this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1].count, totalData[totalData.length - 2].count) ?? 0
         }
       },
     },
     mounted () {
-      this.newData = this.widgetData[0].reverse()
-      this.totalData = this.widgetData[1].reverse()
+      const newData = this.widgetData[0]
+      const totalData = this.widgetData[1]
+      this.newCount = newData.length ? newData[newData.length - 1].count : 0
+      this.totalCount = totalData.length ? totalData[totalData.length - 1].count : 0
+      this.newPercentageDifference = this.relativeChange(newData[newData.length - 1].count, newData[newData.length - 2].count) ?? 0
+      this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1].count, totalData[totalData.length - 2].count) ?? 0
     },
   }
 </script>

@@ -54,16 +54,10 @@ export default {
                     bonusRatio[1] = Math.round(state.widgetData.debit[state.widgetData.debit.length - 1] / state.widgetData.bonus_sum * 100)
                     bonusRatio[2] = Math.round(state.widgetData.expired[state.widgetData.expired.length - 1] / state.widgetData.bonus_sum * 100)
                 }
+                console.log('BONUSES')
+                console.log(bonusRatio)
+                console.log('BONUSES')
             }
-
-            console.log('movemsent')
-            console.log({
-                total: state.widgetData.total,
-                dateLabels: state.widgetData.date_labels,
-                chart: chartData,
-                bonusRatio: bonusRatio,
-            })
-            console.log('movement')
 
             return {
                 total: state.widgetData.total,

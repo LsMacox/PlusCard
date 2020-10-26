@@ -93,6 +93,24 @@ const actions = {
         }
     },
 
+    async updateAccount ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.put('/api-cabinet/crm/account', item)
+            console.log('/api-cabinet/crm/account')
+            console.log(result)
+            commit('UPDATE', result)
+
+            this._vm.$notify({
+                type: 'success',
+                title: 'Клиенты',
+                text: 'Клиент успешно обновлен',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
 }
 
 const getters = {

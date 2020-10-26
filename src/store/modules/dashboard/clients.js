@@ -21,7 +21,6 @@ export default {
     actions: {
         async widget ({ commit }, widget) {
             commit('loading', true)
-
             const result = await ApiService.post('/api-cabinet/widget/dashboard/clients/count', widget)
             commit('widgetData', result)
             commit('loading', false)
@@ -33,19 +32,31 @@ export default {
             return state.loading
         },
         widgetData (state) {
-            const chartData = [[], []]
+            const newData = []
+            const totalData = []
 
             if (state.widgetData.new) {
                 state.widgetData.new.forEach(item => {
-                    chartData[0].push(item.count)
+                    newData.push({
+                        count: item.count,
+                        date_start: item.date_start,
+                        date_end: item.date_end,
+                    })
                 })
             }
             if (state.widgetData.total) {
                 state.widgetData.total.forEach(item => {
-                    chartData[1].push(item.count)
+                    totalData.push({
+                        count: item.count,
+                        date_start: item.date_start,
+                        date_end: item.date_end,
+                    })
                 })
             }
-            return chartData
+            return [
+                newData.reverse(),
+                totalData.reverse(),
+            ]
         },
     },
 }

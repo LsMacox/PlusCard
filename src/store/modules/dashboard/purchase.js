@@ -33,7 +33,8 @@ export default {
             return state.loading
         },
         widgetData (state) {
-            const chartData = [[], []]
+            const newData = []
+            const totalData = []
 
             console.log('dafadasd')
             console.log(state.widgetData)
@@ -41,20 +42,41 @@ export default {
 
             if (state.widgetData.chart && state.widgetData.chart.by_program) {
                 state.widgetData.chart.by_program.forEach(item => {
-                    chartData[0].push(item.sum)
+                    newData.push({
+                        count: item.sum / 100,
+                        date_start: item.date_start,
+                        date_end: item.date_end,
+                    })
                 })
             }
             if (state.widgetData.chart && state.widgetData.chart.total) {
                 state.widgetData.chart.total.forEach(item => {
-                    chartData[1].push(item.sum)
+                    totalData.push({
+                        count: item.sum / 100,
+                        date_start: item.date_start,
+                        date_end: item.date_end,
+                    })
                 })
             }
+            console.log('DATA')
+            console.log(
+                {
+                    chart: [newData, totalData],
+                    totalCount: state.widgetData.total_count,
+                    byProgramCount: state.widgetData.by_program_count,
+                    totalSum: state.widgetData.total_sum_current / 100,
+                    byProgramSum: state.widgetData.by_program_sum_current / 100,
+                    totalSumPrev: state.widgetData.total_sum_prev,
+                    byProgramSumPrev: state.widgetData.by_program_sum_prev,
+                }
+            )
+            console.log('DATA')
             return {
-                chart: chartData,
+                chart: [newData.reverse(), totalData.reverse()],
                 totalCount: state.widgetData.total_count,
                 byProgramCount: state.widgetData.by_program_count,
-                totalSum: state.widgetData.total_sum_current,
-                byProgramSum: state.widgetData.by_program_sum_current,
+                totalSum: state.widgetData.total_sum_current / 100,
+                byProgramSum: state.widgetData.by_program_sum_current / 100,
                 totalSumPrev: state.widgetData.total_sum_prev,
                 byProgramSumPrev: state.widgetData.by_program_sum_prev,
             }
