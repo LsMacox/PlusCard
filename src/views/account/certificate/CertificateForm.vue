@@ -1,24 +1,8 @@
 <template>
-  <v-navigation-drawer
-    v-model="dialog"
-    class="cert-details"
-    fixed
-    right
-    temporary
-    width="500"
+  <BaseDrawerDialog
+    v-model="dialog"    
   >
-    <div
-      class="details-header"
-    >
-      <v-btn
-        text
-        color="primary"
-        @click="close()"
-      >
-        <v-icon>$iconify_arrow-left</v-icon>  <span class="body-s-semibold">Назад</span>
-      </v-btn>
-
-      <v-spacer />
+    <template v-slot:actions>
       <v-btn
         v-if="detailedCert.archived_at"
         :loading="changeArchiveStatusAction"
@@ -41,8 +25,7 @@
           mdi-archive-arrow-down-outline
         </v-icon> Архивировать
       </v-btn>
-    </div>
-
+    </template>
     <div class="cert-details-content">
       <div
         v-if="detailedCert.used_at"
@@ -233,6 +216,18 @@
           <span>{{ merchantOrderStatusTooltip(detailedCert.merchant_order_status) }}</span>
         </div>
       </div>
+      <v-row v-if="!detailedCert.used">
+        <v-col>
+          <v-btn
+            color="primary"
+            @click="usedDialog = true"
+          >
+            <v-icon left>
+              $iconify_ion-checkmark-done
+            </v-icon> Отметить как использованный
+          </v-btn>
+        </v-col>
+      </v-row>
 
       <div class="cert-details-divider">
         <v-divider />
@@ -387,73 +382,33 @@
         </v-col>
       </v-row>
 
-      <div
-        v-if="detailedCert.user"
-        class="cert-details-user-block"
-      >
-        <div class="cert-details-user-content">
-          <div class="cert-details-user d-flex">
-            <img
-              v-if="detailedCert.user"
-              :src="detailedCert.user.avatar"
-            >
-          </div>
-          <div class="cert-details-user-info">
-            <div v-if="detailedCert.user">
-              <div class="body-l-semibold">
-                {{ detailedCert.user.UserName }}
-              </div>
-              <div
-                v-if="detailedCert.user.last_activity"
-                class="cert-details-user-activity body-xs-semibold"
-              >
-                Был(а) в сети {{ $moment(detailedCert.user.last_activity).format('DD.MM.YYYY\u00A0HH:mm') }}
-              </div>
-
-              <div class="cert-details-user-contact d-flex">
-                <v-icon>$iconify_bi-phone</v-icon>
-                <div
-                  v-if="detailedCert.user.phone"
-                  class="body-m-medium"
-                >
-                  {{ detailedCert.user.phone }}
-                </div>
-                <div v-else>
-                  -
-                </div>
-              </div>
-              <div class="cert-details-user-contact d-flex">
-                <v-icon>$iconify_carbon-email</v-icon>
-                <div
-                  v-if="detailedCert.user.email"
-                  class="body-m-medium"
-                >
-                  {{ detailedCert.user.email }}
-                </div>
-                <div v-else>
-                  -
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <certificate-user-block
+        v-if="!!detailedCert.user"
+        :user="detailedCert.user"
+      />
     </div>
     <certificate-paid-dialog
       v-if="paidDialog"
       v-model="paidDialog"
       :cert="detailedCert"
     />
-  </v-navigation-drawer>
+    <certificate-used-dialog
+      v-if="usedDialog"
+      v-model="usedDialog"
+      :cert="detailedCert"
+    />
+  </BaseDrawerDialog>
 </template>
 
 <script>
   import dialogable from '@/mixins/dialogable.js'
   import CertMethodsMixin from './CertMethodsMixin'
   import CertificatePaidDialog from './CertificatePaidDialog'
+  import CertificateUsedDialog from './CertificateUsedDialog'
+  import CertificateUserBlock from './CertificateUserBlock'
 
   export default {
-    components: { CertificatePaidDialog },
+    components: { CertificatePaidDialog, CertificateUserBlock, CertificateUsedDialog },
     mixins: [dialogable, CertMethodsMixin],
     props: {
       detailedCert: {
@@ -466,6 +421,7 @@
         // detailedCert: null,
         changeArchiveStatusAction: false,
         paidDialog: false,
+        usedDialog: false,
       }
     },
     computed: {},

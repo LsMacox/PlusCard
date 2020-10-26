@@ -115,16 +115,20 @@ const actions = {
         /// /console.log(success)
         commit('update_statuses', result)
     },
-
-    async updateShop ({ commit, dispatch }, shop) {
-            const success = await ApiService.post('/api/partner/certificates/update', shop)
-            /// ///console.log(success)
-            commit('updateIncertificates', success.data.data)
-            dispatch('ShowNotify', {
-                title: 'Plus',
-                message: 'Магазин обновлен',
-                type: 'success',
-            }, { root: true })
+    async CertOrderUsedCode ({ commit, dispatch }, id) {
+        const result = await ApiService.post('/api/program/certificate/order/used/code',
+        {
+          id,
+        })
+        return result
+    },
+    async CertOrderUsed ({ commit, dispatch }, { id, useCode }) {
+        const result = await ApiService.post('/api/program/certificate/order/used',
+        {
+          id, use_code: useCode,
+        })
+        commit('update_statuses', result)
+        return result
     },
 
 }

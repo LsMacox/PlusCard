@@ -1,110 +1,84 @@
 <template>
-  <v-navigation-drawer
-    v-model="dialog"
-    class="cert-details"
-    fixed
-    right
-    temporary
-    width="500"
-  >
-    <v-row
-      no-gutters
-      class="dialog-header"
-    >
-      <v-btn
-        text
-        color="primary"
-        @click="close()"
-      >
-        <v-icon>$iconify_arrow-left</v-icon>  Назад
-      </v-btn>
-    </v-row>
-    <v-container class="dialog-body">
-      <v-form
-        ref="form"
-        v-model="valid"
-      >
-        <v-row>
-          <v-col class="title-m-bold">
-            Оплата сертификата
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="body-l-semibold primary--text">
-            {{ cert.order.num }}
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col class="">
-            <v-radio-group
-              v-model="paidType"
-              class="cert-payment-select"
-              hide-details
-              row
-              @change="onPaidTypeChange"
-            >
-              <v-radio
-                v-for="item in CERT_PAYMENT_TYPE_ENUM"
-                :key="item.id"
-                :label="item.text"
-                :value="item.id"
-              />
-            </v-radio-group>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <BaseDialogFieldBlock
-              v-if="paidType === CERT_PAYMENT_TYPE_ENUM.PLUS_CASH.id"
-              title="Данные чека"
-              description="Введие номер чека оплаты сертификата в поле ниже."
-            >
-              <base-text-field
-                v-model="transactionId"
-                :rules="transRules"
-                placeholder="Введите номер чека"
-                error-style="vuetify"
-                maxlength="255"
-              />
-            </BaseDialogFieldBlock>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <BaseDialogFieldBlock
+  <BaseDrawerDialog v-model="dialog" title="Оплата сертификата">
+    <v-form
+      ref="form"
+      v-model="valid"
+    >    
+      <v-row>
+        <v-col class="body-l-semibold primary--text">
+          {{ cert.order.num }}
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col class="">
+          <v-radio-group
+            v-model="paidType"
+            class="cert-payment-select"
+            hide-details
+            row
+            @change="onPaidTypeChange"
+          >
+            <v-radio
+              v-for="item in CERT_PAYMENT_TYPE_ENUM"
+              :key="item.id"
+              :label="item.text"
+              :value="item.id"
+            />
+          </v-radio-group>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <BaseDialogFieldBlock
+            v-if="paidType === CERT_PAYMENT_TYPE_ENUM.PLUS_CASH.id"
+            title="Данные чека"
+            description="Введие номер чека оплаты сертификата в поле ниже."
+          >
+            <base-text-field
+              v-model="transactionId"
+              :rules="transRules"
+              placeholder="Введите номер чека"
+              error-style="vuetify"
+              maxlength="255"
+            />
+          </BaseDialogFieldBlock>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <BaseDialogFieldBlock
 
-              title="Коментарий"
-              description="Введие номер чека оплаты сертификата в поле ниже."
-            >
-              <v-textarea
-                v-model="comment"
-                :rules="commentRules"
-                :rows="3"
-                auto-grow
-                placeholder="Введите комментарий"
-                outlined
-                maxlength="255"
-              />
-            </BaseDialogFieldBlock>
-          </v-col>
-        </v-row>
+            title="Коментарий"
+            description="Введие номер чека оплаты сертификата в поле ниже."
+          >
+            <v-textarea
+              v-model="comment"
+              :rules="commentRules"
+              :rows="3"
+              auto-grow
+              placeholder="Введите комментарий"
+              outlined
+              maxlength="255"
+            />
+          </BaseDialogFieldBlock>
+        </v-col>
+      </v-row>
 
-        <v-row v-show="valid">
-          <v-col>
-            <v-btn
-              color="primary"
-              :loading="CertOrderPaidAction"
-              @click="MakePaidClick()"
-            >
-              <v-icon left>
-                $iconify_ion-checkmark-circle-outline
-              </v-icon>Оплатить сертификат
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-form>
-    </v-container>
-  </v-navigation-drawer>
+      <v-row v-show="valid">
+        <v-col>
+          <v-btn
+            color="primary"
+            :loading="CertOrderPaidAction"
+            @click="MakePaidClick()"
+          >
+            <v-icon left>
+              $iconify_ion-checkmark-circle-outline
+            </v-icon>Оплатить сертификат
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-form>
+  </BaseDrawerDialog>
 </template>
 
 <script>
