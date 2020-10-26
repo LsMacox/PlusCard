@@ -198,7 +198,7 @@
       },
       async addClient () {
         const phone = this.clearPhoneMask(this.form.phone)
-        if (phone.length !== 11) {
+        if (phone && phone.length !== 11) {
           this.phoneErrors = ['Номер телефона должен быть 11 символов']
           return false
         }

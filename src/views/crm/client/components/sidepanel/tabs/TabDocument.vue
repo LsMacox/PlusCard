@@ -153,6 +153,7 @@
           <base-text-area
             v-model="documentDescription"
             hide-details
+            rows="4"
             placeholder="Например, телевизор Philips 43ETRY"
           />
         </div>

@@ -109,8 +109,8 @@
         v-else
       />
     </div>
+    {{ sidePanelStatus.active }}
     <side-panel-edit-client
-      v-if="sidePanelStatus.active"
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"
       :table-data="sidePanelStatus.data"
@@ -135,7 +135,6 @@
       return {
         loadingList: false,
         sidePanelStatus: {
-          active: false,
           mode: 'create',
           data: null,
         },
@@ -206,9 +205,9 @@
         this.sidePanelStatus.active = true
       },
       editSidePanel (item) {
-        this.sidePanelStatus.mode = 'edit'
-        this.sidePanelStatus.data = item
-        this.sidePanelStatus.active = true
+        this.$set(this.sidePanelStatus, 'mode', 'edit')
+        this.$set(this.sidePanelStatus, 'data', item)
+        this.$set(this.sidePanelStatus, 'active', true)
       },
       getLastActivity (date) {
         if (date) return 'Был(а) в сети ' + this.$moment.utc(date).local().format(this.$config.date.DATETIME_FORMAT_MIN2)

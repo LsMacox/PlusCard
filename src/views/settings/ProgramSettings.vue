@@ -84,7 +84,7 @@
             icon: require('@/assets/settings/Chat-On.png'),
             title: 'Чаты',
             description: 'Настройка приветственных сообщений, аватара и имени представителя в чате компании.',
-            to: '/communications/chat',
+            to: '/settings/chat',
           },
           {
             icon: require('@/assets/settings/Stuff-On.png'),

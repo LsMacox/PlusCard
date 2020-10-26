@@ -1,4 +1,5 @@
 @import '../variables';
+@import '@/styles/_typography.sass';
 
 .v-input--switch.theme--light {
     cursor: pointer;
@@ -22,6 +23,7 @@
     .v-input__control {
         .v-input__slot {
             .v-input--selection-controls__input {
+                width: 35px;
                 .v-input--selection-controls__ripple {
                     color: transparent !important;
                     caret-color: transparent !important;
@@ -43,6 +45,11 @@
                     box-shadow: none !important;
                     color: $neutral-100 !important;
                 }
+            }
+            .v-label {
+                margin-top: 2px;
+                @include body-m-medium;
+                color: $neutral-900;
             }
         }
     }

@@ -37,6 +37,7 @@
     "url-loader": "^4.1.0",
     "uuid": "^8.3.0",
     "v-mask": "^2.2.3",
+    "vee-validate": "^3.4.3",
     "vue": "^2.6.12",
     "vue-clipboard2": "^0.3.1",
     "vue-i18n": "^8.15.3",

@@ -305,6 +305,12 @@ export default new Router({
               name: 'SettingsIntegration',
               meta: { auth: true },
             },
+            {
+              path: 'chat',
+              component: () => import('@/views/settings/chat/index'),
+              name: 'SettingsChat',
+              meta: { auth: true },
+            },
           ],
         },
         {

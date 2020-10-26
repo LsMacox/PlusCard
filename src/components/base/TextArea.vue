@@ -3,7 +3,6 @@
     class="base-textarea"
   >
     <v-textarea
-      rows="4"
       outlined
       auto-grow
       v-bind="$attrs"
@@ -31,6 +30,11 @@
 
 <script>
   export default {
+    props: {
+    },
+    computed: {},
+    mounted () {
+    },
   }
 </script>
 

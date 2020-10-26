@@ -171,16 +171,13 @@
     watch: {
       active () {
         this.state = this.active
+        this.getData()
       },
       state () {
         this.$emit('changeState', this.state)
       },
     },
-    async created () {
-      // обнуляем пользователя карты
-      this.$store.commit('crm/clientCard/SET_CLIENT', {})
-      await this.fetchData()
-    },
+    async created () {},
     mounted () {
       this.shadowHeaderAtScroll()
     },
@@ -205,6 +202,13 @@
             this.$refs['panel-crm_edit_client__header'].style.boxShadow = 'none'
           }
         })
+      },
+      async getData () {
+        // обнуляем пользователя карты
+        this.$store.commit('crm/clientCard/SET_CLIENT', {})
+        if (this.tableData) {
+          await this.fetchData()
+        }
       },
       async fetchData () {
         try {
