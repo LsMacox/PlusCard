@@ -7,6 +7,7 @@ import '@fortawesome/fontawesome-free/css/all.css' // Ensure you are using css-l
 import '@/styles/main.sass'
 
 import { ICONIFY_ICONS } from '@/plugins/iconify'
+import { CUSTOM_ICONS } from '@/plugins/icons'
 
 Vue.use(Vuetify)
 
@@ -29,6 +30,21 @@ function LoadIconifyIcons (iconList) {
   return icons
 }
 
+function LoadSvgIcons (iconList) {
+  const icons = {}
+  for (const icon in iconList) {
+      const name = `icons_${icon}`
+      // console.log('LoadIconifyIcons',name)
+      icons[name] = {
+        component: 'simple-svg',
+        props: {
+          src: iconList[icon],
+        },
+      }
+  }
+  return icons
+}
+
 const options = {
   lang: {
     t: (key, ...params) => i18n.t(key, params),
@@ -38,6 +54,7 @@ const options = {
     values: {
       delete: IconifyIconWrap('ion-close'),
       ...LoadIconifyIcons(ICONIFY_ICONS),
+      ...LoadSvgIcons(CUSTOM_ICONS),
     },
   },
   theme: {

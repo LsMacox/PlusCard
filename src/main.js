@@ -45,6 +45,9 @@ import { IsDebugQuery } from '@/router/guards/router-handler-log'
 import VueTelInput from 'vue-tel-input'
 import VueClipboard from 'vue-clipboard2'
 import YmapPlugin from 'vue-yandex-maps'
+import VueSimpleSVG from 'vue-simple-svg'
+
+
 
 Vue.use(VueTelInput)
 Vue.use(Notifications)
@@ -54,6 +57,7 @@ Vue.use(AppConfig)
 Vue.use(MessageBox)
 Vue.use(VueClipboard)
 Vue.use(YmapPlugin, AppConfig.config.yandexMap)
+Vue.use(VueSimpleSVG)
 
 const options = {
   // color: '#bffaf3',
@@ -101,6 +105,7 @@ if (process.env.NODE_ENV !== 'development') {
   console.info('mute console.log')
   window.console.log = () => { }
 }
+window.Vue = Vue
 
 const App = new Vue({
   router,
