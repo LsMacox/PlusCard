@@ -108,12 +108,8 @@
       </div>
       <div class="tab-client__content birthday__content">
         <base-date-text-field
-<<<<<<< HEAD
           v-model="userBirthday"
           date-format="DD.MM.YYYY"
-=======
-          v-model="clientData.birthday"
->>>>>>> b5ebbc78fc6acb4d0a5af8864b08adb3e5a2126d
           placeholder="Дата рождения клиента (дд.мм.гггг)"
         />
       </div>

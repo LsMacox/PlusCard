@@ -1,21 +1,10 @@
 <template>
-<<<<<<< HEAD
   <keep-alive>
     <component
       :is="activeTab.componentName"
       :client-data="clientData"
-    /> -->
+    />
   </keep-alive>
-=======
-  <div>
-    <keep-alive>
-      <component
-        :is="activeTab.componentName"
-        :client-data="clientData"
-      />
-    </keep-alive>
-  </div>
->>>>>>> b5ebbc78fc6acb4d0a5af8864b08adb3e5a2126d
 </template>
 
 <script>
