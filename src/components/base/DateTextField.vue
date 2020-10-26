@@ -113,7 +113,11 @@
       }
     },
     computed: {},
-    mounted () {},
+    created () {
+      if (this.date) {
+        this.dateText = this.$moment(this.date).format(this.dateFormat)
+      }
+    },
     methods: {
       updateDatePicker (v) {
         this.showDatePicker = false

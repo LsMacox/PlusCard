@@ -52,6 +52,7 @@
     <div class="mode-usual__panel-btn">
       <v-btn
         class="panel-btn"
+        :disabled="clientCardLoading"
         @click="clickHereToPrint"
       >
         <iconify-icon
@@ -128,15 +129,9 @@
             <br>
             {{ item.bonus_unit }}: {{ item.value }}
             {{
-              getUnitNameEnding(
-                item.value,
-                accountBalances.filter(
-                  element => element.name == item.bonus_unit
-                )[0].ending["unit_name_ending"],
-                accountBalances.filter(
-                  element => element.name == item.bonus_unit
-                )[0].name
-              )
+              getUnitNameEnding(item.value,
+                                accountBalances.filter(element => element.name == item.bonus_unit).length ? accountBalances.filter(element => element.name == item.bonus_unit)[0].ending["unit_name_ending"] : '[]',
+                                accountBalances.filter(element => element.name == item.bonus_unit).length ? accountBalances.filter(element => element.name == item.bonus_unit)[0].name : '')
             }}
           </p>
           <p v-if="item.direction == 'TO'">
@@ -249,6 +244,9 @@
       }
     },
     computed: {
+      clientCardLoading () {
+        return this.$store.getters['crm/clientCard/loading']
+      },
       accountClient () {
         return this.$store.getters['crm/clientCard/client']
       },

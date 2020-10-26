@@ -167,10 +167,13 @@
         return this.$store.getters['crm/segment/segments']
       },
     },
-    watch: {
-      accountClient (v) {
-        if (v && v.segments) this.clientSegments = Object.copy(v.segments)
-      },
+    created () {
+      if (this.accountClient) {
+        // объявление сегментов
+        if (this.accountClient.segments) {
+          this.clientSegments = Object.copy(this.accountClient.segments)
+        }
+      }
     },
     methods: {
       getGender (gender) {
@@ -185,7 +188,7 @@
             id: this.clientData.id,
             client_name: this.clientData.client_name,
             birthday: this.clientData.birthday,
-            segments: this.clientSegments.map(item => item.id),
+            segments: this.clientSegments.map(item => item.id), // передаем только id сегментов
           }
           console.log(payload)
           await this.$store.dispatch('crm/client/updateAccount', payload)
