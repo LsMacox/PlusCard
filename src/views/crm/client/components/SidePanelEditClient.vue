@@ -23,6 +23,7 @@
           class="panel-crm_edit_client__tabs-btn"
           :class="{active: mode}"
           color="primary-100"
+          :disabled="clientCardLoading"
           @click="mode = true"
         >
           Расширенный
@@ -161,6 +162,9 @@
       }
     },
     computed: {
+      clientCardLoading () {
+        return this.$store.getters['crm/clientCard/loading']
+      },
       program () {
         return this.$store.getters['company/program/program']
       },
@@ -213,10 +217,10 @@
       async fetchData () {
         try {
           this.$store.commit('crm/clientCard/SET_LOADING', true)
-          await this.$store.dispatch('company/bonus_resources/GetList', this.program.id)
-          await this.$store.dispatch('crm/segment/segments', { program_id: this.program.id })
-          await this.$store.dispatch('crm/clientCard/getAccountBalances', this.tableData)
-          await this.$store.dispatch('crm/clientCard/getAccountClient', this.tableData)
+          await this.$store.dispatch('company/bonus_resources/GetList', this.program.id) // бонусные операции
+          await this.$store.dispatch('crm/segment/segments', { program_id: this.program.id }) // сегменты программы
+          await this.$store.dispatch('crm/clientCard/getAccountBalances', this.tableData) // бонусные балансы
+          await this.$store.dispatch('crm/clientCard/getAccountClient', this.tableData) // пользователь карты
         } finally {
           this.$store.commit('crm/clientCard/SET_LOADING', false)
         }
