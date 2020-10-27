@@ -91,7 +91,7 @@
               <i class="fas fa-star" />
             </div>
 
-            <div class="app--conversation--list--card-name">
+            <div class="app--conversation--list--card-name body-m-medium ">
               {{ conversation.display_name ? conversation.display_name : getName(conversation) }}
             </div>
             <div

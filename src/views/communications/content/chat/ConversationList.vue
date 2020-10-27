@@ -16,28 +16,30 @@
       <v-row justify="space-between">
         <v-col>
           <base-text-field
+            class="field-search"
             v-model="search"
-            placeholder="Поиск"
-            prepend-inner-icon="fa-search"
+            placeholder="Поиск чатов"
+            prepend-inner-icon="$iconify_ion-search-outline"
+            :prependInnerIconColor="this.$vuetify.theme.themes.light['neutral-500']"
             clearable
             hide-details
           />
         </v-col>
-        <v-col cols="auto">
+        <v-col cols="auto d-flex align-center">
           <v-tooltip
             :open-delay="$config.tooltipButtonDelay"
             top
           >
             <template v-slot:activator="{ on }">
               <v-btn
+                class="btn-add-chat"
                 color="primary"
                 fab
                 :loading="chatMemberListAction"
                 v-on="on"
                 @click="openCreate()"
               >
-                <v-icon>mdi-plus</v-icon>
-              <!-- <v-icon>$iconify_plus-circle-outlined</v-icon>    -->
+                <v-icon color="neutral-100" size="15">$iconify_eva-plus-outline</v-icon>
               </v-btn>
             </template>
             <span>Начать переписку</span>
@@ -396,163 +398,176 @@
   }
 </script>
 
-<style lang="scss" scoped>
-    #app--conversation--list--container{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        border-right: 1px solid #EBEBEB;
-        height: calc(100vh - 170px);
+<style lang="scss">
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
 
-        .app--conversation--list--header{
-            padding: 13px 15px 12px 16px;
+#app--conversation--list--container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-right: 1px solid #EBEBEB;
+    height: 100%;
 
-            .app--conversation--list--buttons{
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
+    .app--conversation--list--header{
+        padding: 13px 15px 12px 16px;
 
-                .app--conversation--list--button--wrapper{
-                    position:relative;
-
-                    .app--conversation--list--button--badge {
-                        position: absolute;
-                        top: -6px;
-                        right: -6px;
-                        background: #E74C3C;
-                        width: 24px;
-                        padding: 1.2px 5px;
-                        border-radius: 9px;
-                        font-weight: 500;
-                        font-size: 13px;
-                        line-height: 15px;
-                        color: #FFFFFF;
-                        text-align: center;
-                        font-family: "SFPro-Regular";
-                    }
-
-                    .app--conversation--list--button{
-                        background: #A4B1C1;
-                        border-radius: 10px;
-                        font-family: "SF Pro Text", sans-serif;
-                        font-size: 15px;
-                        line-height: 18px;
-                        text-align: center;
-                        color: #fff;
-                        outline:none;
-                        font-weight: 600;width: 150px;
-                        width: 150px;
-                        height: 42px;
-                    }
-
-                    .app--conversation--list--button--active{
-                        background: #4583AC;
-                    }
-
-                    .app--conversation--list--button--clients{
-                        width: 150px;
-                        height: 42px;
-                    }
-
-                    .app--conversation--list--button--workers{
-                        width: 150px;
-                        height: 42px;
-                    }
-                }
+        .field-search {
+          border-radius: 10px !important;
+          .v-input__prepend-inner {
+            padding-right: 8px;
+          }
+          input {
+            @include body-m-medium;
+            color: $neutral-900;
+            margin-top: 2px;
+            &::placeholder {
+              @include body-m-medium;
+              color: $neutral-600;
             }
+          }
+        }
 
-            .app--conversation--list--search--wrapper{
-                position: relative;
+        .btn-add-chat {
+          width: 31px;
+          height: 31px;
+          padding: 0 !important;
+          background: $primary-base !important; 
+        }
 
-                .app--conversation--list--search{
-                    background: #FFFFFF;
-                    opacity: 0.3;
-                    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+        .app--conversation--list--buttons{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            .app--conversation--list--button--wrapper {
+                position:relative;
+
+                .app--conversation--list--button--badge {
+                    position: absolute;
+                    top: -6px;
+                    right: -6px;
+                    background: #E74C3C;
+                    width: 24px;
+                    padding: 1.2px 5px;
+                    border-radius: 9px;
+                    font-weight: 500;
+                    font-size: 13px;
+                    line-height: 15px;
+                    color: #FFFFFF;
+                    text-align: center;
+                    font-family: "SFPro-Regular";
+                }
+
+                .app--conversation--list--button{
+                    background: #A4B1C1;
                     border-radius: 10px;
+                    font-family: "SF Pro Text", sans-serif;
+                    font-size: 15px;
+                    line-height: 18px;
+                    text-align: center;
+                    color: #fff;
+                    outline:none;
+                    font-weight: 600;width: 150px;
+                    width: 150px;
+                    height: 42px;
+                }
 
-                    .app--conversation--list--search--input{
-                        position:relative;
-                        width: 100%;
-                        height: 100%;
-                        min-width: 260px;
-                        min-height: 13px;
-                        outline: none;
-                        padding: 10px 34px;
-                        color: #686868;
-                    }
+                .app--conversation--list--button--active{
+                    background: #4583AC;
+                }
 
-                    .app--conversation--list--search--icon{
-                        position: absolute;
-                        left: 9px;
-                        top: 10px;
-                    }
+                .app--conversation--list--button--clients{
+                    width: 150px;
+                    height: 42px;
+                }
+
+                .app--conversation--list--button--workers{
+                    width: 150px;
+                    height: 42px;
                 }
             }
-
         }
 
-        .app--conversation--content{
-            display:flex;
-            flex-grow: 1;
-            width:100%;
-            height: 100%;
-            overflow-y: hidden;
-            overflow-x: hidden;
+        .app--conversation--list--search--wrapper{
+            position: relative;
 
-            &:hover{
-                overflow-y: scroll;
-                overflow-x: hidden;
-            }
+            .app--conversation--list--search{
+                background: #FFFFFF;
+                opacity: 0.3;
+                box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+                border-radius: 10px;
 
-            &::-webkit-scrollbar-track {
-                -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-                box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-                background-color: #f5f5f5;
-            }
+                .app--conversation--list--search--input{
+                    position:relative;
+                    width: 100%;
+                    height: 100%;
+                    min-width: 260px;
+                    min-height: 13px;
+                    outline: none;
+                    padding: 10px 34px;
+                    color: #686868;
+                }
 
-            &::-webkit-scrollbar {
-                width: 5px;
-                background-color: #f5f5f5;
-            }
-
-            &::-webkit-scrollbar-thumb {
-                background-color: #00d3ef;
-                border: 2px solid #00d3ef;
+                .app--conversation--list--search--icon{
+                    position: absolute;
+                    left: 9px;
+                    top: 10px;
+                }
             }
         }
 
-        // .app--conversation--list{ }
     }
 
-    .list-item {
-        display: flex;
-        cursor: pointer;
-        height: 75px;
-    }
+    .app--conversation--content{
+      display: flex;
+      position: relative;
+      flex-grow: 1;
+      width: 100%;
+      height: 100%;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      &::-webkit-scrollbar {
+        width: 0;
+      }
 
-    .list-item-active {
-        background-color: #ECECEC;
+      .app--conversation--list {
+        width: 100%;
+        position: absolute;
+      }
     }
+    
+    // .app--conversation--list{ }
+}
 
-    .list-empty {
-        padding: 20px;
-        text-align: center;
-    }
+.list-item {
+    display: flex;
+    cursor: pointer;
+    height: 75px;
+}
 
-    .app--conversation--list::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-        background-color: #f5f5f5;
-    }
+.list-item-active {
+  background-color: $primary-base;
+}
 
-    .app--conversation--list::-webkit-scrollbar {
-        width: 5px;
-        background-color: #f5f5f5;
-    }
+.list-empty {
+    padding: 20px;
+    text-align: center;
+}
 
-    .app--conversation--list::-webkit-scrollbar-thumb {
-        background-color: #00d3ef;
-        border: 2px solid #00d3ef;
-    }
+.app--conversation--list::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f5f5f5;
+}
+
+.app--conversation--list::-webkit-scrollbar {
+    width: 5px;
+    background-color: #f5f5f5;
+}
+
+.app--conversation--list::-webkit-scrollbar-thumb {
+    background-color: #00d3ef;
+    border: 2px solid #00d3ef;
+}
 </style>

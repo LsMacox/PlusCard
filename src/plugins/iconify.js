@@ -70,6 +70,7 @@ export const ICONIFY_ICONS = {
     'ion-barcode-outline': () => import('@iconify/icons-ion/barcode-outline'),
     'ion-warning': () => import('@iconify/icons-ion/warning'),
     'ion-attach': () => import('@iconify/icons-ion/attach-outline'),
+    'ion-search-outline': () => import('@iconify/icons-ion/search-outline'),
 
     // feather
     'feather-refresh-ccw': () => import('@iconify/icons-feather/refresh-ccw'),

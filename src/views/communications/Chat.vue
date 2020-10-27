@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <div class="app--chat__container">
-      <div class="app--chat--col-1">
-        <app-conversation-list />
-      </div>
+  <div class="app--chat__container">
+    <div class="app--chat--col-1">
+      <app-conversation-list />
+    </div>
 
-      <div class="app--chat--col-3">
-        <app-conversation-field />
-      </div>
+    <div class="app--chat--col-3">
+      <app-conversation-field />
     </div>
   </div>
 </template>
@@ -89,16 +87,20 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+#appView {
+  padding: 0 !important;
+}
+
 [v-cloak] {
   display: none;
 }
 .app--chat__container {
   font-family: "SF Pro Rounded";
   background: #fff;
-  margin: 0 auto;
-  max-width: 1392px;
-  height: calc(100vh - 40px);
+  margin: 0;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -108,11 +110,11 @@
   }
 
   .app--chat--col-1 {
-    width: 352px;
+    min-width: 362px;
   }
 
   .app--chat--col-3 {
-    width: 1040px;
+    width: 100%;
   }
 }
 </style>

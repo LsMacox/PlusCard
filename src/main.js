@@ -47,8 +47,6 @@ import VueClipboard from 'vue-clipboard2'
 import YmapPlugin from 'vue-yandex-maps'
 import VueSimpleSVG from 'vue-simple-svg'
 
-
-
 Vue.use(VueTelInput)
 Vue.use(Notifications)
 Vue.use(VueConstants)
