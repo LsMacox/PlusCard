@@ -1,6 +1,12 @@
 <template>
   <div class="setting-chat">
-    <base-top-menu @cancelbutton="$router.back()">
+    <base-top-menu
+      :loading="saveAction"
+      :show-action="hasChanges && valid"
+      action-button-text="Сохранить"
+      @cancelbutton="cancelEdit()"
+      @actionbutton="saveChanges()"
+    >
       <template v-slot:header>
         <p class="body-l-semibold">
           Настройки чатов
@@ -8,107 +14,126 @@
       </template>
       <template>
         <div class="setting-chat__form">
-          <div class="setting-chat__block miniature">
-            <div class="miniature-left">
-              <p class="title-m-bold neutral-900--text">
-                Фотография в чате
-              </p>
-              <p class="body-m-regular neutral-700--text">
-                Загрузите фото, которое будут видеть ваши
-                клиенты при общении с вами в чате.
-                Допустимые форматы: png, jpg до 10 Мб.
-              </p>
-            </div>
-            <div class="miniature-right">
-              <v-btn
-                class="btn-download"
-                color="primary-100"
-                @click="$refs.fieldAvatar.click()"
+          <v-skeleton-loader
+            :loading="ProgramReadAction"
+            :style="{height: '100%', width: '100%'}"
+            type="image@3, actions"
+          >
+            <template>
+              <v-form
+                ref="form"
+                v-model="valid"
               >
-                <div
-                  v-if="!Object.keys(imgAvatar).length"
-                  class="none-img"
-                >
-                  <iconify-icon
-                    icon="feather-download"
-                    class="icon-download"
-                    width="21"
-                  />
+                <div class="setting-chat__block miniature">
+                  <div class="miniature-left">
+                    <p class="title-m-bold neutral-900--text">
+                      Фотография в чате
+                    </p>
+                    <p class="body-m-regular neutral-700--text">
+                      Загрузите фото, которое будут видеть ваши
+                      клиенты при общении с вами в чате.
+                      Допустимые форматы: png, jpg до 10 Мб.
+                    </p>
+                  </div>
+                  <div class="miniature-right">
+                    <v-btn
+                      class="btn-download"
+                      color="primary-100"
+                      @click="$refs.fieldAvatar.click()"
+                    >
+                      <div
+                        v-if="!chatUserEditing.avatar_full"
+                        class="none-img"
+                      >
+                        <iconify-icon
+                          icon="feather-download"
+                          class="icon-download"
+                          width="21"
+                        />
+                      </div>
+                      <img
+                        v-else
+                        :src="chatUserEditing.avatar_full"
+                        width="115px"
+                        height="115px"
+                        alt="avatar"
+                      >
+                      <input
+                        ref="fieldAvatar"
+                        type="file"
+                        class="d-none"
+                        accept="image/jpeg,image/png"
+                        @change="uploadAvatar"
+                      >
+                      <image-cropper
+                        v-if="cropperSmallDialog"
+                        :p-dialog.sync="cropperSmallDialog"
+                        :p-title="'Загрузка аватара'"
+                        :p-img.sync="smallImg"
+                        :p-selected.sync="selectedImg"
+                        :p-aspect-ratio="1"
+                        :p-circle="true"
+                      />
+                    </v-btn>
+                  </div>
                 </div>
-                <img
-                  v-else
-                  :src="imgAvatar.img_url"
-                  alt="avatar"
-                >
-                <input
-                  ref="fieldAvatar"
-                  type="file"
-                  class="d-none"
-                  @change="uploadAvatar"
-                >
-              </v-btn>
-            </div>
-          </div>
-          <div class="setting-chat__block representative-name">
-            <div class="setting-chat__header representative-name__header">
-              <p class="title-m-bold neutral-900--text">
-                Представитель компании
-              </p>
-              <p class="body-m-regular neutral-700--text">
-                Введите имя, которое будут видеть ваши клиенты при общении с вами в чате. Например, менеджер Михахил, директор Алексей Игоревич, компания Вектор.
-              </p>
-            </div>
-            <div class="representative-name__content">
-              <base-text-field
-                class="setting-chat__field representative-name__field"
-                placeholder="Имя представителя компании"
-              />
-              <div class="representative-name__description body-m-regular neutral-700--text">
-                Включите эту опцию, если хотите, чтобы клиенты видели реальные имена ваших сотрудников, вместо введенного выше псевдонима.
-              </div>
-              <div class="setting-chat__checkbox representative-name__checkbox">
-                <v-switch
-                  label="Использовать реальное имя соотрудника"
-                  inset
-                  hide-details
-                  class="custom-switch"
-                  :loading="loading"
-                  :disabled="loading"
-                />
-              </div>
-            </div>
-          </div>
-          <div class="setting-chat__block welcome-message">
-            <div class="setting-chat__header welcome-message__header">
-              <p class="title-m-bold neutral-900--text">
-                Приветсвенное сообщение
-              </p>
-              <p class="body-m-regular neutral-700--text">
-                Введите имя, которое будут видеть ваши клиенты при общении с вами в чате. Например, менеджер Михахил, директор Алексей Игоревич, компания Вектор.
-              </p>
-            </div>
-            <div class="welcome-message__content">
-              <base-text-area
-                class="setting-chat__field welcome-message__field"
-                placeholder="Введите приветственное сообщение."
-                hide-details
-                rows="1"
-                row-height="30"
-              />
-            </div>
-          </div>
-          <div class="setting-chat__block chat-visibility">
-            <div class="setting-chat__checkbox chat-visibility__checkbox">
-              <v-switch
-                label="Чат активен"
-                inset
-                hide-details
-                class="custom-switch"
-                :loading="loading"
-                :disabled="loading"
-              />
-            </div>
-          </div>
+                <div class="setting-chat__block representative-name">
+                  <div class="setting-chat__header representative-name__header">
+                    <p class="title-m-bold neutral-900--text">
+                      Представитель компании
+                    </p>
+                    <p class="body-m-regular neutral-700--text">
+                      Введите имя, которое будут видеть ваши клиенты при общении с вами в чате. Например, менеджер Михахил, директор Алексей Игоревич, компания Вектор.
+                    </p>
+                  </div>
+                  <div class="representative-name__content">
+                    <base-text-field
+                      v-model="chatUserEditing.name"
+                      class="setting-chat__field representative-name__field"
+                      placeholder="Имя представителя компании"
+                    />
+                    <div class="representative-name__description body-m-regular neutral-700--text">
+                      Включите эту опцию, если хотите, чтобы клиенты видели реальные имена ваших сотрудников, вместо введенного выше псевдонима.
+                    </div>
+                    <div class="setting-chat__checkbox representative-name__checkbox">
+                      <base-ext-switch
+                        v-model="programModelEditing.real_chat_name"
+                        label="Использовать реальное имя соотрудника"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="setting-chat__block welcome-message">
+                  <div class="setting-chat__header welcome-message__header">
+                    <p class="title-m-bold neutral-900--text">
+                      Приветсвенное сообщение
+                    </p>
+                    <p class="body-m-regular neutral-700--text">
+                      Введите имя, которое будут видеть ваши клиенты при общении с вами в чате. Например, менеджер Михахил, директор Алексей Игоревич, компания Вектор.
+                    </p>
+                  </div>
+                  <div class="welcome-message__content">
+                    <base-text-area
+                      v-model="programModelEditing.chat_welcome"
+                      class="setting-chat__field welcome-message__field"
+                      placeholder="Введите приветственное сообщение."
+                      hide-details
+                      rows="1"
+                      row-height="30"
+                    />
+                  </div>
+                </div>
+                <div class="setting-chat__block chat-visibility">
+                  <div class="setting-chat__checkbox chat-visibility__checkbox">
+                    <base-ext-switch
+                      v-model="programModelEditing.can_write"
+                      label="Чат активен"
+                    />
+                  </div>
+                </div>
+              </v-form>
+            </template>
+          </v-skeleton-loader>
         </div>
       </template>
     </base-top-menu>
@@ -116,23 +141,149 @@
 </template>
 
 <script>
+  import ImageCropper from '@/components/dialogs/ImageCropper'
+  import { mapGetters, mapActions } from 'vuex'
   import { extend, validate } from 'vee-validate'
   import { ext, size } from 'vee-validate/dist/rules'
   extend('ext', ext)
   extend('size', size)
 
   export default {
+    components: {
+      ImageCropper,
+    },
     data () {
       return {
-        loading: false,
-        imgAvatar: {},
+        valid: false,
+        cropperSmallDialog: false,
+        selectedImg: null,
+        smallImg: null,
+
+        saveAction: false,
+        programModelEditing: {
+          can_write: false,
+          real_chat_name: false,
+          chat_welcome: '',
+        },
+        chatUserEditing: {
+          name: '',
+          avatar_full: null,
+        },
+
       }
     },
     computed: {
+      ...mapGetters({
+        programId: 'programId',
+        programModel: 'company/program/programModel',
+        chatUser: 'chat/chatUser/chatUser',
+      }),
+
+      hasChanges () {
+        return this.hasProgramChanges || this.hasChatUserChanges
+      },
+      hasProgramChanges () {
+        return JSON.stringify(this.getEditFields(this.programModelEditing)) !== JSON.stringify(this.getEditFields(this.programModel))
+      },
+      hasChatUserChanges () {
+        return JSON.stringify(this.chatUserEditing) !== JSON.stringify(this.chatUser)
+      },
+      hasModeratedChanges () {
+        return this.programModelEditing.chat_welcome !== this.programModel.chat_welcome
+      },
+      smallImgBlob () {
+        if (this.smallImg && this.smallImg.data.indexOf('base64') !== -1) {
+          return this.smallImg.data.split(',')[1]
+        } else return null
+      },
+
     },
-    mounted () {},
-    created () {},
+    watch: {
+      smallImg (v) {
+        if (v) {
+          this.chatUserEditing.avatar_full = v.data
+        }
+      },
+    },
+    created () {
+      this.init()
+    },
     methods: {
+      ...mapActions({
+        ProgramRead: 'company/program/read',
+        ChatUserRead: 'chat/chatUser/read',
+        updateChatUser: 'chat/chatUser/update',
+        updateChat: 'company/program/updateChat',
+
+      }),
+      getEditFields (model) {
+        const resObj = {}
+        const fields = ['can_write', 'real_chat_name', 'chat_welcome']
+
+        fields.forEach(field => { resObj[field] = model[field] })
+        return resObj
+      },
+      async init () {
+        try {
+          this.ProgramReadAction = true
+          await this.ProgramRead({ id: this.programId })
+          await this.ChatUserRead(this.programId)
+          this.programModelEditing = Object.copy(this.programModel)
+          this.chatUserEditing = Object.copy(this.chatUser)
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.ProgramReadAction = false
+        }
+      },
+      async cancelEdit () {
+        try {
+          if (this.hasChanges) {
+            await this.$confirm(
+              'Имеются не сохраненные изменения. Закрыть без сохранения?',
+              'Настройка чатов компании',
+              {
+                confirmButtonText: 'Закрыть',
+                cancelButtonText: 'Отмена',
+                type: 'warning',
+              })
+          }
+          this.$router.back()
+        } catch (error) {
+
+        }
+      },
+      async saveChanges () {
+        try {
+          this.saveAction = true
+          if (this.hasProgramChanges) {
+            await this.updateChat({
+              programId: this.programId,
+              canWrite: this.programModelEditing.can_write,
+              realChatName: this.programModelEditing.real_chat_name,
+              chatWelcome: this.programModelEditing.chat_welcome,
+            })
+          }
+
+          if (this.hasChatUserChanges) {
+            await this.updateChatUser({
+              id: this.programId,
+              name: this.chatUserEditing.name,
+              avatar: this.smallImgBlob || this.chatUserEditing.avatar_full,
+            })
+          }
+
+          this.$notify({
+            title: 'Настройка чатов компании',
+            text: this.hasModeratedChanges ? 'Изменения сохранены и отправлены на модерацию' : 'Изменения сохранены',
+            type: 'success',
+          })
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.saveAction = false
+        }
+      },
       uploadAvatar (e) {
         if (e.target.files[0]) {
           const file = e.target.files[0]
@@ -140,8 +291,21 @@
           validate(file, 'ext:jpg,png|size:10000')
             .then(result => {
               if (result.valid) {
-                const url = URL.createObjectURL(file)
-                this.imgAvatar = { img_url: url, file: file }
+                this.selectedImg = file
+                this.cropperSmallDialog = true
+                e.target.type = 'text'
+                e.target.type = 'file'
+                // const url = URL.createObjectURL(file)
+                // this.chatUserEditing.avatar = url
+                // console.log('file' ,file)
+                // this.chatUserEditing.file = file
+                // this.imgAvatar = { img_url: url, file: file }
+              } else {
+                this.$notify({
+                  title: 'Фотография в чате',
+                  text: 'Файл превышает 10Мб',
+                  type: 'error',
+                })
               }
             })
         }
