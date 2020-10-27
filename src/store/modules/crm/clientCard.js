@@ -7,6 +7,7 @@ const getDefaultState = () => {
         accountBalances: [], // баланс счетов клиента
         transactions: [], // транзакции счетов
         client: {}, // пользователь карты
+        goals: [], // события карты
     }
 }
 
@@ -19,6 +20,7 @@ const mutations = {
     SET_ACCOUNT_BALANCES: (state, payload) => state.accountBalances = payload,
     SET_TRANSACTIONS: (state, payload) => state.transactions = payload,
     SET_CLIENT: (state, payload) => state.client = payload,
+    SET_GOALS: (state, payload) => state.goals = payload,
 }
 
 const actions = {
@@ -90,6 +92,18 @@ const actions = {
             throw error
         }
     },
+
+    async getGoals ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.get(`/api-cabinet/crm/account/goal/list?account_id=${item.account_id}&page=${item.page}&limit=${item.limit}`)
+            console.log(`/api-cabinet/crm/account/goal/list?account_id=${item.account_id}&page=${item.page}&limit=${item.limit}`)
+            console.log(result)
+            commit('SET_GOALS', result)
+        } catch (error) {
+            throw error
+        }
+    },
 }
 
 const getters = {
@@ -98,6 +112,7 @@ const getters = {
     accountBalances: state => state.accountBalances,
     transactions: state => state.transactions,
     client: state => state.client,
+    goals: state => state.goals,
 }
 
 export default {

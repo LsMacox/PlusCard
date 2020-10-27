@@ -46,7 +46,13 @@
           </div>
         </div>
         <div class="contacts__block-left">
+          <v-skeleton-loader
+            v-if="clientCardLoading"
+            v-bind="attrs"
+            type="avatar"
+          />
           <img
+            v-else
             :src="[(accountClient.user && accountClient.user.avatar) ? accountClient.user.avatar : '']"
           >
         </div>
@@ -131,6 +137,11 @@
       return {
         mode: false, // false = usual, true = extended
         state: this.active,
+        attrs: {
+          class: 'mb-0',
+          boilerplate: true,
+          elevation: 0,
+        },
         extendedTabs: [
           {
             id: 1,
@@ -182,7 +193,8 @@
       },
     },
     async created () {},
-    mounted () {
+    async mounted () {
+      await this.fetchData()
       this.shadowHeaderAtScroll()
     },
     methods: {
