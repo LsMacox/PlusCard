@@ -9,7 +9,7 @@
           :options="tableOptions"
           :expanded.sync="expanded"
           item-key="id"
-          show-expand
+          :show-expand="false"
           class="plus-table"
           hide-default-footer
           @click:row="details"
@@ -166,6 +166,43 @@
               </div>
             </div>
           </template>
+          <template v-slot:item.actions="{ item }">
+            <v-menu
+              offset-y
+            >
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  small
+                  :loading="item.loading"
+                  v-on="on"
+                >
+                  <v-icon>$iconify_feather-more-vertical</v-icon>
+                </v-btn>
+              </template>
+              <v-list dense>
+                <v-list-item
+                  v-for="(menuItem, index) in getCertActions(item)"
+                  :key="index"
+                  @click="menuItem.action(item)"
+                >
+                  <v-list-item-icon>
+                    <v-icon color="neutral-500">
+                      {{ menuItem.icon }}
+                    </v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title
+                    :class=" {
+                      'body-s-medium' : true,
+                      'neutral-500--text':true,
+                    }"
+                  >
+                    {{ menuItem.title }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </template>
         </v-data-table>
       </v-col>
     </v-row>
@@ -209,24 +246,39 @@
       v-model="showDetails"
       :detailed-cert="detailedCert"
     />
+    <certificate-paid-dialog
+      v-if="paidDialog"
+      v-model="paidDialog"
+      :cert="detailedCert"
+    />
+    <certificate-used-dialog
+      v-if="usedDialog"
+      v-model="usedDialog"
+      :cert="detailedCert"
+    />
   </div>
 </template>
 
 <script>
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import CertificateForm from '../CertificateForm'
+  import CertificatePaidDialog from '../CertificatePaidDialog'
+  import CertificateUsedDialog from '../CertificateUsedDialog'
   import CertMethodsMixin from '../CertMethodsMixin'
+  import Vue from 'vue'
 
   export default {
     name: 'Certificates',
     components: {
-      SelectPageLimit, CertificateForm,
+      SelectPageLimit, CertificateForm, CertificatePaidDialog, CertificateUsedDialog,
     },
     mixins: [CertMethodsMixin],
     data () {
       return {
         showDetails: false,
         detailedCert: {},
+        paidDialog: false,
+        usedDialog: false,
         filterDrawer: false,
         tableOptions: {
           page: 1,
@@ -295,12 +347,19 @@
             value: 'used_at',
             width: '13em',
           },
+          // {
+          //   text: '',
+          //   value: 'data-table-expand',
+          //   width: '1em',
+          // },
           {
             text: '',
-            value: 'data-table-expand',
+            value: 'actions',
             width: '1em',
+            sortable: false,
           },
         ],
+
       }
     },
     computed: {
@@ -326,7 +385,10 @@
         )
         return this.$store.getters[
           'account/certificate/certificate/certificates'
-        ]
+        ].map(x => {
+          Vue.set(x, 'loading', false)
+          return x
+        })
       },
       filtered_certificates () {
         return this.certificates.filter(x => (this.filter.archiveStatus.id === 'archive') ? !!x.archived_at : x.archived_at === null)
@@ -370,6 +432,48 @@
       this.fetchData()
     },
     methods: {
+      getCertActions (cert) {
+        return [
+          {
+            icon: '$iconify_ion-document-outline',
+            title: 'Подробнее',
+            action: this.details,
+            show: true,
+          },
+          {
+            icon: '$iconify_bx-bx-ruble',
+            title: 'Оплатить',
+            action: this.paidClick,
+            show: cert.user_id && !cert.deleted_at && !cert.paid && this.hasProgramPermission('program-certificate-user-paid', cert.certificate.program_id),
+
+          },
+          {
+            icon: '$iconify_ion-checkmark-done',
+            title: 'Отметить как использованный',
+            action: this.usedDialogClick,
+            show: !cert.deleted_at && cert.issued && !cert.is_expired && !cert.used && this.hasProgramPermission('program-certificate-user-use', cert.certificate.program_id),
+          },
+          {
+            icon: 'mdi-archive-arrow-down-outline',
+            title: 'Архивировать',
+            action: (cert) => this.changeArchiveStatus(cert, true),
+            show: cert.user_id && !cert.archived_at,
+          },
+          {
+            icon: 'mdi-archive-arrow-up-outline',
+            title: 'В работу',
+            action: (cert) => this.changeArchiveStatus(cert, false),
+            show: cert.user_id && cert.archived_at,
+          },
+          {
+            icon: '$icons_trash-arrow',
+            title: 'Восстановить',
+            action: (cert) => this.restoreCertOrder(cert),
+            show: !!cert.deleted_at,
+          },
+        ].filter(x => x.show)
+      },
+      hasProgramPermission (programId) { return true },
       getWord (number, words) {
         const cases = [2, 0, 1, 1, 1, 2]
         return words[
@@ -381,10 +485,33 @@
       closeCertDetails () {
         this.showDetails = false
       },
+      usedDialogClick (item) {
+        this.detailedCert = item
+        this.usedDialog = true
+      },
+      paidClick (item) {
+        this.detailedCert = item
+        this.paidDialog = true
+      },
       details (item) {
         console.log(item)
         this.detailedCert = item
         this.showDetails = true
+      },
+      changeArchiveStatus (cert, archive) {
+        cert.loading = true
+        this.changeCertArchiveStatus({
+          user_certificate_id: cert.id,
+          archive,
+        }).finally(() => {
+          cert.loading = false
+        })
+      },
+      restoreCertOrder (cert) {
+        cert.loading = true
+        this.restoreCert({ id: cert.id }).finally(() => {
+          cert.loading = false
+        })
       },
       formatBum (num) {
         var int = String(Math.trunc(num))

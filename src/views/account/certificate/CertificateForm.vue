@@ -216,7 +216,7 @@
           <span>{{ merchantOrderStatusTooltip(detailedCert.merchant_order_status) }}</span>
         </div>
       </div>
-      <v-row v-if="!detailedCert.used">
+      <v-row v-if="!detailedCert.deleted_at && detailedCert.issued && !detailedCert.is_expired && !detailedCert.used ">
         <v-col>
           <v-btn
             color="primary"
@@ -246,7 +246,7 @@
             </div>
           </div>
 
-          <v-row v-if="!detailedCert.paid">
+          <v-row v-if="!detailedCert.paid && !!detailedCert.user_id && !detailedCert.deleted_at">
             <v-col>
               <v-btn
                 color="primary"
