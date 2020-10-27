@@ -39,7 +39,7 @@
             Создана
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">{{ accountClient.created_at ? this.$moment(accountClient.created_at).local().format(this.$config.date.DATETIME_FORMAT_MIN2) : '-' }}</span>
+            <span class="body-m-medium neutral-700--text">{{ accountClient.created_at ? $moment(accountClient.created_at).local().format($config.date.DATETIME_FORMAT_MIN2) : '-' }}</span>
           </div>
         </li>
       </ul>
@@ -52,24 +52,44 @@
       </div>
       <div class="action__route">
         <div
-          v-for="(mapRoute, index) in mapRoutes"
-          :key="mapRoute.name + '-' + index"
-          class="route__block"
+          v-if="loading"
         >
-          <div class="route__icon">
-            <iconify-icon
-              class="icon-clock"
-              icon="feather-clock"
-              width="15"
-            />
-          </div>
-          <div class="route__info">
-            <p class="body-s-semibold">
-              {{ mapRoute.name }}
-            </p>
-            <p class="body-xs-semibold neutral-600--text">
-              {{ mapRoute.date }}
-            </p>
+          <v-skeleton-loader
+            v-bind="attrs"
+            type="heading"
+          />
+          <v-skeleton-loader
+            v-bind="attrs"
+            type="heading"
+          />
+          <v-skeleton-loader
+            v-bind="attrs"
+            type="heading"
+          />
+        </div>
+        <div
+          v-else
+        >
+          <div
+            v-for="(item, i) in goals"
+            :key="i"
+            class="route__block"
+          >
+            <div class="route__icon">
+              <iconify-icon
+                class="icon-clock"
+                icon="feather-clock"
+                width="15"
+              />
+            </div>
+            <div class="route__info">
+              <p class="body-s-semibold">
+                {{ getGoal(item.goal_type_enum) }}
+              </p>
+              <p class="body-xs-semibold neutral-600--text">
+                {{ item.created_at ? $moment(item.created_at).local().format($config.date.DATETIME_FORMAT_MIN2) : '-' }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -90,29 +110,49 @@
     },
     data () {
       return {
-        mapRoutes: [
-          { name: 'Просмотр карты', date: '23 июля, 2020 в 14:20' },
-          { name: 'Использование карты', date: '23 июля, 2020 в 14:20' },
-          { name: 'Просмотр карты', date: '23 июля, 2020 в 14:20' },
-          { name: 'Использование карты', date: '23 июля, 2020 в 14:20' },
-          { name: 'Просмотр карты', date: '23 июля, 2020 в 14:20' },
-          { name: 'Использование карты', date: '23 июля, 2020 в 14:20' },
-        ],
+        loading: false,
+        attrs: {
+          class: 'mb-1',
+          boilerplate: true,
+          elevation: 0,
+        },
       }
     },
     computed: {
       accountClient () {
         return this.$store.getters['crm/clientCard/client']
       },
-      user () {
-        const client = this.$store.getters['crm/clientCard/client']
-        if (client && client.user) return client.user
-        return {}
+      goals () {
+        return this.$store.getters['crm/clientCard/goals']
       },
     },
-    mounted () {},
+    async created () {
+      await this.fetchData()
+    },
     methods: {
-
+      getGoal (type) {
+        switch (type) {
+          case 'ACCOUNT_VIEW':
+            return 'Просмотр карты'
+          case 'ACCOUNT_BARCODE':
+            return 'Использование карты'
+          default:
+            return '-'
+        }
+      },
+      async fetchData () {
+        try {
+          this.loading = true
+          const item = {
+            account_id: this.accountClient.id,
+            page: 1,
+            limit: 20,
+          }
+          await this.$store.dispatch('crm/clientCard/getGoals', item)
+        } finally {
+          this.loading = false
+        }
+      },
     },
   }
 </script>
