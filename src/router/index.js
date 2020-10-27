@@ -305,6 +305,13 @@ export default new Router({
               name: 'SettingsIntegration',
               meta: { auth: true },
             },
+            {
+              path: 'sendings',
+              beforeEnter: GuardEmptyPrograms,
+              component: () => import('@/views/settings/sendings/index.vue'),
+              name: 'SettingsSendings',
+              meta: { auth: true },
+            },
           ],
         },
         {
