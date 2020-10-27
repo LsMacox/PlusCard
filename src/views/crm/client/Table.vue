@@ -41,12 +41,12 @@
               class="table-cell_avatar-img"
               :src="(item.user && item.user.avatar) ? item.user.avatar : ''"
             >
-            <div>
-              <div class="body-s-semibold neutral-900--text">
+            <div class="table-cell_avatar-text">
+              <div class="body-s-semibold neutral-900--text table-cell_avatar-text2">
                 {{ (item.user && item.user.FIO) ? item.user.FIO : '-' }}
               </div>
               <div
-                class="body-xs-semibold neutral-600--text"
+                class="body-xs-semibold neutral-600--text table-cell_avatar-text2"
                 style="margin-top: 4px;"
               >
                 {{ (item.user && item.user.last_activity) ? getLastActivity(item.user.last_activity) : '' }}
@@ -257,6 +257,7 @@
 
 .table-cell_avatar {
   display: flex;
+  max-width: 400px;
 
   .table-cell_avatar-img {
     display: block;
@@ -264,6 +265,17 @@
     width: 25px;
     height: 25px;
     border-radius: 25px;
+  }
+
+  .table-cell_avatar-text {
+    max-width: calc(400px - 33px);
+
+    .table-cell_avatar-text2 {
+      max-width: calc(400px - 33px);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
   }
 }
 </style>
