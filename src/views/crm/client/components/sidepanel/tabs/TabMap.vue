@@ -7,7 +7,7 @@
             ID карты
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">104396</span>
+            <span class="body-m-medium neutral-700--text">{{ accountClient.id || '-' }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -15,7 +15,7 @@
             Номер карты
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">104396</span>
+            <span class="body-m-medium neutral-700--text">{{ accountClient.number || '-' }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -23,7 +23,7 @@
             Штрих-код
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">1640000000104396</span>
+            <span class="body-m-medium neutral-700--text">{{ accountClient.barcode || '-' }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -31,7 +31,7 @@
             Программа лояльности
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">Керхер Центр на Пролетарской</span>
+            <span class="body-m-medium neutral-700--text">{{ accountClient.program_name || '-' }}</span>
           </div>
         </li>
         <li class="info-item">
@@ -39,7 +39,7 @@
             Создана
           </p>
           <div class="right-text">
-            <span class="body-m-medium neutral-700--text">23 июля, 2020 в 14:20</span>
+            <span class="body-m-medium neutral-700--text">{{ accountClient.created_at ? this.$moment(accountClient.created_at).local().format(this.$config.date.DATETIME_FORMAT_MIN2) : '-' }}</span>
           </div>
         </li>
       </ul>
@@ -99,6 +99,16 @@
           { name: 'Использование карты', date: '23 июля, 2020 в 14:20' },
         ],
       }
+    },
+    computed: {
+      accountClient () {
+        return this.$store.getters['crm/clientCard/client']
+      },
+      user () {
+        const client = this.$store.getters['crm/clientCard/client']
+        if (client && client.user) return client.user
+        return {}
+      },
     },
     mounted () {},
     methods: {
