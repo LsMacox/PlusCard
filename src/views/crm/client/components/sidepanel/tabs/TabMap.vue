@@ -71,25 +71,34 @@
           v-else
         >
           <div
-            v-for="(item, i) in goals"
-            :key="i"
-            class="route__block"
+            v-if="goals && goals.length"
           >
-            <div class="route__icon">
-              <iconify-icon
-                class="icon-clock"
-                icon="feather-clock"
-                width="15"
-              />
+            <div
+              v-for="(item, i) in goals"
+              :key="i"
+              class="route__block"
+            >
+              <div class="route__icon">
+                <iconify-icon
+                  class="icon-clock"
+                  icon="feather-clock"
+                  width="15"
+                />
+              </div>
+              <div class="route__info">
+                <p class="body-s-semibold">
+                  {{ getGoal(item.goal_type_enum) }}
+                </p>
+                <p class="body-xs-semibold neutral-600--text">
+                  {{ item.created_at ? $moment(item.created_at).local().format($config.date.DATETIME_FORMAT_MIN2) : '-' }}
+                </p>
+              </div>
             </div>
-            <div class="route__info">
-              <p class="body-s-semibold">
-                {{ getGoal(item.goal_type_enum) }}
-              </p>
-              <p class="body-xs-semibold neutral-600--text">
-                {{ item.created_at ? $moment(item.created_at).local().format($config.date.DATETIME_FORMAT_MIN2) : '-' }}
-              </p>
-            </div>
+          </div>
+          <div
+            v-else
+          >
+            Действий пока нет
           </div>
         </div>
       </div>
