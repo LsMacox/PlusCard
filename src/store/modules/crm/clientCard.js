@@ -8,6 +8,7 @@ const getDefaultState = () => {
         transactions: [], // транзакции счетов
         client: {}, // пользователь карты
         goals: [], // события карты
+        documents: [], // документы карты
     }
 }
 
@@ -21,6 +22,7 @@ const mutations = {
     SET_TRANSACTIONS: (state, payload) => state.transactions = payload,
     SET_CLIENT: (state, payload) => state.client = payload,
     SET_GOALS: (state, payload) => state.goals = payload,
+    SET_DOCUMENTS: (state, payload) => state.documents = payload,
 }
 
 const actions = {
@@ -93,6 +95,7 @@ const actions = {
         }
     },
 
+    // GOALS
     async getGoals ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
@@ -104,6 +107,20 @@ const actions = {
             throw error
         }
     },
+
+    // DOCUMENTS
+    async getDocuments ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.get(`/api-cabinet/crm/account/document/list?account_id=${item.account_id}&page=${item.page}&limit=${item.limit}`)
+            console.log(`/api-cabinet/crm/account/document/list?account_id=${item.account_id}&page=${item.page}&limit=${item.limit}`)
+            console.log(result)
+            commit('SET_DOCUMENTS', result)
+        } catch (error) {
+            throw error
+        }
+    },
+
 }
 
 const getters = {
@@ -113,6 +130,7 @@ const getters = {
     transactions: state => state.transactions,
     client: state => state.client,
     goals: state => state.goals,
+    documents: state => state.documents,
 }
 
 export default {

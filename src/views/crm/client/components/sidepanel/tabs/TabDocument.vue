@@ -303,8 +303,8 @@
     },
     data () {
       return {
+        loading: false,
         DATE_FORMAT: 'DD.MM.YYYY',
-        documents: [],
         documentId: NaN,
         documentName: '',
         documentDescription: '',
@@ -318,7 +318,14 @@
         validate: false,
       }
     },
-    computed: {},
+    computed: {
+      accountClient () {
+        return this.$store.getters['crm/clientCard/client']
+      },
+      documents () {
+        return this.$store.getters['crm/clientCard/documents']
+      },
+    },
     watch: {
       documentName () {
         this.validator()
@@ -336,7 +343,9 @@
         },
       },
     },
-    mounted () { },
+    async created () {
+      await this.fetchData()
+    },
     methods: {
       async create () {
         if (this.validate) {
@@ -440,6 +449,19 @@
       },
       removeFile (index) {
         this.documentFiles.splice(index, 1)
+      },
+      async fetchData () {
+        try {
+          this.loading = true
+          const item = {
+            account_id: this.accountClient.id,
+            page: 1,
+            limit: 20,
+          }
+          await this.$store.dispatch('crm/clientCard/getDocuments', item)
+        } finally {
+          this.loading = false
+        }
       },
     },
   }
