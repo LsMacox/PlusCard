@@ -60,6 +60,9 @@ const actions = {
     await commit('company/program/RESET_STATE', null, { root: true })
     await commit('widget/filter/RESET_STATE', null, { root: true })
     await commit('crm/client/RESET_STATE', null, { root: true })
+    await commit('crm/clientCard/RESET_STATE', null, { root: true })
+    await commit('crm/clientDocument/RESET_STATE', null, { root: true })
+    await commit('crm/segment/RESET_STATE', null, { root: true })
   },
 
   async InitDevice ({ commit }) {

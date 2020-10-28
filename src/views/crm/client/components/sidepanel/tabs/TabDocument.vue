@@ -1,5 +1,6 @@
 <template>
   <div class="tab-document">
+    <!-- ПУСТОЙ СПИСОК -->
     <div
       v-if="!showForm && !documents.length"
       class="tab-document__empty"
@@ -20,6 +21,7 @@
         </p>
       </v-btn>
     </div>
+    <!-- СПИСОК ДОКУМЕНТОВ -->
     <div
       v-if="!showForm && documents.length"
       class="tab-document__preview"
@@ -44,7 +46,7 @@
                 width="15"
               />
               <p class="body-s-medium neutral-500--text">
-                {{ getPeriod(doc.periods) }}
+                {{ getPeriod(doc) }}
               </p>
             </div>
           </div>
@@ -61,7 +63,7 @@
             </a>
             <a
               href="#edit"
-              @click.prevent="openEditForm(doc.id, [doc.name, doc.description, doc.periods, doc.files])"
+              @click.prevent="openEditForm(doc)"
             >
               <iconify-icon
                 class="icon-edit"
@@ -94,7 +96,7 @@
                 >
                   <v-img
                     class="fill-height"
-                    :src="docFile.img_url"
+                    :src="docFile.url"
                     alt="img"
                   />
                 </v-row>
@@ -118,174 +120,188 @@
         </p>
       </v-btn>
     </div>
+    <!-- ФОРМА ДОКУМЕНТА -->
     <div
       v-if="showForm"
       class="tab-document__form"
     >
-      <div class="tab-document__form-block">
-        <div class="form-block__header">
-          <p class="body-l-semibold neutral-900--text">
-            Название документа
-          </p>
-          <p class="body-m-regular neutral-700--text">
-            Введите название документа, который вы прикрепляете, чтобы клиент мог понять вид документа.
-          </p>
-        </div>
-        <div class="form-block__content">
-          <base-text-field
-            v-model="documentName"
-            :rules="[v => !!v || 'Обязательно для заполнения']"
-            validation-placement="left"
-            placeholder="Например, чек"
-          />
-        </div>
-      </div>
-      <div class="tab-document__form-block">
-        <div class="form-block__header">
-          <p class="body-l-semibold neutral-900--text">
-            Комментарий к документу
-          </p>
-          <p class="body-m-regular neutral-700--text">
-            Опишите документ, который вы прикрепляете, чтобы клиент мог понять о чем идет речь.
-          </p>
-        </div>
-        <div class="form-block__content">
-          <base-text-area
-            v-model="documentDescription"
-            hide-details
-            rows="4"
-            placeholder="Например, телевизор Philips 43ETRY"
-          />
-        </div>
-      </div>
-      <div class="tab-document__form-block">
-        <div class="form-block__header">
-          <p class="body-l-semibold neutral-900--text">
-            Срок действия
-          </p>
-          <p class="body-m-regular neutral-700--text">
-            Введите период действия документа. Оставьте поля пустыми, если документ имеет неограниченный срок.
-          </p>
-        </div>
-        <div class="form-block__content">
-          <base-date-text-field
-            v-model="documentPeriod.start"
-            :date-format="DATE_FORMAT"
-            class="date-start"
-            placeholder="Действует с"
-          />
-          <base-date-text-field
-            v-model="documentPeriod.end"
-            :date-format="DATE_FORMAT"
-            class="date-end"
-            placeholder="Действует до"
-          />
-        </div>
-      </div>
-      <div class="tab-document__form-block">
-        <div class="form-block__header">
-          <p class="body-l-semibold neutral-900--text">
-            Фото документа
-          </p>
-          <p class="body-m-regular neutral-700--text">
-            Прикрепите фотографии или сканы документа.
-          </p>
-        </div>
-        <div class="form-block__content">
-          <div
-            v-for="(file, i) in documentFiles"
-            :key="i"
-            class="attach-img"
-          >
-            <v-btn
-              class="btn-close"
-              @click="removeFile(i)"
-            >
-              <iconify-icon
-                class="icon-close"
-                icon="ion-close-circle"
-                width="26"
-              />
-            </v-btn>
-            <img
-              :src="file.img_url"
-              alt="img"
-            >
+      <v-form
+        ref="form"
+        v-model="valid"
+      >
+        <div class="tab-document__form-block">
+          <div class="form-block__header">
+            <p class="body-l-semibold neutral-900--text">
+              Название документа
+            </p>
+            <p class="body-m-regular neutral-700--text">
+              Введите название документа, который вы прикрепляете, чтобы клиент мог понять вид документа.
+            </p>
           </div>
-          <div
-            class="attach-box"
-            @click="$refs.file.click()"
-          >
-            <v-btn
-              class="btn-attach"
-              color="primary-100"
-            >
-              <iconify-icon
-                class="icon-plus"
-                icon="feather-plus-circle"
-                width="21"
-              />
-            </v-btn>
-            <input
-              ref="file"
-              class="d-none"
-              type="file"
-              multiple
-              @change="addFile"
-            >
+          <div class="form-block__content">
+            <base-text-field
+              v-model="form.name"
+              :rules="[
+                v => !!v || 'Название документа обязательно для заполнения',
+                v => String(v).length <= 255 || 'Название документа должно быть не более 255 символов',
+              ]"
+              validation-placement="left"
+              placeholder="Например, чек"
+            />
           </div>
         </div>
-      </div>
-      <div class="tab-document__form-buttons">
-        <v-btn
-          v-if="formMode"
-          color="primary"
-          class="form-btn"
-          :disabled="!validate"
-          @click="create"
-        >
-          <iconify-icon
-            class="icon icon-attach"
-            icon="ion-attach"
-            width="21"
-          />
-          <p class="body-m-semibold">
-            Прикрепить документ
-          </p>
-        </v-btn>
-        <v-btn
-          v-else
-          color="primary"
-          class="form-btn"
-          :disabled="!validate"
-          @click="edit"
-        >
-          <iconify-icon
-            class="icon icon-checkmark"
-            icon="ion-checkmark-circle-outline"
-            width="21"
-          />
-          <p class="body-m-semibold">
-            Сохранить
-          </p>
-        </v-btn>
-        <div
-          class="form-btn-close"
-          @click="closeForm"
-        >
-          <a
-            href="#close"
-            class="neutral-500--text"
+        <div class="tab-document__form-block">
+          <div class="form-block__header">
+            <p class="body-l-semibold neutral-900--text">
+              Комментарий к документу
+            </p>
+            <p class="body-m-regular neutral-700--text">
+              Опишите документ, который вы прикрепляете, чтобы клиент мог понять о чем идет речь.
+            </p>
+          </div>
+          <div class="form-block__content">
+            <base-text-area
+              v-model="form.description"
+              hide-details
+              rows="4"
+              placeholder="Например, телевизор Philips 43ETRY"
+              :rules="[
+                v => String(v).length <= 255 || 'Описание документа должно быть не более 255 символов',
+              ]"
+            />
+          </div>
+        </div>
+        <div class="tab-document__form-block">
+          <div class="form-block__header">
+            <p class="body-l-semibold neutral-900--text">
+              Срок действия
+            </p>
+            <p class="body-m-regular neutral-700--text">
+              Введите период действия документа. Оставьте поля пустыми, если документ имеет неограниченный срок.
+            </p>
+          </div>
+          <div class="form-block__content">
+            <base-date-text-field
+              v-model="form.started_at"
+              :date-format="DATE_FORMAT"
+              class="date-start"
+              placeholder="Действует с"
+            />
+            <base-date-text-field
+              v-model="form.expired_at"
+              :date-format="DATE_FORMAT"
+              class="date-end"
+              placeholder="Действует до"
+            />
+          </div>
+        </div>
+        <div class="tab-document__form-block">
+          <div class="form-block__header">
+            <p class="body-l-semibold neutral-900--text">
+              Фото документа
+            </p>
+            <p class="body-m-regular neutral-700--text">
+              Прикрепите фотографии или сканы документа.
+            </p>
+          </div>
+          <div class="form-block__content">
+            <div
+              v-for="(file, i) in form.files"
+              :key="i"
+              class="attach-img"
+            >
+              <v-btn
+                class="btn-close"
+                @click="removeFile(i)"
+              >
+                <iconify-icon
+                  class="icon-close"
+                  icon="ion-close-circle"
+                  width="26"
+                />
+              </v-btn>
+              <img
+                :src="file.preview"
+                alt="img"
+              >
+            </div>
+            <div
+              class="attach-box"
+              @click="$refs.file.click()"
+            >
+              <v-btn
+                class="btn-attach"
+                color="primary-100"
+              >
+                <iconify-icon
+                  class="icon-plus"
+                  icon="feather-plus-circle"
+                  width="21"
+                />
+              </v-btn>
+              <input
+                ref="file"
+                class="d-none"
+                type="file"
+                multiple
+                @change="addFile"
+              >
+            </div>
+          </div>
+        </div>
+        <div class="tab-document__form-buttons">
+          <v-btn
+            v-if="formMode"
+            color="primary"
+            class="form-btn"
+            :loading="loading"
+            :disabled="!valid"
+            @click="create"
           >
             <iconify-icon
-              icon="ion-close-circle-outline"
-              class="icon icon-close"
+              class="icon icon-attach"
+              icon="ion-attach"
               width="21"
             />
-            <p class="body-s-semibold">Отмена</p>
-          </a>
+            <p class="body-m-semibold">
+              Прикрепить документ
+            </p>
+          </v-btn>
+          <v-btn
+            v-else
+            color="primary"
+            class="form-btn"
+            :loading="loading"
+            :disabled="!valid"
+            @click="edit"
+          >
+            <iconify-icon
+              class="icon icon-checkmark"
+              icon="ion-checkmark-circle-outline"
+              width="21"
+            />
+            <p class="body-m-semibold">
+              Сохранить
+            </p>
+          </v-btn>
+          <div
+            class="form-btn-close"
+            @click="closeForm"
+          >
+            <a
+              href="#close"
+              class="neutral-500--text"
+            >
+              <iconify-icon
+                icon="ion-close-circle-outline"
+                class="icon icon-close"
+                width="21"
+              />
+              <p class="body-s-semibold">Отмена</p>
+            </a>
+          </div>
         </div>
-      </div>
+      </v-form>
     </div>
   </div>
 </template>
@@ -303,8 +319,18 @@
     },
     data () {
       return {
+        valid: true,
         loading: false,
         DATE_FORMAT: 'DD.MM.YYYY',
+        form: {
+          id: null,
+          account_id: null,
+          name: null,
+          description: null,
+          started_at: null,
+          expired_at: null,
+          files: [],
+        },
         documentId: NaN,
         documentName: '',
         documentDescription: '',
@@ -323,7 +349,7 @@
         return this.$store.getters['crm/clientCard/client']
       },
       documents () {
-        return this.$store.getters['crm/clientCard/documents']
+        return this.$store.getters['crm/clientDocument/documents']
       },
     },
     watch: {
@@ -347,42 +373,6 @@
       await this.fetchData()
     },
     methods: {
-      async create () {
-        if (this.validate) {
-          // example
-          await this.documents.push({
-            id: this.documents.length + 1,
-            name: this.documentName,
-            description: this.documentDescription,
-            files: this.documentFiles,
-            periods: this.documentPeriod,
-          })
-
-          this.closeForm()
-        }
-      },
-      async edit () {
-        if (this.validate) {
-          // example
-          await this.documents.map(doc => {
-            if (doc.id === this.documentId) {
-              doc.name = this.documentName
-              doc.description = this.documentDescription
-              doc.periods = this.documentPeriod
-              doc.files = this.documentFiles
-            }
-            return doc
-          })
-
-          this.closeForm()
-        }
-      },
-      async remove (id) {
-        // example
-        this.documents = this.documents.filter(doc => {
-          return (doc.id !== id)
-        })
-      },
       validator () {
         const start = this.$moment(this.documentPeriod.start)
         const end = this.$moment(this.documentPeriod.end)
@@ -398,10 +388,10 @@
           this.validate = false
         }
       },
-      getPeriod (periods) {
+      getPeriod (doc) {
         const DATE_FORMAT = 'DD MMM YYYY'
-        const start = this.$moment(periods.start)
-        const end = this.$moment(periods.end)
+        const start = this.$moment(doc.started_at)
+        const end = this.$moment(doc.expired_at)
         const diff = end.diff(start, 'days')
 
         return isNaN(diff)
@@ -413,18 +403,31 @@
         this.showForm = true
         this.formMode = true
       },
-      openEditForm (id, data) {
+      openEditForm (item) {
+        console.log('openEditForm')
+        console.log(item)
         this.showForm = true
         this.formMode = false
         this.$nextTick(() => {
-          this.documentId = id
-          this.fillData(...data)
+          this.form = Object.copy(item)
+          this.form.files.forEach(item => {
+            item.preview = item.url
+          })
         })
       },
       closeForm () {
         this.showForm = false
       },
       clearData () {
+        this.form = {
+          id: null,
+          account_id: null,
+          name: null,
+          description: null,
+          started_at: null,
+          expired_at: null,
+          files: [],
+        }
         this.documentId = NaN
         this.documentName = ''
         this.documentDescription = ''
@@ -439,16 +442,84 @@
         this.documentPeriod.end = period.end || ''
         this.documentFiles = [...files]
       },
-      addFile (e) {
+      async addFile (e) {
         const files = e.target.files
 
-        files.forEach(file => {
-          const url = URL.createObjectURL(file)
-          this.documentFiles.push({ img_url: url, file: file })
-        })
+        for (let i = 0; i < files.length; i++) {
+          const url = URL.createObjectURL(files[i])
+          const item = {
+            file: files[i], // file
+            preview: url, // blob url
+          }
+          this.form.files.push(item)
+        }
       },
       removeFile (index) {
-        this.documentFiles.splice(index, 1)
+        console.log('removeFile')
+        console.log(index)
+        if (this.form.files[index] && this.form.files[index].id) {
+          console.log('removed real file')
+        } else {
+          this.form.files.splice(index, 1)
+        }
+      },
+      async create () {
+        try {
+          this.loading = true
+          // FormData
+          const item = new FormData()
+          item.set('account_id', this.accountClient.id)
+          item.set('name', this.form.name)
+          item.set('description', this.form.description)
+          // if (this.form.started_at) item.set('started_at', this.form.started_at)
+          // if (this.form.expired_at) item.set('expired_at', this.form.expired_at)
+          // item.set('started_at', null)
+          // item.set('expired_at', null)
+          // добавляем файлы
+          if (Array.isArray(this.form.files)) {
+            for (let i = 0; i < this.form.files.length; i++) {
+              const file = this.form.files[i].file // добавляем файл
+              item.append('files[' + i + ']', file)
+            }
+          }
+          console.log(item)
+          await this.$store.dispatch('crm/clientDocument/create', item)
+        } finally {
+          this.loading = false
+          this.closeForm()
+        }
+      },
+      async edit () {
+        try {
+          this.loading = true
+          // FormData
+          const item = new FormData()
+          item.set('id', this.form.id)
+          item.set('name', this.form.name)
+          item.set('description', this.form.description)
+          // if (this.form.started_at) item.set('started_at', this.form.started_at)
+          // if (this.form.expired_at) item.set('expired_at', this.form.expired_at)
+          // item.set('started_at', null)
+          // item.set('expired_at', null)
+          // добавляем файлы
+          if (Array.isArray(this.form.files)) {
+            for (let i = 0; i < this.form.files.length; i++) {
+              const file = this.form.files[i].file // добавляем файл
+              item.append('files[' + i + ']', file)
+            }
+          }
+          console.log(item)
+          // await this.$store.dispatch('crm/clientDocument/update', item)
+        } finally {
+          this.loading = false
+          this.closeForm()
+        }
+      },
+      async remove (id) {
+        // example
+        this.documents = this.documents.filter(doc => {
+          return (doc.id !== id)
+        })
       },
       async fetchData () {
         try {
@@ -458,7 +529,7 @@
             page: 1,
             limit: 20,
           }
-          await this.$store.dispatch('crm/clientCard/getDocuments', item)
+          await this.$store.dispatch('crm/clientDocument/list', item)
         } finally {
           this.loading = false
         }
@@ -477,6 +548,7 @@
   }
   .tab-document__empty {
     margin-top: calc(270px + 84px);
+    margin-bottom: 34px;
     text-align: center;
     .empty-btn {
       margin-top: 34px;
