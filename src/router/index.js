@@ -306,6 +306,13 @@ export default new Router({
               meta: { auth: true },
             },
             {
+              path: 'sendings',
+              beforeEnter: GuardEmptyPrograms,
+              component: () => import('@/views/settings/sendings/index.vue'),
+              name: 'SettingsSendings',
+              meta: { auth: true },
+            },
+            {
               path: 'chat',
               component: () => import('@/views/settings/chat/index'),
               name: 'SettingsChat',

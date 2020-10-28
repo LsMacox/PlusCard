@@ -78,7 +78,7 @@
             icon: require('@/assets/settings/Mail-On.png'),
             title: 'Рассылки',
             description: 'Управление текущими рассылками компаниии и создание новых.',
-            to: '/sendings',
+            to: '/settings/sendings',
           },
           {
             icon: require('@/assets/settings/Chat-On.png'),
