@@ -109,7 +109,6 @@
         v-else
       />
     </div>
-    {{ sidePanelStatus.active }}
     <side-panel-edit-client
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"

@@ -89,15 +89,7 @@
     },
     mixins: [Calculation],
     inheritAttrs: false,
-    model: {
-      prop: 'date',
-      event: 'changeDate',
-    },
     props: {
-      date: {
-        type: [Date, String],
-        default: '00.00.0000',
-      },
       dateFormat: {
         type: String,
         default: '',
@@ -114,17 +106,9 @@
     },
     computed: {},
     watch: {
-      date: {
-        immediate: true,
-        handler (v) {
-          const dateRaw = this.$moment(v).format(this.dateFormat)
-          const dateFormat = this.$moment(v, this.dateFormat).format(this.dateFormat)
-
-          this.dateText = dateRaw !== 'Invalid date' ? dateRaw : dateFormat
-        },
-      },
       dateText (v) {
-        this.$emit('changeDate', this.$moment(v, this.dateFormat).toString())
+        const date = this.$moment(v, this.dateFormat).toString()
+        this.$emit('update:date', date)
       },
     },
     mounted () {},
@@ -135,7 +119,6 @@
         if (this.dateFormat.length) {
           this.dateText = this.$moment(v.startDate).format(this.dateFormat)
         }
-        this.$emit('changeDate', v.startDate.toString())
       },
       show () {
         this.$nextTick(() => {

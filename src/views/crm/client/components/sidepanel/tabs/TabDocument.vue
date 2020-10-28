@@ -169,13 +169,13 @@
         </div>
         <div class="form-block__content">
           <base-date-text-field
-            v-model="documentPeriod.start"
+            :date.sync="documentPeriod.start"
             :date-format="DATE_FORMAT"
             class="date-start"
             placeholder="Действует с"
           />
           <base-date-text-field
-            v-model="documentPeriod.end"
+            :date.sync="documentPeriod.end"
             :date-format="DATE_FORMAT"
             class="date-end"
             placeholder="Действует до"
