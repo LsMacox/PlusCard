@@ -53,19 +53,20 @@ const actions = {
 
     async create ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
-        const result = await ApiService.post('/api-cabinet/crm/account', item).catch(error => {
-            console.log('/api-cabinet/crm/account/create error')
-            console.log(error)
-        })
-        console.log('/api-cabinet/crm/account/create')
-        console.log(result)
-        commit('ADD', result)
+        try {
+            const result = await ApiService.post('/api-cabinet/crm/account', item)
+            console.log('/api-cabinet/crm/account/create')
+            console.log(result)
+            commit('ADD', result)
 
-        this._vm.$notify({
-            type: 'success',
-            title: 'Клиенты',
-            text: 'Клиент успешно создан',
-        })
+            this._vm.$notify({
+                type: 'success',
+                title: 'Клиенты',
+                text: 'Клиент успешно создан',
+            })
+        } catch (error) {
+            throw error
+        }
     },
 
     async list ({ commit }, item) {

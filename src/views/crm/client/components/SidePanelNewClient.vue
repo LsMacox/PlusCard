@@ -204,12 +204,18 @@
         }
         try {
           this.loading = true
+          let birthDay = this.$moment.utc(this.form.birthday).local().format('DD.MM.YYYY')
+          const bdayRegExp = new RegExp('^(?:0*[1-9]|[12]\\d|3[01])([\\/.-])(?:0*[1-9]|1[012])\\1(?:19|20)\\d\\d$')
+
+          if (!bdayRegExp.test(birthDay)) {
+            birthDay = null
+          }
           const item = {
             program_id: this.program.id,
             name: this.form.name,
             lastname: this.form.lastname,
             phone,
-            birthday: this.form.birthday,
+            birthday: birthDay,
             sms_invite: this.form.sms_invite,
           }
           console.log(item)
