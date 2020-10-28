@@ -52,9 +52,6 @@
         return this.$_.map(this.widgetData.chart[0], 'count')
       },
       diagramTotalData () {
-        console.log('this.widgetData.chart[1]')
-        console.log(this.widgetData.chart[1])
-        console.log('this.widgetData.chart[1]')
         return this.$_.map(this.widgetData.chart[1], 'count')
       },
     },

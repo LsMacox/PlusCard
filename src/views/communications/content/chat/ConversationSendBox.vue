@@ -716,7 +716,6 @@
           selectedTopicId: this.selectedTopicId,
           message: this.message,
           recipients: this.recipients,
-          recipients: this.recipients,
           formDataFiles: this.formDataFiles,
         })
         if (this.validateSendMessage) {
