@@ -66,8 +66,8 @@ export default {
                     byProgramCount: state.widgetData.by_program_count,
                     totalSum: state.widgetData.total_sum_current / 100,
                     byProgramSum: state.widgetData.by_program_sum_current / 100,
-                    totalSumPrev: state.widgetData.total_sum_prev,
-                    byProgramSumPrev: state.widgetData.by_program_sum_prev,
+                    totalSumPrev: state.widgetData.total_sum_prev / 100,
+                    byProgramSumPrev: state.widgetData.by_program_sum_prev / 100,
                 }
             )
             console.log('DATA')
@@ -77,8 +77,8 @@ export default {
                 byProgramCount: state.widgetData.by_program_count,
                 totalSum: state.widgetData.total_sum_current / 100,
                 byProgramSum: state.widgetData.by_program_sum_current / 100,
-                totalSumPrev: state.widgetData.total_sum_prev,
-                byProgramSumPrev: state.widgetData.by_program_sum_prev,
+                totalSumPrev: state.widgetData.total_sum_prev / 100,
+                byProgramSumPrev: state.widgetData.by_program_sum_prev / 100,
             }
         },
     },
