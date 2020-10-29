@@ -90,6 +90,10 @@
     mixins: [Calculation],
     inheritAttrs: false,
     props: {
+      date: {
+        type: String,
+        default: '',
+      },
       dateFormat: {
         type: String,
         default: '',
@@ -111,7 +115,9 @@
         this.$emit('update:date', date)
       },
     },
-    mounted () {},
+    created () {
+      if (this.date) this.dateText = this.$moment(this.date).format(this.$config.date.DATE_FORMAT)
+    },
     methods: {
       updateDatePicker (v) {
         this.showDatePicker = false

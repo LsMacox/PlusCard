@@ -53,7 +53,7 @@
           <div class="header-left">
             <a
               href="#delete"
-              @click.prevent="remove(doc.id)"
+              @click.prevent="remove(doc)"
             >
               <iconify-icon
                 class="icon-trash"
@@ -182,14 +182,14 @@
           </div>
           <div class="form-block__content">
             <base-date-text-field
-              v-model="form.started_at"
-              :date-format="DATE_FORMAT"
+              :date.sync="form.started_at"
+              date-format="DD.MM.YYYY"
               class="date-start"
               placeholder="Действует с"
             />
             <base-date-text-field
-              v-model="form.expired_at"
-              :date-format="DATE_FORMAT"
+              :date.sync="form.expired_at"
+              date-format="DD.MM.YYYY"
               class="date-end"
               placeholder="Действует до"
             />
@@ -212,7 +212,8 @@
             >
               <v-btn
                 class="btn-close"
-                @click="removeFile(i)"
+                :loading="indexRemoved === i && loadingRemove"
+                @click="removeFromArrayFile(i)"
               >
                 <iconify-icon
                   class="icon-close"
@@ -220,10 +221,10 @@
                   width="26"
                 />
               </v-btn>
-              <img
+              <v-img
                 :src="file.preview"
                 alt="img"
-              >
+              />
             </div>
             <div
               class="attach-box"
@@ -321,6 +322,8 @@
       return {
         valid: true,
         loading: false,
+        loadingRemove: false,
+        indexRemoved: null,
         DATE_FORMAT: 'DD.MM.YYYY',
         form: {
           id: null,
@@ -454,11 +457,13 @@
           this.form.files.push(item)
         }
       },
-      removeFile (index) {
-        console.log('removeFile')
+      async removeFromArrayFile (index) {
+        console.log('removeFromArrayFile')
         console.log(index)
         if (this.form.files[index] && this.form.files[index].id) {
-          console.log('removed real file')
+          this.indexRemoved = index
+          await this.deleteFile(this.form.files[index])
+          this.indexRemoved = null
         } else {
           this.form.files.splice(index, 1)
         }
@@ -474,20 +479,17 @@
             started_at: this.form.started_at,
             expired_at: this.form.expired_at,
           }
+          console.log(doc)
           const result = await this.$store.dispatch('crm/clientDocument/create', doc)
-
-          console.log('result')
-          console.log(result)
-
           // добавляем файлы
           if (this.form.files && this.form.files.length) {
-            const item = new FormData()
-            item.set('document_id', result.id)
+            const formData = new FormData()
+            formData.set('document_id', result.id)
             for (let i = 0; i < this.form.files.length; i++) {
               const file = this.form.files[i].file // добавляем файл
-              item.append('files[' + i + ']', file)
+              formData.append('files[' + i + ']', file)
             }
-            await this.$store.dispatch('crm/clientDocument/uploadFiles', item)
+            await this.$store.dispatch('crm/clientDocument/uploadFiles', formData)
           }
         } finally {
           this.loading = false
@@ -497,34 +499,58 @@
       async edit () {
         try {
           this.loading = true
-          // FormData
-          const item = new FormData()
-          item.set('id', this.form.id)
-          item.set('name', this.form.name)
-          item.set('description', this.form.description)
-          // if (this.form.started_at) item.set('started_at', this.form.started_at)
-          // if (this.form.expired_at) item.set('expired_at', this.form.expired_at)
-          // item.set('started_at', null)
-          // item.set('expired_at', null)
+          // создаем документ
+          const doc = {
+            document_id: this.form.id,
+            name: this.form.name,
+            description: this.form.description,
+            started_at: this.form.started_at,
+            expired_at: this.form.expired_at,
+          }
+          console.log(doc)
+          const result = await this.$store.dispatch('crm/clientDocument/update', doc)
           // добавляем файлы
-          if (Array.isArray(this.form.files)) {
+          if (this.form.files && this.form.files.length) {
             for (let i = 0; i < this.form.files.length; i++) {
-              const file = this.form.files[i].file // добавляем файл
-              item.append('files[' + i + ']', file)
+              let formData = null
+              // это новый файл
+              if (this.form.files[i].file) {
+                if (!formData) {
+                  formData = new FormData()
+                  formData.set('document_id', result.id)
+                }
+                const file = this.form.files[i].file // добавляем файл
+                formData.append('files[' + i + ']', file)
+              }
+              if (formData) await this.$store.dispatch('crm/clientDocument/uploadFiles', formData)
             }
           }
-          console.log(item)
-          // await this.$store.dispatch('crm/clientDocument/update', item)
         } finally {
           this.loading = false
           this.closeForm()
         }
       },
-      async remove (id) {
-        // example
-        this.documents = this.documents.filter(doc => {
-          return (doc.id !== id)
-        })
+      async remove (item) {
+        try {
+          this.loadingRemove = true
+          const doc = {
+            document_id: item.id,
+          }
+          await this.$store.dispatch('crm/clientDocument/delete', doc)
+        } finally {
+          this.loadingRemove = false
+        }
+      },
+      async deleteFile (item) {
+        try {
+          this.loadingRemove = true
+          const file = {
+            file_id: item.id,
+          }
+          await this.$store.dispatch('crm/clientDocument/deleteFiles', file)
+        } finally {
+          this.loadingRemove = false
+        }
       },
       async fetchData () {
         try {
@@ -641,6 +667,7 @@
               min-width: 0;
               padding: 0 !important;
               border-radius: 50px;
+              z-index: 2;
               .icon-close {
                 color: $primary-base;
                 cursor: pointer;

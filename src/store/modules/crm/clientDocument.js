@@ -20,6 +20,7 @@ const mutations = {
         items.forEach((item, index) => {
             if (item.id === payload.id) Object.assign(items[index], payload)
         })
+        state.documents = Object.assign([], items)
     },
     REMOVE_FROM_DOCUMENTS (state, payload) {
         const items = state.documents
@@ -67,6 +68,7 @@ const actions = {
             console.log('/api-cabinet/crm/account/document')
             console.log(result)
             commit('UPDATE_IN_DOCUMENTS', result)
+            return result
         } catch (error) {
             throw error
         }
