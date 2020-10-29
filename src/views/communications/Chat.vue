@@ -88,19 +88,17 @@
 </script>
 
 <style lang="scss">
-#appView {
-  padding: 0 !important;
-}
 
 [v-cloak] {
   display: none;
 }
 .app--chat__container {
+  @include page-content-padding-disable;
   font-family: "SF Pro Rounded";
   background: #fff;
-  margin: 0;
-  height: 100%;
-  width: 100%;
+  // margin: 0;
+  height: 100vh;
+  // width: 100%;
   display: flex;
   flex-direction: row;
   align-items: stretch;
