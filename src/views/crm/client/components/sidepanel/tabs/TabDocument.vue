@@ -2,7 +2,7 @@
   <div class="tab-document">
     <!-- ПУСТОЙ СПИСОК -->
     <div
-      v-if="!showForm && !documents.length"
+      v-if="!showForm && documents && !documents.length"
       class="tab-document__empty"
     >
       <base-empty sub-text="Прикрепляйте любые документы, которые могут понядобится клиенту. Он увидит их в приложении." />
@@ -23,7 +23,7 @@
     </div>
     <!-- СПИСОК ДОКУМЕНТОВ -->
     <div
-      v-if="!showForm && documents.length"
+      v-if="!showForm && documents && documents.length"
       class="tab-document__preview"
     >
       <div
@@ -466,24 +466,29 @@
       async create () {
         try {
           this.loading = true
-          // FormData
-          const item = new FormData()
-          item.set('account_id', this.accountClient.id)
-          item.set('name', this.form.name)
-          item.set('description', this.form.description)
-          // if (this.form.started_at) item.set('started_at', this.form.started_at)
-          // if (this.form.expired_at) item.set('expired_at', this.form.expired_at)
-          // item.set('started_at', null)
-          // item.set('expired_at', null)
+          // создаем документ
+          const doc = {
+            account_id: this.accountClient.id,
+            name: this.form.name,
+            description: this.form.description,
+            started_at: this.form.started_at,
+            expired_at: this.form.expired_at,
+          }
+          const result = await this.$store.dispatch('crm/clientDocument/create', doc)
+
+          console.log('result')
+          console.log(result)
+
           // добавляем файлы
-          if (Array.isArray(this.form.files)) {
+          if (this.form.files && this.form.files.length) {
+            const item = new FormData()
+            item.set('document_id', result.id)
             for (let i = 0; i < this.form.files.length; i++) {
               const file = this.form.files[i].file // добавляем файл
               item.append('files[' + i + ']', file)
             }
+            await this.$store.dispatch('crm/clientDocument/uploadFiles', item)
           }
-          console.log(item)
-          await this.$store.dispatch('crm/clientDocument/create', item)
         } finally {
           this.loading = false
           this.closeForm()

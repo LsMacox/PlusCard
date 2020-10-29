@@ -42,6 +42,7 @@ const actions = {
             console.log('/api-cabinet/crm/account/document')
             console.log(result)
             commit('ADD_TO_DOCUMENTS', result)
+            return result
         } catch (error) {
             throw error
         }
@@ -64,6 +65,42 @@ const actions = {
         try {
             const result = await ApiService.put('/api-cabinet/crm/account/document', item)
             console.log('/api-cabinet/crm/account/document')
+            console.log(result)
+            commit('UPDATE_IN_DOCUMENTS', result)
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async delete ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.delete(`/api-cabinet/crm/account/document?document_id=${item.document_id}`)
+            console.log('/api-cabinet/crm/account/document')
+            console.log(result)
+            commit('REMOVE_FROM_DOCUMENTS', result)
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async uploadFiles ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.post('/api-cabinet/crm/account/document/file', item)
+            console.log('/api-cabinet/crm/account/document/file')
+            console.log(result)
+            commit('UPDATE_IN_DOCUMENTS', result)
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async deleteFiles ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.delete(`/api-cabinet/crm/account/document/file?file_id=${item.file_id}`)
+            console.log('/api-cabinet/crm/account/document/file')
             console.log(result)
             commit('UPDATE_IN_DOCUMENTS', result)
         } catch (error) {
