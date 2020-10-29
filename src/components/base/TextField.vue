@@ -54,6 +54,7 @@
     @focus="onFocus"
     @input="onInput"
     @click="onClick"
+    @keydown="onKeydown"
   >
     <template v-slot:prepend-inner>
       <v-icon
@@ -81,7 +82,7 @@
         </v-col>
 
         <v-col
-         v-if="!!counter"
+          v-if="!!counter"
           cols="auto"
           class="append-slot-row__col body-xs-semibold"
         >
@@ -215,6 +216,11 @@
       errorStyle: {
         type: String,
         default: 'tooltip',
+      },
+
+      keyFilterRegexp: {
+        type: RegExp, // string, integer, number
+        default: undefined,
       },
 
       maxlength: {
@@ -433,6 +439,9 @@
       this.setTooltipPosition()
     },
     methods: {
+      focus () {
+        this.$refs.vTextField.focus()
+      },
       updateError (e) {
         // console.log(e)
       },
@@ -456,6 +465,14 @@
         // console.log('onInput', e)
         e && this.$nextTick(() => this.$emit('input', e))
       },
+
+      onKeydown (e) {
+        // console.log('onKeydown', e)
+
+        if (this.keyFilterRegexp && !this.keyFilterRegexp.test(e.key)) e.preventDefault()
+        e && this.$nextTick(() => this.$emit('keydown', e))
+      },
+
       onClick (e) {
         // if (this.isFocused || this.isDisabled || !this.$refs.vTextField) return;
         // this.$refs.input.focus();
