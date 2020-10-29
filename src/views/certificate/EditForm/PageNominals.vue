@@ -34,24 +34,30 @@
                     v-model="item.nominal_name"
                     :disabled="!!item.id"
                     :rules="nominalNameRules"
+                    validation-placement="top"
                     placeholder="Введите название номинала"
                     counter="20"
                     maxlength="20"
                     outlined
+                    @keydown.enter="$refs['sellPriceInput'+index] && $refs['sellPriceInput'+index][0].focus()"
                   />
                 </v-col>
                 <v-col :cols="'auto'">
                   <!--  :value="formatSellingPrice(item.selling_price)" -->
-                  <v-text-field
+                  <base-text-field
+                    :ref="'sellPriceInput'+index"
                     v-model.number="item.selling_price"
                     :disabled="!!item.id"
                     :rules="sellingPriceRules"
                     :style="{width: '154px'}"
+                    validation-placement="top"
                     placeholder="Стоимость"
                     class="text-align-right"
                     suffix="₽"
-                    type="number"
                     outlined
+                    maxlength="7"
+                    :key-filter-regexp="/(\d|Delete|Backspace|Enter|Tab)/"
+
                     @blur="item.selling_price = Math.min(Math.max(item.selling_price, 0), MAX_PRICE)"
                   />
                 </v-col>
@@ -70,7 +76,7 @@
                       </v-icon>
                     </v-btn>
 
-                    <v-text-field
+                    <base-text-field
                       v-if="!cert.quantity_unlimit"
                       v-model.number="item.quantity"
                       :disabled="!!item.id"
@@ -78,8 +84,10 @@
                       :style="{width: '72px'}"
                       class="text-align-center"
                       placeholder="∞"
-                      type="number"
+                       validation-placement="top"
+                      maxlength="7"
                       outlined
+                      :key-filter-regexp="/(\d|Delete|Backspace|Enter)/"
                       @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"
                     />
                     <v-btn
@@ -184,10 +192,11 @@
         ],
         sellingPriceRules: [
           (v) => (!!v && v > 0) || 'Введите стоимость',
+          (v) => (v <= MAX_PRICE) || `Не более ${MAX_PRICE}`,
         ],
         quantityRules: [
           (v) => (v === null || v === '' || +v > 0) || 'Введите',
-          (v) => (v <= MAX_QUANTITY) || '< 1000000',
+          (v) => (v <= MAX_QUANTITY) || `Не более ${MAX_QUANTITY}`,
         ],
       }
     },
@@ -278,6 +287,7 @@
           // this.cert.nominals.forEach(item => (item.quantity = 0))
         }
       },
+      
       createCert () {
         const postData = {
           program_id: this.program.id,
