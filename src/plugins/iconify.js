@@ -112,6 +112,8 @@ export const ICONIFY_ICONS = {
 
     // eva
     'eva-plus-outline': () => import('@iconify/icons-eva/plus-outline'),
+    'eva-info-fill': () => import('@iconify/icons-eva/info-fill'),
+
 }
 
 for (const icon in ICONIFY_ICONS) {
