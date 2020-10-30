@@ -55,6 +55,30 @@
             <!-- :attach="'.navigation-drawers-wrap'" -->
           </div>
         </div>
+        <div class="name-currency">
+          <div class="title-currency">
+            <h3 class="title-h3">
+              Краткое описание валюты
+            </h3>
+            <p class="desc-15">
+              Это описание будет видно под названием
+            </p>
+          </div>
+          <div>
+            <base-text-field
+              v-model="bonusUnitInternal.description"
+              :rules="descriptionRules"
+              :validation-placement="'bottom'"
+              class="input-lg input-bonuses"
+              placeholder="Введите описание"
+              error-style="vuetify"
+              counter              
+              maxlength="100"
+              validate-on-blur
+            />
+            <!-- :attach="'.navigation-drawers-wrap'" -->
+          </div>
+        </div>
         <div class="declines-currency">
           <div class="title-currency">
             <h3 class="title-h3">
@@ -245,6 +269,9 @@
         nameEndingRules: [
           (v) => maxLen(v, 45) || 'Не более 45 символов',
         ],
+        descriptionRules: [
+          (v) => maxLen(v, 100) || 'Не более 100 символов',
+        ],
 
       }
     },
@@ -413,6 +440,7 @@
             program_id: this.programId,
             max_value: this.bonusUnitInternal.max_value,
             name: this.bonusUnitInternal.name,
+            description: this.bonusUnitInternal.description,
             type_enum: this.bonusUnitInternal.type_enum,
             unit_name_ending: {
               first: this.bonusUnitInternal.unit_name_ending_first,
