@@ -1,10 +1,11 @@
 <template>
   <BaseDrawerDialog
-    v-model="dialog"    
+    v-model="dialog"
+    stateless
   >
     <template v-slot:actions>
       <v-btn
-        v-if="detailedCert.archived_at"
+        v-if="detailedCert.archived_at && detailedCert.user_id && hasProgramPermission('program-certificate-user-archive', detailedCert.certificate.program_id)"
         :loading="changeArchiveStatusAction"
         text
         color="neutral-500"
@@ -15,7 +16,7 @@
         </v-icon> В работу
       </v-btn>
       <v-btn
-        v-else
+        v-else-if="!detailedCert.archived_at && detailedCert.user_id && hasProgramPermission('program-certificate-user-archive', detailedCert.certificate.program_id)"
         text
         :loading="changeArchiveStatusAction"
         color="neutral-500"
@@ -58,7 +59,7 @@
         class="cert-details-property d-flex"
       >
         <div class="body-l-semibold">
-          {{ detailedCert.selling_price }} &#8381
+          {{ detailedCert.selling_price }} &#8381;
         </div>
       </div>
 
@@ -159,13 +160,22 @@
           <span>{{ statusDate(detailedCert) }}</span>
         </div>
         <v-btn
-          v-if="detailedCert.deleted_at != null"
+          v-if="detailedCert.deleted_at != null && hasProgramPermission('program-certificate-user-restore', detailedCert.certificate.program_id)"
           text
           color="primary"
           :loading="restoreCertAction"
           @click="restoreCertOrder"
         >
           <span class="">Вернуть</span>
+        </v-btn>
+        <v-btn
+          v-else-if="detailedCert.deleted_at === null && detailedCert.order && detailedCert.issued && detailedCert.is_expired && hasProgramPermission('program-certificate-user-delete', detailedCert.certificate.program_id)"
+          text
+          color="error"
+          :loading="deleteCertAction"
+          @click="deleteCertOrderClick"
+        >
+          <span class="">Удалить</span>
         </v-btn>
       </div>
 
@@ -216,7 +226,7 @@
           <span>{{ merchantOrderStatusTooltip(detailedCert.merchant_order_status) }}</span>
         </div>
       </div>
-      <v-row v-if="!detailedCert.deleted_at && detailedCert.issued && !detailedCert.is_expired && !detailedCert.used ">
+      <v-row v-if="!detailedCert.deleted_at && detailedCert.issued && !detailedCert.is_expired && !detailedCert.used && hasProgramPermission('program-certificate-user-use', detailedCert.certificate.program_id)">
         <v-col>
           <v-btn
             color="primary"
@@ -246,7 +256,7 @@
             </div>
           </div>
 
-          <v-row v-if="!detailedCert.paid && !!detailedCert.user_id && !detailedCert.deleted_at">
+          <v-row v-if="!detailedCert.paid && detailedCert.user_id && !detailedCert.deleted_at && hasProgramPermission('program-certificate-user-paid', detailedCert.certificate.program_id)">
             <v-col>
               <v-btn
                 color="primary"
@@ -406,10 +416,11 @@
   import CertificatePaidDialog from './CertificatePaidDialog'
   import CertificateUsedDialog from './CertificateUsedDialog'
   import CertificateUserBlock from './CertificateUserBlock'
+  import permission from '@/mixins/permission'
 
   export default {
     components: { CertificatePaidDialog, CertificateUserBlock, CertificateUsedDialog },
-    mixins: [dialogable, CertMethodsMixin],
+    mixins: [dialogable, CertMethodsMixin, permission],
     props: {
       detailedCert: {
         type: Object,
@@ -422,6 +433,8 @@
         changeArchiveStatusAction: false,
         paidDialog: false,
         usedDialog: false,
+        deleteCertAction: false,
+        restoreCertAction: false,
       }
     },
     computed: {},
@@ -443,6 +456,19 @@
         this.restoreCert({ id: this.detailedCert.id }).finally(() => {
           this.restoreCertAction = false
         })
+      },
+      async deleteCertOrderClick () {
+        if (!this.detailedCert.order) return
+
+        try {
+          this.deleteCertAction = true
+
+          await this.deleteCertOrder(this.detailedCert)
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.deleteCertAction = false
+        }
       },
       paidClick () {
         this.paidDialog = true

@@ -7,6 +7,7 @@ export default {
         ...mapActions({
             changeCertArchiveStatus: 'account/certificate/certificate/changeArchiveStatus',
             restoreCert: 'account/certificate/certificate/Restore',
+            deleteCertOrder: 'account/certificate/certificate/Delete',
             CertOrderPaid: 'account/certificate/certificate/CertOrderPaid',
         }),
 
