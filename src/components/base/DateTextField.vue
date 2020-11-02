@@ -14,18 +14,26 @@
         autocomplete="none"
         :autofocus="false"
         @focus="show()"
-      />
-      <iconify-icon
+      >
+        <template v-slot:append>
+          <v-icon
+            color="neutral-500"
+          >
+            $iconify_feather-calendar
+          </v-icon>
+        </template>
+      </base-text-field>
+      <!-- <iconify-icon
+        v-if="false"
         class="icon-feather-calendar"
         icon="feather-calendar"
         width="21"
-      />
+      /> -->
     </div>
     <date-range-picker
       ref="picker"
       v-model="dateRange"
-      class="date-range-picker"
-      :class="{show: showDatePicker}"
+      :class="{show: showDatePicker, 'date-range-picker': true, 'date-range-picker--left': left, }"
       opens="inline"
       :ranges="false"
       :auto-apply="true"
@@ -46,29 +54,31 @@
         slot-scope="data"
       >
         <div class="footer-content">
-          <div class="actions">
-            <v-btn
-              class="date-range_picker__btn"
-              color="primary"
-              small
-              @click="showDatePicker = false"
-            >
-              Отменить
-            </v-btn>
-            <v-btn
-              class="date-range_picker__btn"
-              small
-              color="primary"
-              @click="data.clickApply"
-            >
-              <span
-                class="iconify"
-                data-icon="carbon:checkmark-outline"
-                data-inline="false"
-              />
-              Применить
-            </v-btn>
-          </div>
+          <v-col>
+            <div class="actions">
+              <v-btn
+                class="date-range_picker__btn"
+                color="primary"
+                small
+                @click="showDatePicker = false"
+              >
+                Отменить
+              </v-btn>
+              <v-btn
+                class="date-range_picker__btn"
+                small
+                color="primary"
+                @click="data.clickApply"
+              >
+                <span
+                  class="iconify"
+                  data-icon="carbon:checkmark-outline"
+                  data-inline="false"
+                />
+                Применить
+              </v-btn>
+            </div>
+          </v-col>
         </div>
       </div>
     </date-range-picker>
@@ -98,6 +108,10 @@
         type: String,
         default: '',
       },
+      left: {
+        type: Boolean,
+        default: false,
+      },
     },
     data () {
       return {
@@ -112,6 +126,7 @@
     watch: {
       dateText (v) {
         const date = this.$moment(v, this.dateFormat).toString()
+        console.log('update:date', date)
         this.$emit('update:date', date)
       },
     },
@@ -164,6 +179,11 @@
         }
         &.show {
           display: block !important;
+        }
+
+        &.date-range-picker--left{
+          left: 0px;
+          right: auto;
         }
     }
     .daterangepicker .calendars .calendars-container .drp-calendar:first-child {

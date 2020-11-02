@@ -92,6 +92,7 @@ export const ICONIFY_ICONS = {
     'feather-copy': () => import('@iconify/icons-feather/copy'),
     'feather-credit-card': () => import('@iconify/icons-feather/credit-card'),
     'feather-minus': () => import('@iconify/icons-feather/minus'),
+    'feather-play': () => import('@iconify/icons-feather/play'),
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),

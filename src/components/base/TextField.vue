@@ -68,13 +68,13 @@
       />
     </template>
     <template v-slot:append>
+   
       <v-row
         no-gutters
         class="append-slot-row"
         align="center"
       >
         <v-col
-          v-if="false"
           class="append-slot-row__col"
         >
           <slot name="append" />
@@ -181,6 +181,7 @@
           </v-icon>
         </v-col>
       </v-row>
+ 
     </template>
     <!-- Слот отображения ошибки -->
     <!-- <template v-slot:message="{key, message}">
@@ -613,6 +614,14 @@
       left: -14px;
       border-color: transparent $error transparent transparent;
     }
+  }
+}
+</style>
+
+<style lang="scss">
+.base-text-field {
+  .v-input__append-inner {
+    flex-shrink: 0;
   }
 }
 </style>

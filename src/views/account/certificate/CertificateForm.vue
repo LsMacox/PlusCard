@@ -128,7 +128,7 @@
           v-if="detailedCert.expires_at"
           class="cert-details-status-date body-s-semibold"
         >
-          {{ $moment(detailedCert.expires_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
+          {{ $moment.utc(detailedCert.expires_at).local().format('DD.MM.YYYY,\u00A0HH:mm') }}
         </div>
         <div
           v-else
@@ -136,6 +136,14 @@
         >
           -
         </div>
+        <v-btn
+          v-if="!detailedCert.deleted_at && detailedCert.issued && detailedCert.is_expired && hasProgramPermission('program-certificate-user-continue', detailedCert.certificate.program_id)"
+          text
+          color="primary"          
+          @click="continueDialog = true"
+        >
+          Продлить
+        </v-btn>
       </div>
 
       <div
@@ -407,6 +415,11 @@
       v-model="usedDialog"
       :cert="detailedCert"
     />
+    <certificate-continue-dialog
+      v-if="continueDialog"
+      v-model="continueDialog"
+      :cert="detailedCert"
+    />
   </BaseDrawerDialog>
 </template>
 
@@ -415,11 +428,12 @@
   import CertMethodsMixin from './CertMethodsMixin'
   import CertificatePaidDialog from './CertificatePaidDialog'
   import CertificateUsedDialog from './CertificateUsedDialog'
+  import CertificateContinueDialog from './CertificateContinueDialog'
   import CertificateUserBlock from './CertificateUserBlock'
   import permission from '@/mixins/permission'
 
   export default {
-    components: { CertificatePaidDialog, CertificateUserBlock, CertificateUsedDialog },
+    components: { CertificatePaidDialog, CertificateUserBlock, CertificateUsedDialog, CertificateContinueDialog },
     mixins: [dialogable, CertMethodsMixin, permission],
     props: {
       detailedCert: {
@@ -435,6 +449,7 @@
         usedDialog: false,
         deleteCertAction: false,
         restoreCertAction: false,
+        continueDialog: false,
       }
     },
     computed: {},
@@ -473,6 +488,7 @@
       paidClick () {
         this.paidDialog = true
       },
+     
     },
   }
 </script>
