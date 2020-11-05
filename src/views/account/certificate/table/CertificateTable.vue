@@ -456,7 +456,7 @@
 
           },
           {
-            icon: '$iconify_feather-play',
+            icon: '$icons_cert-continue',
             title: 'Продлить',
             action: this.continueCertClick,
             show: cert.user_id && !cert.deleted_at && cert.issued && cert.is_expired && this.hasProgramPermission('program-certificate-user-continue', cert.certificate.program_id),
