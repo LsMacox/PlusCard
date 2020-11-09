@@ -37,6 +37,8 @@ export const ICONIFY_ICONS = {
 
     // jam
     'jam-close': () => import('@iconify/icons-jam/close'),
+    'jam-square-minus': () => import('@iconify/icons-jam/minus-rectangle-f'),
+    'jam-square-plus': () => import('@iconify/icons-jam/plus-rectangle-f'),
 
     // carbon
     'carbon-email': () => import('@iconify/icons-carbon/email'),
@@ -92,12 +94,16 @@ export const ICONIFY_ICONS = {
     'feather-copy': () => import('@iconify/icons-feather/copy'),
     'feather-credit-card': () => import('@iconify/icons-feather/credit-card'),
     'feather-minus': () => import('@iconify/icons-feather/minus'),
+    'feather-plus': () => import('@iconify/icons-feather/plus'),
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),
 
      // ls
     'ls-sort': () => import('@iconify/icons-ls/sort'),
+
+    // mdi
+    'mdi-square-rounded-outline': () => import('@iconify/icons-mdi/square-rounded-outline'),
 
     // octicon
     'octicon-chevron-up-16': () => import('@iconify/icons-octicon/chevron-up-16'),
@@ -112,6 +118,9 @@ export const ICONIFY_ICONS = {
 
     // eva
     'eva-plus-outline': () => import('@iconify/icons-eva/plus-outline'),
+    'eva-checkmark-outline': () => import('@iconify/icons-eva/checkmark-outline'),
+    'eva-square-minus': () => import('@iconify/icons-eva/minus-square-fill'),
+    'eva-square-outline': () => import('@iconify/icons-eva/square-outline'),
 }
 
 for (const icon in ICONIFY_ICONS) {

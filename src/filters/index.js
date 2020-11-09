@@ -79,3 +79,16 @@ export function spacesBetweenNumbers (num) {
   }
   return 0
 }
+
+/**
+ * Text shortening by limit
+ * @param {Number} limit
+ */
+export function abbreviatedText (string, limit, end = '...') {
+  let text = string.trim()
+  if (text.length <= limit) return text
+
+  text = text.slice(0, limit)
+
+  return text + end
+}
