@@ -347,6 +347,15 @@ const actions = {
         })
         return result
     },
+    async updateChat ({ commit, dispatch, rootState }, { programId, canWrite, realChatName, chatWelcome }) {
+      const result = await ApiService.put('/api-cabinet/company/chat', {
+          id: programId,
+          can_write: canWrite,
+          real_chat_name: realChatName,
+          chat_welcome: chatWelcome,
+      })
+      return result
+  },
 
     async updateContact ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch

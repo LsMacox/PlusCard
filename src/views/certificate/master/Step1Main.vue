@@ -38,6 +38,9 @@
               v-model="cert.category_id_list"
               :items="category_id_list"
               :rules="categoryRules"
+              :menu-props="{ closeOnClick: fold }"
+              @focusout="focusOutHandler"
+              @focusin="focusInHandler"
               placeholder="Выберите категории"
               item-value="id"
               item-text="name"
@@ -74,6 +77,9 @@
               outlined
               deletable-chips
               clearable
+              :menu-props="{ closeOnClick: fold }"
+              @focusout="focusOutHandler"
+              @focusin="focusInHandler"
             >
               <template v-slot:no-data>
                 <v-list-item>
@@ -143,6 +149,7 @@
     },
     data () {
       return {
+        fold: false,
         tagSearch: null,
         valid: false,
         GetCategoryListLoading: false,
@@ -174,6 +181,12 @@
       this.loadData()
     },
     methods: {
+      focusOutHandler () {
+        this.fold = true
+      },
+      focusInHandler () {
+        this.fold = false
+      },
       loadData () {
         this.GetCategoryListLoading = true
         this.$store

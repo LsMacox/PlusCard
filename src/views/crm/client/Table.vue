@@ -110,6 +110,7 @@
       />
     </div>
     <side-panel-edit-client
+      v-if="sidePanelStatus.active"
       v-model="sidePanelStatus.active"
       :mode="sidePanelStatus.mode"
       :table-data="sidePanelStatus.data"
@@ -152,6 +153,9 @@
         return this.$store.getters['company/program/program']
       },
       clientsStore () {
+        console.log('CLIENTS...')
+        console.log(this.$store.getters['crm/client/clients'])
+        console.log('CLIENTS...')
         return this.$store.getters['crm/client/clients']
       },
       clients () {
