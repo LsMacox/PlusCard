@@ -21,21 +21,40 @@
         </p>
       </v-btn>
       -->
-      <v-btn
-        class="crm__header_new-btn"
-        color="primary"
-        @click="sidePanelNewClientStatus = true"
-      >
-        <iconify-icon
-          icon="plus-circle"
-          width="21"
-        />
-        <p
-          class="body-m-semibold neutral-100--text"
+      <div>
+        <!--
+        <v-btn
+          class="crm__header_new-btn"
+          style="margin-right: 25px;"
+          color="secondary"
+          :text="true"
+          :ripple="false"
+          @click="importDialog = true"
         >
-          Новый клиент
-        </p>
-      </v-btn>
+          <iconify-icon
+            icon="clarity-import-line"
+            width="21"
+            style="margin-right: 5px;"
+          />
+          Импорт
+        </v-btn>
+        -->
+        <v-btn
+          class="crm__header_new-btn"
+          color="primary"
+          @click="sidePanelNewClientStatus = true"
+        >
+          <iconify-icon
+            icon="plus-circle"
+            width="21"
+          />
+          <p
+            class="body-m-semibold neutral-100--text"
+          >
+            Новый клиент
+          </p>
+        </v-btn>
+      </div>
     </div>
     <div style="margin-top: 34px;">
       <div class="body-l-semibold neutral-900--text">
@@ -46,6 +65,10 @@
       </div>
     </div>
     <client-table />
+    <import
+      v-if="importDialog"
+      :dialog.sync="importDialog"
+    />
     <side-panel-new-client
       v-if="sidePanelNewClientStatus"
       v-model="sidePanelNewClientStatus"
@@ -63,14 +86,17 @@
 <script>
   import ClientTable from './Table'
   import SidePanelNewClient from './components/SidePanelNewClient'
+  import Import from './components/Import'
 
   export default {
     components: {
       ClientTable,
       SidePanelNewClient,
+      Import,
     },
     data () {
       return {
+        importDialog: false,
         sidePanelNewClientStatus: false,
         sidePanelCategoryStatus: false,
         testSidePanelCategories: [
