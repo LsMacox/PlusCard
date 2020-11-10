@@ -35,7 +35,7 @@ export default {
     },
     calculationPositionEl(posEl, relEl) {
       const sidePanelEl = this.findSidePanelComponent(this) || undefined 
-      const sidePanelContent = sidePanelEl.$refs['side-panel__nav'].$el.querySelector('.v-navigation-drawer__content') || undefined
+      const sidePanelContent = sidePanelEl?.$refs['side-panel__nav'].$el.querySelector('.v-navigation-drawer__content') || undefined
       const posElHeight = this.nodeOffsetWH(posEl, false)
 
       this.$nextTick(() => {

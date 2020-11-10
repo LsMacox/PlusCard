@@ -29,57 +29,76 @@
                 align="baseline"
               >
                 <v-col>
-                  <v-text-field
+                  <base-text-field
                     v-model="item.nominal_name"
                     :rules="nominalNameRules"
+                    validation-placement="top"
                     placeholder="Введите название номинала"
                     counter="20"
                     maxlength="20"
                     outlined
+                    @keydown.enter="$refs['sellPriceInput'+index] && $refs['sellPriceInput'+index][0].focus()"
                   />
                 </v-col>
                 <v-col :cols="'auto'">
                   <!--  :value="formatSellingPrice(item.selling_price)" -->
-                  <v-text-field
+                  <base-text-field
+                    :ref="'sellPriceInput'+index"
                     v-model.number="item.selling_price"
                     :rules="sellingPriceRules"
                     :style="{width: '154px'}"
                     placeholder="Стоимость"
                     class="text-align-right"
                     suffix="₽"
-                    type="number"
+                    validation-placement="top"
                     outlined
+                    maxlength="7"
+                    :key-filter-regexp="/(\d|Delete|Backspace|Enter|Tab)/"
                     @blur="item.selling_price = Math.min(Math.max(item.selling_price, 0), MAX_PRICE)"
                   />
                 </v-col>
                 <v-col :cols="'auto'">
-                  <v-text-field
-                    v-if="!cert.quantity_unlimit"
-                    v-model.number="item.quantity"
-                    :style="{width: '154px'}"
-                    class="text-align-center"
-                    placeholder="∞"
-                    type="number"
-                    outlined
-                    @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"
-                  >
-                    <template v-slot:prepend>
-                      <v-icon
-                        color="primary"
-                        @click="item.quantity = (item.quantity > 0 ? item.quantity - 1 : 0)"
-                      >
+                  <v-row no-gutters>
+                    <v-btn
+                      v-if="!cert.quantity_unlimit"
+                      :disabled="!!item.id"
+                      small
+                      icon
+                      color="primary"
+                      @click="item.quantity = (item.quantity > 0 ? item.quantity - 1 : 0)"
+                    >
+                      <v-icon>
                         mdi-minus
                       </v-icon>
-                    </template>
-                    <template v-slot:append-outer>
-                      <v-icon
-                        color="primary"
-                        @click="item.quantity = (item.quantity === null? 1 : item.quantity + 1)"
-                      >
+                    </v-btn>
+
+                    <base-text-field
+                      v-if="!cert.quantity_unlimit"
+                      v-model.number="item.quantity"
+                      :disabled="!!item.id"
+                      :rules="quantityRules"
+                      :style="{width: '72px'}"
+                      class="text-align-center"
+                      placeholder="∞"
+                       validation-placement="top"
+                      maxlength="7"
+                      outlined
+                      :key-filter-regexp="/(\d|Delete|Backspace|Enter)/"
+                      @blur="item.quantity = Math.min(Math.max(item.quantity, 0), MAX_QUANTITY)"
+                    />
+                    <v-btn
+                      v-if="!cert.quantity_unlimit"
+                      :disabled="!!item.id"
+                      small
+                      icon
+                      color="primary"
+                      @click="item.quantity = (item.quantity === null? 1 : item.quantity + 1)"
+                    >
+                      <v-icon>
                         mdi-plus
                       </v-icon>
-                    </template>
-                  </v-text-field>
+                    </v-btn>
+                  </v-row>
                 </v-col>
                 <v-col :cols="'auto'">
                   <v-btn
@@ -178,9 +197,15 @@
         valid: false,
         nominalNameRules: [
           (v) => !!v || 'Введите название номинала',
+          (v) => (!!v && v.length <= 20) || 'Название не должно превышать 20 символов',
         ],
         sellingPriceRules: [
           (v) => (!!v && v > 0) || 'Введите стоимость',
+          (v) => (v <= MAX_PRICE) || `Не более ${MAX_PRICE}`,
+        ],
+        quantityRules: [
+          (v) => (v === null || v === '' || +v > 0) || 'Введите',
+          (v) => (v <= MAX_QUANTITY) || `Не более ${MAX_QUANTITY}`,
         ],
       }
     },
@@ -209,11 +234,11 @@
       },
       keydownSellingPrice (item, event) {
         console.log('keydownSellingPrice', event.key)
-        if (/\d/.test(event.key)) {
-          return true
-        } else {
-          event.preventDefault()
-        }
+        // if (/\d/.test(event.key) || event.) {
+        //   return true
+        // } else {
+        //   event.preventDefault()
+        // }
       },
       inputSellingPrice (item, event) {
         console.log(item, event)

@@ -65,11 +65,12 @@
             </v-btn>
 
             <!-- начисление/подтверждение -->
-            <!-- блокируем операцию если нет ручного бонусного ресурса  :disabled="!isManual(item, 'TYPE_SOURCE') || !valid-->
+            <!-- блокируем операцию если нет ручного бонусного ресурса -->
             <v-btn
               v-if="editedItem.unit_id !== item.unit_id"
               class="control-btn"
               color="primary-100"
+              :disabled="!isManual(item, 'TYPE_SOURCE') || !valid"
               @click="menuOperation(item, 'TO')"
             >
               <iconify-icon

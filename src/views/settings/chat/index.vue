@@ -204,6 +204,7 @@
           this.chatUserEditing.avatar_full = v.data
         }
       },
+      programId (v) { if (v) this.init() },
     },
     created () {
       this.init()
@@ -256,20 +257,21 @@
       async saveChanges () {
         try {
           this.saveAction = true
-          if (this.hasProgramChanges) {
-            await this.updateChat({
-              programId: this.programId,
-              canWrite: this.programModelEditing.can_write,
-              realChatName: this.programModelEditing.real_chat_name,
-              chatWelcome: this.programModelEditing.chat_welcome,
-            })
-          }
 
           if (this.hasChatUserChanges) {
             await this.updateChatUser({
               id: this.programId,
               name: this.chatUserEditing.name,
               avatar: this.smallImgBlob || this.chatUserEditing.avatar_full,
+            })
+          }
+
+          if (this.hasProgramChanges) {
+            await this.updateChat({
+              programId: this.programId,
+              canWrite: this.programModelEditing.can_write,
+              realChatName: this.programModelEditing.real_chat_name,
+              chatWelcome: this.programModelEditing.chat_welcome,
             })
           }
 

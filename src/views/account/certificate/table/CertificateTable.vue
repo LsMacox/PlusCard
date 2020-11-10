@@ -256,6 +256,11 @@
       v-model="usedDialog"
       :cert="detailedCert"
     />
+    <certificate-continue-dialog
+      v-if="continueDialog"
+      v-model="continueDialog"
+      :cert="detailedCert"
+    />
   </div>
 </template>
 
@@ -264,21 +269,24 @@
   import CertificateForm from '../CertificateForm'
   import CertificatePaidDialog from '../CertificatePaidDialog'
   import CertificateUsedDialog from '../CertificateUsedDialog'
+  import CertificateContinueDialog from '../CertificateContinueDialog'
   import CertMethodsMixin from '../CertMethodsMixin'
+  import permission from '@/mixins/permission'
   import Vue from 'vue'
 
   export default {
     name: 'Certificates',
     components: {
-      SelectPageLimit, CertificateForm, CertificatePaidDialog, CertificateUsedDialog,
+      SelectPageLimit, CertificateForm, CertificatePaidDialog, CertificateUsedDialog, CertificateContinueDialog,
     },
-    mixins: [CertMethodsMixin],
+    mixins: [CertMethodsMixin, permission],
     data () {
       return {
         showDetails: false,
         detailedCert: {},
         paidDialog: false,
         usedDialog: false,
+        continueDialog: false,
         filterDrawer: false,
         tableOptions: {
           page: 1,
@@ -448,6 +456,12 @@
 
           },
           {
+            icon: '$icons_cert-continue',
+            title: 'Продлить',
+            action: this.continueCertClick,
+            show: cert.user_id && !cert.deleted_at && cert.issued && cert.is_expired && this.hasProgramPermission('program-certificate-user-continue', cert.certificate.program_id),
+          },
+          {
             icon: '$iconify_ion-checkmark-done',
             title: 'Отметить как использованный',
             action: this.usedDialogClick,
@@ -457,23 +471,29 @@
             icon: 'mdi-archive-arrow-down-outline',
             title: 'Архивировать',
             action: (cert) => this.changeArchiveStatus(cert, true),
-            show: cert.user_id && !cert.archived_at,
+            show: cert.user_id && !cert.archived_at && this.hasProgramPermission('program-certificate-user-archive', cert.certificate.program_id),
           },
           {
             icon: 'mdi-archive-arrow-up-outline',
             title: 'В работу',
             action: (cert) => this.changeArchiveStatus(cert, false),
-            show: cert.user_id && cert.archived_at,
+            show: cert.user_id && cert.archived_at && this.hasProgramPermission('program-certificate-user-archive', cert.certificate.program_id),
           },
           {
             icon: '$icons_trash-arrow',
             title: 'Восстановить',
             action: (cert) => this.restoreCertOrder(cert),
-            show: !!cert.deleted_at,
+            show: !!cert.deleted_at && this.hasProgramPermission('program-certificate-user-restore', cert.certificate.program_id),
+          },
+          {
+            icon: '$iconify_feather-trash',
+            title: 'Удалить',
+            action: (cert) => this.deleteCertOrderClick(cert),
+            show: !cert.deleted_at && cert.issued && cert.is_expired && this.hasProgramPermission('program-certificate-user-delete', cert.certificate.program_id),
           },
         ].filter(x => x.show)
       },
-      hasProgramPermission (programId) { return true },
+
       getWord (number, words) {
         const cases = [2, 0, 1, 1, 1, 2]
         return words[
@@ -493,6 +513,10 @@
         this.detailedCert = item
         this.paidDialog = true
       },
+      continueCertClick (item) {
+        this.detailedCert = item
+        this.continueDialog = true
+      },
       details (item) {
         console.log(item)
         this.detailedCert = item
@@ -510,6 +534,12 @@
       restoreCertOrder (cert) {
         cert.loading = true
         this.restoreCert({ id: cert.id }).finally(() => {
+          cert.loading = false
+        })
+      },
+      deleteCertOrderClick (cert) {
+        cert.loading = true
+        this.deleteCertOrder(cert).finally(() => {
           cert.loading = false
         })
       },

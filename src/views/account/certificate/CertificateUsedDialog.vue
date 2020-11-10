@@ -55,42 +55,7 @@
           </BaseDialogFieldBlock>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col>
-          <v-row>
-            <v-col class="body-l-semibold">
-              Данные сертификата
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col
-              class="body-s-semibold"
-              cols="4"
-            >
-              Название:
-            </v-col>
-            <v-col>{{ cert.certificate.name }}</v-col>
-          </v-row>
-          <v-row>
-            <v-col
-              class="body-s-semibold"
-              cols="4"
-            >
-              № заказа:
-            </v-col>
-            <v-col>{{ cert.order.num }}</v-col>
-          </v-row>
-          <v-row>
-            <v-col
-              class="body-s-semibold"
-              cols="4"
-            >
-              ID сертификата:
-            </v-col>
-            <v-col>{{ cert.number || cert.id }} </v-col>
-          </v-row>
-        </v-col>
-      </v-row>
+      <certificate-info-row :cert="cert" />
       <v-row>
         <v-col>
           <certificate-user-block

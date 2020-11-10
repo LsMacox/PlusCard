@@ -5,6 +5,7 @@
     fixed
     right
     temporary
+    :stateless="stateless"
     :width="width"
   >
     <template v-slot:prepend>
@@ -21,26 +22,29 @@
             $iconify_arrow-left
           </v-icon>  Назад
         </v-btn>
+
         <v-spacer />
         <slot name="action" />
       </v-row>
     </template>
 
     <v-container class="dialog-body">
-      <v-row  class="dialog-body_title">
-        <v-col class="title-m-bold" v-if="title">
+      <v-row class="dialog-body_title">
+        <v-col
+          v-if="title"
+          class="title-m-bold"
+        >
           {{ title }}
         </v-col>
-          <v-col v-else-if="$slots.title">
+        <v-col v-else-if="$slots.title">
           <slot name="title" />
         </v-col>
       </v-row>
       <v-row no-gutters>
         <v-col>
-           <slot />
+          <slot />
         </v-col>
-      </v-row>     
-     
+      </v-row>
     </v-container>
   </v-navigation-drawer>
 </template>
@@ -61,6 +65,8 @@
         type: String,
         default: '',
       },
+      stateless: Boolean,
+
     },
     data () {
       return {
@@ -69,10 +75,18 @@
     },
     computed: {},
     mounted () {
-
+      window.addEventListener('keyup', this.onKeyUp)
+    },
+    beforeDestroy () {
+      window.removeEventListener('keyup', this.onKeyUp)
     },
     methods: {
-
+      onKeyUp (e) {
+        console.log('onKeyUp', e)
+        if (e.key === 'Escape') {
+          this.close()
+        }
+      },
     },
   }
 </script>
