@@ -22,14 +22,13 @@
       </v-btn>
       -->
       <div>
-        <!--
         <v-btn
           class="crm__header_new-btn"
           style="margin-right: 25px;"
           color="secondary"
           :text="true"
           :ripple="false"
-          @click="importDialog = true"
+          @click="toRoute('/program/accounts/import')"
         >
           <iconify-icon
             icon="clarity-import-line"
@@ -38,7 +37,6 @@
           />
           Импорт
         </v-btn>
-        -->
         <v-btn
           class="crm__header_new-btn"
           color="primary"
@@ -65,10 +63,6 @@
       </div>
     </div>
     <client-table />
-    <import
-      v-if="importDialog"
-      :dialog.sync="importDialog"
-    />
     <side-panel-new-client
       v-if="sidePanelNewClientStatus"
       v-model="sidePanelNewClientStatus"
@@ -86,14 +80,14 @@
 <script>
   import ClientTable from './Table'
   import SidePanelNewClient from './components/SidePanelNewClient'
-  import Import from './components/Import'
+  import routing from '@/mixins/routing'
 
   export default {
     components: {
       ClientTable,
       SidePanelNewClient,
-      Import,
     },
+    mixins: [routing],
     data () {
       return {
         importDialog: false,
