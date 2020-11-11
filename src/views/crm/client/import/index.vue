@@ -1,10 +1,11 @@
 <template>
-  <div class="crm b-segment">
-    <div class="crm__header b-segment__header">
-      <p class="crm__header-title title-m-bold neutral-900--text">
-        {{ program.name }}
-      </p>
-      <!--
+  <div>
+    <div class="crm b-segment">
+      <div class="crm__header b-segment__header">
+        <p class="crm__header-title title-m-bold neutral-900--text">
+          {{ program.name }}
+        </p>
+        <!--
       <v-btn
         class="crm__header_new-btn"
         color="primary"
@@ -21,126 +22,27 @@
         </p>
       </v-btn>
       -->
-      <v-btn
-        class="crm__header_new-btn"
-        style="margin-right: 25px;"
-        color="secondary"
-        :text="true"
-        :ripple="false"
-        @click="toRoute('/program/accounts')"
-      >
-        <iconify-icon
-          icon="arrow-back"
-          width="21"
-          style="margin-right: 5px;"
-        />
-        Назад
-      </v-btn>
-    </div>
-    <div class="import-stepper">
-      <v-stepper
-        v-model="e1"
-        non-linear
-        class="elevation-0"
-      >
-        <v-stepper-header
-          class="elevation-0"
+        <v-btn
+          class="crm__header_new-btn"
+          style="margin-right: 25px;"
+          color="secondary"
+          :text="true"
+          :ripple="false"
+          @click="toRoute('/program/accounts')"
         >
-          <v-stepper-step
-            editable
-            step="1"
-          >
-            Выбор файла
-          </v-stepper-step>
-
-          <v-divider />
-
-          <v-stepper-step
-            editable
-            step="2"
-          >
-            Настройка импорта
-          </v-stepper-step>
-
-          <v-divider />
-
-          <v-stepper-step
-            step="3"
-            editable
-          >
-            Результат
-          </v-stepper-step>
-        </v-stepper-header>
-
-        <v-stepper-items>
-          <v-stepper-content
-            step="1"
-          >
-            <v-card
-              class="mb-12"
-              color="grey lighten-1"
-              height="200px"
-            >
-              1
-            </v-card>
-
-            <v-btn
-              color="primary"
-              @click="nextStep(1)"
-            >
-              Continue
-            </v-btn>
-
-            <v-btn text>
-              Cancel
-            </v-btn>
-          </v-stepper-content>
-          <v-stepper-content
-            step="2"
-          >
-            <v-card
-              class="mb-12"
-              color="grey lighten-1"
-              height="200px"
-            >
-              2
-            </v-card>
-
-            <v-btn
-              color="primary"
-              @click="nextStep(2)"
-            >
-              Continue
-            </v-btn>
-
-            <v-btn text>
-              Cancel
-            </v-btn>
-          </v-stepper-content>
-          <v-stepper-content
-            step="3"
-          >
-            <v-card
-              class="mb-12"
-              color="grey lighten-1"
-              height="200px"
-            >
-              3
-            </v-card>
-
-            <v-btn
-              color="primary"
-              @click="nextStep(3)"
-            >
-              Continue
-            </v-btn>
-
-            <v-btn text>
-              Cancel
-            </v-btn>
-          </v-stepper-content>
-        </v-stepper-items>
-      </v-stepper>
+          <iconify-icon
+            icon="arrow-back"
+            width="21"
+            style="margin-right: 5px;"
+          />
+          Назад
+        </v-btn>
+      </div>
+    </div>
+    <div>
+      <div class="import-stepper">
+        //
+      </div>
     </div>
   </div>
 </template>
@@ -160,6 +62,9 @@
       program () {
         return this.$store.getters['company/program/program']
       },
+      step () {
+        return this.$store.getters['crm/excel_import/step']
+      },
     },
     methods: {
       nextStep (n) {
@@ -175,7 +80,10 @@
 
 <style lang="scss" scoped>
 .import-stepper {
-  margin: 0 auto;
-  max-width: 670px;
+  margin: 34px auto 0 auto;
+  max-width: 70%;
+  @media(max-width: 1370px) {
+    max-width: 90%;
+  }
 }
 </style>
