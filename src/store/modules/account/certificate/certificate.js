@@ -100,14 +100,31 @@ const actions = {
         /// /console.log(success)
         commit('update_statuses', result)
     },
-    async Delete ({ commit, dispatch }, postData) {
-        const result = await ApiService.delete('/api/program/certificate/order/delete', postData)
+    async Delete ({ commit, dispatch }, userCert) {
+        if (!userCert.order) return
+        await this._vm.$confirm(
+            `Вы уверены, что хотите удалить заказ сертификата № "${userCert.order.num}" в корзину?`,
+            'Удаление заказа сертификата в корзину',
+            {
+              confirmButtonText: 'Удалить',
+              cancelButtonText: 'Отмена',
+              type: 'warning',
+            },
+          )
+
+        const result = await ApiService.delete('/api/program/certificate/order/delete', {
+            params: { id: userCert.id },
+        })
         /// /console.log(success)
         commit('update_statuses', result)
     },
-    async Continue ({ commit, dispatch }, postData) {
-        const result = await ApiService.post('/api/program/certificate/order/continue', postData)
-        /// /console.log(success)
+    async Continue ({ commit }, { id, expiresAt }) {
+        console.log('Continue', { id, expiresAt })
+        const result = await ApiService.post('/api/program/certificate/order/continue', {
+            id,
+            expires_at: expiresAt,
+        })
+
         commit('update_statuses', result)
     },
     async CertOrderPaid ({ commit, dispatch }, { id, type, transactionId, comment }) {

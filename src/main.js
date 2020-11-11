@@ -46,6 +46,7 @@ import VueTelInput from 'vue-tel-input'
 import VueClipboard from 'vue-clipboard2'
 import YmapPlugin from 'vue-yandex-maps'
 import VueSimpleSVG from 'vue-simple-svg'
+import VueExtend from './plugins/vue-extend'
 
 Vue.use(VueTelInput)
 Vue.use(Notifications)
@@ -56,6 +57,7 @@ Vue.use(MessageBox)
 Vue.use(VueClipboard)
 Vue.use(YmapPlugin, AppConfig.config.yandexMap)
 Vue.use(VueSimpleSVG)
+Vue.use(VueExtend)
 
 const options = {
   // color: '#bffaf3',
@@ -90,9 +92,6 @@ Object.copy = (obj) => {
 
 Vue.prototype.$IsDebugMode = function () {
   return IsDebugQuery(this.$route)
-}
-Vue.prototype.$sleep = function (ms = 3000) {
-  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 Vue.prototype.$uuid = uuidv4

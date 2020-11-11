@@ -43,6 +43,10 @@ $material-light-backgroung-color: $neutral-100;
 $page-content-padding-size: 34px;
 $page-content-padding: $page-content-padding-size $page-content-padding-size 0px $page-content-padding-size;
 $page-content-padding-disable: (-$page-content-padding-size) (-$page-content-padding-size) -0px (-$page-content-padding-size);
+@mixin page-content-padding-disable {
+  margin:  (-$page-content-padding-size) (-$page-content-padding-size) -0px (-$page-content-padding-size);
+}
+  
 
 $headings: (
   'h1': (

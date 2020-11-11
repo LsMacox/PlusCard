@@ -54,6 +54,7 @@
     @focus="onFocus"
     @input="onInput"
     @click="onClick"
+    @keydown="onKeydown"
   >
     <template v-slot:prepend-inner>
       <v-icon
@@ -67,13 +68,13 @@
       />
     </template>
     <template v-slot:append>
+   
       <v-row
         no-gutters
         class="append-slot-row"
         align="center"
       >
         <v-col
-          v-if="false"
           class="append-slot-row__col"
         >
           <slot name="append" />
@@ -81,7 +82,7 @@
         </v-col>
 
         <v-col
-         v-if="!!counter"
+          v-if="!!counter"
           cols="auto"
           class="append-slot-row__col body-xs-semibold"
         >
@@ -180,6 +181,7 @@
           </v-icon>
         </v-col>
       </v-row>
+ 
     </template>
     <!-- Слот отображения ошибки -->
     <!-- <template v-slot:message="{key, message}">
@@ -215,6 +217,11 @@
       errorStyle: {
         type: String,
         default: 'tooltip',
+      },
+
+      keyFilterRegexp: {
+        type: RegExp, // string, integer, number
+        default: undefined,
       },
 
       maxlength: {
@@ -433,6 +440,9 @@
       this.setTooltipPosition()
     },
     methods: {
+      focus () {
+        this.$refs.vTextField.focus()
+      },
       updateError (e) {
         // console.log(e)
       },
@@ -456,6 +466,14 @@
         // console.log('onInput', e)
         e && this.$nextTick(() => this.$emit('input', e))
       },
+
+      onKeydown (e) {
+        // console.log('onKeydown', e)
+
+        if (this.keyFilterRegexp && !this.keyFilterRegexp.test(e.key)) e.preventDefault()
+        e && this.$nextTick(() => this.$emit('keydown', e))
+      },
+
       onClick (e) {
         // if (this.isFocused || this.isDisabled || !this.$refs.vTextField) return;
         // this.$refs.input.focus();
@@ -596,6 +614,14 @@
       left: -14px;
       border-color: transparent $error transparent transparent;
     }
+  }
+}
+</style>
+
+<style lang="scss">
+.base-text-field {
+  .v-input__append-inner {
+    flex-shrink: 0;
   }
 }
 </style>

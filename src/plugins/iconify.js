@@ -32,7 +32,7 @@ export const ICONIFY_ICONS = {
     // codicon
     'chrome-close': () => import('@iconify/icons-codicon/chrome-close'),
 
-    // tabler 
+    // tabler
     'tabler-external-link': () => import('@iconify/icons-tabler/external-link'),
 
     // jam
@@ -94,6 +94,7 @@ export const ICONIFY_ICONS = {
     'feather-copy': () => import('@iconify/icons-feather/copy'),
     'feather-credit-card': () => import('@iconify/icons-feather/credit-card'),
     'feather-minus': () => import('@iconify/icons-feather/minus'),
+    'feather-play': () => import('@iconify/icons-feather/play'),
     'feather-plus': () => import('@iconify/icons-feather/plus'),
 
     // la
@@ -118,6 +119,8 @@ export const ICONIFY_ICONS = {
 
     // eva
     'eva-plus-outline': () => import('@iconify/icons-eva/plus-outline'),
+    'eva-info-fill': () => import('@iconify/icons-eva/info-fill'),
+
     'eva-checkmark-outline': () => import('@iconify/icons-eva/checkmark-outline'),
     'eva-square-minus': () => import('@iconify/icons-eva/minus-square-fill'),
     'eva-square-outline': () => import('@iconify/icons-eva/square-outline'),

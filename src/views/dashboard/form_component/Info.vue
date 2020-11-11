@@ -1,5 +1,15 @@
 <template>
   <div>
+    <v-row v-if="program.current_moderations && program.current_moderations.length">
+      <v-col>
+        <base-banner
+          text="Ваша компания находится на модерации. Вы можете менять данные сколько угодно раз. Модерацию будут проходить самые свежие изменения. "
+          type="warn"
+          closeable
+        />
+      </v-col>
+    </v-row>
+
     <BaseMasterFieldBlock
       title="Название"
       :horisontal="true"
@@ -24,7 +34,7 @@
       </template>
     </BaseMasterFieldBlock>
 
-    <v-row>      
+    <v-row>
       <v-col>
         <BaseMasterFieldBlock
           title="Карта клиента"

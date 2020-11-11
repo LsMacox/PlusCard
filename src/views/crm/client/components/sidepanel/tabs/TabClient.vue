@@ -91,7 +91,7 @@
       </div>
       <div class="tab-client__content user__content">
         <base-text-field
-          v-model="clientData.client_name"
+          v-model="accountClient.client_name"
           placeholder="Введите реальное имя клиента"
           validation-placement="left"
         />
@@ -108,7 +108,7 @@
       </div>
       <div class="tab-client__content birthday__content">
         <base-date-text-field
-          :date-sync="clientData.birthday"
+          :date.sync="accountClient.birthday"
           date-format="DD.MM.YYYY"
           placeholder="Дата рождения клиента (дд.мм.гггг)"
         />
@@ -170,6 +170,11 @@
     },
     created () {
       if (this.accountClient) {
+        /*
+        if (this.accountClient.birthday) {
+          this.accountClient.birthday = this.$moment(this.accountClient.birthday).format(this.$config.date.DATE_FORMAT)
+        }
+         */
         // объявление сегментов
         if (this.accountClient.segments) {
           this.clientSegments = Object.copy(this.accountClient.segments)

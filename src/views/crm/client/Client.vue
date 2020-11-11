@@ -4,6 +4,7 @@
       <p class="crm__header-title title-m-bold neutral-900--text">
         {{ program.name }}
       </p>
+      <!--
       <v-btn
         class="crm__header_new-btn"
         color="primary"
@@ -19,6 +20,7 @@
           категории
         </p>
       </v-btn>
+      -->
       <v-btn
         class="crm__header_new-btn"
         color="primary"
