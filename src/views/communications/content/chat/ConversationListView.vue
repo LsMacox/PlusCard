@@ -2,104 +2,28 @@
   <div style="display: flex; width: 100%;">
     <div class="app--conversation--list--card">
       <div class="app--conversationn--list--avatar--wrapper">
-        <v-menu
-          open-on-hover
-          top
-          offset-y
-        >
-          <v-list dense>
-            <v-subheader><span class="body-m-semibold">Участники чата</span> </v-subheader>
-            <v-list-item
-              v-for="(member, i) in activeMembers"
-              :key="i"
-            >
-              <v-list-item-content>
-                <v-list-item-title
-                  class="row no-gutters"
-                  @click="toAccount(member.id)"
-                >
-                  <div
-                    :class="{
-                      'is-member-client': isMemberClient(member.id)
-                    }"
-                  >
-                    {{ member.name }}
-                  </div>
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-          <div v-if="false">
-            <div style="display: flex; padding-bottom: 10px;">
-              <div>Участники чата</div>
-            </div>
-            <div>
-              <div
-                v-for="(member, i) in conversation.members"
-                :key="i"
-              >
-                <div
-                  v-if="member.active"
-                >
-                  <div
-                    v-if="member.id !== chatUser.id"
-                    style="display: inline; padding-top: 5px; color: #409EFF; border-bottom: 1px dotted #409EFF; cursor:pointer;"
-                    @click="toAccount(member.id)"
-                  >
-                    {{ member.name }}
-                  </div>
-                  <div
-                    v-else
-                  >
-                    {{ member.name }}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <template v-slot:activator="{on}">
-            <div
-              class="list-avatar"
-              v-on="on"
-            >
-              <img
-                v-for="(avatar, i) in getAvatars(conversation)"
-                :key="i"
-                :src="avatar"
-                class="list-avatar-img"
-                :style="
-                  'position: absolute;' +
-                    'left: ' +
-                    14 * i +
-                    'px;' +
-                    'z-index: ' +
-                    (0 + i) +
-                    ';'
-                "
-              >
-            </div>
-          </template>
-        </v-menu>
+        <div class="list-avatar">
+          <img
+            v-for="(avatar, i) in getAvatars(conversation)"
+            :key="i"
+            :src="avatar"
+            class="list-avatar-img"
+            @error="e => e.target.src = img404"
+          >
+        </div>
       </div>
       <div class="app--conversation--list--card--content--wrapper">
         <div class="app--conversation--list--card--content">
           <div class="app--conversation--list--card--top--line">
-            <div
-              v-if="conversation.chosen"
-              class="app--conversation--list--card--favorite"
-            >
-              <i class="fas fa-star" />
+            <div class="app--conversation--list--card-name">
+              {{ (conversation.display_name ? conversation.display_name : getName(conversation)) }}
             </div>
-
-            <div class="app--conversation--list--card-name body-m-medium ">
-              {{ conversation.display_name ? conversation.display_name : getName(conversation) }}
-            </div>
-            <div
+            <!-- <div
               v-if="conversation.muted"
               class="app--conversation--list--card--mute"
             >
               <img src="@/assets/chat/list_volume_off.svg">
-            </div>
+            </div> -->
           </div>
 
           <div
@@ -113,10 +37,9 @@
           <div
             v-else
             class="app--conversation--list--card--bottom--line"
-            :class="[getAuthorName(conversation) != 'Вы' ? 'blueAuthor' : '']"
+            :class="[getAuthorName(conversation) == 'Вы' ? 'blueAuthor' : '']"
           >
-            {{ getAuthorName(conversation) }}:<br>
-            {{ getLastMessage(conversation) }}
+            {{ (getAuthorName(conversation) + ': ' + getLastMessage(conversation)) }}
           </div>
         </div>
 
@@ -128,12 +51,16 @@
             v-if="conversation && conversation.unread_count"
             class="app--conversation--list--card--unread"
           >
-            {{ conversation.unread_count }}
+            <p class="body-s-semibold neutral-100--text">
+              {{ conversation.unread_count }}
+            </p>
           </div>
           <div
-            v-else
-            style="height: 22px;"
-          />
+            v-else-if="conversation.chosen"
+            class="app--conversation--list--card--favorite"
+          >
+            <i class="fas fa-star" />
+          </div>
         </div>
       </div>
     </div>
@@ -160,7 +87,7 @@
     },
     data () {
       return {
-
+        img404: 'https://storage.yandexcloud.net/plusstorage/users/avatars/default.png',
       }
     },
     computed: {
@@ -239,41 +166,45 @@
             }
           }
 
-          if (count > 2) {
-            // console.log('count > 2')
-
-            // нет последнего сообщения
-            if (!item.last_message) {
-              // console.log('my last message')
-
-              item.members.forEach(item => {
-                if (avatars.length < 3) {
-                  avatars.unshift(item.avatar)
-                }
-              })
-
-              // есть последнее сообщение
-            } else {
-              const lastSender = item.last_message.sender_id
-
-              // аватар последнего написавшего и первый в массиве
-              const firstAvatar = item.members.filter(
-                item => item.id === lastSender,
-              )
-              if (firstAvatar.length) avatars.unshift(firstAvatar[0].avatar)
-
-              // не более 3-х аватаров
-              item.members.forEach(item => {
-                if (avatars.length < 3 && item.id !== lastSender) {
-                  // console.log('avatars now', avatars);
-                  avatars.unshift(item.avatar)
-                }
-              })
-            }
-          }
+          // Group Avatar
+          if (count > 2) avatars = [this.getGropImgData(item)]
         }
 
         return avatars
+      },
+      getGropImgData (item) {
+        const
+          imgColor = '#D63DE5'
+        const imgWidth = 48
+        const imgHeight = 48
+
+        const
+          cvs = document.createElement('canvas')
+        const ctx = cvs.getContext('2d')
+
+        cvs.width = imgWidth
+        cvs.height = imgHeight
+        cvs.style.display = 'block'
+
+        // Fill background
+        ctx.moveTo(0, 0)
+        ctx.lineTo(imgWidth, 0)
+        ctx.lineTo(imgWidth, imgHeight)
+        ctx.lineTo(0, imgHeight)
+        ctx.fillStyle = imgColor
+        ctx.fill()
+
+        // Draw font
+        ctx.fillStyle = '#fff'
+        ctx.font = '700 28px Gilroy'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        if (item.name) ctx.fillText(item.name.charAt(0).toUpperCase(), imgWidth / 2, imgHeight / 2 + 1)
+        if (item.display_name) ctx.fillText(item.display_name.charAt(0).toUpperCase(), imgWidth / 2, imgHeight / 2 + 1)
+
+        const imgData = cvs.toDataURL()
+        cvs.remove()
+        return imgData
       },
       getName (item) {
         let name = ''
@@ -402,42 +333,25 @@
       },
       getDate (date) {
         if (!date) return '-'
-        const time = Date.parse(date)
-        // let time = new Date(date).getTime()
-        const offset = new Date().getTimezoneOffset()
-        // offset 0
-        const messageDate = new Date(time + offset * 0 * 60 * 1000)
-        const currentDate = new Date()
-        let options = {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          // hour: 'numeric',
-          // minute: 'numeric'
-        }
-        if (
-          currentDate.getDate() === messageDate.getDate() &&
-          currentDate.getMonth() === messageDate.getMonth() &&
-          currentDate.getFullYear() === messageDate.getFullYear()
-        ) {
-          options = {
-            hour: 'numeric',
-            minute: 'numeric',
+        const time = new Date(date).getTime()
+        const currentDate = this.$moment()
+        const messageDate = this.$moment(time)
+
+        let messageShortMonth = messageDate.format('MMM')
+        if (messageShortMonth.lastIndexOf('.') > -1) messageShortMonth = messageShortMonth.slice(0, -1)
+        const messageYear = messageDate.format('YYYY')
+        const messageDay = messageDate.format('DD')
+        const messageDayAndMounth = messageDay + ' ' + messageShortMonth
+
+        if (currentDate.diff(messageDate, 'years') === 0) {
+          if (currentDate.diff(messageDate, 'days') === 0) {
+            return messageDate.format('h:m')
+          } else {
+            return messageDayAndMounth
           }
         }
-        if (
-          currentDate.getDate() - messageDate.getDate() === 1 &&
-          currentDate.getMonth() === messageDate.getMonth() &&
-          currentDate.getFullYear() === messageDate.getFullYear()
-        ) {
-          options = {
-            hour: 'numeric',
-            minute: 'numeric',
-          }
-          return 'Вчера в ' + messageDate.toLocaleString('ru', options)
-        } else {
-          return messageDate.toLocaleString('ru', options)
-        }
+
+        return messageDayAndMounth + ', ' + messageYear
       },
       formatStatus (status) {
         if (status === 'sending') return 'Отправлено'
@@ -470,176 +384,143 @@
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.app--conversation--list--card{
+  display: flex;
+  flex-direction: row;
+  width: 362px;
+  height: 80px;
+
+  .app--conversationn--list--avatar--wrapper {
+    display: flex;
+    align-items: center;
+    padding: 0 12px 0 20px;
+  }
+
+  .app--conversation--list--card--top--line {
+    margin-top: 20px;
+
+    .app--conversation--list--card-name {
+      @include body-m-medium;
+      color: $neutral-900;
+      width: 170px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    // .app--conversation--list--card--mute {
+    //   margin-left: 6px;
+    //   & > img{
+    //     height: 12px;
+    //     width: 12px;
+    //   }
+    // }
+  }
+
+.app--conversation--list--card--content--wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  .app--conversation--list--card--content{
+    .app--conversation--list--card--bottom--line {
+      @include body-s-regular;
+      color: $neutral-700;
+      text-overflow: ellipsis;
+      width: 185px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .app--conversation--list--card--bottom--line.blueAuthor{
+      color: $primary-base;
+    }
+  }
+}
+
+  .app--conversation--list--card--info {
+    margin-right: 20px;
+    margin-left: 10px;
+    .app--conversation--list--card--date {
+      @include body-s-regular;
+      color: $neutral-500;
+      white-space: nowrap;
+      margin-top: 23px;
+      text-align: right;
+    }
+
+    .app--conversation--list--card--favorite {
+      float: right;
+      margin-top: 2px;
+      & > i{
+        color: $neutral-400;
+        width: 21px;
+        height: 21px;
+        font-size: 17px;
+      }
+    }
+
+    .app--conversation--list--card--unread {
+      background: $primary-base;
+      height: 21px;
+      border-radius: 50%;
+      text-align: center;
+      vertical-align: middle;
+      float: right;
+      margin-top: 2px;
+      p {
+        margin-bottom: 0;
+        padding: 2px 6.5px 0 6.5px;
+      }
+    }
+  }
+}
+
+.list-avatar {
+  position: relative;
+  width: 48px;
+  height: 48px;
+}
+
+.list-avatar-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+.list-empty {
+  padding: 20px;
+  text-align: center;
+}
+
 .is-member-client {
   color: #409EFF;
-   border-bottom: 1px dotted #409EFF;
+  border-bottom: 1px dotted #409EFF;
     cursor:pointer;
 }
-    .list {
-        border-radius: 5px;
-        background-color: #ffffff;
-        height: calc(100vh - 172px);
-        overflow-y: scroll;
-        overflow-x: hidden;
-    }
-    /* conversation scrool-y */
-    .scroll-y::-webkit-scrollbar-track {
-        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-        background-color: #f5f5f5;
-    }
+.list {
+    border-radius: 5px;
+    background-color: #ffffff;
+    height: calc(100vh - 172px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+/* conversation scrool-y */
+.scroll-y::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f5f5f5;
+}
 
-    .scroll-y::-webkit-scrollbar {
-        width: 5px;
-        background-color: #f5f5f5;
-    }
+.scroll-y::-webkit-scrollbar {
+    width: 5px;
+    background-color: #f5f5f5;
+}
 
-    .scroll-y::-webkit-scrollbar-thumb {
-        background-color: #00d3ef;
-        border: 2px solid #00d3ef;
-    }
-</style>
-
-<style lang="scss" scoped>
-    .app--conversation--list--card{
-        display: flex;
-        flex-direction: row;
-        width: 351px;
-        height: 75px;
-
-        .app--conversationn--list--avatar--wrapper {
-            width: 83px;
-            padding-left: 12px;
-            margin-right: 14px;
-            margin-top: 10px;
-        }
-
-        .app--conversation--list--card--top--line {
-            display: flex;
-            flex-direction: row;
-            align-items: baseline;
-            width: 145px;
-            margin-top: 17px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-
-            .app--conversation--list--card--favorite{
-                margin-right: 4px;
-                width: 15px;
-                height: 14px;
-
-                & > i{
-                    color: #F5CB47;
-                    width: 15px;
-                    height: 14px;
-                }
-            }
-
-            .app--conversation--list--card-name{
-                Font-family: SF Pro Rounded, sans-serif;
-                font-style: normal;
-                font-weight: bold;
-                font-size: 14px;
-                line-height: 17px;
-                color: #686868;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-
-            }
-
-            .app--conversation--list--card--mute{
-                margin-left: 6px;
-                & > img{
-                    height: 12px;
-                    width: 12px;
-                }
-            }
-        }
-
-        .app--conversation--list--card--content--wrapper {
-            width: 268px;
-            padding-left: 14px;
-            padding-right: 16px;
-            border-bottom: 1px solid #EBEBEB;
-
-            .app--conversation--list--card--content{
-                float:left;
-                width: 155px;
-
-                .app--conversation--list--card--bottom--line {
-                    font-size: 10px;
-                    line-height: 12px;
-                    color: #7D7D7D;
-                    margin-top: 2px;
-                    height: 25px;
-                    width: 176px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-                .app--conversation--list--card--bottom--line.blueAuthor{
-                    color: #4583AC;
-                }
-            }
-        }
-
-        .app--conversation--list--card--info {
-            font-size: 10px;
-            line-height: 12px;
-            float:right;
-
-            .app--conversation--list--card--date {
-                width: 70px;
-                height: 22px;
-                margin-top: 10px;
-                font-style: normal;
-                font-weight: bold;
-                font-size: 10px;
-                line-height: 30px;
-                flex-direction: column-reverse;
-                align-items: end;
-                text-align: right;
-                color: #7D7D7D;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-
-            .app--conversation--list--card--unread {
-                background: #169AC7;
-                width: 20px;
-                height: 20px;
-                text-align: center;
-                align-self: flex-end;
-                font-size: 13px;
-                line-height: 21px;
-                color: #fff;
-                font-weight: 500;
-                border-radius: 50%;
-                float: right;
-                margin-top: 4px;
-            }
-        }
-    }
-
-    .list-avatar {
-        position: relative;
-        width: 55px;
-        height: 55px;
-    }
-
-    .list-avatar-img {
-        width: 55px;
-        height: 55px;
-        border-radius: 50%;
-        border: 3px solid #EBEBEB;
-        background-color: #ffffff;
-    }
-
-    .list-empty {
-        padding: 20px;
-        text-align: center;
-    }
+.scroll-y::-webkit-scrollbar-thumb {
+    background-color: #00d3ef;
+    border: 2px solid #00d3ef;
+}
 
 </style>

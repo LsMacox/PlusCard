@@ -17,16 +17,16 @@
     </div>
   </div>
   <v-skeleton-loader
-    v-else-if="(loadingConversations || loadingMessage)"
-    :loading="(loadingConversations || loadingMessage)"
-    :style="{height: '100%', width: '100%'}"
+    v-else-if="loadingConversations || loadingMessage"
+    :loading="loadingConversations || loadingMessage"
+    :style="{ height: '100%', width: '100%' }"
     type="header, body, actions"
     :types="{
       test: 'avatar, text',
       header: 'list-item-avatar-two-line',
       body: 'image@3',
     }"
-  />  
+  />
   <div
     v-else
     id="conversationWrap"
@@ -56,13 +56,15 @@
       >
         <div
           v-for="(item, i) in messages"
-          :key="i"
+          :key="i + item.id"
         >
           <div :ref="`message${item.id}`">
             <message
               :item="item"
               :conversation-id="currentConversationId"
-              :my-message="chatUser.id == item.sender_id && ( profile.id == item.real_sender_id || !realChatName)"
+              :my-message="
+                chatUser.id == item.sender_id &&
+                  (profile.id == item.real_sender_id || !realChatName)"
               :dialog-reply-message.sync="dialogReplyMessage"
               :quoted-message.sync="quotedMessage"
               :quoted-message-sender.sync="quotedMessageSender"
@@ -169,6 +171,7 @@
         messageMenu: false,
         posX: 0,
         posY: 0,
+        messageRowLimit: 2,
         //
         newMessage: '',
         attachFileName: '',
@@ -222,6 +225,7 @@
         return {}
       },
       messages () {
+        console.log('get message')
         let messages = {}
         if (this.currentConversationId) {
           messages = this.$store.getters['chat/message/messages'][
@@ -237,7 +241,10 @@
             // console.log('new_msg',newMessages);
             return newMessages
           }
+
+          messages = this.getCountMessagesInRow(messages)
         }
+
         // console.log('msg',messages);
         return messages || {}
       },
@@ -274,22 +281,26 @@
         return false
       },
       conversationProgram () {
-        if (!this.isEmptyObject(this.conversation)) { return this.conversation.program }
+        if (!this.isEmptyObject(this.conversation)) {
+          return this.conversation.program
+        }
         return {}
       },
       realChatName () {
-        if (!this.isEmptyObject(this.conversationProgram)) { return this.conversationProgram.real_chat_name }
+        if (!this.isEmptyObject(this.conversationProgram)) {
+          return this.conversationProgram.real_chat_name
+        }
         return false
       },
     },
     watch: {
-      async currentConversationId (v) {
-        if (v) {
+      async currentConversationId (newV, oldV) {
+        if (newV) {
           // при переходе в другой чат обнуляем
           this.messageIdToScrollPage = null
           this.feedScrollTop = null
           //
-          await this.fetchData(v)
+          await this.fetchData(newV)
           if (this.issetMessages) this.toBottomFeed()
         }
       },
@@ -315,7 +326,9 @@
 
           if (msg) {
             const conversationField = this.$refs.conversationField
-            if (conversationField) { conversationField.scrollTop = msg.offsetTop - 150 } // 150 px поправка скрола
+            if (conversationField) {
+              conversationField.scrollTop = msg.offsetTop - 150
+            } // 150 px поправка скрола
           }
         }
       },
@@ -360,7 +373,9 @@
             }); */
       // выполняется один раз, остальное через watch
 
-      if (this.currentConversationId) { await this.fetchData(this.currentConversationId) }
+      if (this.currentConversationId) {
+        await this.fetchData(this.currentConversationId)
+      }
       if (this.issetMessages) {
         this.init()
         this.updateMessages()
@@ -510,7 +525,6 @@
       /*
        * ФИЛЬТР ТЕМЫ
        */
-
       setTopicFilter () {
         this.topicFilter = !this.topicFilter
       },
@@ -524,7 +538,6 @@
       /*
        * ФОРМА ОТПРАВКИ
        */
-
       getEraseClass () {
         if (this.validateSendMessage) {
           return 'send-block-erase send-block-erase-active'
@@ -541,7 +554,6 @@
       /*
        * СОБЫТИЯ КЛАВИАТУРЫ И TYPING
        */
-
       messageEvent (conversationId, $event) {
         // ctrl + enter новая строка
         if ($event.ctrlKey === true && $event.code === 'Enter') {
@@ -573,7 +585,6 @@
       /*
        * ВЛОЖЕНИЯ
        */
-
       validateFile () {
         const attachFile = this.$refs.attachFile.files[0]
         if (attachFile) {
@@ -663,6 +674,46 @@
       /*
        * ДИАЛОГИ СООБЩЕНИЙ
        */
+      getCountMessagesInRow (messages) {
+        if (typeof messages === 'undefined') return
+
+        // const msg = Object.values(messages)
+        // let parentCount = 0
+
+        // for (const propId in messages) {
+        //   const msgIndex = this.getMessageIndexById(propId)
+        //   let parentIndex = msgIndex
+
+        //   if (parentCount >= this.messageRowLimit) {
+        //     parentCount = 0
+        //     for (let i = 0; i < this.messageRowLimit; i++) {
+        //       if (
+        //         typeof msg[parentIndex - 1] !== 'undefined' &&
+        //         msg[parentIndex].sender_id === msg[parentIndex - 1].sender_id
+        //       ) {
+        //         parentCount++
+        //         parentIndex--
+        //       } else {
+        //         break
+        //       }
+        //     }
+        //   }
+
+        // }
+
+        // console.log('msg:', msg)
+
+        return messages
+      },
+      getMessageIndexById (id) {
+        const msg = Object.values(this.messages)
+        const msgIndex = msg.findIndex(m => {
+          return String(m.id) === String(id)
+        })
+        console.log('index:', msgIndex)
+
+        return msgIndex
+      },
       closeReplyMessage () {
         this.quotedMessage = {}
         this.quotedMessageSender = null
@@ -750,9 +801,7 @@
             } finally {
               this.loadingMessage = false
             }
-
-          // синхронная загрузка
-          } else {
+          } else { // синхронная загрузка
             console.log('синхронная загрузка')
             try {
               await this.$store.dispatch('chat/topic/list', id)
@@ -843,6 +892,9 @@
 </script>
 
 <style lang="scss" scoped>
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
 .empty-field {
   padding: 30px;
   font-size: 20px;
@@ -1257,6 +1309,10 @@ div.file-listing {
   flex-direction: column;
   min-height: 310px;
   height: calc(100vh - 100px);
+  background: #f7f7fc;
+  height: 100%;
+  position: absolute;
+  width: 100%;
 
   .app--conversation--content {
     flex-grow: 1;
@@ -1270,20 +1326,24 @@ div.file-listing {
       overflow-x: hidden;
     }
 
-    &::-webkit-scrollbar-thumb {
-      background-color: #00d3ef;
-      border: 2px solid #00d3ef;
+    &::-webkit-scrollbar {
+      width: 0px;
     }
 
-    &::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(156, 68, 68, 0.3);
-      box-shadow: inset 0 0 6px rgba(156, 68, 68, 0.3);
-      background-color: #f5f5f5;
-    }
-    &::-webkit-scrollbar {
-      width: 5px;
-      background-color: #f5f5f5;
-    }
+    // &::-webkit-scrollbar-thumb {
+    //   background-color: #00d3ef;
+    //   border: 2px solid #00d3ef;
+    // }
+
+    // &::-webkit-scrollbar-track {
+    //   -webkit-box-shadow: inset 0 0 6px rgba(156, 68, 68, 0.3);
+    //   box-shadow: inset 0 0 6px rgba(156, 68, 68, 0.3);
+    //   background-color: #f5f5f5;
+    // }
+    // &::-webkit-scrollbar {
+    //   width: 5px;
+    //   background-color: #f5f5f5;
+    // }
   }
 
   .app--conversation--drop--wrap {

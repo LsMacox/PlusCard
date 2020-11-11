@@ -1,40 +1,36 @@
 <template>
-  <div
-    class="message-line"
-  >
+  <div class="message-line">
     <v-spacer v-if="myMessage" />
 
     <div class="message-block">
-      <div
-        v-if="!myMessage"
+      <img
         class="message-author-avatar"
-        :style="`background: url('${getAuthorAvatar(item)}');`"
-      />
+        :src="getAuthorAvatar(item)"
+      >
 
       <div
-        :style="myMessage ? 'width: calc(100% - 15px); margin-right: 15px; ' : 'width: calc(100% - 50px);'"
+        :style="
+          myMessage
+            ? 'width: calc(100% - 15px); margin-right: 15px; '
+            : 'width: calc(100% - 50px);'
+        "
       >
-        <div class="message-author">
-          {{ getAuthorName(item) }}
-        </div>
-
         <div
           :class="{
             'message-box': true,
             'message-my': myMessage,
           }"
-          :style="getMessageBoxStyle()"
           @mouseenter="showMenu(item, $event)"
           @mouseleave="hideMenu(item, $event)"
         >
-          <!-- message menu мое -->
+          <!-- блок управления -->
           <div
             :id="'message' + item.id"
             :class="{
               'message-menu-my': myMessage,
               'message-menu-other': !myMessage,
             }"
-            style="display: none; height: 60px;"
+            style="display: none; height: 60px"
           >
             <div
               :class="{
@@ -54,7 +50,10 @@
                     v-on="on"
                   >
                     <v-icon
-                      :class="myMessage?'message-menu-my-icon1': 'message-menu-other-icon1'"
+                      :class="
+                        myMessage
+                          ? 'message-menu-my-icon1'
+                          : 'message-menu-other-icon1'"
                     >
                       fa-trash-alt
                     </v-icon>
@@ -70,7 +69,11 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-icon
-                    :class="myMessage?'message-menu-my-icon2': 'message-menu-other-icon2'"
+                    :class="
+                      myMessage
+                        ? 'message-menu-my-icon2'
+                        : 'message-menu-other-icon2'
+                    "
                     @click="openForwardMessage(item)"
                     v-on="on"
                   >
@@ -86,7 +89,11 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-icon
-                    :class="myMessage?'message-menu-my-icon2': 'message-menu-other-icon2'"
+                    :class="
+                      myMessage
+                        ? 'message-menu-my-icon2'
+                        : 'message-menu-other-icon2'
+                    "
                     @click="openReplyMessage(item)"
                     v-on="on"
                   >
@@ -103,7 +110,11 @@
                 <template v-slot:activator="{ on }">
                   <v-icon
                     v-if="myMessage"
-                    :class="myMessage?'message-menu-my-icon2': 'message-menu-other-icon2'"
+                    :class="
+                      myMessage
+                        ? 'message-menu-my-icon2'
+                        : 'message-menu-other-icon2'
+                    "
                     @click="openUpdate(item)"
                     v-on="on"
                   >
@@ -114,7 +125,7 @@
             </div>
           </div>
 
-          <!-- цитата -->
+          <!-- блок циатата -->
           <div
             v-if="item.parent_id"
             class="message-box-quote"
@@ -178,7 +189,11 @@
             </div>
           </div>
 
-          <!-- сообщение -->
+          <div class="message-box-author-name">
+            {{ getAuthorName(item) }}
+          </div>
+
+          <!-- блок сообщения -->
           <div class="message-box-message">
             <!-- вложения -->
             <div
@@ -232,7 +247,7 @@
               </div>
             </div>
 
-            <!-- текст сообщения -->
+            <!-- сообщение -->
             <div
               v-if="item.message"
               class="message-box-text chat-scroll-x"
@@ -240,7 +255,8 @@
             />
           </div>
 
-          <div
+          <!-- блок футер мой -->
+          <!-- <div
             v-if="myMessage"
             class="message-box-footer"
           >
@@ -254,7 +270,7 @@
               <div v-if="item.delivered && item.read">
                 <i
                   class="fas fa-check message-box-check2"
-                  style="position:relative;left: 8px;"
+                  style="position: relative; left: 8px"
                 />
                 <i class="fas fa-check message-box-check" />
               </div>
@@ -262,9 +278,10 @@
                 <i class="fas fa-check message-box-check" />
               </div>
             </div>
-          </div>
+          </div> -->
 
-          <div
+          <!-- блок футер другой -->
+          <!-- <div
             v-if="!myMessage"
             class="message-box-footer-other"
           >
@@ -272,9 +289,9 @@
               {{ getDate(item.created_at) }}
             </div>
             <v-spacer v-if="myMessage" />
-          </div>
+          </div> -->
 
-          <!-- тема -->
+          <!-- блок тема -->
           <div
             v-if="item.topic_name"
             class="dialog-topic"
@@ -282,6 +299,7 @@
             Тема: {{ item.topic_name }}
           </div>
 
+          <!-- блок получатель -->
           <div
             v-if="item.recipients"
             class="message-box-recipients"
@@ -308,6 +326,9 @@
       </div>
     </div>
 
+    <!-- <div class="message-time">
+      {{ getDate(item.created_at) }}
+    </div> -->
     <!-- <v-spacer v-if="myMessage" /> -->
 
     <app-message-update
@@ -328,7 +349,7 @@
 <script>
   import AppMessageUpdate from '../MessageUpdate'
   import AppMessageDelete from '../MessageDelete'
-  //
+  // spacer //
   import AppAttachmentText from '../AttachmentText'
   import AppAttachmentAccount from '../AttachmentAccount'
   import AppAttachmentDeleted from '../AttachmentDeleted'
@@ -342,7 +363,7 @@
     components: {
       AppMessageUpdate,
       AppMessageDelete,
-      //
+      // spacer //
       AppAttachmentText,
       AppAttachmentAccount,
       AppAttachmentDeleted,
@@ -393,42 +414,52 @@
         return this.$store.getters['chat/chatUser/chatUser']
       },
       conversation () {
-        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
+        const conversation = this.$store.getters[
+          'chat/conversation/conversations'
+        ].filter((item) => item.id === this.conversationId)
         if (conversation.length) return conversation[0]
         return {}
       },
       members () {
-        if (!this.isEmptyObject(this.conversation)) return this.conversation.members
+        if (!this.isEmptyObject(this.conversation)) {
+          return this.conversation.members
+        }
         return []
       },
       recipients () {
         if (this.item.recipients) {
-          const array = this.conversation.members.filter(item => this.item.recipients.indexOf(item.id) !== -1 && item.id !== this.chatUser.id)
+          const array = this.conversation.members.filter(
+            (item) =>
+              this.item.recipients.indexOf(item.id) !== -1 &&
+              item.id !== this.chatUser.id,
+          )
           return array
         } else {
           return []
         }
       },
       conversationProgram () {
-        if (!this.isEmptyObject(this.conversation)) return this.conversation.program
+        if (!this.isEmptyObject(this.conversation)) {
+          return this.conversation.program
+        }
         return {}
       },
       employees () {
-        if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.chat_members
+        if (!this.isEmptyObject(this.conversationProgram)) {
+          return this.conversationProgram.chat_members
+        }
         return []
       },
       realChatName () {
-        if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.real_chat_name
+        if (!this.isEmptyObject(this.conversationProgram)) {
+          return this.conversationProgram.real_chat_name
+        }
         return false
       },
     },
     methods: {
       isEmptyObject (obj) {
         return JSON.stringify(obj) === '{}'
-      },
-      getMessageBoxStyle () {
-        return this.myMessage ? 'background-color: #169AC7; color: #ffffff; border-radius: 5px 5px 0 5px; word-break: break-word;'
-          : 'background-color: #f4f3f7; color: #181818; border-radius: 5px 5px 5px 0; word-break: break-word;'
       },
       getAuthorName (item) {
         let author = {}
@@ -440,30 +471,30 @@
 
         if (isEmployee) {
           author = this.getAuthor(item)
-          if (author.id) return `${this.conversationProgram.name} (${author.name})`
-          // реальный отправитель чат-бот
-          else if (item.real_sender_id === this.chatUser.id) {
+          if (author.id) {
+            return `${this.conversationProgram.name} (${author.name})`
+          } else if (item.real_sender_id === this.chatUser.id) { // реальный отправитель чат-бот
             return this.chatUser.name
           }
 
-          // if (this.realChatName) {
+        // if (this.realChatName) {
 
-          //     author = this.getAuthor(item)
-          //     if (author.id) return `${author.name} (${this.conversationProgram.name})`
-          //     // реальный отправитель чат-бот
-          //     else if (item.real_sender_id == this.chatUser.id) {
-          //         return this.chatUser.name
-          //     }
+        //     author = this.getAuthor(item)
+        //     if (author.id) return `${author.name} (${this.conversationProgram.name})`
+        //     // реальный отправитель чат-бот
+        //     else if (item.real_sender_id == this.chatUser.id) {
+        //         return this.chatUser.name
+        //     }
 
-          // } else {
+        // } else {
 
-          //     author = this.getAuthor(item)
-          //     if (author.id) return `${this.conversationProgram.name} (${author.name})`
-          //     // реальный отправитель чат-бот
-          //     else if (item.real_sender_id == this.chatUser.id) {
-          //         return this.chatUser.name
-          //     }
-          // }
+        //     author = this.getAuthor(item)
+        //     if (author.id) return `${this.conversationProgram.name} (${author.name})`
+        //     // реальный отправитель чат-бот
+        //     else if (item.real_sender_id == this.chatUser.id) {
+        //         return this.chatUser.name
+        //     }
+        // }
         } else {
           author = this.getAuthor(item)
           if (author.id) return `${author.name}`
@@ -489,11 +520,11 @@
 
         if (isEmployee) {
           authorId = item.real_sender_id
-          author = this.employees.filter(item => item.id === authorId)
+          author = this.employees.filter((item) => item.id === authorId)
           if (author.length) return author[0]
         } else {
           authorId = item.sender_id
-          author = this.members.filter(item => item.id === authorId)
+          author = this.members.filter((item) => item.id === authorId)
           if (author.length) return author[0]
         }
 
@@ -515,9 +546,14 @@
           const matchString = str.match(regex)
           // console.log('link',matchString);
           if (matchString && matchString[0]) {
-            const link = '<a target="_blank" href="' + matchString[0] + '">' + matchString[0] + '"</a> '
+            const link =
+              '<a target="_blank" href="' +
+              matchString[0] +
+              '">' +
+              matchString[0] +
+              '"</a> '
             str = str.replace(matchString[0], link)
-            // console.log('string with Link', str);
+          // console.log('string with Link', str);
           }
           return str
         }
@@ -574,215 +610,188 @@
 </script>
 
 <style lang="scss" scoped>
-    .message-line {
-        display: flex;
-        width: 100%;
-        margin: 15px 0;
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
 
-        .message-author-avatar {
-            margin: 0 5px 0 15px;
-            width: 30px;
-            height: 30px;
-            border-radius: 30px;
-            background-repeat: no-repeat !important;
-            background-size: cover !important;
-            background-position: center !important;
+.message-line {
+  display: flex;
+  position: relative;
+  width: 100%;
+  margin: 15px 0;
+
+  .message-author-avatar {
+    margin: 0 12px 0 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-repeat: no-repeat !important;
+    background-size: cover !important;
+    background-position: center !important;
+  }
+
+  .message-block {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    max-width: 60%;
+
+    .message-author {
+      font-size: 13px;
+      color: #9e9e9e;
+      margin-bottom: 3px;
+    }
+
+    .message-box {
+      position: relative;
+      padding: 10px;
+      word-break: break-word;
+      background-color: $neutral-100;
+      border: 1px solid $neutral-250;
+      box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1);
+      border-radius: 10px 10px 10px 0px;
+
+      &.message-my {
+        background-color: $neutral-250;
+      }
+
+      /* меню сообщения мое */
+      .message-menu-my {
+        position: absolute;
+        top: 0;
+        left: -130px;
+        width: 130px;
+        /*border: 1px solid #000000;*/
+        z-index: 3;
+
+        .message-menu-my-icons {
+          position: absolute;
+          // top: 50%;
+          right: 5px;
+          bottom: 0px;
+          // margin-bottom: 16px;
         }
 
-        .message-block {
-            position: relative;
-            display: flex;
-            align-items: flex-end;
-            max-width: 60%;
-
-            .message-author {
-                font-size: 13px;
-                color: #9E9E9E;
-                margin-bottom: 3px;
-            }
-
-            .message-box {
-                position: relative;
-                padding: 10px;
-                word-break: break-word;
-
-                /* меню сообщения мое */
-                .message-menu-my {
-                    position: absolute;
-                    top: 0;
-                    left: -130px;
-                    width: 130px;
-                    /*border: 1px solid #000000;*/
-                    z-index: 3;
-
-                    .message-menu-my-icons {
-                        position: absolute;
-                        // top: 50%;
-                        right: 5px;
-                        bottom: 0px;
-                        // margin-bottom: 16px;
-                    }
-
-                    .message-menu-my-icon1 {
-                        font-size: 23px;
-                        color: #bac5d2;
-                        cursor: pointer;
-                    }
-
-                    .message-menu-my-icon1:hover {
-                        color: #96a2b1;
-                    }
-
-                    .message-menu-my-icon2 {
-                        margin-right: 5px;
-                        font-size: 20px;
-                        color: #bac5d2;
-                        cursor: pointer;
-                    }
-
-                    .message-menu-my-icon2:hover {
-                        color: #96a2b1;
-                    }
-                }
-
-                /* меню сообщения другое */
-                .message-menu-other {
-                    position: absolute;
-                    top: 0;
-                    right: -60px;
-                    width: 60px;
-                    /*border: 1px solid #000000;*/
-                    z-index: 3;
-
-                    .message-menu-other-icons {
-                        display: flex;
-                        position: absolute;
-                        // top: 50%;
-                        left: 5px;
-                        bottom: 0px;
-                        // margin-bottom: 16px;
-                    }
-
-                    .message-menu-other-icon1 {
-                        font-size: 23px;
-                        color: #bac5d2;
-                        cursor: pointer;
-                    }
-
-                    .message-menu-other-icon1:hover {
-                        color: #96a2b1;
-                    }
-
-                    .message-menu-other-icon2 {
-                        margin-right: 5px;
-                        font-size: 20px;
-                        color: #bac5d2;
-                        cursor: pointer;
-                    }
-
-                    .message-menu-other-icon2:hover {
-                        color: #96a2b1;
-                    }
-                }
-
-                /* блок цитаты */
-                .message-box-quote {
-                    padding: 15px;
-                    border-radius: 5px 5px 0 0;
-                    background-color: #c0c0c0;
-                }
-
-                /* блок текста сообщения */
-                .message-box-text {
-                    font-size: 13px;
-                    text-align: left;
-                    overflow: auto;
-                    & > a{
-                        color: #1f2a2e;
-                        &:hover{
-                            text-decoration: underline;
-                        }
-                    }
-                }
-
-                // .chat-scroll-x { }
-
-                /* блок сообщения */
-                .message-box-message {
-
-                    .message-box-message-attachment {
-                        margin-bottom: 5px;
-                    }
-                }
-
-                .message-box-footer {
-                    display: flex;
-                    align-items: center;
-                    margin-top: 5px;
-                    font-size: 11px;
-                    line-height: 11px;
-
-                    .message-box-read {
-                        width: 26px;
-                        height: 11px;
-                        font-size: 11px;
-                        line-height: 11px;
-                        text-align: right;
-
-                        .message-box-check {
-                            height: 10px;
-                        }
-
-                        .message-box-check2 {
-                            height: 10px;
-                            position: relative;
-                            left: 8px;
-                        }
-                    }
-
-                    // .message-time-other { }
-                }
-
-                .message-box-footer-other {
-                    display: flex;
-                    align-items: center;
-                    margin-top: 5px;
-                    font-size: 11px;
-                    line-height: 11px;
-
-                    // .message-time-other { }
-                }
-            }
+        .message-menu-my-icon1 {
+          font-size: 23px;
+          color: #bac5d2;
+          cursor: pointer;
         }
-    }
 
-    .message-box-author{
-        text-decoration: underline;
-        margin-bottom: 10px;
-    }
+        .message-menu-my-icon1:hover {
+          color: #96a2b1;
+        }
 
-    .message-box-recipients {
-        display: flex;
-        flex-direction: row;
-        position: relative;
-        top: 15px;
-    }
+        .message-menu-my-icon2 {
+          margin-right: 5px;
+          font-size: 20px;
+          color: #bac5d2;
+          cursor: pointer;
+        }
 
-    img.message-box-recipients-avatars {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        margin: 3px;
-        cursor: pointer;
-    }
+        .message-menu-my-icon2:hover {
+          color: #96a2b1;
+        }
+      }
 
-</style>
+      /* меню сообщения другое */
+      .message-menu-other {
+        position: absolute;
+        top: 0;
+        right: -60px;
+        width: 60px;
+        /*border: 1px solid #000000;*/
+        z-index: 3;
 
-<style>
-    /*.v-application a{
-        color: #000;
-    }*/
-    .message-box-text.chat-scroll-x a {
-        color: #343434;
+        .message-menu-other-icons {
+          display: flex;
+          position: absolute;
+          // top: 50%;
+          left: 5px;
+          bottom: 0px;
+          // margin-bottom: 16px;
+        }
+
+        .message-menu-other-icon1 {
+          font-size: 23px;
+          color: #bac5d2;
+          cursor: pointer;
+        }
+
+        .message-menu-other-icon1:hover {
+          color: #96a2b1;
+        }
+
+        .message-menu-other-icon2 {
+          margin-right: 5px;
+          font-size: 20px;
+          color: #bac5d2;
+          cursor: pointer;
+        }
+
+        .message-menu-other-icon2:hover {
+          color: #96a2b1;
+        }
+      }
+
+      /* блок цитаты */
+      .message-box-quote {
+        padding: 15px;
+        border-radius: 5px 5px 0 0;
+        background-color: #c0c0c0;
+      }
+
+      /* блок текста сообщения */
+      .message-box-text {
+        font-size: 13px;
+        text-align: left;
+        overflow: auto;
+        & > a {
+          color: #1f2a2e;
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      // .chat-scroll-x { }
+
+      /* блок сообщения */
+      .message-box-message {
+        .message-box-message-attachment {
+          margin-bottom: 5px;
+        }
+      }
+
     }
+  }
+
+  .message-time {
+    position: absolute;
+    right: 0;
+  }
+}
+
+.message-box-author {
+  text-decoration: underline;
+  margin-bottom: 10px;
+}
+
+.message-box-recipients {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  top: 15px;
+}
+
+img.message-box-recipients-avatars {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 3px;
+  cursor: pointer;
+}
+
+.message-box-text.chat-scroll-x a {
+  color: #343434;
+}
 </style>

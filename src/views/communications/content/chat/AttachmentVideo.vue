@@ -49,8 +49,8 @@
             justify="center"
             align="center"
           >
-            <v-col cols="auto">              
-              <video-player                
+            <v-col cols="auto">
+              <video-player
                 ref="videoPlayer"
                 class="video-player"
                 :options="playerOptions"

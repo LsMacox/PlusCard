@@ -223,7 +223,7 @@
         if (check.length) return true
         return false
       },
-      
+
       update () {
         const group = {
           id: this.item.id,

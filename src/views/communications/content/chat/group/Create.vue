@@ -36,7 +36,7 @@
             <v-row>
               <v-col>
                 <!-- все получатели -->
-                <div style="display: flex;">
+                <div style="display: flex">
                   <div
                     class="check-all"
                     @click="setRecipientAll()"
@@ -129,8 +129,8 @@
         checkAll: false,
         recipients: [],
         nameRules: [
-          v => !!v || 'Введите название группы',
-          v => this.isUniqueName(v) || 'Групп с таким названием уже существует',
+          (v) => !!v || 'Введите название группы',
+          (v) => this.isUniqueName(v) || 'Групп с таким названием уже существует',
         ],
         groupCreateAction: false,
         formValid: false,
@@ -144,14 +144,16 @@
         set (val) {
           if (val === this.dialog) return
 
-          this.$emit('update:dialog', val)          
+          this.$emit('update:dialog', val)
         },
       },
       groups () {
         return this.$store.getters['chat/group/groups']
       },
       conversation () {
-        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
+        const conversation = this.$store.getters[
+          'chat/conversation/conversations'
+        ].filter((item) => item.id === this.conversationId)
         if (conversation.length) return conversation[0]
         return {}
       },
@@ -159,7 +161,7 @@
         let members = []
         const chatUser = this.$store.getters['chat/chatUser/chatUser']
         if (this.conversation && this.conversation.members) {
-          members = this.conversation.members.filter(item => {
+          members = this.conversation.members.filter((item) => {
             if (item.id !== chatUser.id && item.active) return item
           })
         }
@@ -174,7 +176,7 @@
     },
     methods: {
       isUniqueName (name) {
-        return this.groups.filter(item => item.name === name).length === 0
+        return this.groups.filter((item) => item.name === name).length === 0
       },
       close () {
         this.recipients = []
@@ -208,7 +210,9 @@
         else this.recipients.push(item)
       },
       isRecipient (item) {
-        const check = this.recipients.filter(recipient => recipient.id === item.id)
+        const check = this.recipients.filter(
+          (recipient) => recipient.id === item.id,
+        )
         if (check.length) return true
         return false
       },
@@ -218,15 +222,18 @@
           name: this.form.name,
           conversation_id: this.conversationId,
           parent_group_id: null,
-          members: this.recipients.map(item => item.id),
+          members: this.recipients.map((item) => item.id),
         }
         /// /console.log(group)
         this.groupCreateAction = true
-        this.$store.dispatch('chat/group/create', group).then(() => {
-          this.close()
-        }).finally(() => {
-          this.groupCreateAction = false
-        })
+        this.$store
+          .dispatch('chat/group/create', group)
+          .then(() => {
+            this.close()
+          })
+          .finally(() => {
+            this.groupCreateAction = false
+          })
       },
     },
   }
@@ -236,108 +243,103 @@
 @import "@/styles/components/_modal.scss";
 
 .modal {
-    min-width: 400px;
+  min-width: 400px;
 }
 
 .content {
-    margin: 0 0 20px 0;
-    padding: 0 !important;
-    max-height: 60vh;
-    overflow-y: auto;
+  margin: 0 0 20px 0;
+  padding: 0 !important;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 /* RECIPIENTS */
 
 .res-row {
-    display: flex;
-    margin: 5px 0;
+  display: flex;
+  margin: 5px 0;
 }
 
 .check-all {
-    margin-bottom: 15px;
-    width: 30px;
-    height: 30px;
-    border-radius: 30px;
-    border: 1px solid rgba(51, 51, 51, .3);
-    cursor: pointer;
+  margin-bottom: 15px;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  border: 1px solid rgba(51, 51, 51, 0.3);
+  cursor: pointer;
 }
 
 .check-all-back {
-    width: 28px;
-    height: 28px;
-    border-radius: 30px;
-    background-color: #24D3ED;
-    padding: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 30px;
+  background-color: #24d3ed;
+  padding: 2px;
 }
 
 .name-all {
-    padding: 4px 10px;
-    font-weight: 900;
+  padding: 4px 10px;
+  font-weight: 900;
 }
 
 .line-h {
-    position: relative;
-    width: 15px;
-    height: 1px;
-    margin: 14px 0 14px 15px;
-    background-color: rgba(51, 51, 51, .3);
+  position: relative;
+  width: 15px;
+  height: 1px;
+  margin: 14px 0 14px 15px;
+  background-color: rgba(51, 51, 51, 0.3);
 }
 
 .line-v {
-    position: absolute;
-    bottom: -14px;
-    right: 0;
-    width: 1px;
-    height: 35px;
-    margin: 0 14px 15px 14px;
-    background-color: rgba(51, 51, 51, .3);
+  position: absolute;
+  bottom: -14px;
+  right: 0;
+  width: 1px;
+  height: 35px;
+  margin: 0 14px 15px 14px;
+  background-color: rgba(51, 51, 51, 0.3);
 }
 
 .check {
-    width: 30px;
-    height: 30px;
-    border-radius: 30px;
-    border: 1px solid rgba(51, 51, 51, .3);
-    cursor: pointer;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  border: 1px solid rgba(51, 51, 51, 0.3);
+  cursor: pointer;
 }
 
 .avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 30px;
-    margin-left: 10px;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: cover !important;
+  width: 30px;
+  height: 30px;
+  border-radius: 30px;
+  margin-left: 10px;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
 }
 
 .name {
-    padding: 5px 10px;
+  padding: 5px 10px;
 }
 
 /* MEDIA */
 /* EXTRA SMALL */
 @media (max-width: 600px) {
-
 }
 
 /* SMALL */
 @media (min-width: 600px) and (max-width: 959.8px) {
-
 }
 
 /* MEDIUM */
 @media (min-width: 960px) and (max-width: 1263.8px) {
-
 }
 
 /* LARGE */
 @media (min-width: 1264px) and (max-width: 1903.8px) {
-
 }
 
 /* X LARGE */
 @media (min-width: 1904px) {
-
 }
 </style>

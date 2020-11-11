@@ -16,11 +16,14 @@
       <v-row justify="space-between">
         <v-col>
           <base-text-field
-            class="field-search"
             v-model="search"
+            class="field-search"
             placeholder="Поиск чатов"
             prepend-inner-icon="$iconify_ion-search-outline"
-            :prependInnerIconColor="this.$vuetify.theme.themes.light['neutral-500']"
+            clear-icon="$iconify_ion-close-circle-outline"
+            :prepend-inner-icon-color="
+              this.$vuetify.theme.themes.light['neutral-500']
+            "
             clearable
             hide-details
           />
@@ -39,7 +42,12 @@
                 v-on="on"
                 @click="openCreate()"
               >
-                <v-icon color="neutral-100" size="15">$iconify_eva-plus-outline</v-icon>
+                <v-icon
+                  color="neutral-100"
+                  size="15"
+                >
+                  $iconify_eva-plus-outline
+                </v-icon>
               </v-btn>
             </template>
             <span>Начать переписку</span>
@@ -50,12 +58,10 @@
 
     <v-skeleton-loader
       :loading="loadingConversations"
-      :style="{height: '100%', width: '100%'}"
+      :style="{ height: '100%', width: '100%', position: 'relative' }"
       type="list-item-avatar-two-line@8"
     >
-      <div
-        class="app--conversation--content"
-      >
+      <div class="app--conversation--content">
         <div
           v-if="groupedConversation.length"
           id="conversationList"
@@ -75,15 +81,30 @@
         </div>
         <div
           v-else
-          style="width: 100%;"
+          style="width: 100%"
         >
           <div
             class="list-empty"
-            style="width: 100%;"
+            style="width: 100%"
           >
             Чаты не найдены
           </div>
         </div>
+      </div>
+      <div class="app--conversation--setting">
+        <v-btn
+          class="btn-setting"
+          color="primary-100"
+        >
+          <iconify-icon
+            class="icon-setting"
+            icon="feather-settings"
+            width="21"
+          />
+          <p class="body-m-semibold primary--text">
+            Настроить чаты
+          </p>
+        </v-btn>
       </div>
     </v-skeleton-loader>
 
@@ -169,10 +190,12 @@
         return arr
       },
       groupedConversation () {
-        let chosenChat = this.conversationsFiltered.filter(item => item.chosen)
+        let chosenChat = this.conversationsFiltered.filter((item) => item.chosen)
         chosenChat = this.conversationsSorted(chosenChat)
 
-        let simpleChat = this.conversationsFiltered.filter(item => !item.chosen)
+        let simpleChat = this.conversationsFiltered.filter(
+          (item) => !item.chosen,
+        )
         simpleChat = this.conversationsSorted(simpleChat)
 
         return chosenChat.concat(simpleChat) || []
@@ -181,7 +204,9 @@
         return this.$store.getters['chat/chatUser/chatUser']
       },
       messages () {
-        return this.$store.getters['chat/message/messages'][this.currentConversationId] // id чата
+        return this.$store.getters['chat/message/messages'][
+          this.currentConversationId
+        ] // id чата
       },
       activeChatList () {
         return this.$route.hash || '#business'
@@ -199,7 +224,7 @@
         }
       },
       currentConversationType (v) {
-        // this.loadConversationList()
+      // this.loadConversationList()
       },
     },
     async mounted () {
@@ -215,11 +240,9 @@
           let timeB = null
 
           sorted = arr.sort((a, b) => {
-            if (a.last_message) timeA = new Date(a.last_message.created_at).getTime()
-            else timeA = new Date(a.created_at).getTime()
+            if (a.last_message) { timeA = new Date(a.last_message.created_at).getTime() } else timeA = new Date(a.created_at).getTime()
 
-            if (b.last_message) timeB = new Date(b.last_message.created_at).getTime()
-            else timeB = new Date(b.created_at).getTime()
+            if (b.last_message) { timeB = new Date(b.last_message.created_at).getTime() } else timeB = new Date(b.created_at).getTime()
 
             if (timeA > timeB) return -1
             if (timeA === timeB) return 0
@@ -232,7 +255,7 @@
       sumUnreadCount (convList) {
         if (convList) {
           // unread_count
-          return convList.filter(chat => chat.unread_count > 0).length || null
+          return convList.filter((chat) => chat.unread_count > 0).length || null
         } else {
           return null
         }
@@ -247,47 +270,8 @@
       },
       // TEMPLATE
       getClass (id) {
-        if (id === this.currentConversationId) return 'list-item list-item-active'
+        if (id === this.currentConversationId) { return 'list-item list-item-active' }
         return 'list-item'
-      },
-      getDate (date) {
-        if (!date) return '-'
-        const time = Date.parse(date)
-        // let time = new Date(date).getTime()
-        const offset = new Date().getTimezoneOffset()
-        // offset 0
-        const messageDate = new Date(time + offset * 0 * 60 * 1000)
-        const currentDate = new Date()
-        let options = {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          // hour: 'numeric',
-          // minute: 'numeric'
-        }
-        if (
-          currentDate.getDate() === messageDate.getDate() &&
-          currentDate.getMonth() === messageDate.getMonth() &&
-          currentDate.getFullYear() === messageDate.getFullYear()
-        ) {
-          options = {
-            hour: 'numeric',
-            minute: 'numeric',
-          }
-        }
-        if (
-          currentDate.getDate() - messageDate.getDate() === 1 &&
-          currentDate.getMonth() === messageDate.getMonth() &&
-          currentDate.getFullYear() === messageDate.getFullYear()
-        ) {
-          options = {
-            hour: 'numeric',
-            minute: 'numeric',
-          }
-          return 'Вчера в ' + messageDate.toLocaleString('ru', options)
-        } else {
-          return messageDate.toLocaleString('ru', options)
-        }
       },
       async openCreate () {
         this.chatMemberListAction = true
@@ -322,13 +306,18 @@
         this.toRoute(path)
       },
       toRoute (path) {
-        
-        if (this.$route.path !== path && ['ChatConversation', 'ChatType' , 'Chat'].includes(this.$route.name) ) this.$router.push(path)
+        if (
+          this.$route.path !== path &&
+          ['ChatConversation', 'ChatType', 'Chat'].includes(this.$route.name)
+        ) { this.$router.push(path) }
       },
       async loadConversationList () {
         // загрузка списка чатов
         if (this.currentConversationType === 'business') {
-          await this.$store.dispatch('chat/conversation/GetBusinessChatList', this.programId)
+          await this.$store.dispatch(
+            'chat/conversation/GetBusinessChatList',
+            this.programId,
+          )
         } else if (this.currentConversationType === 'merchant') {
           await this.$store.dispatch('chat/conversation/GetMerchantChatList')
         }
@@ -342,7 +331,7 @@
           if (this.currentConversationId) {
             // проверка на наличие в списке чата
             let check = false
-            this.groupedConversation.forEach(item => {
+            this.groupedConversation.forEach((item) => {
               if (item.id === this.currentConversationId) check = true
             })
 
@@ -350,19 +339,25 @@
               conversationId = this.currentConversationId
             } else {
               conversationId = this.groupedConversation[0].id
-              this.$store.commit('chat/conversation/currentConversationId', conversationId)
+              this.$store.commit(
+                'chat/conversation/currentConversationId',
+                conversationId,
+              )
             }
 
-            // нет id текущего чата
+          // нет id текущего чата
           } else {
             conversationId = this.groupedConversation[0].id
-            this.$store.commit('chat/conversation/currentConversationId', conversationId)
+            this.$store.commit(
+              'chat/conversation/currentConversationId',
+              conversationId,
+            )
           }
 
           // переходим на роут чата
           this.conversationChat(conversationId)
 
-          // нет списка
+        // нет списка
         } else {
           this.$store.commit('chat/conversation/currentConversationId', null)
           // переходим на роут общего списка
@@ -385,7 +380,7 @@
 
             if (this.chatUser && this.chatUser.id) {
               await this.loadConversationList()
-              await this.$store.dispatch("auth/redis/connect")
+              await this.$store.dispatch('auth/redis/connect')
             }
           }
         } catch (e) {
@@ -393,7 +388,6 @@
           this.loadingConversations = false
         }
       },
-
     },
   }
 </script>
@@ -402,172 +396,219 @@
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
 @import "@/styles/_typography.sass";
 
-#app--conversation--list--container{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    border-right: 1px solid #EBEBEB;
-    height: 100%;
+#app--conversation--list--container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-right: 1px solid $neutral-250;
+  height: 100%;
 
-    .app--conversation--list--header{
-        padding: 13px 15px 12px 16px;
+  .app--conversation--list--header {
+    padding: 18px 20px 8px 20px;
 
-        .field-search {
-          border-radius: 10px !important;
-          .v-input__prepend-inner {
-            padding-right: 8px;
-          }
-          input {
-            @include body-m-medium;
-            color: $neutral-900;
-            margin-top: 2px;
-            &::placeholder {
-              @include body-m-medium;
-              color: $neutral-600;
-            }
-          }
+    .field-search {
+      border-radius: 10px !important;
+      .v-input__prepend-inner {
+        padding-right: 8px;
+      }
+      input {
+        @include body-m-medium;
+        color: $neutral-900;
+        margin-top: 2px;
+        &::placeholder {
+          @include body-m-medium;
+          color: $neutral-600;
         }
-
-        .btn-add-chat {
-          width: 31px;
-          height: 31px;
-          padding: 0 !important;
-          background: $primary-base !important; 
+      }
+      .v-input__icon--clear {
+        & [role="img"] {
+          color: $neutral-500;
         }
-
-        .app--conversation--list--buttons{
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-
-            .app--conversation--list--button--wrapper {
-                position:relative;
-
-                .app--conversation--list--button--badge {
-                    position: absolute;
-                    top: -6px;
-                    right: -6px;
-                    background: #E74C3C;
-                    width: 24px;
-                    padding: 1.2px 5px;
-                    border-radius: 9px;
-                    font-weight: 500;
-                    font-size: 13px;
-                    line-height: 15px;
-                    color: #FFFFFF;
-                    text-align: center;
-                    font-family: "SFPro-Regular";
-                }
-
-                .app--conversation--list--button{
-                    background: #A4B1C1;
-                    border-radius: 10px;
-                    font-family: "SF Pro Text", sans-serif;
-                    font-size: 15px;
-                    line-height: 18px;
-                    text-align: center;
-                    color: #fff;
-                    outline:none;
-                    font-weight: 600;width: 150px;
-                    width: 150px;
-                    height: 42px;
-                }
-
-                .app--conversation--list--button--active{
-                    background: #4583AC;
-                }
-
-                .app--conversation--list--button--clients{
-                    width: 150px;
-                    height: 42px;
-                }
-
-                .app--conversation--list--button--workers{
-                    width: 150px;
-                    height: 42px;
-                }
-            }
-        }
-
-        .app--conversation--list--search--wrapper{
-            position: relative;
-
-            .app--conversation--list--search{
-                background: #FFFFFF;
-                opacity: 0.3;
-                box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
-                border-radius: 10px;
-
-                .app--conversation--list--search--input{
-                    position:relative;
-                    width: 100%;
-                    height: 100%;
-                    min-width: 260px;
-                    min-height: 13px;
-                    outline: none;
-                    padding: 10px 34px;
-                    color: #686868;
-                }
-
-                .app--conversation--list--search--icon{
-                    position: absolute;
-                    left: 9px;
-                    top: 10px;
-                }
-            }
-        }
-
+      }
     }
 
-    .app--conversation--content{
+    .btn-add-chat {
+      width: 31px;
+      height: 31px;
+      padding: 0 !important;
+      background: $primary-base !important;
+    }
+
+    .app--conversation--list--buttons {
       display: flex;
-      position: relative;
-      flex-grow: 1;
-      width: 100%;
-      height: 100%;
-      overflow-y: scroll;
-      overflow-x: hidden;
-      &::-webkit-scrollbar {
-        width: 0;
-      }
+      flex-direction: row;
+      justify-content: space-between;
 
-      .app--conversation--list {
-        width: 100%;
-        position: absolute;
+      .app--conversation--list--button--wrapper {
+        position: relative;
+
+        .app--conversation--list--button--badge {
+          position: absolute;
+          top: -6px;
+          right: -6px;
+          background: #e74c3c;
+          width: 24px;
+          padding: 1.2px 5px;
+          border-radius: 9px;
+          font-weight: 500;
+          font-size: 13px;
+          line-height: 15px;
+          color: #ffffff;
+          text-align: center;
+          font-family: "SFPro-Regular";
+        }
+
+        .app--conversation--list--button {
+          background: #a4b1c1;
+          border-radius: 10px;
+          font-family: "SF Pro Text", sans-serif;
+          font-size: 15px;
+          line-height: 18px;
+          text-align: center;
+          color: #fff;
+          outline: none;
+          font-weight: 600;
+          width: 150px;
+          width: 150px;
+          height: 42px;
+        }
+
+        .app--conversation--list--button--active {
+          background: #4583ac;
+        }
+
+        .app--conversation--list--button--clients {
+          width: 150px;
+          height: 42px;
+        }
+
+        .app--conversation--list--button--workers {
+          width: 150px;
+          height: 42px;
+        }
       }
     }
-    
-    // .app--conversation--list{ }
+
+    .app--conversation--list--search--wrapper {
+      position: relative;
+
+      .app--conversation--list--search {
+        background: #ffffff;
+        opacity: 0.3;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+        border-radius: 10px;
+
+        .app--conversation--list--search--input {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          min-width: 260px;
+          min-height: 13px;
+          outline: none;
+          padding: 10px 34px;
+          color: #686868;
+        }
+
+        .app--conversation--list--search--icon {
+          position: absolute;
+          left: 9px;
+          top: 10px;
+        }
+      }
+    }
+  }
+
+  .app--conversation--content {
+    display: flex;
+    position: relative;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+
+    .app--conversation--list {
+      width: 100%;
+      position: absolute;
+    }
+  }
+
+  .app--conversation--setting {
+    position: absolute;
+    bottom: 20px;
+    margin-left: 25%;
+    margin-right: 50%;
+    p {
+      margin-bottom: 0;
+    }
+    .btn-setting {
+      border-radius: 10px !important;
+    }
+    .icon-setting {
+      margin-right: 8px;
+      color: $primary-base;
+    }
+  }
 }
 
 .list-item {
-    display: flex;
-    cursor: pointer;
-    height: 75px;
+  display: flex;
+  cursor: pointer;
+  height: 80px;
+  border-bottom: 1px solid $neutral-250;
 }
 
 .list-item-active {
   background-color: $primary-base;
+  .app--conversation--list--card {
+    .app--conversation--list--card--content--wrapper {
+      .app--conversation--list--card--content {
+        .app--conversation--list--card--top--line {
+          .app--conversation--list--card-name {
+            color: $primary-100;
+          }
+        }
+        .app--conversation--list--card--bottom--line {
+          color: $neutral-100;
+        }
+      }
+      .app--conversation--list--card--info {
+        .app--conversation--list--card--date {
+          color: $neutral-100;
+        }
+      }
+      .app--conversation--list--card--unread {
+        background: $neutral-100;
+        p {
+          color: $primary-base !important;
+        }
+      }
+    }
+  }
 }
 
 .list-empty {
-    padding: 20px;
-    text-align: center;
+  padding: 20px;
+  text-align: center;
+  @include body-m-medium;
 }
 
 .app--conversation--list::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    background-color: #f5f5f5;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #f5f5f5;
 }
 
 .app--conversation--list::-webkit-scrollbar {
-    width: 5px;
-    background-color: #f5f5f5;
+  width: 5px;
+  background-color: #f5f5f5;
 }
 
 .app--conversation--list::-webkit-scrollbar-thumb {
-    background-color: #00d3ef;
-    border: 2px solid #00d3ef;
+  background-color: #00d3ef;
+  border: 2px solid #00d3ef;
 }
 </style>

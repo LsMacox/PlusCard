@@ -41,20 +41,18 @@
 
           <v-col cols="auto">
             <v-btn
-            class="_box-button"
-            :disabled="!validate"
-            color="success"
-            :loading="messageUpdateRequest"
-            @click="update(validate)"
-          >
-            <v-icon left>
-              fa-edit
-            </v-icon>
-            Сохранить
-          </v-btn>
+              class="_box-button"
+              :disabled="!validate"
+              color="success"
+              :loading="messageUpdateRequest"
+              @click="update(validate)"
+            >
+              <v-icon left>
+                fa-edit
+              </v-icon>
+              Сохранить
+            </v-btn>
           </v-col>
-
-          
         </v-row>
       </v-container>
     </v-card>
@@ -62,13 +60,11 @@
 </template>
 
 <script>
-
 // import AppTextarea from '../../../../template/form/Textarea'
 
   export default {
     components: {
-
-      // AppTextarea
+    // AppTextarea
     },
     props: {
       dialog: Boolean,
@@ -86,7 +82,7 @@
     },
     computed: {
       validate () {
-        if (this.messageText !== this.messageTextOld && this.messageText) return true
+        if (this.messageText !== this.messageTextOld && this.messageText) { return true }
         return false
       },
     },
@@ -95,7 +91,9 @@
         this.messageText = this.item.message
         this.messageTextOld = this.item.message
       } else if (this.item.attachments && this.item.attachments.length) {
-        const msgAttach = this.item.attachments.filter(item => item.type === 'message/text')
+        const msgAttach = this.item.attachments.filter(
+          (item) => item.type === 'message/text',
+        )
         if (msgAttach.length) {
           this.messageText = msgAttach[0].content
           this.messageTextOld = msgAttach[0].content
@@ -117,11 +115,14 @@
           }
           // console.log(message)
           this.messageUpdateRequest = true
-          this.$store.dispatch('chat/message/update', message).then(() => {
-            this.$emit('update:dialog', false)
-          }).finally(() => {
-            this.messageUpdateRequest = false
-          })
+          this.$store
+            .dispatch('chat/message/update', message)
+            .then(() => {
+              this.$emit('update:dialog', false)
+            })
+            .finally(() => {
+              this.messageUpdateRequest = false
+            })
         }
       },
     },
@@ -129,53 +130,48 @@
 </script>
 
 <style scoped>
-    .modal-header {
-        margin-bottom: 0;
-        font-size: 24px;
-        color: #687983;
-        text-align: center;
-    }
+.modal-header {
+  margin-bottom: 0;
+  font-size: 24px;
+  color: #687983;
+  text-align: center;
+}
 
-    .modal-content {
-        margin: 30px 0 20px 0;
-    }
+.modal-content {
+  margin: 30px 0 20px 0;
+}
 
-    .modal-action {
-        display: flex;
-    }
+.modal-action {
+  display: flex;
+}
 
-    .close {
-        margin: 11px 0 0 11px;
-        font-size: 13px;
-        line-height: 16px;
-        color: rgba(51, 51, 51, .6);
-        border-bottom: 1px dotted rgba(51, 51, 51, .6);
-        cursor: pointer;
-    }
+.close {
+  margin: 11px 0 0 11px;
+  font-size: 13px;
+  line-height: 16px;
+  color: rgba(51, 51, 51, 0.6);
+  border-bottom: 1px dotted rgba(51, 51, 51, 0.6);
+  cursor: pointer;
+}
 
-    /* MEDIA */
-    /* EXTRA SMALL */
-    @media (max-width: 600px) {
+/* MEDIA */
+/* EXTRA SMALL */
+@media (max-width: 600px) {
+}
 
-    }
+/* SMALL */
+@media (min-width: 600px) and (max-width: 959.8px) {
+}
 
-    /* SMALL */
-    @media (min-width: 600px) and (max-width: 959.8px) {
+/* MEDIUM */
+@media (min-width: 960px) and (max-width: 1263.8px) {
+}
 
-    }
+/* LARGE */
+@media (min-width: 1264px) and (max-width: 1903.8px) {
+}
 
-    /* MEDIUM */
-    @media (min-width: 960px) and (max-width: 1263.8px) {
-
-    }
-
-    /* LARGE */
-    @media (min-width: 1264px) and (max-width: 1903.8px) {
-
-    }
-
-    /* X LARGE */
-    @media (min-width: 1904px) {
-
-    }
+/* X LARGE */
+@media (min-width: 1904px) {
+}
 </style>

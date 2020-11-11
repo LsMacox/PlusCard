@@ -87,27 +87,20 @@
   }
 </script>
 
-<style lang="scss">
-#appView {
-  padding: 0 !important;
-}
-
+<style lang="scss" scoped>
 [v-cloak] {
   display: none;
 }
 .app--chat__container {
-  font-family: "SF Pro Rounded";
   background: #fff;
   margin: 0;
-  height: 100%;
+  height: calc(100% + 34px);
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  & *,
-  & > * {
-    font-family: "SF Pro Rounded";
-  }
+  margin-top: -34px;
+  margin-left: -34px;
 
   .app--chat--col-1 {
     min-width: 362px;

@@ -52,9 +52,7 @@
 </script>
 
 <style>
-
-    .app--conversation--text--link{
-        color: #fff;
-    }
-
+.app--conversation--text--link{
+  color: #fff;
+}
 </style>

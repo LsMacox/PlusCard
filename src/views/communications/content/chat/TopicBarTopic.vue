@@ -100,7 +100,7 @@
           <v-row>
             <v-col>
               <v-btn
-                
+
                 color="primary"
                 @click="dialogTopicCreate = true"
               >
@@ -124,7 +124,7 @@
         <v-spacer />
 
         <v-btn
-          color="primary"          
+          color="primary"
           :disabled="!(topics.length && validateTopics)"
           @click="save()"
         >
