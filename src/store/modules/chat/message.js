@@ -31,16 +31,19 @@ export default {
     recipients (state, payload) {
       state.recipients = payload
     },
-    messages (state, payload) {
-      const conversationId = payload.conversation_id
-      let messages = {}
+    messages (state, messages) {
+      // const
+      // let messages = {}
 
       // если сообщения уже загружены
-      if (state.messages[conversationId]) { messages = state.messages[conversationId] }
+      // if (state.messages[conversationId]) { messages = state.messages[conversationId] }
 
-      payload.forEach(item => Vue.set(messages, item.id, item))
+      messages.forEach(item => {
+        if (!state.messages[item.conversation_id]) Vue.set(state.messages, item.conversation_id, {})
+        Vue.set(state.messages[item.conversation_id], item.id, item)
+        })
       // ключ = id чата
-      Vue.set(state.messages, conversationId, messages)
+      // Vue.set(state.messages, conversationId, messages)
     },
     unreadMessages (state, payload) {
       const messages = {}
@@ -82,9 +85,12 @@ export default {
   },
   actions: {
     status ({ rootGetters, state }, payload) {
-      const conversationId = payload.conversation_id
+      if (!payload || !Array.isArray(payload)) return
+      // payload - array
+      // const conversationId = payload.conversation_id
       payload.forEach(item => {
         // если send_type = null
+        const conversationId = item.conversation_id
         if (!item.send_type) {
           if (state.messages[conversationId]) {
             state.messages[conversationId][item.id] = item
@@ -175,7 +181,7 @@ export default {
       )
 
       // подставляем в ответ id чата
-      result.conversation_id = id
+      // result.conversation_id = id
       commit('messages', result)
 
       // добавляем в последнее сообщение в список чатов
@@ -234,7 +240,7 @@ export default {
       // console.log('deliveredStatus')
       // console.log(success)
       // подставляем id чата
-      result.conversation_id = delivered.conversation_id
+      // result.conversation_id = delivered.conversation_id
       dispatch('status', result)
     },
 
@@ -245,7 +251,7 @@ export default {
       // console.log('readStatus')
       // console.log(success)
       // подставляем id чата
-      result.conversation_id = read.conversation_id
+      // result.conversation_id = read.conversation_id
       dispatch('status', result)
     },
 

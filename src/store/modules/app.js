@@ -98,12 +98,12 @@ const actions = {
 
             // обновляем статус
             if (messages.length) {
-                const conversationId = messages[0].conversation_id
-                const delivered = {
-                    conversation_id: conversationId,
-                    data: messages,
-                }
-                dispatch('chat/message/status', delivered, { root: true })
+                // const conversationId = messages[0].conversation_id
+                // const delivered = {
+                //     conversation_id: conversationId,
+                //     data: messages,
+                // }
+                dispatch('chat/message/status', messages, { root: true })
             }
         }
 

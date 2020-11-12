@@ -421,9 +421,7 @@
         return {}
       },
       members () {
-        if (!this.isEmptyObject(this.conversation)) {
-          return this.conversation.members
-        }
+        if (!this.isEmptyObject(this.conversation)) return this.conversation.members || []
         return []
       },
       recipients () {
@@ -445,9 +443,7 @@
         return {}
       },
       employees () {
-        if (!this.isEmptyObject(this.conversationProgram)) {
-          return this.conversationProgram.chat_members
-        }
+        if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.chat_members || []
         return []
       },
       realChatName () {

@@ -69,6 +69,24 @@ const actions = {
         }
     },
 
+    async createList ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.post('/api-cabinet/crm/account/import', item)
+            console.log('/api-cabinet/crm/account/import')
+            console.log(result)
+            commit('ADD', result)
+
+            this._vm.$notify({
+                type: 'success',
+                title: 'Клиенты',
+                text: 'Клиенты успешно добавлены',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
     async list ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
