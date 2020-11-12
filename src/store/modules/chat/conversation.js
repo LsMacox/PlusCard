@@ -69,6 +69,8 @@ export default {
       )
       if (index >= 0) {
         Vue.set(state.conversations, index, payload)
+      } else {
+        state.conversations.push(payload)
       }
     },
     deleteInConversations (state, payload) {
