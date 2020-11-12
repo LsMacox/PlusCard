@@ -259,6 +259,13 @@ export default new Router({
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {
+          path: '/program/broadcasters',
+          beforeEnter: GuardEmptyPrograms,
+          component: () => import('@/views/company/EventBroadcasters'),
+          name: 'EventBroadcastersList',
+          meta: { auth: true, title: 'EventBroadcastersList', icon: 'dashboard' },
+        },
+        {
           path: 'sendings',
           beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/SkeletonPage'),

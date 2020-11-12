@@ -92,7 +92,7 @@
         {
           icon: '$iconify_ion-megaphone-outline',
           title: 'Акции',
-          to: '/actions',
+          to: '/program/broadcasters',
         },
         {
           icon: '$iconify_ion-mail-outline',
