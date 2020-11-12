@@ -1,0 +1,81 @@
+.my-stepper-import {
+    padding: 25px;
+    border: 1px solid #F2F2F7;
+    border-radius: 10px;
+    background: #FFFFFF;
+    box-shadow: 0 24px 20px -16px rgba(88, 93, 106, 0.1);
+
+    .my-stepper-import--form {
+
+        .my-stepper-import--form-header {
+
+        }
+
+        .my-stepper-import--form-content {
+            margin-top: 24px;
+
+            .my-stepper-import--step-one {
+
+                .my-stepper-import--drop-input {
+                    display: none;
+                    z-index: -9999;
+                }
+
+                .my-stepper-import--drop {
+                    position: relative;
+                    height: 245px;
+                    text-align: center;
+
+                    .my-stepper-import--drop-area {
+                        border-radius: 5px;
+                        border: 1px dashed #CFD8DC;
+                        cursor: pointer;
+
+                        &:hover {
+                            border: 1px dashed #409eff;
+                        }
+
+                        .my-stepper-import--upload-icon {
+                            margin-top: 36px;
+                            font-size: 72px;
+                            color: #B0BEC5;
+                        }
+
+                        .my-stepper-import--upload-text {
+                            margin: 0 20px 36px 20px;
+
+                            .my-stepper-import--upload-link {
+                                color: #409eff;
+                            }
+                        }
+                    }
+
+                    .my-stepper-import--drop-area-preloader {
+                        position: relative;
+                        top: 60px;
+                    }
+                }
+            }
+
+            .my-stepper-import--step-two {
+
+                .my-stepper-import--step-two-select {
+                    margin: 5px 0;
+                    height: 45px;
+                }
+            }
+
+            .my-stepper-import--step-three {
+                text-align: center;
+            }
+        }
+
+        .my-stepper-import--form-action {
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+        }
+    }
+}
+
+
