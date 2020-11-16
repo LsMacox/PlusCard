@@ -67,6 +67,11 @@
 
             .my-stepper-import--step-three {
                 text-align: center;
+
+                .my-stepper-import--step-three-error {
+                    margin: 5px 0;
+                    color: #e57373;
+                }
             }
         }
 

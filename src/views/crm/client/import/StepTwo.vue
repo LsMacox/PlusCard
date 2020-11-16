@@ -18,7 +18,6 @@
     </div>
     <div class="my-stepper-import--form-content">
       <div class="my-stepper-import--step-two">
-        {{ fields }}
         <v-simple-table>
           <template v-slot:default>
             <thead>
@@ -32,13 +31,13 @@
                   <div class="my-stepper-import--step-two-select">
                     <v-select
                       v-if="item !== '__rowNum__'"
-                      v-model="fields[i]"
+                      v-model="cols[i]"
                       :items="types"
                       placeholder="Выберите тип ячейки"
                       outlined
                       hide-details
                       clearable
-                      @change="syncModel(i)"
+                      @change="syncCols(i)"
                     />
                   </div>
                 </th>
@@ -76,7 +75,7 @@
       <div class="app__spacer" />
       <v-btn
         color="primary"
-        :disabled="!isValidUpload"
+        :disabled="!isValidExcel"
         :loading="loading"
         @click="upload()"
       >
@@ -118,11 +117,15 @@
           { value: 'lastname', text: 'Фамилия', required: false },
           { value: 'middlename', text: 'Отчество', required: false },
         ],
-        fields: [],
+        cols: [], // колонки excel по типам
         rowStr: ['строка', 'строки', 'строк'],
+        selectedExcel: [], // excel по выбранным колонкам
       }
     },
     computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
       headers () {
         if (this.excel.length) {
           return Object.keys(this.excel[0])
@@ -135,12 +138,12 @@
         }
         return []
       },
-      isValidUpload () {
+      isValidExcel () {
         let reqCount = 0
         const req = this.types.filter(item => item.required)
         if (req.length) {
           req.forEach(item => {
-            if (this.fields.indexOf(item.value) !== -1) {
+            if (this.cols.indexOf(item.value) !== -1) {
               reqCount++
             }
           })
@@ -155,50 +158,58 @@
       back () {
         this.$emit('update:step', 1)
       },
-      syncModel (i) {
-        const value = this.fields[i]
-        this.fields.forEach((item, index) => {
+      // выбор колонок
+      syncCols (i) {
+        const value = this.cols[i]
+        this.cols.forEach((item, index) => {
           if (item === value && i !== index) {
-            this.fields[index] = null
+            this.cols[index] = null
           }
         })
+      },
+      // подготовка excel
+      getSelectedExcel () {
+        const toUpload = []
+        const excelMask = []
+        this.cols.forEach((item, index) => {
+          if (item) {
+            excelMask.push({
+              item,
+              index,
+            })
+          }
+        })
+        this.excel.forEach(row => {
+          const newRow = {}
+          newRow.__rowNum__ = row.__rowNum__
+          excelMask.forEach(mask => {
+            let i = 0
+            let cell = null
+            for (const j in row) {
+              if (i === mask.index) {
+                cell = j
+                break
+              }
+              i++
+            }
+            if (cell) {
+              newRow[mask.item] = row[cell]
+            }
+          })
+          toUpload.push(newRow)
+        })
+        console.log(toUpload)
+        this.selectedExcel = Object.copy(toUpload)
       },
       async upload () {
         try {
           this.loading = true
-
-          const toUpload = []
-          const excelMask = []
-          this.fields.forEach((item, index) => {
-            if (item) {
-              excelMask.push({
-                item,
-                index,
-              })
-            }
-          })
-          this.excel.forEach(row => {
-            const newRow = {}
-            newRow.__rowNum__ = row.__rowNum__
-            excelMask.forEach(mask => {
-              let i = 0
-              let cell = null
-              for (const j in row) {
-                if (i === mask.index) {
-                  cell = j
-                  break
-                }
-                i++
-              }
-              if (cell) {
-                newRow[mask.item] = row[cell]
-              }
-            })
-            toUpload.push(newRow)
-          })
-          console.log(toUpload)
-
-          await this.$store.dispatch('crm/client/createList', { excel: toUpload })
+          this.getSelectedExcel() // подготовка excel
+          const item = {
+            program_id: this.program.id,
+            excel: this.selectedExcel,
+          }
+          await this.$store.dispatch('crm/client/createList', item)
           this.$emit('update:step', 3)
         } finally {
           this.loading = false
