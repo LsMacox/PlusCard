@@ -43,6 +43,7 @@ export const ICONIFY_ICONS = {
     // carbon
     'carbon-email': () => import('@iconify/icons-carbon/email'),
     'carbon-diagram': () => import('@iconify/icons-carbon/diagram'),
+    'carbon-stop': () => import('@iconify-icons/carbon/stop'),
 
     // entypo
     'chevron-right': () => import('@iconify/icons-entypo/chevron-right'),
@@ -73,6 +74,7 @@ export const ICONIFY_ICONS = {
     'ion-warning': () => import('@iconify/icons-ion/warning'),
     'ion-attach': () => import('@iconify/icons-ion/attach-outline'),
     'ion-search-outline': () => import('@iconify/icons-ion/search-outline'),
+    'ion-pause-outline': () => import('@iconify/icons-ion/pause-outline'),
 
     // feather
     'feather-refresh-ccw': () => import('@iconify/icons-feather/refresh-ccw'),
@@ -96,6 +98,10 @@ export const ICONIFY_ICONS = {
     'feather-minus': () => import('@iconify/icons-feather/minus'),
     'feather-play': () => import('@iconify/icons-feather/play'),
     'feather-plus': () => import('@iconify/icons-feather/plus'),
+    'feather-mic': () => import('@iconify-icons/feather/mic'),
+    'feather-hash': () => import('@iconify-icons/feather/hash'),
+    'feather-smile': () => import('@iconify-icons/feather/smile'),
+    'feather-send': () => import('@iconify-icons/feather/send'),
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),

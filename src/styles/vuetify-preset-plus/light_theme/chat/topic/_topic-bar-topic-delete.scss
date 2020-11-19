@@ -1,0 +1,36 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.app--topic-bar-topic-delete {
+  .modal-header {
+    margin-bottom: 50px;
+    font-size: 24px;
+    color: #687983;
+    text-align: center;
+  }
+
+  .close {
+    margin-top: 0px;
+    font-size: 13px;
+    line-height: 16px;
+    color: rgba(51, 51, 51, .6);
+    border-bottom: 1px dotted rgba(51, 51, 51, .6);
+    cursor: pointer;
+  }
+
+  /* MEDIA */
+  /* EXTRA SMALL */
+  @media (max-width: 600px) {}
+
+  /* SMALL */
+  @media (min-width: 600px) and (max-width: 959.8px) {}
+
+  /* MEDIUM */
+  @media (min-width: 960px) and (max-width: 1263.8px) {}
+
+  /* LARGE */
+  @media (min-width: 1264px) and (max-width: 1903.8px) {}
+
+  /* X LARGE */
+  @media (min-width: 1904px) {}
+}
