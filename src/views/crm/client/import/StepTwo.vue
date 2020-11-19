@@ -238,13 +238,13 @@
           const cell = row[col]
           switch (type) {
             case 'phone':
-              if (!cell) errors.push(`Строка ${(rowNum)}: Отсутствует номер телефона`)
-              if (cell && !validPhone(cell)) errors.push(`Строка ${(rowNum)}: Номер телефона неверного формата`)
+              if (!cell) errors.push(`Строка ${(rowNum)}, колонка "${col}": Отсутствует номер телефона`)
+              if (cell && !validPhone(cell)) errors.push(`Строка ${(rowNum)}, колонка "${col}": Номер телефона неверного формата`)
               break
 
             case 'email':
-              if (!cell) errors.push(`Строка ${(rowNum)}: Отсутствует e-mail`)
-              if (cell && !emailV(cell)) errors.push(`Строка ${(rowNum)}: E-mail неверного формата`)
+              if (!cell) errors.push(`Строка ${(rowNum)}, колонка "${col}": Отсутствует e-mail`)
+              if (cell && !emailV(cell)) errors.push(`Строка ${(rowNum)}, колонка "${col}": E-mail неверного формата`)
               break
           }
         })
@@ -256,7 +256,7 @@
           const col = Object.keys(row)[i]
           const rowNum = row.__rowNum__
           const cell = row[col]
-          if (!cell) warnings.push(`Строка ${(rowNum)}: Пустая ячейка`)
+          if (!cell) warnings.push(`Строка ${(rowNum)}, колонка "${col}": Пустая ячейка`)
         })
         return warnings
       },
