@@ -428,7 +428,7 @@
           const success = await ApiService.get(
             `/api-cabinet/company/shops/search?query=${v}`,
           )
-          console.log('GEO search string')
+          console.log('GEO search string:', v)
 
           // массив геообъектов
           const featureMembers = success.response.GeoObjectCollection.featureMember
@@ -441,6 +441,7 @@
             let pos = featureMember.GeoObject.Point.pos
             const address = featureMember.GeoObject.metaDataProperty.GeocoderMetaData.text
             let city = null
+            console.log(kind, pos, address)
             if (kind === 'house') {
               city = featureMember.GeoObject.metaDataProperty.GeocoderMetaData.Address.Components.find(item => item.kind === 'locality')
               this.fullAddress = true
@@ -452,11 +453,21 @@
             if (pos) {
               pos = pos.split(' ')
               const coords = [pos[1], pos[0]]
-              this.editedShop.lat = coords[0]
-              this.editedShop.lng = coords[1]
-              this.editedShop.coords = coords
 
               this.$store.commit('company/program/SET_MAP_CENTER', coords)
+              if (this.fullAddress) {
+                this.editedShop.lat = coords[0]
+                this.editedShop.lng = coords[1]
+                this.editedShop.coords = coords
+                this.editedShop.address = address
+                // обновление координат при редактировании магазина
+                this.shops.forEach((item, i) => {
+                  if (i === this.shopIndex) {
+                    item.lat = this.editedShop.lat
+                    item.lng = this.editedShop.lng
+                  }
+                })
+              }
             }
             console.log(address)
             console.log(city)
