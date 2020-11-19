@@ -371,32 +371,34 @@
             </div>
           </div>
 
-          <div
+          <v-row
             v-if="detailedCert.order && detailedCert.order.last_paid_payment"
-            class="cert-details-property d-flex"
+            class="cert-details-property"
+            no-gutters
           >
-            <div class="cert-details-prop-name body-s-semibold">
+            <v-col cols="auto" class="cert-details-prop-name body-s-semibold">
               Реквизиты
-            </div>
-            <div
+            </v-col>
+            <v-col
               class="cert-details-prop-value body-m-medium"
             >
               {{ detailedCert.order.last_paid_payment.transaction_id || '-' }}
-            </div>
-          </div>
-          <div
+            </v-col>
+          </v-row>
+          <v-row
             v-if="detailedCert.order && detailedCert.order.last_paid_payment && detailedCert.order.last_paid_payment.comment"
             class="cert-details-property d-flex"
+            no-gutters
           >
-            <div class="cert-details-prop-name body-s-semibold">
+            <v-col cols="auto" class="cert-details-prop-name body-s-semibold">
               Комментарий
-            </div>
-            <div
+            </v-col>
+            <v-col
               class="cert-details-prop-value body-m-medium"
             >
               {{ detailedCert.order.last_paid_payment.comment || '-' }}
-            </div>
-          </div>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
 
