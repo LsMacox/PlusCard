@@ -77,6 +77,8 @@
   border-radius: 10px;
   padding: 10px;
   cursor: pointer;
+  height: 100%;
+
   .settings-block--content , .settings-block--chevron {
     margin-top: 2px;
   }

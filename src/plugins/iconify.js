@@ -18,7 +18,6 @@ export const ICONIFY_ICONS = {
     'ant-design-youtube-filled': () => import('@iconify/icons-ant-design/youtube-filled'),
     'question-circle-outlined': () => import('@iconify/icons-ant-design/question-circle-outlined'),
 
-
     // bi
     'arrow-left': () => import('@iconify/icons-bi/arrow-left'),
     'bi-phone': () => import('@iconify/icons-bi/phone'),
@@ -44,6 +43,9 @@ export const ICONIFY_ICONS = {
     'carbon-email': () => import('@iconify/icons-carbon/email'),
     'carbon-diagram': () => import('@iconify/icons-carbon/diagram'),
     'carbon-stop': () => import('@iconify-icons/carbon/stop'),
+
+    // clarity
+    'clarity-import-line': () => import('@iconify-icons/clarity/import-line'),
 
     // entypo
     'chevron-right': () => import('@iconify/icons-entypo/chevron-right'),
