@@ -45,7 +45,8 @@
                         auto-grow
                         placeholder="Пригласительное СМС-сообщение"
                         outlined
-                        maxlength="255"
+                        counter
+                        maxlength="138"
                       />
                     </template>
                   </BaseMasterFieldBlock>
@@ -82,7 +83,7 @@
         },
         smsTextRules: [
           v => !!v || 'Введите пригласительное сообщение',
-          v => v.length <= 255 || 'Длина смс сообщения не должна превышать 255 символов',
+          v => v.length <= 138 || 'Длина смс сообщения не должна превышать 138 символов',
           v => this.getCountTemplate(v) > 0 || 'Ссылка {{link}} отсутствует в сообщении',
           v => this.getCountTemplate(v) === 1 || 'Ссылка {{link}} используется более одного раза',
         ],
