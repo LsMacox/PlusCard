@@ -60,6 +60,7 @@
                 class="table-cell_avatar"
                 style="position: relative; top: -5px;"
                 :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`"
+                @click.stop="userSidePanel(item)"
               >
               <div>
                 <div
@@ -147,10 +148,10 @@
     </v-row>
 
     <side-panel-edit-client
-        v-if="sidePanelStatus.active"
-        v-model="sidePanelStatus.active"
-        :mode="sidePanelStatus.mode"
-        :table-data="sidePanelStatus.data"
+      v-if="sidePanelStatus.active"
+      v-model="sidePanelStatus.active"
+      :mode="sidePanelStatus.mode"
+      :table-data="sidePanelStatus.data"
     />
   </div>
 </template>
@@ -375,6 +376,7 @@
   width: 25px;
   height: 25px;
   border-radius: 25px;
+  cursor: pointer;
 }
 
 .table-pagination-block {

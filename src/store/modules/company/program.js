@@ -347,6 +347,15 @@ const actions = {
         })
         return result
     },
+
+    async updateCRMSmsTest ({ commit, dispatch, rootState }, { id, smsText }) {
+        const result = await ApiService.put('/api-cabinet/company/crm/sms/test', {
+            id,
+            sms_text: smsText,
+        })
+        return result
+    },
+
     async updateChat ({ commit, dispatch, rootState }, { programId, canWrite, realChatName, chatWelcome }) {
       const result = await ApiService.put('/api-cabinet/company/chat', {
           id: programId,

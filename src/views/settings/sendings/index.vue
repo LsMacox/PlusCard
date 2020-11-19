@@ -31,10 +31,11 @@
                   v-model="valid"
                 >
                   <BaseMasterFieldBlock title="Пригласительное СМС-сообщение">
-                    <span slot="description">
-                      Текст СМС-приглашения клиента c ссылкой на приложение {link}, например 'Ваша ссылка на Plus {link}'
-                      <br> Шаблон {link} может использоваться в тексте приглашения только один раз
-                    </span>
+                    <span
+                      slot="description"
+                      v-html="'Текст СМС-приглашения клиента c ссылкой на приложение {{link}}, например Ваша ссылка на Plus {{link}}<br>' +
+                        'Шаблон {{link}} может использоваться в тексте приглашения только один раз'"
+                    />
                     <template v-slot:input>
                       <v-textarea
                         v-model="programModelInternal.sms_text"
@@ -44,10 +45,18 @@
                         auto-grow
                         placeholder="Пригласительное СМС-сообщение"
                         outlined
-                        maxlength="70"
+                        maxlength="255"
                       />
                     </template>
                   </BaseMasterFieldBlock>
+                  <v-btn
+                    color="secondary"
+                    :loading="loading"
+                    :disabled="!valid"
+                    @click="sendTestSms()"
+                  >
+                    Получить тестовую СМС
+                  </v-btn>
                 </v-form>
               </v-row>
             </v-skeleton-loader>
@@ -64,6 +73,7 @@
   export default {
     data () {
       return {
+        loading: false,
         saveAction: false,
         valid: false,
         ProgramReadAction: false,
@@ -72,9 +82,9 @@
         },
         smsTextRules: [
           v => !!v || 'Введите пригласительное сообщение',
-          v => v.length <= 70 || 'Длина смс не превышает 70 символов',
-          v => this.getCountTemplate(v) > 0 || 'Ссылка {link} отсутствует в сообщении',
-          v => this.getCountTemplate(v) === 1 || 'Ссылка {link} используется более одного раза',
+          v => v.length <= 255 || 'Длина смс сообщения не должна превышать 255 символов',
+          v => this.getCountTemplate(v) > 0 || 'Ссылка {{link}} отсутствует в сообщении',
+          v => this.getCountTemplate(v) === 1 || 'Ссылка {{link}} используется более одного раза',
         ],
       }
     },
@@ -106,10 +116,10 @@
       },
       getCountTemplate (smsText) {
         let count = 0
-        let pos = smsText.indexOf('{link}')
+        let pos = smsText.indexOf('{{link}}')
         while (pos !== -1) {
           count++
-          pos = smsText.indexOf('{link}', pos + 1)
+          pos = smsText.indexOf('{{link}}', pos + 1)
         }
         return count
       },
@@ -122,6 +132,19 @@
           console.error(e)
         } finally {
           this.ProgramReadAction = false
+        }
+      },
+      async sendTestSms () {
+        try {
+          this.loading = true
+          await this.updateCRMSmsTest({ id: this.programId, smsText: this.programModelInternal.sms_text })
+          this.$notify({
+            title: 'Настройка рассылки компании',
+            text: 'Отправлено тестовое СМС сообщение',
+            type: 'success',
+          })
+        } finally {
+          this.loading = false
         }
       },
       async cancelEdit () {
