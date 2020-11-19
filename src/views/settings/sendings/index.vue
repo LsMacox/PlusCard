@@ -108,6 +108,7 @@
       ...mapActions({
         ProgramRead: 'company/program/read',
         updateCRM: 'company/program/updateCRM',
+        updateCRMSmsTest: 'company/program/updateCRMSmsTest',
       }),
       getEditFields (model) {
         return {
