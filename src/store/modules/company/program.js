@@ -349,7 +349,7 @@ const actions = {
     },
 
     async updateCRMSmsTest ({ commit, dispatch, rootState }, { id, smsText }) {
-        const result = await ApiService.put('/api-cabinet/company/crm/sms/test', {
+        const result = await ApiService.post('/api-cabinet/company/crm/sms/test', {
             id,
             sms_text: smsText,
         })
