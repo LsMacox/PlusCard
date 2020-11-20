@@ -23,7 +23,7 @@
         </v-row>
         <v-row>
           <v-col class="body-m-regular neutral-700--text program-cert-block__description">
-            {{ description }} 
+            {{ description }}
           </v-col>
         </v-row>
         <v-row style="min-height: 60px">
