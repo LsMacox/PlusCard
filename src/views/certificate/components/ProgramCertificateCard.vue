@@ -22,8 +22,8 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col class="body-m-regular neutral-700--text">
-            {{ description }}
+          <v-col class="body-m-regular neutral-700--text program-cert-block__description">
+            {{ description }} 
           </v-col>
         </v-row>
         <v-row style="min-height: 60px">
@@ -422,6 +422,15 @@
   .program-cert-block__title{
     margin-right: 20px;
   }
+  .program-cert-block__description{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-height: calc(21px*3 + 10px);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+  }
+
   .program-cert-block_switch{
     margin: 6px 0px;
     @include body-m-medium;
