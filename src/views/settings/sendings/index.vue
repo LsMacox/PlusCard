@@ -50,14 +50,22 @@
                       />
                     </template>
                   </BaseMasterFieldBlock>
-                  <v-btn
-                    color="secondary"
-                    :loading="loading"
-                    :disabled="!valid"
-                    @click="sendTestSms()"
-                  >
-                    Получить тестовую СМС
-                  </v-btn>
+                  <div class="action">
+                    <v-btn
+                      color="secondary"
+                      :loading="loading"
+                      :disabled="!valid || lockPeriod"
+                      @click="sendTestSms()"
+                    >
+                      Получить тестовую СМС
+                    </v-btn>
+                    <div
+                      v-if="lockPeriod"
+                      class="action-timer"
+                    >
+                      Следующая отправка возможна через {{ timerStr }}
+                    </div>
+                  </div>
                 </v-form>
               </v-row>
             </v-skeleton-loader>
@@ -87,6 +95,9 @@
           v => this.getCountTemplate(v) > 0 || 'Ссылка {{link}} отсутствует в сообщении',
           v => this.getCountTemplate(v) === 1 || 'Ссылка {{link}} используется более одного раза',
         ],
+        lockPeriod: false,
+        timerStr: null,
+        timerId: null,
       }
     },
     computed: {
@@ -95,15 +106,15 @@
         programModel: 'company/program/programModel',
       }),
       hasChanges () { return JSON.stringify(this.getEditFields(this.programModel)) !== JSON.stringify(this.getEditFields(this.programModelInternal)) },
-
     },
     watch: {
       programId (v) {
         !!v && this.init()
       },
     },
-    created () {
-      this.init()
+    async created () {
+      await this.init()
+      this.setTimer(this.programModel.sms_test_send_at)
     },
     methods: {
       ...mapActions({
@@ -125,6 +136,21 @@
         }
         return count
       },
+      setTimer (sendAt) {
+        //
+        this.timerId = setInterval((sendAt) => {
+          sendAt = this.$moment.utc(sendAt).local()
+          const diff = this.$moment().diff(sendAt)
+          if (diff >= 300000) {
+            clearInterval(this.timerId)
+            this.lockPeriod = false
+            this.timerStr = null
+          } else {
+            this.timerStr = this.$moment.unix((300000 - diff) / 1000).format('mm:ss')
+            this.lockPeriod = true
+          }
+        }, 1000, sendAt)
+      },
       async init () {
         try {
           this.ProgramReadAction = true
@@ -139,7 +165,9 @@
       async sendTestSms () {
         try {
           this.loading = true
-          await this.updateCRMSmsTest({ id: this.programId, smsText: this.programModelInternal.sms_text })
+          const res = await this.updateCRMSmsTest({ id: this.programId, smsText: this.programModelInternal.sms_text })
+          this.$store.commit('company/program/SET_PROGRAM_MODEL', res)
+          this.setTimer(res.sms_test_send_at)
           this.$notify({
             title: 'Настройка рассылки компании',
             text: 'Отправлено тестовое СМС сообщение',
@@ -186,4 +214,12 @@
 </script>
 
 <style lang="scss" scoped>
+  .action {
+    display: flex;
+    align-items: center;
+
+    .action-timer {
+      margin-left: 25px;
+    }
+  }
 </style>
