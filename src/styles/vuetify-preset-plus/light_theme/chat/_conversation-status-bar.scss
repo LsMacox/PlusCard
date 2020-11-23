@@ -1,0 +1,61 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.app--conversation--header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  height: 68px;
+  line-height: 68px;
+  border-bottom: 1px solid #EBEBEB;
+
+  .app--conversation--header__title {
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 24px;
+    height: 24px;
+    margin: 22px 28px 22px 22px;
+    color: #686868;
+  }
+
+  .app--conversation--header__count {
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 16px;
+    color: #686868;
+    height: 16px;
+    margin-top: 28px;
+  }
+
+  .app--conversation--header__toolbar {
+    display: flex;
+    flex-direction: row;
+
+    .app--conversation--header__toolbar__icon {
+      position: relative;
+      color: #C4C4C4;
+      height: 15px;
+      width: 15px;
+
+      .nameFavorite {
+        color: #F5CB47 !important;
+      }
+    }
+  }
+
+  .app--conversation--header__burger {
+    color: #C4C4C4;
+    font-size: 20px;
+    margin-left: 35px;
+  }
+
+  .app--conversation--header__toolbar__search {
+    width: 150px;
+    height: 20px;
+    border-bottom: 1px solid #eaeaea;
+    position: absolute;
+    top: 25px;
+    left: -155px;
+    outline: none;
+  }
+}

@@ -62,6 +62,8 @@
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.14.0",
     "@iconify-icons/bx": "^1.0.2",
+    "@iconify-icons/carbon": "^1.0.3",
+    "@iconify-icons/feather": "^1.0.0",
     "@iconify-icons/clarity": "^1.0.0",
     "@iconify/icons-ant-design": "^1.0.8",
     "@iconify/icons-bi": "^1.0.6",

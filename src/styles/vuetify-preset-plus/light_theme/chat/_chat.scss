@@ -1,0 +1,11 @@
+.app--chat__container {
+  background: #fff;
+  margin: 0;
+  height: calc(100% + 34px);
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  margin-top: -34px;
+  margin-left: -34px;
+}
