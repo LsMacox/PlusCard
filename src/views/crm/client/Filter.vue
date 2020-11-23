@@ -187,25 +187,29 @@
               v-if=" withSegments && segmentsForFilter && segmentsForFilter.length"
               no-gutters
             >
-              <div
-                class="app__filter-content-header"
-              >
-                Сегменты
-              </div>
-              <div
-                v-for="(item, i) in segmentsForFilter"
-                :key="`segmentsForFilter${i}`"
-                class="app__filter-content-client"
-              >
-                <p
-                  class="body-s-semibold mb-0"
-                  style="cursor: pointer; display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
-                  :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
-                  @click="setFilter('segments', item)"
+              <v-col>
+                <v-row
+                  class="app__filter-content-header"
+                  no-gutters
                 >
-                  {{ item.name }}
-                </p>
-              </div>
+                  Сегменты
+                </v-row>
+                <v-row
+                  v-for="(item, i) in segmentsForFilter"
+                  :key="`segmentsForFilter${i}`"
+                  class="app__filter-content-client"
+                  no-gutters
+                >
+                  <p
+                    class="body-s-semibold mb-0"
+                    style="cursor: pointer; display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
+                    :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
+                    @click="setFilter('segments', item)"
+                  >
+                    {{ item.name }} 
+                  </p>
+                </v-row>
+              </v-col>
             </v-row>
           </div>
         </div>
