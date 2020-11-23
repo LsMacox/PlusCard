@@ -59,7 +59,7 @@
   import Operations from './tab/Operations'
   import Accounts from './tab/Accounts'
   import Documents from './tab/Documents'
-  import ApiService from "@/api/api-client";
+
   export default {
     name: 'SettingRequisites',
     components: {
