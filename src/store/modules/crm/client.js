@@ -1,4 +1,5 @@
 import ApiService from '@/api/api-client'
+import Vue from 'vue'
 
 const getDefaultState = () => {
     return {
@@ -34,10 +35,8 @@ const mutations = {
         items.push(payload)
     },
     UPDATE (state, payload) {
-        const items = state.clients
-        items.forEach((item, index) => {
-            if (item.id === payload.id) Object.assign(items[index], payload)
-        })
+        const index = state.clients.findIndex(item => item.id === payload.id)
+        if (index >= 0) Vue.set(state.clients, index, Object.assign(state.clients[index], payload))
     },
     REMOVE (state, payload) {
         const items = state.clients
