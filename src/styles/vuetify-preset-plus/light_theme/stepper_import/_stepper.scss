@@ -11,6 +11,32 @@
 
         }
 
+        .my-stepper-import--form-status {
+            display: flex;
+            align-items: center;
+            margin-top: 12px;
+
+            .my-stepper-import--form-status-error-item {
+                margin-left: 15px;
+                color: #f44336;
+                cursor: pointer;
+
+                .my-stepper-import--form-status-error-text {
+                    position: relative;
+                    top: -3px;
+                    margin-left: 7px;
+                }
+            }
+
+            .my-stepper-import--form-status-error {
+                color: #f44336;
+            }
+
+            .my-stepper-import--form-status-warning {
+                color: #FF9800;
+            }
+        }
+
         .my-stepper-import--form-content {
             margin-top: 24px;
 
@@ -67,6 +93,11 @@
 
             .my-stepper-import--step-three {
                 text-align: center;
+
+                .my-stepper-import--step-three-error {
+                    margin: 5px 0;
+                    color: #e57373;
+                }
             }
         }
 
