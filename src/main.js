@@ -46,7 +46,7 @@ import VueTelInput from 'vue-tel-input'
 import VueClipboard from 'vue-clipboard2'
 import YmapPlugin from 'vue-yandex-maps'
 import VueSimpleSVG from 'vue-simple-svg'
-import VueExtend from './plugins/vue-extend' 
+import VueExtend from './plugins/vue-extend'
 
 Vue.use(VueTelInput)
 Vue.use(Notifications)
@@ -89,7 +89,6 @@ Vue.directive('click-outside', VueClickOutsideDirective)
 Object.copy = (obj) => {
   return JSON.parse(JSON.stringify(obj))
 }
-
 
 Vue.prototype.$IsDebugMode = function () {
   return IsDebugQuery(this.$route)

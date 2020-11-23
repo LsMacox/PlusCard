@@ -1,0 +1,10 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.attachment-audio {
+  .image-thumb {
+    width: 168px;
+    height: 42px;
+    border-radius: 10px;
+  }
+}

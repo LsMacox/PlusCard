@@ -126,7 +126,7 @@ export default class {
       }
 
       this.duration = parseFloat(this._duration) + parseFloat(this.context.currentTime.toFixed(2))
-      this.volume = Math.sqrt(sum / sample.length).toFixed(2)
+      this.volume = Math.sqrt(sum / sample.length).toFixed(4)
     }
 
     this.input.connect(this.processor)

@@ -1,0 +1,9 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.attachment-deleted {
+  padding: 5px;
+  margin-bottom: 5px;
+  font-size: 11px;
+  border-left: 4px solid #C0C0C0;
+}
