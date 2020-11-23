@@ -43,7 +43,7 @@
             >
             <div class="table-cell_avatar-text">
               <div class="body-s-semibold neutral-900--text table-cell_avatar-text2">
-                {{ (item.user && item.user.FIO) ? item.user.FIO : '-' }}
+                {{ ( (item.user && item.user.FIO) ? item.user.FIO : '-' ) + ( (item.client_name && item.client_name != item.user.FIO) ? ` (${item.client_name})` : '' ) }}
               </div>
               <div
                 class="body-xs-semibold neutral-600--text table-cell_avatar-text2"

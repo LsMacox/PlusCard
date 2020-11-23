@@ -12,7 +12,7 @@
           :single-expand="true"
           :expanded.sync="expanded"
           item-key="uuid"
-          show-expand
+          :show-expand="false"
           class="plus-table"
           hide-default-footer
         >
@@ -216,7 +216,7 @@
             text: 'Оператор',
             value: 'operator',
           },
-          { text: '', value: 'data-table-expand' },
+          // { text: '', value: 'data-table-expand' },
         ],
         wordPages: ['странице', 'страницах', 'страницах'],
         wordOperations: ['операция', 'операции', 'операций'],

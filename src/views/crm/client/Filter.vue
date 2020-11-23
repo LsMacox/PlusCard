@@ -5,94 +5,104 @@
     <v-col>
       <div class="app__filter">
         <!--поле выбора-->
-        <div
+        <v-row
           class="app__filter-block-input"
           style="border: 1px solid #D7D7E0; border-radius: 10px;"
+          no-gutters
+          justify="center"
           @click.stop="switchShow"
         >
           <v-icon
-            v-show="emptyFastFilter"
+            v-show="emptyFastFilter|| true"
             class="app__filter-block-input-icon-prepend"
           >
             $iconify_search-outlined
           </v-icon>
 
-          <div style="width: 100%;">
-            <!-- КЛИЕНТЫ -->
-            <div
-              v-for="(item, i) in fastFilter.clients"
-              :key="`client${i}`"
-              class="app__filter-chip"
-              style="background-color: #EBF1FF;"
-            >
+          <v-col>
+            <v-row no-gutters>
+              <!-- КЛИЕНТЫ -->
               <div
-                class="app__filter-chip-content"
-                style="color: #4776E6;"
+                v-for="(item, i) in fastFilter.clients"
+                :key="`client${i}`"
+                class="app__filter-chip"
+                style="background-color: #EBF1FF;"
               >
-                {{ item.FIO }}
-                <v-icon
-                  class="app__filter-chip-icon-append"
+                <div
+                  class="app__filter-chip-content"
                   style="color: #4776E6;"
-                  @click.stop="clearItemFastFilter('clients', item)"
                 >
-                  $iconify_jam-close
-                </v-icon>
+                  {{ item.FIO }}
+                  <v-icon
+                    class="app__filter-chip-icon-append"
+                    style="color: #4776E6;"
+                    @click.stop="clearItemFastFilter('clients', item)"
+                  >
+                    $iconify_jam-close
+                  </v-icon>
+                </div>
               </div>
-            </div>
 
-            <!-- СЕГМЕНТЫ -->
-            <div
-              v-for="(item, i) in fastFilter.segments"
-              :key="`segment${i}`"
-              class="app__filter-chip"
-              :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
-            >
+              <!-- СЕГМЕНТЫ -->
               <div
-                class="app__filter-chip-content"
+                v-for="(item, i) in fastFilter.segments"
+                :key="`segment${i}`"
+                class="app__filter-chip"
                 :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
               >
-                {{ item.label }}
-                <v-icon
-                  class="app__filter-chip-icon-append"
-                  :style="`color: ${item.color};`"
-                  @click.stop="clearItemFastFilter('segments', item)"
+                <div
+                  class="app__filter-chip-content"
+                  :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
                 >
-                  $iconify_jam-close
-                </v-icon>
+                  {{ item.label }}
+                  <v-icon
+                    class="app__filter-chip-icon-append"
+                    :style="`color: ${item.color};`"
+                    @click.stop="clearItemFastFilter('segments', item)"
+                  >
+                    $iconify_jam-close
+                  </v-icon>
+                </div>
               </div>
-            </div>
 
-            <!--поле ввода-->
-            <!--chip быстрый поиск-->
-            <div
-              v-if="fastFilter.query"
-              class="app__filter-chip"
-            >
-              <div class="app__filter-chip-content">
-                {{ fastFilter.query }}
-                <v-icon
-                  class="app__filter-chip-icon-append"
-                  @click.stop="clearFilterQuery()"
+              <!--поле ввода-->
+              <!--chip быстрый поиск-->
+              <div
+                v-if="fastFilter.query"
+                class="app__filter-chip"
+              >
+                <div class="app__filter-chip-content">
+                  {{ fastFilter.query }}
+                  <v-icon
+                    class="app__filter-chip-icon-append"
+                    @click.stop="clearFilterQuery()"
+                  >
+                    $iconify_jam-close
+                  </v-icon>
+                </div>
+              </div>
+              <!--поле ввода-->
+              <v-col style="min-width:200px">
+                <input
+                  class="app__filter-block-input-field"
+                  placeholder="Поиск и фильтр"
                 >
-                  $iconify_jam-close
-                </v-icon>
-              </div>
-            </div>
-            <!--поле ввода-->
-            <input
-              class="app__filter-block-input-field"
-              placeholder="Поиск и фильтр"
-            >
-          </div>
+              </v-col>
+            </v-row>
+          </v-col>
 
-          <v-icon
-            v-show="!emptyFastFilter"
-            class="app__filter-block-input-icon-append"
-            @click.stop="clearFastFilter"
-          >
-            $iconify_chrome-close
-          </v-icon>
-        </div>
+          <v-col cols="auto">
+            <v-row no-gutters>
+              <v-icon
+                v-show="!emptyFastFilter"
+                class="app__filter-block-input-icon-append"
+                @click.stop="clearFastFilter"
+              >
+                $iconify_chrome-close
+              </v-icon>
+            </v-row>
+          </v-col>
+        </v-row>
 
         <!--окно фильтра-->
         <div
@@ -153,6 +163,7 @@
             <div
               v-for="(item, i) in accountsForFilter"
               :key="`accountsForFilter${i}`"
+              ref="resultAccountDiv"
               class="app__filter-content-client"
               @click="setFilter('clients', item)"
             >
@@ -161,7 +172,7 @@
                 :src="item.user ? item.user.avatar : ''"
               >
               <div class="body-m-regular neutral-700--text">
-                {{ item.user ? item.user.FIO : '' }}
+                [{{ item.id }}] {{ ( item.user ? item.user.FIO : '' + (item.client_name && item.client_name != item.user.FIO)? `(${item.client_name})` : '' ) }}
               </div>
               <div
                 v-if="getAdditionalSearch(item)"
@@ -172,26 +183,30 @@
               </div>
             </div>
             <!-- Сегменты -->
-            <div
-              v-if="segmentsForFilter && segmentsForFilter.length"
-              class="app__filter-content-header"
+            <v-row
+              v-if=" withSegments && segmentsForFilter && segmentsForFilter.length"
+              no-gutters
             >
-              Сегменты
-            </div>
-            <div
-              v-for="(item, i) in segmentsForFilter"
-              :key="`segmentsForFilter${i}`"
-              class="app__filter-content-client"
-            >
-              <p
-                class="body-s-semibold mb-0"
-                style="cursor: pointer; display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
-                :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
-                @click="setFilter('segments', item)"
+              <div
+                class="app__filter-content-header"
               >
-                {{ item.name }}
-              </p>
-            </div>
+                Сегменты
+              </div>
+              <div
+                v-for="(item, i) in segmentsForFilter"
+                :key="`segmentsForFilter${i}`"
+                class="app__filter-content-client"
+              >
+                <p
+                  class="body-s-semibold mb-0"
+                  style="cursor: pointer; display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
+                  :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
+                  @click="setFilter('segments', item)"
+                >
+                  {{ item.name }}
+                </p>
+              </div>
+            </v-row>
           </div>
         </div>
       </div>
@@ -201,9 +216,16 @@
 
 <script>
   export default {
+    props: {
+      withSegments: {
+        type: Boolean,
+        default: true,
+      },
+    },
     data () {
       return {
         query: null,
+        prevQuery: null,
         filter: {
           clients: [],
           segments: [],
@@ -418,6 +440,9 @@
               search,
             }
             await this.$store.dispatch('crm/client/querySearch', item)
+            // this.$nextTick(()=>{
+            //   this.replacer()
+            // })            
           } finally {
             this.loading = false
           }
@@ -437,6 +462,23 @@
         this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
         this.setFastFilter(this.filter)
         this.show = false
+      },
+      replacer () {        
+        const items = this.$refs['resultAccountDiv']
+        console.log('replacer', items)
+        items.forEach(element => {
+          console.log(element)
+          element.innerHTML = this.searchMatcher(element.innerHTML)
+        })
+        this.prevQuery = this.query
+      },
+      searchMatcher (str) {
+        const rollbackReg = new RegExp('<b>' + this.prevQuery + '</b>', 'ig')
+        const regexp = new RegExp(this.query , 'ig')
+
+        if (str) {
+          return str.replace(rollbackReg,  this.prevQuery).replace(regexp, '<b>' + this.query + '</b>')
+        } else return ''
       },
     },
   }
@@ -545,6 +587,7 @@
     font-weight: 500;
     font-size: 13px;
     line-height: 17px;
+    width: 100%;
   }
 }
 
