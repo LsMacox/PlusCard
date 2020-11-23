@@ -11,6 +11,13 @@
         class="icon-question"
         icon="question-circle-outlined"
         height="16"
+        style="cursor: pointer;"
+        @click="dialogHelp = true"
+      />
+      <dialog-help
+        :dialog.sync="dialogHelp"
+        :header="title"
+        :text="textHelp"
       />
     </template>
 
@@ -69,10 +76,14 @@
 <script>
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
+  import DialogHelp from '@/views/widgets/frames/DialogHelp'
 
   export default {
     name: 'DoubleDiagramFrame',
-    components: { WidgetTemplate },
+    components: {
+      WidgetTemplate,
+      DialogHelp,
+    },
     mixins: [WidgetFunctions],
     inheritAttrs: false,
     props: {
@@ -92,9 +103,14 @@
           return [30, 40, 60]
         },
       },
+      textHelp: {
+        type: String,
+        default: null,
+      },
     },
     data () {
       return {
+        dialogHelp: false,
         transitionDuration: 100,
         percent1: 0,
         percent2: 0,
