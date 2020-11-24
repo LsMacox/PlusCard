@@ -24,30 +24,12 @@
     </v-col>
     <v-col class="name-col">
       <div class="">{{ UserName }}</div>
-      <div class="body-xs-semibold neutral-600--text">
+      <div class="body-xs-semibold neutral-600--text" v-if="showLastActivity">
         Был(а) в сети
-        {{ $moment(user.last_activity).format("DD.MM.YYYY\u00A0HH:mm") }}
+        {{ user && user.last_activity ? $moment.utc(user.last_activity).local().format("DD.MM.YYYY\u00A0HH:mm") : '-' }}
       </div>
     </v-col>
   </v-row>
-  <!-- <div>
-    <div class="avatar">
-      <img :src="user.avatar">
-    </div>
-    <div class="td-content-wrapper">
-      <div class="td-content-main">
-        {{ UserName }}
-      </div>
-      <div
-        v-if="user.last_activity"
-        class="hint"
-        style="color: #9191a1"
-      >
-        Был(а) в сети
-        {{ $moment(item.user.last_activity).format("DD.MM.YYYY\u00A0HH:mm") }}
-      </div>
-    </div>
-  </div> -->
 </template>
 
   <script>
@@ -56,10 +38,14 @@
 
     props: {
       user: {
-        type: Object,
+        type: [Object],
         required: true,
         default: () => {},
       },
+      showLastActivity: {
+        type: Boolean,
+        default: true,
+      }
     },
     computed: {
       UserName () {
