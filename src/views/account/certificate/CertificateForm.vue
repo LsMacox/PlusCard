@@ -47,7 +47,6 @@
       </div>
 
       <div
-        v-if="$IsDebugMode()"
         class="cert-details-property d-flex"
       >
         <div class="body-l-semibold">
@@ -59,7 +58,7 @@
         class="cert-details-property d-flex"
       >
         <div class="body-l-semibold">
-          {{ detailedCert.selling_price }} &#8381;
+          Цена: {{ detailedCert.selling_price }} &#8381;
         </div>
       </div>
 
@@ -139,7 +138,7 @@
         <v-btn
           v-if="!detailedCert.deleted_at && detailedCert.issued && detailedCert.is_expired && hasProgramPermission('program-certificate-user-continue', detailedCert.certificate.program_id)"
           text
-          color="primary"          
+          color="primary"
           @click="continueDialog = true"
         >
           Продлить
@@ -376,7 +375,10 @@
             class="cert-details-property"
             no-gutters
           >
-            <v-col cols="auto" class="cert-details-prop-name body-s-semibold">
+            <v-col
+              cols="auto"
+              class="cert-details-prop-name body-s-semibold"
+            >
               Реквизиты
             </v-col>
             <v-col
@@ -390,7 +392,10 @@
             class="cert-details-property d-flex"
             no-gutters
           >
-            <v-col cols="auto" class="cert-details-prop-name body-s-semibold">
+            <v-col
+              cols="auto"
+              class="cert-details-prop-name body-s-semibold"
+            >
               Комментарий
             </v-col>
             <v-col
@@ -490,7 +495,7 @@
       paidClick () {
         this.paidDialog = true
       },
-     
+
     },
   }
 </script>
