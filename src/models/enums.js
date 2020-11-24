@@ -49,9 +49,17 @@ const CERT_PAYMENT_TYPE_ENUM = Object.freeze({
     PLUS_OTHER: { id: 'PLUS_OTHER', text: 'Другой способ' },
 })
 
+const BALANCE_OPERATION_TYPE_ENUM = Object.freeze({
+    default: { id: '', text: '-', color: 'error-500', icon: null },
+    debit: { id: 'debit', text: 'Списание за услуги', color: 'error-500', icon: require('@/icons/svg/payments/not_paid.svg') },
+    credit: { id: 'credit', text: 'Пополнение баланса', color: 'success-500', icon: require('@/icons/svg/payments/succeded.svg') },
+    find (id) { return this[id] || this.default },
+})
+
 export {
     EVENTS_ENUM,
     RESOURCE_TYPE_ENUM,
     MODERATION_STATUS_ENUM,
     CERT_PAYMENT_TYPE_ENUM,
+    BALANCE_OPERATION_TYPE_ENUM,
 }

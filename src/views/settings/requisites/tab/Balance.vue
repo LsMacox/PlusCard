@@ -198,6 +198,7 @@
     width: 100%;
   }
   .container-cash-info {
+    margin-top: 68px;
     margin-bottom: 40px;
   }
   .info-wrap:not(:last-of-type) {
