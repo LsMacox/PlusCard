@@ -1,7 +1,7 @@
 <template>
   <div
     ref="base-combobox"
-    v-click-outside="hide"
+    v-base-click-outside="hide"
     class="base-combobox"
     :placement="showList ? listPlacement : 'none'"
   >
