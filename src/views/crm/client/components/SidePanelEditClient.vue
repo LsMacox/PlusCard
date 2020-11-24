@@ -33,8 +33,7 @@
         <div class="contacts__block-right">
           <div class="contacts-full_name">
             <p class="title-m-bold">
-              {{ (accountClient.user && accountClient.user.name) ? accountClient.user.name : '-' }}
-              {{ (accountClient.user && accountClient.user.lastname) ? accountClient.user.lastname : '-' }}
+              {{ getFIO(accountClient.user) }}
             </p>
           </div>
           <div class="contacts-online">
@@ -103,7 +102,8 @@
 </template>
 
 <script>
-  import Convertor from '@/mixins/convertor.js'
+  import convertor from '@/mixins/convertor.js'
+  import user from '@/mixins/user.js'
   import SidePanel from '@/components/base/SidePanel'
   // Modes
   import ModeUsual from './sidepanel/EditClientModeUsual'
@@ -115,7 +115,7 @@
       ModeUsual,
       ModeExtended,
     },
-    mixins: [Convertor],
+    mixins: [convertor, user],
     model: {
       prop: 'active',
       event: 'changeState',
@@ -218,8 +218,6 @@
         })
       },
       async getData () {
-        // обнуляем пользователя карты
-        this.$store.commit('crm/clientCard/SET_CLIENT', {})
         if (this.tableData) {
           await this.fetchData()
         }
@@ -227,6 +225,9 @@
       async fetchData () {
         try {
           this.$store.commit('crm/clientCard/SET_LOADING', true)
+          // обнуляем пользователя карты
+          this.$store.commit('crm/clientCard/SET_CLIENT', {})
+          //
           await this.$store.dispatch('company/bonus_resources/GetList', this.program.id) // бонусные операции
           await this.$store.dispatch('crm/segment/segments', { program_id: this.program.id }) // сегменты программы
           await this.$store.dispatch('crm/clientCard/getAccountBalances', this.tableData) // бонусные балансы
