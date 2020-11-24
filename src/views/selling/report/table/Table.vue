@@ -64,7 +64,7 @@
                   class="body-s-medium"
                   v-else
                 >
-                  -
+                  Анонимная продажа
                 </div>
                 <div
                   class="cell-hint"
@@ -76,7 +76,6 @@
                     class="cell-hint"
                     v-else
                 >
-                  -
                 </div>
               </div>
             </div>
@@ -89,7 +88,7 @@
             <div
                 class="cell-hint"
             >
-              {{ item.account && item.account.user && item.account.user.email ? item.account.user.email : '-' }}
+              {{ item.account && item.account.user && item.account.user.email ? item.account.user.email : '' }}
             </div>
           </template>
 
