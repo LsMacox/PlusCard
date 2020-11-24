@@ -1,9 +1,9 @@
 export default {
     methods: {
         getFIO (user) {
-            let fio = 'Клиент'
+            let fio = 'Пользователь'
             if (user) {
-                fio = 'Клиент ' + user.id
+                fio = 'Пользователь ' + user.id
                 if (user.name) {
                     fio = user.name
                 }

@@ -68,7 +68,7 @@
                   style="cursor: pointer;"
                   @click.stop="userSidePanel(item)"
                 >
-                  {{ item.client }}
+                  {{ getFIO({id: item.client_id, name: item.client}) }}
                 </div>
                 <div
                   class="cell-hint"
@@ -120,7 +120,8 @@
           <div
             style="margin-right: 20px;"
           >
-            Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}
+            Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }}
+            {{ getWord(pagesCount, wordPages) }}
           </div>
 
           <select-page-limit
@@ -160,6 +161,7 @@
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
+  import User from '@/mixins/user'
   import SidePanelEditClient from '@/views/crm/client/components/SidePanelEditClient.vue'
   import ApiService from '@/api/api-client'
 
@@ -168,7 +170,7 @@
       SelectPageLimit,
       SidePanelEditClient,
     },
-    mixins: [FormatNumber, Routing],
+    mixins: [FormatNumber, Routing, User],
     data () {
       return {
         loadingList: false,
@@ -216,7 +218,7 @@
             text: 'Оператор',
             value: 'operator',
           },
-          // { text: '', value: 'data-table-expand' },
+        // { text: '', value: 'data-table-expand' },
         ],
         wordPages: ['странице', 'страницах', 'страницах'],
         wordOperations: ['операция', 'операции', 'операций'],
