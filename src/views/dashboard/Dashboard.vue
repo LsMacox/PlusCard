@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="crm b-segment">
     <toolbar />
     <widget-line />
   </div>

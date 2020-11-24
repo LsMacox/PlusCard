@@ -44,7 +44,7 @@ export const ICONIFY_ICONS = {
     // carbon
     'carbon-email': () => import('@iconify/icons-carbon/email'),
     'carbon-diagram': () => import('@iconify/icons-carbon/diagram'),
-    'carbon-stop': () => import('@iconify-icons/carbon/stop'),
+    // 'carbon-stop': () => import('@iconify-icons/carbon/stop'),
 
     // clarity
     'clarity-import-line': () => import('@iconify-icons/clarity/import-line'),
