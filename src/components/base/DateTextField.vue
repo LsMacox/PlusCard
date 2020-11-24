@@ -1,7 +1,7 @@
 <template>
   <div
     ref="baseTextField"
-    v-click-outside="hide"
+    v-base-click-outside="hide"
     class="date-text-field"
   >
     <div class="date-text-field__input">
