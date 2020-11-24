@@ -102,8 +102,8 @@
 </template>
 
 <script>
-  import convertor from '@/mixins/convertor.js'
-  import user from '@/mixins/user.js'
+  import Convertor from '@/mixins/convertor.js'
+  import User from '@/mixins/user.js'
   import SidePanel from '@/components/base/SidePanel'
   // Modes
   import ModeUsual from './sidepanel/EditClientModeUsual'
@@ -115,7 +115,7 @@
       ModeUsual,
       ModeExtended,
     },
-    mixins: [convertor, user],
+    mixins: [Convertor, User],
     model: {
       prop: 'active',
       event: 'changeState',

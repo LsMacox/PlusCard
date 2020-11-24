@@ -186,7 +186,7 @@
 </template>
 
 <script>
-  import user from '@/mixins/user.js'
+  import User from '@/mixins/user.js'
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
@@ -197,7 +197,7 @@
       SelectPageLimit,
       SidePanelEditClient,
     },
-    mixins: [FormatNumber, Routing, user],
+    mixins: [FormatNumber, Routing, User],
     data () {
       return {
         loadingList: false,
