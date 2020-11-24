@@ -1,8 +1,10 @@
 <template>
-  <div class="attachment-text">
-    <div
-      v-html="formatMessage(content)"
-    />
+  <div
+    class="attachment-text"
+  >
+    <p>
+      {{ formatMessage(content) }}
+    </p>
   </div>
 </template>
 
