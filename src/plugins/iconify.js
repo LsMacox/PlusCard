@@ -27,6 +27,8 @@ export const ICONIFY_ICONS = {
     'bx-check': () => import('@iconify/icons-bx/bx-check'),
     'arrow-back': () => import('@iconify/icons-bx/bx-arrow-back'),
     'bx-bx-building-house': () => import('@iconify/icons-bx/bx-building-house'),
+    'bx-bxs-error-alt': () => import('@iconify-icons/bx/bxs-error-alt'),
+    'bx-bxs-error': () => import('@iconify-icons/bx/bxs-error'),
 
     // codicon
     'chrome-close': () => import('@iconify/icons-codicon/chrome-close'),

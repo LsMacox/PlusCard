@@ -4,7 +4,7 @@
     :diagram-data="[diagramNewData, diagramTotalData]"
     :diagram-labels="[diagramNewLabels, diagramNewLabels]"
     :diagram-height="46"
-    title="Покупки"
+    title="Продажи"
     :sub-titles="subTitles()"
     :counts="[formatNumberString(widgetData.byProgramSum), formatNumberString(widgetData.totalSum)]"
     :percentage-differences="[byProgramPercentageDifference, totalPercentageDifference]"
@@ -73,7 +73,7 @@
     },
     methods: {
       subTitles () {
-        const words = ['покупка', 'покупки', 'покупок']
+        const words = ['продажа', 'продажи', 'продаж']
         return [
           this.formatNumberString(this.widgetData.byProgramCount) + ' ' + this.getWord(this.widgetData.byProgramCount, words) + ' по программе',
           this.formatNumberString(this.widgetData.totalCount) + ' ' + this.getWord(this.widgetData.totalCount, words) + ' всего',

@@ -34,8 +34,6 @@
           <div class="contacts-full_name">
             <p class="title-m-bold">
               {{ (accountClient.user && accountClient.user.name) ? accountClient.user.name : '-' }}
-            </p>
-            <p class="title-m-bold">
               {{ (accountClient.user && accountClient.user.lastname) ? accountClient.user.lastname : '-' }}
             </p>
           </div>

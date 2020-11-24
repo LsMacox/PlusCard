@@ -14,6 +14,7 @@ const getDefaultState = () => {
             itemsPerPage: 25,
         },
         total: 0,
+        importResult: [],
     }
 }
 
@@ -27,6 +28,7 @@ const mutations = {
     SET_ACCOUNTS_FOR_FILTER: (state, payload) => state.accountsForFilter = payload,
     SET_LIST: (state, payload) => state.list = payload,
     SET_TOTAL: (state, payload) => state.total = payload,
+    SET_IMPORT_RESULT: (state, payload) => state.importResult = payload,
     ADD (state, payload) {
         const items = state.clients
         items.push(payload)
@@ -75,7 +77,7 @@ const actions = {
             const result = await ApiService.post('/api-cabinet/crm/account/import', item)
             console.log('/api-cabinet/crm/account/import')
             console.log(result)
-            commit('ADD', result)
+            commit('SET_IMPORT_RESULT', result)
 
             this._vm.$notify({
                 type: 'success',
@@ -143,6 +145,7 @@ const getters = {
     accountsForFilter: state => state.accountsForFilter,
     list: state => state.list,
     total: state => state.total,
+    importResult: state => state.importResult,
 }
 
 export default {

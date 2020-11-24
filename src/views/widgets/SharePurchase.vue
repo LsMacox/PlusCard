@@ -1,7 +1,7 @@
 <template>
   <round-frame
     class="w-share-purchase"
-    title="Общая доля покупок"
+    title="Общая доля продаж"
     :all-count="allCount"
     :current-count="currentCount"
     :percentage-difference="percentageDifference"
