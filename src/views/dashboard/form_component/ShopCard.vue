@@ -147,6 +147,7 @@
         try {
           this.loading = true
           await this.$store.dispatch('company/program/deleteShop', item)
+          this.$emit('delete', item)
         } finally {
           this.loading = false
         }

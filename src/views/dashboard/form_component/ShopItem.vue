@@ -4,6 +4,7 @@
       v-if="index !== shopIndex"
       :item="item"
       @open="shopIndex = index"
+      @delete="(e) => $emit('delete', e)"
     />
     <shop-form
       v-else
