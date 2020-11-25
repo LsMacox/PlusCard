@@ -82,7 +82,7 @@
                   v-on="on"
                 />
               </template>
-              <span>{{ paymentStatusTooltip(item.payment_status) }}</span>
+              <span>{{ paymentStatusTooltip(item.payment_status, item.status) }}</span>
             </v-tooltip>
           </template>
 

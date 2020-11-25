@@ -202,7 +202,7 @@
           />
         </div>
         <div :class="detailedCert.payment_status === 'wait' ? 'cert-details-payment-wait-status body-m-semibold' : 'cert-details-payment-status body-m-semibold'">
-          <span>{{ paymentStatusTooltip(detailedCert.payment_status) }}</span>
+          <span>{{ paymentStatusTooltip(detailedCert.payment_status, detailedCert.status) }}</span>
         </div>
         <div
           v-if="detailedCert.paid_at"
