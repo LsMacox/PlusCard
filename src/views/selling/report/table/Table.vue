@@ -46,47 +46,47 @@
           <template v-slot:item.client="{ item }">
             <div style="display: flex;">
               <img
-                class="cell-avatar"
-                style="position: relative; top: -5px;"
                 v-if="item.account && item.account.user"
+                class="cell-avatar"
+                style="position: relative; top: -5px; cursor: pointer;"
                 :src="item.account.user.avatar"
+                @click.stop="userSidePanel(item.account)"
               >
               <div>
                 <div
+                  v-if="item && item.account && item.account.user"
                   class="body-s-medium"
                   style="cursor: pointer;"
                   @click.stop="userSidePanel(item.account)"
-                  v-if="item && item.account && item.account.user"
                 >
-                  {{ item.account.user.name }} {{ item.account.user.lastname }}
+                  {{ getFIO(item.account.user) }}
                 </div>
                 <div
-                  class="body-s-medium"
                   v-else
+                  class="body-s-medium"
                 >
                   Анонимная продажа
                 </div>
                 <div
-                  class="cell-hint"
                   v-if="item && item.account && item.account.user"
+                  class="cell-hint"
                 >
                   {{ getLastActivity(item.account.user.last_activity) }}
                 </div>
                 <div
-                    class="cell-hint"
-                    v-else
-                >
-                </div>
+                  v-else
+                  class="cell-hint"
+                />
               </div>
             </div>
           </template>
 
           <template v-slot:item.contacts="{ item }">
             <div class="body-s-medium">
-              {{ item.account && item.account.user.phone ? item.account.user.phone : '-'}}
+              {{ item.account && item.account.user.phone ? item.account.user.phone : '-' }}
             </div>
             <div
-                class="cell-hint"
+              class="cell-hint"
             >
               {{ item.account && item.account.user && item.account.user.email ? item.account.user.email : '' }}
             </div>
@@ -115,14 +115,23 @@
             </div>
           </template>
           <template v-slot:item.bonuses="{ item }">
-            <div  style="display: flex; align-items: center">
-              <div v-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value > 0" class="body-s-semibold cell-text-success">
+            <div style="display: flex; align-items: center">
+              <div
+                v-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value > 0"
+                class="body-s-semibold cell-text-success"
+              >
                 {{ '+'+formatNumberString(bonusValue(item.tran_group.abst_view)) }}
               </div>
-              <div v-else-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value < 0" class="body-s-semibold cell-text-error">
+              <div
+                v-else-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value < 0"
+                class="body-s-semibold cell-text-error"
+              >
                 {{ formatNumberString(bonusValue(item.tran_group.abst_view)) }}
               </div>
-              <div v-else class="body-s-semibold">
+              <div
+                v-else
+                class="body-s-semibold"
+              >
                 -
               </div>
             </div>
@@ -168,16 +177,16 @@
     </v-row>
 
     <side-panel-edit-client
-        v-if="sidePanelStatus.active"
-        v-model="sidePanelStatus.active"
-        :mode="sidePanelStatus.mode"
-        :table-data="sidePanelStatus.data"
+      v-if="sidePanelStatus.active"
+      v-model="sidePanelStatus.active"
+      :mode="sidePanelStatus.mode"
+      :table-data="sidePanelStatus.data"
     />
-
   </div>
 </template>
 
 <script>
+  import User from '@/mixins/user.js'
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
@@ -188,7 +197,7 @@
       SelectPageLimit,
       SidePanelEditClient,
     },
-    mixins: [FormatNumber, Routing],
+    mixins: [FormatNumber, Routing, User],
     data () {
       return {
         loadingList: false,
