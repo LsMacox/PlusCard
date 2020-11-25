@@ -16,6 +16,7 @@
               $iconify_close-circle
             </v-icon> Отменить
           </v-btn>
+
           <div class="tab-main">
             <v-tabs
               v-model="tab"
@@ -24,10 +25,11 @@
             >
               <v-tab
                 v-for="item in items"
-                :key="item"
+                :key="item.id"
                 class="tabs-items-own"
+                :to="item.route"
               >
-                {{ item }}
+                {{ item.name }}
               </v-tab>
             </v-tabs>
           </div>
@@ -52,9 +54,9 @@
         style="height: calc(100% - 67px);"
         no-gutters
       >
-        <v-col :class="tab === 0 || tab === 1 || tab === 4 ? 'container-tab-setting' : ''">
+        <v-col :class="[0,1,4].includes(getTabIndex) ? 'container-tab-setting' : ''">
           <v-tabs-items
-            v-model="tab"
+            :value="getTabIndex"
             style="height: 100%;"
           >
             <keep-alive>
@@ -85,18 +87,28 @@
       Accounts,
       Documents,
     },
+    props: {
+      startTab: {
+        type: String,
+        default: '',
+      },
+    },
     data () {
       return {
         tab: null,
         items: [
-          'Организация', 'Баланс', 'Операции', 'Счета', 'Документы',
+          { id: '#org', name: 'Организация', route: { hash: '#org' } },
+          { id: '#balance', name: 'Баланс', route: { hash: '#balance' } },
+          { id: '#operations', name: 'Операции', route: { hash: '#operations' } },
+          { id: '#orders', name: 'Счета', route: { hash: '#orders' } },
+          { id: '#docs', name: 'Документы', route: { hash: '#docs' } },
         ],
       }
     },
     computed: {
       // eslint-disable-next-line vue/return-in-computed-property
       currentTabComponent () {
-        switch (this.tab) {
+        switch (this.getTabIndex) {
           case 0:
             return Organization
           case 1:
@@ -109,9 +121,16 @@
             return Documents
         }
       },
+      getTabIndex () {
+        const index = this.items.findIndex(x => x.id === this.startTab)
+        return (index >= 0 ? index : 0)
+      },
       requisites () {
         return this.$store.getters['settings/organization/requisites']
       },
+    },
+    created () {
+      // this.setItemById(this.startTab)
     },
     async mounted () {
       await this.$store.dispatch('settings/organization/details')
