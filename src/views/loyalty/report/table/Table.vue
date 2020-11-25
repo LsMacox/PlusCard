@@ -16,6 +16,8 @@
           class="plus-table"
           hide-default-footer
           multi-sort
+          @update:sort-by="fetchData()"
+          @update:sort-desc="fetchData()"
         >
           <template v-slot:expanded-item="{ headers, item }">
             <td :colspan="headers.length">
@@ -267,19 +269,11 @@
       period (v) {
         if (v) this.fetchData()
       },
-      /*
       'tableOptions.page' (v) {
         if (v) this.fetchData()
       },
       'tableOptions.itemsPerPage' (v) {
         if (v) this.fetchData()
-      },
-      */
-      tableOptions: {
-        handler () {
-          this.fetchData()
-        },
-        deep: true,
       },
     },
     created () {
@@ -344,8 +338,8 @@
           limit: this.tableOptions.itemsPerPage,
           sortable: this.getSortable(this.tableOptions.sortBy, this.tableOptions.sortDesc),
         }
-        console.log('table/list')
-        console.log(list)
+        // console.log('table/list')
+        // console.log(list)
         try {
           this.$store.dispatch('widget/table/widget', list)
         } finally {
