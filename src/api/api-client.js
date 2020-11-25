@@ -117,11 +117,13 @@ service.interceptors.response.use(
 )
 
 service.downloadFile = function (route, params, fileName = '') {
-    return this.get(route, { params }, {
-        responseType: 'blob', // important
-    }).then((response) => {
+    return this.get(route, {
+      params,
+      responseType: 'blob', // important
+     }).then((response) => {
         // const serverFileName = response.headers['x-suggested-filename']
         // const url = window.URL.createObjectURL(new Blob([response.data]))
+        // console.log('downloadFile.response', response)
         const url = window.URL.createObjectURL(new Blob([response]))
         const link = document.createElement('a')
         link.href = url
