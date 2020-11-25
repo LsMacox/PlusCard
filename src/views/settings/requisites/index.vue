@@ -28,7 +28,10 @@
           </v-tabs>
         </div>
       </div>
-      <div class="save">
+      <div
+        v-if="tab === 0"
+        class="save"
+      >
         <v-btn
           color="secondary"
           :text="true"
@@ -59,7 +62,7 @@
   import Operations from './tab/Operations'
   import Accounts from './tab/Accounts'
   import Documents from './tab/Documents'
-  import ApiService from "@/api/api-client";
+
   export default {
     name: 'SettingRequisites',
     components: {
@@ -113,6 +116,7 @@
             type: 'success',
           })
         } catch (error) {
+          console.error(error)
           throw error
         }
       },
@@ -135,7 +139,7 @@
     align-items: center;
     justify-content: space-between;
     padding-bottom: 38px;
-    margin-bottom: 68px;
+    /* margin-bottom: 68px; */
     position: relative;
   }
   .container-tab-btn:after {

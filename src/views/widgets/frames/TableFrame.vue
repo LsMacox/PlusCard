@@ -11,6 +11,13 @@
         class="icon-question"
         icon="question-circle-outlined"
         height="16"
+        style="cursor: pointer;"
+        @click="dialogHelp = true"
+      />
+      <dialog-help
+        :dialog.sync="dialogHelp"
+        :header="title"
+        :text="textHelp"
       />
     </template>
 
@@ -103,10 +110,14 @@
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
   import Convertor from '@/mixins/convertor'
+  import DialogHelp from '@/views/widgets/frames/DialogHelp'
 
   export default {
     name: 'TableFrame',
-    components: { WidgetTemplate },
+    components: {
+      WidgetTemplate,
+      DialogHelp,
+    },
     mixins: [WidgetFunctions, Convertor],
     inheritAttrs: false,
     props: {
@@ -128,9 +139,15 @@
           ]
         },
       },
+      textHelp: {
+        type: String,
+        default: null,
+      },
     },
     data () {
-      return {}
+      return {
+        dialogHelp: false,
+      }
     },
     computed: {
       widgetClasses () {

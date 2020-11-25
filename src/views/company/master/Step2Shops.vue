@@ -115,6 +115,7 @@
             :item="item"
             :index="i"
             @save="confirmSaveShop"
+            @delete="deleteShop"
           />
         </div>
 
@@ -130,6 +131,7 @@
             :save="false"
             @close="shopIndex = -2"
             @save="confirmSaveShop"
+           
           />
         </div>
 
@@ -392,6 +394,12 @@
         }
 
         return wtNew
+      },
+      deleteShop (shop) {
+        const index = this.program.shops.findIndex(x => x.id === shop.id)
+        if (index >= 0) {
+          this.program.shops.splice(index, 1)
+        }
       },
       confirmSaveShop (shop) {
         const index = this.program.shops.findIndex(x => x.id === shop.id)

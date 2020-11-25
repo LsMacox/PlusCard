@@ -124,10 +124,10 @@ const mutations = {
         // })
     },
     REMOVE_IN_SHOPS (state, payload) {
-        const items = state.shops
-        items.forEach((item, index) => {
-            if (item.id === payload.id) items.splice(index, 1)
-        })
+        const index = state.shops.findIndex(item => item.id === payload.id)
+        if (index >= 0) {
+            state.shops.splice(index, 1)
+        }
     },
 }
 
@@ -323,18 +323,20 @@ const actions = {
     async deleteShop ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.delete(
-                `/api-cabinet/company/shop?id=${item.id}`,
-            )
-            console.log(`/api-cabinet/company/shop?id=${item.id}`)
-            console.log(result)
-            commit('REMOVE_IN_SHOPS', result)
-
-            this._vm.$notify({
-                type: 'success',
-                title: 'Компания обновлена',
-                text: 'Торговая точка успешно удалена',
-            })
+            console.log('deleteShop', item)
+            if (!item.isNew && item.id) {
+                const result = await ApiService.delete(
+                    `/api-cabinet/company/shop?id=${item.id}`,
+                )
+                console.log(`/api-cabinet/company/shop?id=${item.id}`)
+                console.log(result)
+                commit('REMOVE_IN_SHOPS', item)
+                this._vm.$notify({
+                    type: 'success',
+                    title: 'Компания обновлена',
+                    text: 'Торговая точка успешно удалена',
+                })
+            }
         } catch (error) {
             throw error
         }

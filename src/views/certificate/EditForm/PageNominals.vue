@@ -84,7 +84,7 @@
                       :style="{width: '72px'}"
                       class="text-align-center"
                       placeholder="∞"
-                       validation-placement="top"
+                      validation-placement="top"
                       maxlength="7"
                       outlined
                       :key-filter-regexp="/(\d|Delete|Backspace|Enter)/"
@@ -271,13 +271,18 @@
           quantity: null,
         })
       },
+
       async onRemoveNominalClick (nominal, index) {
-        if (nominal.id) {
-          await this.$store.dispatch('certificates/certificate/DeleteCertificateNominalDialog', { nominal })
-        } else {
+        try {
+          if (nominal.id) {
+            await this.$store.dispatch('certificates/certificate/DeleteCertificateNominalDialog', { nominal })
+          }
           this.cert.nominals.splice(index, 1)
+        } catch (e) {
+          console.error(e)
         }
       },
+
       quantityUnlimitChange () {
         if (this.cert.quantity_unlimit) {
           this.cert.quantity = null
@@ -287,7 +292,7 @@
           // this.cert.nominals.forEach(item => (item.quantity = 0))
         }
       },
-      
+
       createCert () {
         const postData = {
           program_id: this.program.id,

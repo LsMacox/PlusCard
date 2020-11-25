@@ -20,7 +20,7 @@
       <v-list-item-action-text
         class="body-s-semibold profile-item-action color-success"
       >
-        <span class="success--text">{{ balance+' ₽' }} </span>
+        <span class="success--text">{{ balance + ' ₽' }}</span>
       </v-list-item-action-text>
     </v-list-item>
 
@@ -58,7 +58,6 @@
 
   export default {
     name: 'AppMenuFooter',
-
     components: {
       MainMenuItem: () => import('./MainMenuItem'),
     },
@@ -66,19 +65,15 @@
       prop: 'mini',
       event: 'change',
     },
-
     props: {
       mini: Boolean,
     },
-
     data: () => ({
-
       // balance: 9999,
     }),
     computed: {
-
-      balance (){
-          return this.merchant ? this.merchant.balance_rub : '-'
+      balance () {
+        return this.merchant ? this.merchant.balance_rub : '0'
       },
       profile () {
         return this.$store.getters['profile/profile/profile']
@@ -92,7 +87,6 @@
         },
         set (val) {
           if (val === this.mini) return
-
           this.$emit('change', val)
         },
       },

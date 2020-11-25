@@ -123,8 +123,8 @@
             end_period: this.period.end,
             filter: this.filter,
           }
-          // console.log(widget)
-          ApiService.downloadFile(
+          console.log(widget)
+          ApiService.downloadFilePost(
             '/api-cabinet/widget/excel',
             widget,
             `Отчет по бонусной программе компании №${this.program.id} от ${this.$moment().format(this.$config.date.DATE_FORMAT)}.xls`,
