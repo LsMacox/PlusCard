@@ -3,10 +3,10 @@
     <vue-progress-bar />
     <notifications group="api" />
     <notifications />
-    
+
     <v-app id="vApp">
       <router-view />
-       <v-overlay :value="loadingApp">
+      <v-overlay :value="loadingApp">
         <v-progress-circular
           indeterminate
           size="64"
@@ -18,11 +18,11 @@
 
 <script>
   export default {
-    name: 'App',  
+    name: 'App',
     computed: {
       loadingApp () {
         return this.$store.getters.loadingApp
       },
-    },  
+    },
   }
 </script>

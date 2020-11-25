@@ -96,6 +96,7 @@ export const ICONIFY_ICONS = {
     'feather-plus-circle': () => import('@iconify/icons-feather/plus-circle'),
     'feather-edit': () => import('@iconify/icons-feather/edit'),
     'feather-users': () => import('@iconify/icons-feather/users'),
+    'feather-user': () => import('@iconify/icons-feather/user'),
     'feather-shopping-bag': () => import('@iconify/icons-feather/shopping-bag'),
     'feather-copy': () => import('@iconify/icons-feather/copy'),
     'feather-credit-card': () => import('@iconify/icons-feather/credit-card'),
@@ -106,6 +107,9 @@ export const ICONIFY_ICONS = {
     'feather-hash': () => import('@iconify-icons/feather/hash'),
     'feather-smile': () => import('@iconify-icons/feather/smile'),
     'feather-send': () => import('@iconify-icons/feather/send'),
+    'feather-star': () => import('@iconify-icons/feather/star'),
+    'feather-volume': () => import('@iconify/icons-feather/volume'),
+    'feather-volume-1': () => import('@iconify/icons-feather/volume-1'),
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),

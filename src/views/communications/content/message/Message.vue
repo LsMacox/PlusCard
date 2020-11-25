@@ -25,7 +25,6 @@
         >
           <!-- блок управления -->
           <div
-            :id="'message' + item.id"
             :class="{
               'message-menu-my': myMessage,
               'message-menu-other': !myMessage,
@@ -321,7 +320,7 @@
 
 <script>
   // mixins
-  import Formater from '@/views/communications/mixins/index.js'
+  import MixinIndex from '@/views/communications/mixins/index.js'
 
   // components
   import AppMessageUpdate from './MessageUpdate'
@@ -351,7 +350,7 @@
       AppAttachmentVideo,
       AppAttachmentPurchase,
     },
-    mixins: [Formater],
+    mixins: [MixinIndex],
     props: {
       item: {
         type: Object,
@@ -535,12 +534,12 @@
         return null
       },
       showMenu (message, event) {
-        const elem = document.getElementById('message' + message.id)
+        const elem = document.getElementById('message-' + message.id).querySelector('.message-menu-other')
         elem.style.display = 'block'
         elem.style.height = event.srcElement.offsetHeight + 'px'
       },
       hideMenu (message, event) {
-        const elem = document.getElementById('message' + message.id)
+        const elem = document.getElementById('message-' + message.id).querySelector('.message-menu-other')
         elem.style.display = 'none'
         elem.style.height = '60px'
       },
