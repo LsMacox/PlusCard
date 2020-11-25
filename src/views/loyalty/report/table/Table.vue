@@ -16,6 +16,7 @@
           class="plus-table"
           hide-default-footer
           multi-sort
+          :server-items-length="totalCount"
           @update:sort-by="fetchData()"
           @update:sort-desc="fetchData()"
         >
