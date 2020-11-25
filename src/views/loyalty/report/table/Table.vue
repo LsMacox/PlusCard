@@ -5,7 +5,6 @@
         cols="12"
         style="width: 1024px"
       >
-        {{ tableOptions }}
         <v-data-table
           :headers="headers"
           :items="tableData"
