@@ -75,7 +75,7 @@
   import Organization from './tab/Organization/'
   import Balance from './tab/Balance'
   import Operations from './tab/Operations'
-  import Accounts from './tab/Accounts'
+  import Accounts from './tab/Orders'
   import Documents from './tab/Documents'
 
   export default {
