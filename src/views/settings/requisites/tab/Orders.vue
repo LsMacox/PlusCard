@@ -1,11 +1,11 @@
 <template>
   <v-skeleton-loader
-    :loading="GetMerchantOperationListAction"
+    :loading="GetOrdersActions"
     :style="{height: '100%', width: '100%'}"
     type="card-heading, image@3"
   >
     <v-container
-      v-if="operations.length>0 && true"
+      v-if="orders.length>0"
       fluid
       class=""
     >
@@ -25,6 +25,16 @@
                 clearable
               />
             </v-col>
+            <v-col cols="auto">
+              <v-btn
+                color="primary"
+                @click="onCreateOrderClick"
+              >
+                <v-icon left>
+                  $iconify_plus-circle-outlined
+                </v-icon> Создать счет на оплату
+              </v-btn>
+            </v-col>
           </v-row>
         </v-col>
       </v-row>
@@ -33,10 +43,10 @@
           <base-table
             class-name="table-balance-operations"
             :headers="headers"
-            :data="filtered_operations"
+            :data="filtered_orders"
             :is-custom-header="false"
-            :total-count="filtered_operations.length"
-            :word-operations="['операция', 'операции', 'операций']"
+            :total-count="filtered_orders.length"
+            :word-operations="['счет', 'счета', 'счетов']"
             :pagination="{
               sortBy: 'created_at',
               descending: 'descending',
@@ -53,25 +63,27 @@
             <template v-slot:[`item.created_at`]="{ item }">
               <date-column :value="item.created_at" />
             </template>
-            <template v-slot:[`item.user`]="{ item }">
-              <user-column
-                v-if="item.user"
-                :user="item.user"
+            <template v-slot:[`item.status`]="{ item }">
+              <status-column
+                :icon="item.status_enum.icon"
+                :text="item.status_enum.text"
+                :color="item.status_enum.color"
               />
-              <user-column
-                v-else
-                :user="{
-                  avatar: require('@/assets/svg/logo_32x32.svg'),
-                  UserName: 'Система'
-                }"
-                :show-last-activity="false"
-              />
-            </template>
-            <template v-slot:[`item.operation_type`]="{ item }">
-              <operation-type-row :operation-type="item.operation_type" />
             </template>
             <template v-slot:[`item.value_rub`]="{ item }">
-              <span :class="['body-s-semibold',BALANCE_OPERATION_TYPE_ENUM.find(item.operation_type).color + '--text']">{{ (item.operation_type == BALANCE_OPERATION_TYPE_ENUM.debit.id? '-':'+') + item.value_rub }} ₽</span>
+              <span class="body-s-semibold">{{ item.value_rub }} ₽</span>
+            </template>
+            <template v-slot:[`item.actions`]="{ item }">
+              <v-btn
+                icon
+                color="primary"
+                :loading="item.GetOrderPdfAction"
+                :disabled="item.GetOrderPdfAction"
+                x-small
+                @click="downloadOrderClick(item)"
+              >
+                <v-icon>$iconify_feather-download</v-icon>
+              </v-btn>
             </template>
 
           <!-- </v-data-table> -->
@@ -82,8 +94,8 @@
     <!-- Заглушка -->
     <base-empty-block-page
       v-else
-      title="Операций еще не было"
-      description="Здесь будут отображаться все операции по вашему внутреннему балансу."
+      title="Счета отсутсвуют"
+      description="Здесь будут отображаться все выставленные нами счета."
     >
       <template v-slot:image>
         <v-img
@@ -100,65 +112,62 @@
   import { mapGetters, mapActions } from 'vuex'
   import Vue from 'vue'
   import dateTimeFormat from '@/mixins/dateTimeFormat.js'
-  import { BALANCE_OPERATION_TYPE_ENUM } from '@/models/enums'
+  import { MERCHANT_ORDER_STATUS_ENUM } from '@/models/enums'
 
   export default {
     name: 'Operations',
     components: {
       DateColumn: () => import('@/components/colums/DateColumn.vue'),
-      UserColumn: () => import('@/components/colums/UserColumn.vue'),
-      OperationTypeRow: () => import('./OperationTypeRow.vue'),
+      StatusColumn: () => import('@/components/colums/StatusColumn.vue'),
     },
     mixins: [dateTimeFormat],
     constants: {
-      BALANCE_OPERATION_TYPE_ENUM: BALANCE_OPERATION_TYPE_ENUM,
+      MERCHANT_ORDER_STATUS_ENUM: MERCHANT_ORDER_STATUS_ENUM,
     },
     data () {
       return {
         search: '',
-        GetMerchantOperationListAction: false,
+        GetOrdersActions: false,
         headers: [
-          {
-            text: 'ID',
-            align: 'start',
-            value: 'id',
-            width: '7em',
-          },
-          { text: 'Дата', value: 'created_at',  width: '6em',},
-          { text: 'Тип опреации', value: 'operation_type' },
+          { text: 'ID', align: 'start', value: 'id', width: '7em' },
+          { text: 'Дата', value: 'created_at', width: '6em' },
+          { text: 'Статус', value: 'status' },
           { text: 'Сумма', value: 'value_rub' },
-          { text: 'Оператор', value: 'user' },
           { text: 'Описание', value: 'description' },
+          { text: '', value: 'actions', width: '1em' },
         ],
-
       }
     },
     computed: {
       ...mapGetters({
         programId: 'programId',
-        operations: 'auth/merchant/balanceOperations',
+        orders: 'auth/merchant/orders',
       }),
-      operationsMaped () {
-        return this.operations.map(x => {
+
+      ordersMaped () {
+        return this.orders.map(x => {
           Vue.set(x, 'created_at_format', this.$moment.utc(x.created_at).local().format(this.$config.date.DATETIME_FORMAT))
-          Vue.set(x, 'operation_type_text', BALANCE_OPERATION_TYPE_ENUM.find(x.operation_type).text)
+          Vue.set(x, 'status_text', MERCHANT_ORDER_STATUS_ENUM.find(x.status).text)
+          Vue.set(x, 'status_enum', MERCHANT_ORDER_STATUS_ENUM.find(x.status))
+          Vue.set(x, 'GetOrderPdfAction', false)
           return x
         })
       },
-      filtered_operations () {
+
+      filtered_orders () {
         if (this.search_comp) {
-          return this.operationsMaped.filter((item) =>
+          return this.ordersMaped.filter((item) =>
             item.id === +this.search_comp ||
-            (item.user && item.user.UserName && item.user.UserName.toLowerCase().includes(this.search_comp)) ||
             (item.created_at_format.toLowerCase().includes(this.search_comp)) ||
             (item.value_rub.toLowerCase().replace(' ', '').includes(this.search_comp)) ||
             (item.description.toLowerCase().includes(this.search_comp)) ||
-            (item.operation_type_text.toLowerCase().includes(this.search_comp)),
+            (item.status_text.toLowerCase().includes(this.search_comp)),
           )
         } else {
-          return this.operationsMaped
+          return this.ordersMaped
         }
       },
+
       search_comp () {
         return this.search ? this.search.trim().toLowerCase() : ''
       },
@@ -172,17 +181,29 @@
     },
     methods: {
       ...mapActions({
-        GetMerchantOperationList: 'auth/merchant/GetBalanceOperations',
+        GetOrders: 'auth/merchant/GetOrders',
+        GetOrderPdf: 'auth/merchant/GetOrderPdf',
       }),
       loadData () {
-        console.log('loadData')
-        this.GetMerchantOperationListAction = true
-        this.GetMerchantOperationList()
+        this.GetOrdersActions = true
+        this.GetOrders()
           .finally(() => {
-            this.GetMerchantOperationListAction = false
+            this.GetOrdersActions = false
           })
       },
       onClickRow () {},
+      onCreateOrderClick () {},
+
+      async downloadOrderClick (order) {
+        try {
+          order.GetOrderPdfAction = true
+          await this.GetOrderPdf(order)
+        } catch (e) {
+          console.error(e)
+        } finally {
+          order.GetOrderPdfAction = false
+        }
+      },
     },
   }
 </script>
