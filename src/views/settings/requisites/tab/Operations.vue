@@ -5,7 +5,7 @@
     type="card-heading, image@3"
   >
     <v-container
-      v-if="operations.length>0"
+      v-if="operations.length>0 && true"
       fluid
       class=""
     >
@@ -40,6 +40,9 @@
             :pagination="{
               sortBy: 'created_at',
               descending: 'descending',
+            }"
+            :options="{
+              itemsPerPage: 5
             }"
             @click:row="onClickRow"
           >

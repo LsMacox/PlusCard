@@ -1,59 +1,72 @@
 <template>
-  <div>
-    <div class="container-tab-btn">
-      <div class="close-and-tab">
-        <v-btn
-          color="#B5B5C4"
-          :text="true"
-          :ripple="false"
-          @click="back"
-        >
-          <v-icon class="mro-6">
-            $iconify_close-circle
-          </v-icon> Отменить
-        </v-btn>
-        <div class="tab-main">
-          <v-tabs
-            v-model="tab"
-            background-color="transparent"
-            color="#4776E6"
+  <v-row
+    no-gutters
+    style="height: 100%;"
+  >
+    <v-col>
+      <v-row class="container-tab-btn">
+        <div class="close-and-tab">
+          <v-btn
+            color="#B5B5C4"
+            :text="true"
+            :ripple="false"
+            @click="back"
           >
-            <v-tab
-              v-for="item in items"
-              :key="item"
-              class="tabs-items-own"
+            <v-icon class="mro-6">
+              $iconify_close-circle
+            </v-icon> Отменить
+          </v-btn>
+          <div class="tab-main">
+            <v-tabs
+              v-model="tab"
+              background-color="transparent"
+              color="#4776E6"
             >
-              {{ item }}
-            </v-tab>
-          </v-tabs>
+              <v-tab
+                v-for="item in items"
+                :key="item"
+                class="tabs-items-own"
+              >
+                {{ item }}
+              </v-tab>
+            </v-tabs>
+          </div>
         </div>
-      </div>
-      <div
-        v-if="tab === 0"
-        class="save"
-      >
-        <v-btn
-          color="secondary"
-          :text="true"
-          :ripple="false"
-          @click="save"
+        <div
+          v-if="tab === 0"
+          class="save"
         >
-          <v-icon class="mro-6">
-            $iconify_bx-check-outlined
-          </v-icon> Сохранить
-        </v-btn>
-      </div>
-    </div>
-    <div :class="tab === 0 || tab === 1 || tab === 4 ? 'container-tab-setting' : ''">
-      <v-tabs-items v-model="tab">
-        <keep-alive>
-          <component
-            :is="currentTabComponent"
-          />
-        </keep-alive>
-      </v-tabs-items>
-    </div>
-  </div>
+          <v-btn
+            color="secondary"
+            :text="true"
+            :ripple="false"
+            @click="save"
+          >
+            <v-icon class="mro-6">
+              $iconify_bx-check-outlined
+            </v-icon> Сохранить
+          </v-btn>
+        </div>
+      </v-row>
+      <v-row
+        style="height: calc(100% - 67px);"
+        no-gutters
+      >
+        <v-col :class="tab === 0 || tab === 1 || tab === 4 ? 'container-tab-setting' : ''">
+          <v-tabs-items
+            v-model="tab"
+            style="height: 100%;"
+          >
+            <keep-alive>
+              <component
+                :is="currentTabComponent"
+              />
+            </keep-alive>
+          </v-tabs-items>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

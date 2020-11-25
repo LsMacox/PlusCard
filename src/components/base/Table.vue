@@ -196,6 +196,8 @@
         type: Array,
         default () {
           return [
+            { text: '5 на странице', value: 5 },
+            { text: '10 на странице', value: 10 },
             { text: '25 на странице', value: 25 },
             { text: '50 на странице', value: 50 },
             { text: '100 на странице', value: 100 },
