@@ -89,9 +89,11 @@
 <script>
   import { mask } from 'vue-the-mask'
   import { mapGetters } from 'vuex'
+  import Routing from '@/mixins/routing'
 
   export default {
     directives: { mask },
+    mixins: [Routing],
     data () {
       return {
         form: {
@@ -118,9 +120,6 @@
       this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
-      toRoute (path) {
-        if (this.$route.path !== path) this.$router.push(path)
-      },
       toConfirm (phone) {
         console.log('toConfirm', phone)
         this.$router.push({

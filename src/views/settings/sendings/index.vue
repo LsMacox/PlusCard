@@ -96,7 +96,7 @@
           v => this.getCountTemplate(v) === 1 || 'Ссылка {{link}} используется более одного раза',
         ],
         lockPeriod: false,
-        timerStr: null,
+        timerStr: '00:00',
         timerId: null,
       }
     },
@@ -144,7 +144,7 @@
           if (diff >= 300000) {
             clearInterval(this.timerId)
             this.lockPeriod = false
-            this.timerStr = null
+            this.timerStr = '00:00'
           } else {
             this.timerStr = this.$moment.unix((300000 - diff) / 1000).format('mm:ss')
             this.lockPeriod = true
