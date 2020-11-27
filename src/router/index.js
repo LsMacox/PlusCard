@@ -296,6 +296,7 @@ export default new Router({
             {
               path: 'requisites',
               component: () => import('@/views/settings/requisites/index'),
+              props: (route) => ({ startTab: route.hash || '#org' }),
               name: 'SettingsRequisites',
               meta: { auth: true },
             },

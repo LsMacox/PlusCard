@@ -1,0 +1,42 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.attachment-purchase {
+  .purchase {
+    padding: 10px;
+    border-radius: 4px;
+    color: #ffffff;
+    background-color: #07C9EB;
+  }
+
+  .purchase-author {
+    font-weight: 300;
+  }
+
+  .list {
+    padding: 7px;
+  }
+
+  .product-row {
+    display: flex;
+  }
+
+  .product-check {
+    margin: 4px;
+  }
+
+  .button {
+    padding: 5px;
+    border-radius: 4px;
+    background-color: #ffffff;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .button-text {
+    display: inline-block;
+    padding: 2px;
+    font-weight: 300;
+    color: #07C9EB;
+  }
+}

@@ -1,270 +1,188 @@
 <template>
-  <div class="operation">
-    <div
-      class="no-data"
+  <v-skeleton-loader
+    :loading="GetMerchantOperationListAction"
+    :style="{height: '100%', width: '100%'}"
+    type="card-heading, image@3"
+  >
+    <v-container
+      v-if="operations.length>0 && true"
+      fluid
+      class=""
     >
-      <div class="img-no-data">
+      <v-row
+        justify="space-between"
+        align="center"
+      >
+        <v-col>
+          <v-row>
+            <v-col>
+              <base-text-field
+                v-model.trim="search"
+                :prepend-inner-icon="'$iconify_search-outlined'"
+                placeholder="Поиск и фильтр"
+                style="min-width: 225px"
+                hide-details
+                clearable
+              />
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col>
+          <base-table
+            class-name="table-balance-operations"
+            :headers="headers"
+            :data="filtered_operations"
+            :is-custom-header="false"
+            :total-count="filtered_operations.length"
+            :word-operations="['операция', 'операции', 'операций']"
+            :pagination="{
+              sortBy: 'created_at',
+              descending: 'descending',
+            }"
+            :options="{
+              itemsPerPage: 5
+            }"
+            @click:row="onClickRow"
+          >
+            <!-- <v-data-table
+            :headers="headers"
+            :items="filtered_moderations"
+          > -->
+            <template v-slot:[`item.created_at`]="{ item }">
+              <date-column :value="item.created_at" />
+            </template>
+            <template v-slot:[`item.user`]="{ item }">
+              <user-column
+                v-if="item.user"
+                :user="item.user"
+              />
+              <user-column
+                v-else
+                :user="{
+                  avatar: require('@/assets/svg/logo_32x32.svg'),
+                  UserName: 'Система'
+                }"
+                :show-last-activity="false"
+              />
+            </template>
+            <template v-slot:[`item.operation_type`]="{ item }">
+              <operation-type-row :operation-type="item.operation_type" />
+            </template>
+            <template v-slot:[`item.value_rub`]="{ item }">
+              <span :class="['body-s-semibold',BALANCE_OPERATION_TYPE_ENUM.find(item.operation_type).color + '--text']">{{ (item.operation_type == BALANCE_OPERATION_TYPE_ENUM.debit.id? '-':'+') + item.value_rub }} ₽</span>
+            </template>
+
+          <!-- </v-data-table> -->
+          </base-table>
+        </v-col>
+      </v-row>
+    </v-container>
+    <!-- Заглушка -->
+    <base-empty-block-page
+      v-else
+      title="Операций еще не было"
+      description="Здесь будут отображаться все операции по вашему внутреннему балансу."
+    >
+      <template v-slot:image>
         <v-img
           src="@/assets/png/settings-dummy.png"
-          max-width="187"
+          width="193.96px"
+          height="174px"
         />
-      </div>
-      <div class="text-info-no-data">
-        <h3 class="font-size-20">
-          Операций еще не было
-        </h3>
-        <p class="desc-15">
-          Здесь будут отображаться все операции по вашему  внутреннему балансу.
-        </p>
-      </div>
-    </div>
-    <div>
-      <v-text-field
-        placeholder="Поиск и фильтр"
-        single-line
-        solo
-        hide-details
-        prepend-inner-icon="mdi-magnify"
-        class="custom-input"
-      />
-    </div>
-    <div>
-      <v-data-table
-        :headers="headers"
-        :items="desserts"
-        :page.sync="page"
-        :items-per-page="itemsPerPage"
-        hide-default-footer
-        class="elevation-0 custom-table operator-table"
-        @page-count="pageCount = $event"
-      >
-        <template v-slot:item.typeOperation="{ item }">
-          <div class="text-type">
-            <div
-              class="round-item-type"
-              :class="`bg-round-light-${checkStatus(item.typeOperation)}`"
-            >
-              <span
-                class="round-item-type-inside"
-                :class="`bg-round-${checkStatus(item.typeOperation)}`"
-              />
-            </div>
-            <div :class="`color-text-${checkStatus(item.typeOperation)}`">
-              {{ item.typeOperation.text }}
-            </div>
-          </div>
-        </template>
-        <template v-slot:item.date="{ item }">
-          <div>
-            <div class="desc-13-text font-weight-500 color-text-dark">
-              {{ item.date.time }}
-            </div>
-            <div class="desc-11 font-weight-600 text-light-grey">
-              {{ item.date.inTime }}
-            </div>
-          </div>
-        </template>
-        <template v-slot:item.price="{ item }">
-          <div :class="Number(item.price) > 0 ? 'color-text-green':'color-text-red'">
-            {{ item.price }} ₽
-          </div>
-        </template>
-        <template v-slot:item.description="{ item }">
-          <div class="dec-in-table">
-            {{ item.description }}
-          </div>
-        </template>
-        <template v-slot:item.operator="{ item }">
-          <div class="img-operator">
-            <div class="round-img-table">
-              <v-img src="@/assets/png/22.png" />
-              <!--              <img :src="require(`${item.operator.img}`)">-->
-            </div>
-            <div>
-              <p class="desc-13 color-text-dark font-weight-500">
-                {{ item.operator.name }}
-              </p>
-              <span class="desc-11 text-light-grey font-weight-600">{{ item.operator.time }}</span>
-            </div>
-          </div>
-        </template>
-      </v-data-table>
-      <div class="pagination-block">
-        <!--        <v-text-field-->
-        <!--          :value="itemsPerPage"-->
-        <!--          label="Items per page"-->
-        <!--          min="-1"-->
-        <!--          max="15"-->
-        <!--          @input="itemsPerPage = parseInt($event, 10)"-->
-        <!--        ></v-text-field>-->
-        <div class="wrap-select">
-          <p class="font-weight-500 text-light-grey desc-13">
-            1 239 операций на 124 страницах
-          </p>
-          <div class="select-item">
-            <v-select
-              v-model="selectItem"
-              :items="items"
-              item-text="title"
-              item-value="value"
-              persistent-hint
-              return-object
-              single-line
-              class="custom-select"
-            />
-          </div>
-        </div>
-        <v-pagination
-          v-model="page"
-          class="custom-pagination"
-          :length="pageCount"
-        />
-      </div>
-    </div>
-  </div>
+      </template>
+    </base-empty-block-page>
+  </v-skeleton-loader>
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex'
+  import Vue from 'vue'
+  import dateTimeFormat from '@/mixins/dateTimeFormat.js'
+  import { BALANCE_OPERATION_TYPE_ENUM } from '@/models/enums'
+
   export default {
     name: 'Operations',
+    components: {
+      DateColumn: () => import('@/components/colums/DateColumn.vue'),
+      UserColumn: () => import('@/components/colums/UserColumn.vue'),
+      OperationTypeRow: () => import('./OperationTypeRow.vue'),
+    },
+    mixins: [dateTimeFormat],
+    constants: {
+      BALANCE_OPERATION_TYPE_ENUM: BALANCE_OPERATION_TYPE_ENUM,
+    },
     data () {
       return {
-        selectItem: {
-          title: '10 на страницу',
-          value: 10,
-        },
-        items: [
-          {
-            title: '10 на страницу',
-            value: 10,
-          },
-          {
-            title: '20 на страницу',
-            value: 20,
-          },
-        ],
+        search: '',
+        GetMerchantOperationListAction: false,
         headers: [
           {
-            text: '№',
+            text: 'ID',
             align: 'start',
             value: 'id',
+            width: '7em',
           },
-          { text: 'Дата', value: 'date' },
-          { text: 'Тип опреации', value: 'typeOperation' },
-          { text: 'Сумма', value: 'price' },
-          { text: 'Оператор', value: 'operator' },
+          { text: 'Дата', value: 'created_at',  width: '6em',},
+          { text: 'Тип опреации', value: 'operation_type' },
+          { text: 'Сумма', value: 'value_rub' },
+          { text: 'Оператор', value: 'user' },
           { text: 'Описание', value: 'description' },
         ],
-        desserts: [
-          {
-            id: 2,
-            date: {
-              time: '20.08.2020',
-              inTime: 'в 14:02',
-            },
-            typeOperation: {
-              text: 'Списание за услуги',
-              type: 'notPaid',
-            },
-            price: '-990',
-            description: 'Оплата по счету №3',
-            operator: {
-              img: './assets/png/11.png',
-              name: 'Наталья Левицкая',
-              time: 'Был(а) в сети 19.08.2020 в 14:20',
-            },
-          },
-          {
-            id: 1,
-            date: {
-              time: '20.08.2020',
-              inTime: 'в 14:02',
-            },
-            typeOperation: {
-              text: 'Пополнение баланса',
-              type: 'paidUp',
-            },
-            price: '+990',
-            description: 'Длинное описание операции длинною в 2 строки. Возможно так тоже нужно.',
-            operator: {
-              img: './assets/png/11.png',
-              name: 'Наталья Левицкая',
-              time: 'Был(а) в сети 19.08.2020 в 14:20',
-            },
-          },
-          {
-            id: 5,
-            date: {
-              time: '20.08.2020',
-              inTime: 'в 14:02',
-            },
-            typeOperation: {
-              text: 'Списание за услуги',
-              type: 'notPaid',
-            },
-            price: '-990',
-            description: 'Оплата по счету №3',
-            operator: {
-              img: './assets/png/22.png',
-              name: 'Наталья Левицкая',
-              time: 'Был(а) в сети 19.08.2020 в 14:20',
-            },
-          },
-          {
-            id: 7,
-            date: {
-              time: '20.08.2020',
-              inTime: 'в 14:02',
-            },
-            typeOperation: {
-              text: 'Пополнение баланса',
-              type: 'paidUp',
-            },
-            price: '+100',
-            description: 'Длинное описание операции длинною в 2 строки. Возможно так тоже нужно.',
-            operator: {
-              img: './assets/png/11.png',
-              name: 'Наталья Левицкая',
-              time: 'Был(а) в сети 19.08.2020 в 14:20',
-            },
-          },
-          {
-            id: 20,
-            date: {
-              time: '20.08.2020',
-              inTime: 'в 14:02',
-            },
-            typeOperation: {
-              text: 'Списание за услуги',
-              type: 'notPaid',
-            },
-            price: '-100',
-            description: 'Оплата по счету №3',
-            operator: {
-              img: '@/assets/png/22.png',
-              name: 'Наталья Левицкая',
-              time: 'Был(а) в сети 19.08.2020 в 14:20',
-            },
-          },
-        ],
-        page: 1,
-        pageCount: 0,
-        itemsPerPage: 10,
+
       }
     },
-    methods: {
-      checkStatus (item) {
-        switch (item.type) {
-          case 'notPaid':
-            return 'red'
-          case 'paidUp':
-            return 'green'
-          case 'pending':
-            return 'yellow'
-          case 'canceled':
-            return 'grey'
+    computed: {
+      ...mapGetters({
+        programId: 'programId',
+        operations: 'auth/merchant/balanceOperations',
+      }),
+      operationsMaped () {
+        return this.operations.map(x => {
+          Vue.set(x, 'created_at_format', this.$moment.utc(x.created_at).local().format(this.$config.date.DATETIME_FORMAT))
+          Vue.set(x, 'operation_type_text', BALANCE_OPERATION_TYPE_ENUM.find(x.operation_type).text)
+          return x
+        })
+      },
+      filtered_operations () {
+        if (this.search_comp) {
+          return this.operationsMaped.filter((item) =>
+            item.id === +this.search_comp ||
+            (item.user && item.user.UserName && item.user.UserName.toLowerCase().includes(this.search_comp)) ||
+            (item.created_at_format.toLowerCase().includes(this.search_comp)) ||
+            (item.value_rub.toLowerCase().replace(' ', '').includes(this.search_comp)) ||
+            (item.description.toLowerCase().includes(this.search_comp)) ||
+            (item.operation_type_text.toLowerCase().includes(this.search_comp)),
+          )
+        } else {
+          return this.operationsMaped
         }
       },
+      search_comp () {
+        return this.search ? this.search.trim().toLowerCase() : ''
+      },
+
+    },
+    watch: {
+
+    },
+    created () {
+      this.loadData()
+    },
+    methods: {
+      ...mapActions({
+        GetMerchantOperationList: 'auth/merchant/GetBalanceOperations',
+      }),
+      loadData () {
+        console.log('loadData')
+        this.GetMerchantOperationListAction = true
+        this.GetMerchantOperationList()
+          .finally(() => {
+            this.GetMerchantOperationListAction = false
+          })
+      },
+      onClickRow () {},
     },
   }
 </script>

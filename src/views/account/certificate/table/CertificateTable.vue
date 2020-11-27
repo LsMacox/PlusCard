@@ -6,13 +6,18 @@
           :headers="headers"
           :items="filtered_certificates"
           :single-expand="true"
-          :options="tableOptions"
+          :options.sync="tableOptions"
           :expanded.sync="expanded"
+          :item-class="() => 'clickable-row'"
           item-key="id"
           :show-expand="false"
           class="plus-table"
           hide-default-footer
+          multi-sort
+          :server-items-length="totalCount"
           @click:row="details"
+          @update:sort-by="fetchData()"
+          @update:sort-desc="fetchData()"
         >
           <template v-slot:expanded-item="{ headers, item }">
             <td :colspan="headers.length">
@@ -81,7 +86,7 @@
                   v-on="on"
                 />
               </template>
-              <span>{{ paymentStatusTooltip(item.payment_status) }}</span>
+              <span>{{ paymentStatusTooltip(item.payment_status, item.status) }}</span>
             </v-tooltip>
           </template>
 
@@ -271,7 +276,8 @@
   import CertificateUsedDialog from '../CertificateUsedDialog'
   import CertificateContinueDialog from '../CertificateContinueDialog'
   import CertMethodsMixin from '../CertMethodsMixin'
-  import permission from '@/mixins/permission'
+  import DataTable from '@/mixins/dataTable'
+  import Permission from '@/mixins/permission'
   import Vue from 'vue'
 
   export default {
@@ -279,7 +285,7 @@
     components: {
       SelectPageLimit, CertificateForm, CertificatePaidDialog, CertificateUsedDialog, CertificateContinueDialog,
     },
-    mixins: [CertMethodsMixin, permission],
+    mixins: [CertMethodsMixin, Permission, DataTable],
     data () {
       return {
         showDetails: false,
@@ -308,16 +314,19 @@
             text: 'Сертификат',
             align: 'start',
             value: 'certificate.name',
+            sortable: false,
           },
           {
             text: 'Цена',
             value: 'nominal.selling_price',
             align: 'end',
             width: '10em',
+            sortable: false,
           },
           {
             text: 'Покупатель',
             value: 'user.UserName',
+            sortable: false,
           },
           {
             text: 'Оплата',
@@ -341,19 +350,19 @@
             sortable: false,
           },
           {
-            text: 'Дата создания',
+            text: 'Создан',
             value: 'created_at',
-            width: '13em',
+            width: '10em',
           },
           {
             text: 'Выпущен',
             value: 'date_issued',
-            width: '13em',
+            width: '10em',
           },
           {
             text: 'Использован',
             value: 'used_at',
-            width: '13em',
+            width: '12em',
           },
           // {
           //   text: '',
@@ -567,10 +576,9 @@
           .dispatch('account/certificate/certificate/list', {
             program_id: this.program.id,
             filter: this.filter,
-            offset:
-              this.tableOptions.page * this.tableOptions.itemsPerPage -
-              this.tableOptions.itemsPerPage,
+            offset: this.getOffset(this.tableOptions.page, this.tableOptions.itemsPerPage),
             limit: this.tableOptions.itemsPerPage,
+            sortable: this.getSortable(this.tableOptions.sortBy, this.tableOptions.sortDesc),
           })
           .finally(() => {
             this.loadingList = false

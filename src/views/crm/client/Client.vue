@@ -4,10 +4,11 @@
       <p class="crm__header-title title-m-bold neutral-900--text">
         {{ program.name }}
       </p>
+      <!--
       <v-btn
         class="crm__header_new-btn"
         color="primary"
-        @click="sidePanelNewClientStatus = true"
+        @click="sidePanelCategoryStatus = true"
       >
         <iconify-icon
           icon="plus-circle"
@@ -16,9 +17,42 @@
         <p
           class="body-m-semibold neutral-100--text"
         >
-          Новый клиент
+          категории
         </p>
       </v-btn>
+      -->
+      <div>
+        <v-btn
+          class="crm__header_new-btn"
+          style="margin-right: 25px;"
+          color="secondary"
+          :text="true"
+          :ripple="false"
+          @click="toRoute('/program/accounts/import')"
+        >
+          <iconify-icon
+            icon="clarity-import-line"
+            width="21"
+            style="margin-right: 5px;"
+          />
+          Импорт
+        </v-btn>
+        <v-btn
+          class="crm__header_new-btn"
+          color="primary"
+          @click="sidePanelNewClientStatus = true"
+        >
+          <iconify-icon
+            icon="plus-circle"
+            width="21"
+          />
+          <p
+            class="body-m-semibold neutral-100--text"
+          >
+            Новый клиент
+          </p>
+        </v-btn>
+      </div>
     </div>
     <div style="margin-top: 34px;">
       <div class="body-l-semibold neutral-900--text">
@@ -33,21 +67,108 @@
       v-if="sidePanelNewClientStatus"
       v-model="sidePanelNewClientStatus"
     />
+    <extended-category-side-panel
+      v-model="sidePanelCategoryStatus"
+      :categories="testSidePanelCategories"
+      title="Ассортимент"
+      sub-title="Выберите товары или категории товаров, на которые будет действовать акция."
+      @updateCategories="testCreateCategories"
+    />
   </div>
 </template>
 
 <script>
   import ClientTable from './Table'
   import SidePanelNewClient from './components/SidePanelNewClient'
+  import routing from '@/mixins/routing'
 
   export default {
     components: {
       ClientTable,
       SidePanelNewClient,
     },
+    mixins: [routing],
     data () {
       return {
+        importDialog: false,
         sidePanelNewClientStatus: false,
+        sidePanelCategoryStatus: false,
+        testSidePanelCategories: [
+          {
+            id: 1,
+            name: 'Гравийный',
+            categories: [
+              {
+                id: 2,
+                name: 'Карбон',
+                categories: [
+                  { id: 1, name: 'Бренды', select: true, categories: [] },
+                  {
+                    id: 2,
+                    name: 'Навесное оборудование',
+                    categories: [
+                      { id: 1, name: 'Shimano', categories: [] },
+                      { id: 2, name: 'SRAM', categories: [] },
+                    ],
+                  },
+                  { id: 3, name: 'Диметр колес', categories: [] },
+                ],
+              },
+              {
+                id: 1,
+                name: 'Алюминий + карбон',
+                categories: [
+                  { id: 1, name: 'Бренды', categories: [] },
+                  {
+                    id: 2,
+                    name: 'Навесное оборудование',
+                    categories: [
+                      { id: 1, name: 'Shimano', categories: [] },
+                      { id: 2, name: 'SRAM', categories: [] },
+                    ],
+                  },
+                  { id: 3, name: 'Диметр колес', categories: [] },
+                ],
+              },
+              {
+                id: 2,
+                name: 'Сталь',
+                categories: [
+                  { id: 1, name: 'Бренды', categories: [] },
+                  {
+                    id: 2,
+                    name: 'Навесное оборудование',
+                    categories: [
+                      { id: 1, name: 'Shimano', categories: [] },
+                      { id: 2, name: 'SRAM', categories: [] },
+                    ],
+                  },
+                  { id: 3, name: 'Диметр колес', categories: [] },
+                ],
+              },
+              {
+                id: 3,
+                name: 'Алюминий',
+                categories: [
+                  { id: 1, name: 'Бренды', categories: [] },
+                  {
+                    id: 2,
+                    name: 'Навесное оборудование',
+                    categories: [
+                      { id: 1, name: 'Shimano', categories: [] },
+                      { id: 2, name: 'SRAM', categories: [] },
+                    ],
+                  },
+                  { id: 3, name: 'Диметр колес', categories: [] },
+                ],
+              },
+            ],
+          },
+          { id: 1, name: 'Шоссе' },
+          { id: 1, name: 'Туринг' },
+          { id: 1, name: 'MTB хардтейл' },
+          { id: 1, name: 'MTB двухподвес' },
+        ],
       }
     },
     computed: {
@@ -58,7 +179,11 @@
     watch: {},
     created () {},
     mounted () {},
-    methods: {},
+    methods: {
+      testCreateCategories (v) {
+        console.log('create categories bitch!!!', v)
+      },
+    },
   }
 </script>
 

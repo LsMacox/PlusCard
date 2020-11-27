@@ -143,8 +143,19 @@
         switch (type) {
           case 'ACCOUNT_VIEW':
             return 'Просмотр карты'
+
           case 'ACCOUNT_BARCODE':
             return 'Использование карты'
+
+          case 'account:open':
+            return 'Открыл карту'
+
+          case 'account.document.list:get':
+            return 'Просмотрел список гарантийных талонов'
+
+          case 'account.document:open':
+            return 'Открыл документ'
+
           default:
             return '-'
         }

@@ -11,6 +11,12 @@ export default {
             meta: { auth: true, title: 'Клиенты', icon: 'dashboard' },
         },
         {
+            path: '/program/accounts/import',
+            component: () => import('@/views/crm/client/import/index'),
+            beforeEnter: GuardEmptyPrograms,
+            meta: { auth: true, title: 'Импорт клиентов', icon: 'dashboard' },
+        },
+        {
             path: '/program/segments',
             component: () => import('@/views/crm/segment/Segment'),
             beforeEnter: GuardEmptyPrograms,

@@ -69,6 +69,8 @@ export default {
       )
       if (index >= 0) {
         Vue.set(state.conversations, index, payload)
+      } else {
+        state.conversations.push(payload)
       }
     },
     deleteInConversations (state, payload) {
@@ -96,12 +98,9 @@ export default {
       const result = await ApiService.get('/api/conversation/list')
       commit('conversations', result)
     },
-    async GetBusinessChatList ({ commit, rootState }, program_id = null) {
+    async GetBusinessChatList ({ commit, rootState }, programId = null) {
       const result = await ApiService.get(
-        '/api/conversation/getBusinessChats',
-        {
-          program_id: program_id, // null - все
-        },
+        `/api/conversation/getBusinessChats?program_id=${programId}`,
       )
       commit('merge_conversations', result)
     },

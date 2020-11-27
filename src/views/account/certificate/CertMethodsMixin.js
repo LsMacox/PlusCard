@@ -103,8 +103,8 @@ export default {
             }
             return status
         },
-        paymentStatusTooltip (status) {
-            switch (status) {
+        paymentStatusTooltip (paymentStatus, status) {
+            switch (paymentStatus) {
                 case 'SBERBANK':
                     status = 'Оплачен картой'
                     break
@@ -112,7 +112,7 @@ export default {
                     status = 'Оплачен на кассе'
                     break
                 case 'wait':
-                    status = 'Ожидает оплаты'
+                    status = status !== 'deleted' ? 'Ожидает оплаты' : 'Не оплачен'
                     break
                 default:
                     status = 'Оплачен другим способом'

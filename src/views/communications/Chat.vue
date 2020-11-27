@@ -1,18 +1,13 @@
 <template>
   <div class="app--chat__container">
-    <div class="app--chat--col-1">
-      <app-conversation-list />
-    </div>
-
-    <div class="app--chat--col-3">
-      <app-conversation-field />
-    </div>
+    <app-conversation-list />
+    <app-conversation-field />
   </div>
 </template>
 
 <script>
-  import AppConversationList from './content/chat/ConversationList'
-  import AppConversationField from './content/chat/ConversationField'
+  import AppConversationList from './content/ConversationList'
+  import AppConversationField from './content/ConversationField'
   import { mapGetters } from 'vuex'
 
   export default {
@@ -88,31 +83,5 @@
 </script>
 
 <style lang="scss">
-
-[v-cloak] {
-  display: none;
-}
-.app--chat__container {
-  @include page-content-padding-disable;
-  font-family: "SF Pro Rounded";
-  background: #fff;
-  // margin: 0;
-  height: 100vh;
-  // width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  & *,
-  & > * {
-    font-family: "SF Pro Rounded";
-  }
-
-  .app--chat--col-1 {
-    min-width: 362px;
-  }
-
-  .app--chat--col-3 {
-    width: 100%;
-  }
-}
+@import "@/styles/vuetify-preset-plus/light_theme/chat/index.scss";
 </style>

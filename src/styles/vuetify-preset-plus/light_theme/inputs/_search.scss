@@ -1,0 +1,19 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+
+.field-search {
+  border-radius: 10px !important;
+
+  .v-input__prepend-inner {
+    padding-right: 8px !important;
+  }
+
+  .v-input__append-inner {
+    margin-top: 11px !important;
+  }
+
+  input {
+    &::placeholder {
+      color: $neutral-600 !important;
+    }
+  }
+}

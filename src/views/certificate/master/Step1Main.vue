@@ -19,7 +19,7 @@
             <base-text-field
               v-model="cert.name"
               :validate-on-blur="true"
-              :rules="nameRules"              
+              :rules="nameRules"
               placeholder="Название сертификата"
               outlined
               counter
@@ -39,8 +39,6 @@
               :items="category_id_list"
               :rules="categoryRules"
               :menu-props="{ closeOnClick: fold }"
-              @focusout="focusOutHandler"
-              @focusin="focusInHandler"
               placeholder="Выберите категории"
               item-value="id"
               item-text="name"
@@ -48,6 +46,8 @@
               multiple
               chips
               deletable-chips
+              @focusout="focusOutHandler"
+              @focusin="focusInHandler"
             />
           </template>
         </BaseMasterFieldBlock>
@@ -108,7 +108,7 @@
               auto-grow
               placeholder="Введите описание сертификата"
               outlined
-              maxlength="255"
+              maxlength="10000"
             />
           </template>
         </BaseMasterFieldBlock>
@@ -168,6 +168,7 @@
         ],
         descriptionRules: [
           (v) => !!v || 'Введите описание',
+          (v) => (!!v && v.length <= 10000) || 'Описание не превышает 10000',
         ],
       }
     },

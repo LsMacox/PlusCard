@@ -47,7 +47,6 @@
       </div>
 
       <div
-        v-if="$IsDebugMode()"
         class="cert-details-property d-flex"
       >
         <div class="body-l-semibold">
@@ -59,7 +58,7 @@
         class="cert-details-property d-flex"
       >
         <div class="body-l-semibold">
-          {{ detailedCert.selling_price }} &#8381;
+          Цена: {{ detailedCert.selling_price }} &#8381;
         </div>
       </div>
 
@@ -139,7 +138,7 @@
         <v-btn
           v-if="!detailedCert.deleted_at && detailedCert.issued && detailedCert.is_expired && hasProgramPermission('program-certificate-user-continue', detailedCert.certificate.program_id)"
           text
-          color="primary"          
+          color="primary"
           @click="continueDialog = true"
         >
           Продлить
@@ -203,7 +202,7 @@
           />
         </div>
         <div :class="detailedCert.payment_status === 'wait' ? 'cert-details-payment-wait-status body-m-semibold' : 'cert-details-payment-status body-m-semibold'">
-          <span>{{ paymentStatusTooltip(detailedCert.payment_status) }}</span>
+          <span>{{ paymentStatusTooltip(detailedCert.payment_status, detailedCert.status) }}</span>
         </div>
         <div
           v-if="detailedCert.paid_at"
@@ -371,32 +370,40 @@
             </div>
           </div>
 
-          <div
+          <v-row
             v-if="detailedCert.order && detailedCert.order.last_paid_payment"
-            class="cert-details-property d-flex"
+            class="cert-details-property"
+            no-gutters
           >
-            <div class="cert-details-prop-name body-s-semibold">
+            <v-col
+              cols="auto"
+              class="cert-details-prop-name body-s-semibold"
+            >
               Реквизиты
-            </div>
-            <div
+            </v-col>
+            <v-col
               class="cert-details-prop-value body-m-medium"
             >
               {{ detailedCert.order.last_paid_payment.transaction_id || '-' }}
-            </div>
-          </div>
-          <div
+            </v-col>
+          </v-row>
+          <v-row
             v-if="detailedCert.order && detailedCert.order.last_paid_payment && detailedCert.order.last_paid_payment.comment"
             class="cert-details-property d-flex"
+            no-gutters
           >
-            <div class="cert-details-prop-name body-s-semibold">
+            <v-col
+              cols="auto"
+              class="cert-details-prop-name body-s-semibold"
+            >
               Комментарий
-            </div>
-            <div
+            </v-col>
+            <v-col
               class="cert-details-prop-value body-m-medium"
             >
               {{ detailedCert.order.last_paid_payment.comment || '-' }}
-            </div>
-          </div>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
 
@@ -488,7 +495,7 @@
       paidClick () {
         this.paidDialog = true
       },
-     
+
     },
   }
 </script>

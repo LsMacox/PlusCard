@@ -155,11 +155,11 @@
     },
     data () {
       return {
+        valid: false,
         form: {
           email: null,
           password: null,
         },
-        valid: false,
         visible1: false,
         emailRules: [
           v => !!v || 'E-mail обязателен',
@@ -182,10 +182,20 @@
     },
     mounted () {
       this.$store.dispatch('auth/auth/InitDevice')
+      window.addEventListener('keyup', this.onKeyUp)
+    },
+    beforeDestroy () {
+      window.removeEventListener('keyup', this.onKeyUp)
     },
     methods: {
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
+      },
+      onKeyUp (e) {
+        console.log('onKeyUp', e)
+        if (this.valid && e.key === 'Enter') {
+          this.login()
+        }
       },
       async login (merchId = null) {
         const user = {
@@ -202,8 +212,12 @@
 
           await this.$store.dispatch('auth/email/login', user)
           // выбор мерчанта для логина или сразу логин
-          if (this.merchants.length > 1) this.selectMerchant = true
-          else this.toRoute('/dashboard')
+          if (this.merchants.length > 1) {
+            this.selectMerchant = true
+            this.valid = false
+          } else {
+            this.toRoute('/dashboard')
+          }
         } finally {
           this.loading = false
         }

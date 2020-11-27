@@ -122,7 +122,7 @@
           </v-btn-toggle>
           <v-btn-toggle class="ml-1">
             <v-btn
-
+              v-if="false"
               color="secondary"
               style="border-radius: 0 !important"
               @click="setImage($event)"
@@ -266,7 +266,7 @@
             </v-btn-toggle>
             <v-btn-toggle class="ml-1">
               <v-btn
-
+                v-if="false"
                 color="secondary"
                 style="border-radius: 0 !important"
                 @click="setImage($event)"

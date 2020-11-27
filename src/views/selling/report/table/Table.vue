@@ -8,13 +8,17 @@
         <v-data-table
           :headers="headers"
           :items="tableData"
-          :options="tableOptions"
+          :options.sync="tableOptions"
           :single-expand="true"
           :expanded.sync="expanded"
           item-key="id"
           show-expand
           class="plus-table"
           hide-default-footer
+          multi-sort
+          :server-items-length="totalCount"
+          @update:sort-by="fetchData()"
+          @update:sort-desc="fetchData()"
         >
           <template v-slot:expanded-item="{ Headers, item }">
             <td :colspan="headers.length">
@@ -32,7 +36,7 @@
             </v-icon>
           </template>
 
-          <template v-slot:item.date="{ item }">
+          <template v-slot:item.created_at="{ item }">
             <div class="body-s-medium">
               {{ getDate(item.created_at) }}
             </div>
@@ -46,50 +50,49 @@
           <template v-slot:item.client="{ item }">
             <div style="display: flex;">
               <img
-                class="cell-avatar"
-                style="position: relative; top: -5px;"
                 v-if="item.account && item.account.user"
+                class="cell-avatar"
+                style="position: relative; top: -5px; cursor: pointer;"
                 :src="item.account.user.avatar"
+                @click.stop="userSidePanel(item.account)"
               >
               <div>
                 <div
+                  v-if="item && item.account && item.account.user"
                   class="body-s-medium"
                   style="cursor: pointer;"
                   @click.stop="userSidePanel(item.account)"
-                  v-if="item && item.account && item.account.user"
                 >
-                  {{ item.account.user.name }} {{ item.account.user.lastname }}
+                  {{ getFIO(item.account.user) }}
                 </div>
                 <div
-                  class="body-s-medium"
                   v-else
+                  class="body-s-medium"
                 >
-                  -
+                  Анонимная продажа
                 </div>
                 <div
-                  class="cell-hint"
                   v-if="item && item.account && item.account.user"
+                  class="cell-hint"
                 >
                   {{ getLastActivity(item.account.user.last_activity) }}
                 </div>
                 <div
-                    class="cell-hint"
-                    v-else
-                >
-                  -
-                </div>
+                  v-else
+                  class="cell-hint"
+                />
               </div>
             </div>
           </template>
 
           <template v-slot:item.contacts="{ item }">
             <div class="body-s-medium">
-              {{ item.account && item.account.user.phone ? item.account.user.phone : '-'}}
+              {{ item.account && item.account.user.phone ? item.account.user.phone : '-' }}
             </div>
             <div
-                class="cell-hint"
+              class="cell-hint"
             >
-              {{ item.account && item.account.user && item.account.user.email ? item.account.user.email : '-' }}
+              {{ item.account && item.account.user && item.account.user.email ? item.account.user.email : '' }}
             </div>
           </template>
 
@@ -108,7 +111,7 @@
             </div>
           </template>
 
-          <template v-slot:item.check="{ item }">
+          <template v-slot:item.value="{ item }">
             <div style="display: flex; align-items: center">
               <div class="body-s-medium">
                 {{ formatNumberString(item.value / 100) }} &#8381
@@ -116,14 +119,23 @@
             </div>
           </template>
           <template v-slot:item.bonuses="{ item }">
-            <div  style="display: flex; align-items: center">
-              <div v-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value > 0" class="body-s-semibold cell-text-success">
+            <div style="display: flex; align-items: center">
+              <div
+                v-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value > 0"
+                class="body-s-semibold cell-text-success"
+              >
                 {{ '+'+formatNumberString(bonusValue(item.tran_group.abst_view)) }}
               </div>
-              <div v-else-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value < 0" class="body-s-semibold cell-text-error">
+              <div
+                v-else-if="item.tran_group && item.tran_group.abst_view && item.tran_group.abst_view[0].value < 0"
+                class="body-s-semibold cell-text-error"
+              >
                 {{ formatNumberString(bonusValue(item.tran_group.abst_view)) }}
               </div>
-              <div v-else class="body-s-semibold">
+              <div
+                v-else
+                class="body-s-semibold"
+              >
                 -
               </div>
             </div>
@@ -169,16 +181,17 @@
     </v-row>
 
     <side-panel-edit-client
-        v-if="sidePanelStatus.active"
-        v-model="sidePanelStatus.active"
-        :mode="sidePanelStatus.mode"
-        :table-data="sidePanelStatus.data"
+      v-if="sidePanelStatus.active"
+      v-model="sidePanelStatus.active"
+      :mode="sidePanelStatus.mode"
+      :table-data="sidePanelStatus.data"
     />
-
   </div>
 </template>
 
 <script>
+  import DataTable from '@/mixins/dataTable'
+  import User from '@/mixins/user.js'
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
@@ -189,7 +202,7 @@
       SelectPageLimit,
       SidePanelEditClient,
     },
-    mixins: [FormatNumber, Routing],
+    mixins: [DataTable, FormatNumber, Routing, User],
     data () {
       return {
         loadingList: false,
@@ -215,27 +228,31 @@
           {
             text: 'Дата',
             align: 'start',
-            value: 'date',
+            value: 'created_at',
           },
           {
             text: 'Клиент',
             value: 'client',
+            sortable: false,
           },
           {
             text: 'Контакты',
             value: 'contacts',
+            sortable: false,
           },
           {
             text: 'Оператор',
             value: 'operator',
+            sortable: false,
           },
           {
             text: 'Чек',
-            value: 'check',
+            value: 'value',
           },
           {
             text: 'Бонусы',
             value: 'bonuses',
+            sortable: false,
           },
           {
             text: '',
@@ -348,8 +365,9 @@
           start_period: this.period.start,
           end_period: this.period.end,
           filter: this.filter,
-          offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
+          offset: this.getOffset(this.tableOptions.page, this.tableOptions.itemsPerPage),
           limit: this.tableOptions.itemsPerPage,
+          sortable: this.getSortable(this.tableOptions.sortBy, this.tableOptions.sortDesc),
         }
         // console.log('table/list')
         // console.log(list)

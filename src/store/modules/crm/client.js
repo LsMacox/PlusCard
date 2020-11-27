@@ -1,4 +1,5 @@
 import ApiService from '@/api/api-client'
+import Vue from 'vue'
 
 const getDefaultState = () => {
     return {
@@ -14,6 +15,7 @@ const getDefaultState = () => {
             itemsPerPage: 25,
         },
         total: 0,
+        importResult: [],
     }
 }
 
@@ -27,15 +29,14 @@ const mutations = {
     SET_ACCOUNTS_FOR_FILTER: (state, payload) => state.accountsForFilter = payload,
     SET_LIST: (state, payload) => state.list = payload,
     SET_TOTAL: (state, payload) => state.total = payload,
+    SET_IMPORT_RESULT: (state, payload) => state.importResult = payload,
     ADD (state, payload) {
         const items = state.clients
         items.push(payload)
     },
     UPDATE (state, payload) {
-        const items = state.clients
-        items.forEach((item, index) => {
-            if (item.id === payload.id) Object.assign(items[index], payload)
-        })
+        const index = state.clients.findIndex(item => item.id === payload.id)
+        if (index >= 0) Vue.set(state.clients, index, Object.assign(state.clients[index], payload))
     },
     REMOVE (state, payload) {
         const items = state.clients
@@ -63,6 +64,24 @@ const actions = {
                 type: 'success',
                 title: 'Клиенты',
                 text: 'Клиент успешно создан',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async createList ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.post('/api-cabinet/crm/account/import', item)
+            console.log('/api-cabinet/crm/account/import')
+            console.log(result)
+            commit('SET_IMPORT_RESULT', result)
+
+            this._vm.$notify({
+                type: 'success',
+                title: 'Клиенты',
+                text: 'Клиенты успешно добавлены',
             })
         } catch (error) {
             throw error
@@ -125,6 +144,7 @@ const getters = {
     accountsForFilter: state => state.accountsForFilter,
     list: state => state.list,
     total: state => state.total,
+    importResult: state => state.importResult,
 }
 
 export default {

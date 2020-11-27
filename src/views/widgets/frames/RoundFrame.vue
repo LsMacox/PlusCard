@@ -11,6 +11,13 @@
         class="icon-question"
         icon="question-circle-outlined"
         height="16"
+        style="cursor: pointer;"
+        @click="dialogHelp = true"
+      />
+      <dialog-help
+        :dialog.sync="dialogHelp"
+        :header="title"
+        :text="textHelp"
       />
     </template>
 
@@ -41,10 +48,15 @@
   import CircularProgress from '@/views/widgets/components/CircularProgress'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
+  import DialogHelp from '@/views/widgets/frames/DialogHelp'
 
   export default {
     name: 'RoundFrame',
-    components: { WidgetTemplate, CircularProgress },
+    components: {
+      WidgetTemplate,
+      CircularProgress,
+      DialogHelp,
+    },
     mixins: [WidgetFunctions],
     inheritAttrs: false,
     props: {
@@ -64,9 +76,15 @@
         type: Number,
         default: 0,
       },
+      textHelp: {
+        type: String,
+        default: null,
+      },
     },
     data () {
-      return {}
+      return {
+        dialogHelp: false,
+      }
     },
     computed: {
       widgetClasses () {

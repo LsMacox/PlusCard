@@ -24,6 +24,27 @@
         class="auth-form"
       >
         <v-text-field
+          v-model="form.company_name"
+          placeholder="Введите название компании"
+          class="auth-text-field"
+          outlined
+          required
+          :rules="[
+            v => !!v || 'Назваание компании обязательно',
+            v => String(v).length <= 100 || 'Название компании не должно быть более 100 символов',
+          ]"
+          :validate-on-blur="false"
+        >
+          <template slot="prepend-inner">
+            <span
+              class="iconify"
+              data-icon="bx-bx-building-house"
+              data-inline="false"
+            />
+          </template>
+        </v-text-field>
+
+        <v-text-field
           v-model="form.email"
           placeholder="Введите еmail"
           class="auth-text-field"
@@ -196,6 +217,7 @@
     data () {
       return {
         form: {
+          company_name: null,
           email: null,
           phone: null,
           password: null,
@@ -258,6 +280,7 @@
       },
       async registration (recaptchaToken) {
         const user = {
+          company_name: this.form.company_name,
           email: this.form.email,
           phone: this.clearPhoneMask(this.form.phone),
           password: this.form.password,

@@ -2,10 +2,33 @@ import ApiService from '@/api/api-client'
 import VueSession from '@/utils/session'
 
 const state = {
-
+    balanceOperations: [],
+    tariffs: [],
+    orders: [],
 }
 
 const mutations = {
+    BALANCE_OPERATIONS (state, data) {
+        state.balanceOperations = data
+      },
+      SET_ORDERS (state, data) {
+        state.orders = data
+      },
+      SET_TARIFFS (state, data) {
+        state.tariffs = data
+      },
+      ADD_ORDER (state, payload) {
+        state.orders.push(payload)
+      },
+      REMOVE_ORDER (state, orderId) {
+        var index = state.orders.findIndex(x => x.id === orderId)
+        if (index >= 0) {
+          state.orders.splice(index, 1)
+        }
+      },
+      UPDATE_MERCHANT_TARIFF (state, payload) {
+        state.merchant = Object.assign(state.merchant, payload)
+    },
 
 }
 
@@ -42,9 +65,84 @@ const actions = {
             throw error
         }
     },
+
+    async GetBalanceOperations ({ commit, rootGetters }) {
+        console.log('GetBalanceOperations', rootGetters.merchantId)
+        const result = await ApiService.get(`/api/merchant/balance/operations?merchant_id=${rootGetters.merchantId}`)
+        commit('BALANCE_OPERATIONS', result)
+        return result
+      },
+
+      async GetOrders ({ rootGetters, commit }) {
+        const result = await ApiService.get(`/api/merchant/order/list?merchant_id=${rootGetters.merchantId}`)
+        commit('SET_ORDERS', result)
+        return result
+      },
+
+      async GetOrderPdf ({ rootGetters, commit }, order) {
+        await ApiService.downloadFile('/api/merchant/order/pdf', {
+          order_id: order.id,
+        }, `Счет №${order.number}.pdf`)
+      },
+
+      async CreateOrder ({ state, rootState, commit }, { value, method }) {
+        const result = await ApiService.post('/api/merchant/order/create', {
+          merchant_id: state.merchant.id,
+          method: method,
+          value: value,
+        })
+        commit('ADD_ORDER', result)
+        return result
+      },
+
+      async DeleteOrder ({ state, rootState, commit }, orderId) {
+        await ApiService.delete(`/api/merchant/order/delete?order_id=${orderId}`)
+        commit('REMOVE_ORDER', orderId)
+      },
+
+      async GetAvaibleTariffs ({ state, commit }) {
+        const result = await ApiService.get('/api/tariff/list')
+        commit('SET_TARIFFS', result)
+        return result
+      },
+
+      async ChangeTariff ({ state, commit }, { merchant_id, tariff_id }) {
+        const result = await ApiService.post('/api/merchant/tariff/change', {
+          merchant_id: merchant_id,
+          tariff_id: tariff_id,
+        })
+        commit('update_merchant_tariff', result)
+        return result
+      },
+
+      async ChangeAutoRenewTariff ({ state, commit }, { merchant_id, auto_renew }) {
+        const result = await ApiService.post('/api/merchant/tariff/autorenew', {
+          merchant_id: merchant_id,
+          auto_renew: auto_renew,
+        })
+        commit('update_merchant_tariff', result)
+        return result
+      },
+
+      async RenewTariff ({ state, commit }, { merchant_id }) {
+        const result = await ApiService.post('/api/merchant/tariff/renew', {
+          merchant_id: merchant_id,
+        })
+        commit('update_merchant_tariff', result)
+        return result
+      },
 }
 
 const getters = {
+    balanceOperations (state) {
+        return state.balanceOperations
+      },
+      orders (state) {
+        return state.orders
+      },
+      tariffs (state) {
+        return state.tariffs
+      },
 
 }
 

@@ -15,7 +15,7 @@ import Vue from 'vue'
 import AppComponent from './App.vue'
 import router from './router'
 import store from './store'
-import './plugins/base'
+import './plugins/require-components'
 // import './plugins/vee-validate'
 import vuetify from './plugins/vuetify'
 import './plugins/iconify'
@@ -46,7 +46,7 @@ import VueTelInput from 'vue-tel-input'
 import VueClipboard from 'vue-clipboard2'
 import YmapPlugin from 'vue-yandex-maps'
 import VueSimpleSVG from 'vue-simple-svg'
-import VueExtend from './plugins/vue-extend' 
+import VueExtend from './plugins/vue-extend'
 
 Vue.use(VueTelInput)
 Vue.use(Notifications)
@@ -84,12 +84,11 @@ Object.keys(filters).forEach(key => {
 })
 
 // Directives
-Vue.directive('click-outside', VueClickOutsideDirective)
+Vue.directive('base-click-outside', VueClickOutsideDirective)
 
 Object.copy = (obj) => {
   return JSON.parse(JSON.stringify(obj))
-}
-
+} 
 
 Vue.prototype.$IsDebugMode = function () {
   return IsDebugQuery(this.$route)

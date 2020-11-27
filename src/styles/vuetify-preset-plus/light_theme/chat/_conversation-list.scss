@@ -1,0 +1,243 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.app--chat--list {
+  min-width: 362px;
+  #app--conversation--list--container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border-right: 1px solid $neutral-250;
+    height: 100%;
+
+    .app--conversation--list--header {
+      padding: 18px 20px 8px 20px;
+
+      .field-search {
+        border-radius: 10px !important;
+        .v-input__append-inner {
+          width: 25px!important;
+          padding: 0!important;
+          margin: 10px 0 0 0!important;
+        }
+
+        .v-input__append-inner:last-child {
+          width: 0!important;
+        }
+
+        .v-input__prepend-inner {
+          padding-right: 8px;
+        }
+
+        input {
+          @include body-m-medium;
+          color: $neutral-900;
+          margin-top: 2px;
+
+          &::placeholder {
+            @include body-m-medium;
+            color: $neutral-600;
+          }
+        }
+
+        .v-input__icon--clear {
+          & [role="img"] {
+            color: $neutral-500;
+          }
+        }
+      }
+
+      .btn-add-chat {
+        width: 31px;
+        height: 31px;
+        padding: 0 !important;
+        background: $primary-base !important;
+      }
+
+      .app--conversation--list--buttons {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .app--conversation--list--button--wrapper {
+          position: relative;
+
+          .app--conversation--list--button--badge {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #e74c3c;
+            width: 24px;
+            padding: 1.2px 5px;
+            border-radius: 9px;
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 15px;
+            color: #ffffff;
+            text-align: center;
+            font-family: "SFPro-Regular";
+          }
+
+          .app--conversation--list--button {
+            background: #a4b1c1;
+            border-radius: 10px;
+            font-family: "SF Pro Text", sans-serif;
+            font-size: 15px;
+            line-height: 18px;
+            text-align: center;
+            color: #fff;
+            outline: none;
+            font-weight: 600;
+            width: 150px;
+            width: 150px;
+            height: 42px;
+          }
+
+          .app--conversation--list--button--active {
+            background: #4583ac;
+          }
+
+          .app--conversation--list--button--clients {
+            width: 150px;
+            height: 42px;
+          }
+
+          .app--conversation--list--button--workers {
+            width: 150px;
+            height: 42px;
+          }
+        }
+      }
+
+      .app--conversation--list--search--wrapper {
+        position: relative;
+
+        .app--conversation--list--search {
+          background: #ffffff;
+          opacity: 0.3;
+          box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.4);
+          border-radius: 10px;
+
+          .app--conversation--list--search--input {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-width: 260px;
+            min-height: 13px;
+            outline: none;
+            padding: 10px 34px;
+            color: #686868;
+          }
+
+          .app--conversation--list--search--icon {
+            position: absolute;
+            left: 9px;
+            top: 10px;
+          }
+        }
+      }
+    }
+
+    .app--conversation--content {
+      display: flex;
+      position: relative;
+      flex-grow: 1;
+      width: 100%;
+      height: 100%;
+      overflow-y: scroll;
+      overflow-x: hidden;
+
+      &::-webkit-scrollbar {
+        width: 0;
+      }
+
+      .app--conversation--list {
+        width: 100%;
+        position: absolute;
+      }
+    }
+
+    .app--conversation--setting {
+      position: absolute;
+      bottom: 20px;
+      margin-left: 25%;
+      margin-right: 50%;
+
+      p {
+        margin-bottom: 0;
+      }
+
+      .btn-setting {
+        border-radius: 10px !important;
+      }
+
+      .icon-setting {
+        margin-right: 8px;
+        color: $primary-base;
+      }
+    }
+  }
+
+  .list-item {
+    display: flex;
+    cursor: pointer;
+    height: 80px;
+    border-bottom: 1px solid $neutral-250;
+  }
+
+  .list-item-active {
+    background-color: $primary-base;
+
+    .app--conversation--list--card {
+      .app--conversation--list--card--content--wrapper {
+        .app--conversation--list--card--content {
+          .app--conversation--list--card--top--line {
+            .app--conversation--list--card-name {
+              color: $primary-100;
+            }
+          }
+
+          .app--conversation--list--card--bottom--line {
+            color: $neutral-100;
+          }
+        }
+
+        .app--conversation--list--card--info {
+          .app--conversation--list--card--date {
+            color: $neutral-100;
+          }
+        }
+
+        .app--conversation--list--card--unread {
+          background: $neutral-100;
+
+          p {
+            color: $primary-base !important;
+          }
+        }
+      }
+    }
+  }
+
+  .list-empty {
+    padding: 20px;
+    text-align: center;
+    @include body-m-medium;
+  }
+
+  .app--conversation--list::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f5f5f5;
+  }
+
+  .app--conversation--list::-webkit-scrollbar {
+    width: 5px;
+    background-color: #f5f5f5;
+  }
+
+  .app--conversation--list::-webkit-scrollbar-thumb {
+    background-color: #00d3ef;
+    border: 2px solid #00d3ef;
+  }
+}

@@ -49,9 +49,27 @@ const CERT_PAYMENT_TYPE_ENUM = Object.freeze({
     PLUS_OTHER: { id: 'PLUS_OTHER', text: 'Другой способ' },
 })
 
+const BALANCE_OPERATION_TYPE_ENUM = Object.freeze({
+    default: { id: '', text: '-', color: 'error-500', icon: null },
+    debit: { id: 'debit', text: 'Списание за услуги', color: 'error-500', icon: '$icons_status-error'  },
+    credit: { id: 'credit', text: 'Пополнение баланса', color: 'success-500', icon: '$icons_status-success' },
+    find (id) { return this[id] || this.default },
+})
+
+const MERCHANT_ORDER_STATUS_ENUM = Object.freeze({
+    default: { id: '', text: '-', color: 'error-500', icon: null },
+    pending: { id: 'pending', text: 'Не оплачен', color: 'error-500', icon: '$icons_status-error' },
+    waiting: { id: 'waiting', text: 'В ожидании', color: 'warning-500', icon: '$icons_status-wait' },
+    succeded: { id: 'succeded', text: 'Оплачен', color: 'success-500', icon: '$icons_status-success' },
+    canceled: { id: 'canceled', text: 'Отменен', color: 'neutral-500', icon: '$icons_status-cancel' },
+    find (id) { return this[id] || this.default },
+})
+
 export {
     EVENTS_ENUM,
     RESOURCE_TYPE_ENUM,
     MODERATION_STATUS_ENUM,
     CERT_PAYMENT_TYPE_ENUM,
+    BALANCE_OPERATION_TYPE_ENUM,
+    MERCHANT_ORDER_STATUS_ENUM,
 }

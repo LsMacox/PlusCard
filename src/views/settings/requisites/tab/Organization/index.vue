@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="margin-top: 68px">
     <div class="block-title">
       <h2 class="title-h2">
         Данные организации

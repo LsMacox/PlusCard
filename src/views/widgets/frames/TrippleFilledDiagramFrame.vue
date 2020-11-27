@@ -11,6 +11,13 @@
         class="icon-question"
         icon="question-circle-outlined"
         height="16"
+        style="cursor: pointer;"
+        @click="dialogHelp = true"
+      />
+      <dialog-help
+        :dialog.sync="dialogHelp"
+        :header="title"
+        :text="textHelp"
       />
     </template>
 
@@ -67,10 +74,15 @@
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
   import MultiFilledGraph from '@/views/widgets/components/graphs/MultiFilledGraph'
   import FormatNumber from '@/mixins/formatNumber'
+  import DialogHelp from '@/views/widgets/frames/DialogHelp'
 
   export default {
     name: 'TrippleFilledDiagramFrame',
-    components: { MultiFilledGraph, WidgetTemplate },
+    components: {
+      MultiFilledGraph,
+      WidgetTemplate,
+      DialogHelp,
+    },
     mixins: [WidgetFunctions, FormatNumber],
     inheritAttrs: false,
     props: {
@@ -118,9 +130,15 @@
           return [0, 0, 0]
         },
       },
+      textHelp: {
+        type: String,
+        default: null,
+      },
     },
     data () {
-      return {}
+      return {
+        dialogHelp: false,
+      }
     },
     computed: {
       widgetClasses () {

@@ -30,11 +30,9 @@
 
 <script>
   export default {
-    props: {
-    },
+    props: {},
     computed: {},
-    mounted () {
-    },
+    mounted () {},
   }
 </script>
 

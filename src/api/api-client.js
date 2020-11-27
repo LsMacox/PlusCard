@@ -1,7 +1,7 @@
 import axios from 'axios'
 // import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import {app} from '@/config'
+import { app } from '@/config'
 
 // const NEW_LINE = '&#13'
 const NEW_LINE = '<br/>'
@@ -28,7 +28,7 @@ const service = axios.create({
   // timeout: 5000, // request timeout
   headers: {
     Build: app.build,
-  }
+  },
 })
 
 // request interceptor
@@ -117,7 +117,26 @@ service.interceptors.response.use(
 )
 
 service.downloadFile = function (route, params, fileName = '') {
-    return this.get(route, { params }, {
+    return this.get(route, {
+      params,
+      responseType: 'blob', // important
+     }).then((response) => {
+        // const serverFileName = response.headers['x-suggested-filename']
+        // const url = window.URL.createObjectURL(new Blob([response.data]))
+        // console.log('downloadFile.response', response)
+        const url = window.URL.createObjectURL(new Blob([response]))
+        const link = document.createElement('a')
+        link.href = url
+        // link.setAttribute('download', fileName || serverFileName)
+        link.setAttribute('download', fileName)
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+    })
+}
+
+service.downloadFilePost = function (route, params, fileName = '') {
+    return this.post(route, params, {
         responseType: 'blob', // important
     }).then((response) => {
         // const serverFileName = response.headers['x-suggested-filename']

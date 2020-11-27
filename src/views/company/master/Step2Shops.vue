@@ -25,7 +25,7 @@
           @click="setMarker($event)"
         >
           <ymap-marker
-            v-for="(item, idx) in filtered_shops"
+            v-for="(item) in filtered_shops.filter(shop => !editedShop || shop.id !== editedShop.id)"
             :key="item.id"
             :marker-id="item.id"
             :coords="[item.lat, item.lng]"
@@ -47,8 +47,8 @@
             }"
           />
           <ymap-marker
-            v-if="shopIndex === -1"
-            :marker-id="editedShop.id"
+            v-if="!!editedShop && editedShop.id && shopIndex !== -2"
+            :marker-id="'$'+editedShop.id"
             :coords="editedShop.coords"
             :icon="{
               layout: 'default#imageWithContent',
@@ -115,6 +115,7 @@
             :item="item"
             :index="i"
             @save="confirmSaveShop"
+            @delete="deleteShop"
           />
         </div>
 
@@ -198,7 +199,7 @@
     data () {
       return {
         zoom: mapConfig.zoom,
-        coords: mapConfig.center,
+        // coords: mapConfig.center,
         valid: true,
         loading: false,
         openCreateForm: false,
@@ -285,6 +286,14 @@
           return this.programShops
         }
       },
+      coords: {
+        get () {
+          return this.$store.getters['company/program/mapCenter'] || mapConfig.center
+        },
+        set (v) {
+          this.$store.commit('company/program/SET_MAP_CENTER', v)
+        },
+      },
       shopIndex: {
         get () {
           return this.$store.getters['company/program/shopIndex']
@@ -321,6 +330,7 @@
     },
     watch: {
       shopIndex (v) {
+        console.log('shopIndex', v)
         if (v >= 0) {
           const shop = this.filtered_shops.find((item, i) => i === v)
           if (shop) {
@@ -393,6 +403,12 @@
 
         return wtNew
       },
+      deleteShop (shop) {
+        const index = this.program.shops.findIndex(x => x.id === shop.id)
+        if (index >= 0) {
+          this.program.shops.splice(index, 1)
+        }
+      },
       confirmSaveShop (shop) {
         const index = this.program.shops.findIndex(x => x.id === shop.id)
         console.log('confirmSaveShop', shop, index)
@@ -444,14 +460,14 @@
             this.editedShop.coords = this.coords
 
             // обновление координат при редактировании магазина
-            if (this.shopIndex >= 0) {
-              this.filtered_shops.forEach((item, i) => {
-                if (i === this.shopIndex) {
-                  item.lat = this.coords[0]
-                  item.lng = this.coords[1]
-                }
-              })
-            }
+            // if (this.shopIndex >= 0) {
+            //   this.filtered_shops.forEach((item, i) => {
+            //     if (i === this.shopIndex) {
+            //       item.lat = this.coords[0]
+            //       item.lng = this.coords[1]
+            //     }
+            //   })
+            // }
           }
         }
       },

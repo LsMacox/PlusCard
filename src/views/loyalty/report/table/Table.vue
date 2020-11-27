@@ -8,13 +8,17 @@
         <v-data-table
           :headers="headers"
           :items="tableData"
-          :options="tableOptions"
+          :options.sync="tableOptions"
           :single-expand="true"
           :expanded.sync="expanded"
           item-key="uuid"
-          show-expand
+          :show-expand="false"
           class="plus-table"
           hide-default-footer
+          multi-sort
+          :server-items-length="totalCount"
+          @update:sort-by="fetchData()"
+          @update:sort-desc="fetchData()"
         >
           <template v-slot:expanded-item="{ headers, item }">
             <td :colspan="headers.length">
@@ -32,7 +36,7 @@
             </v-icon>
           </template>
 
-          <template v-slot:item.operation="{ item }">
+          <template v-slot:item.title="{ item }">
             <div class="cell-text">
               {{ item.title }}
             </div>
@@ -43,7 +47,7 @@
             </div>
           </template>
 
-          <template v-slot:item.date="{ item }">
+          <template v-slot:item.created_at="{ item }">
             <div class="cell-text">
               {{ getDate(item.created_at) }}
             </div>
@@ -60,6 +64,7 @@
                 class="table-cell_avatar"
                 style="position: relative; top: -5px;"
                 :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`"
+                @click.stop="userSidePanel(item)"
               >
               <div>
                 <div
@@ -67,7 +72,7 @@
                   style="cursor: pointer;"
                   @click.stop="userSidePanel(item)"
                 >
-                  {{ item.client }}
+                  {{ getFIO({id: item.client_id, name: item.client}) }}
                 </div>
                 <div
                   class="cell-hint"
@@ -84,7 +89,7 @@
             </div>
           </template>
 
-          <template v-slot:item.amount="{ item }">
+          <template v-slot:item.value="{ item }">
             <div
               class="cell-text-bold"
               style="text-align: right;"
@@ -119,7 +124,8 @@
           <div
             style="margin-right: 20px;"
           >
-            Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }} {{ getWord(pagesCount, wordPages) }}
+            Всего {{ totalCount }} {{ getWord(totalCount, wordOperations) }} на {{ pagesCount }}
+            {{ getWord(pagesCount, wordPages) }}
           </div>
 
           <select-page-limit
@@ -147,10 +153,10 @@
     </v-row>
 
     <side-panel-edit-client
-        v-if="sidePanelStatus.active"
-        v-model="sidePanelStatus.active"
-        :mode="sidePanelStatus.mode"
-        :table-data="sidePanelStatus.data"
+      v-if="sidePanelStatus.active"
+      v-model="sidePanelStatus.active"
+      :mode="sidePanelStatus.mode"
+      :table-data="sidePanelStatus.data"
     />
   </div>
 </template>
@@ -159,6 +165,8 @@
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
+  import DataTable from '@/mixins/dataTable'
+  import User from '@/mixins/user'
   import SidePanelEditClient from '@/views/crm/client/components/SidePanelEditClient.vue'
   import ApiService from '@/api/api-client'
 
@@ -167,7 +175,7 @@
       SelectPageLimit,
       SidePanelEditClient,
     },
-    mixins: [FormatNumber, Routing],
+    mixins: [FormatNumber, Routing, DataTable, User],
     data () {
       return {
         loadingList: false,
@@ -193,11 +201,11 @@
           {
             text: 'Операция',
             align: 'start',
-            value: 'operation',
+            value: 'title',
           },
           {
             text: 'Дата',
-            value: 'date',
+            value: 'created_at',
           },
           {
             text: 'Клиент',
@@ -209,13 +217,13 @@
           },
           {
             text: 'Сумма',
-            value: 'amount',
+            value: 'value',
           },
           {
             text: 'Оператор',
             value: 'operator',
           },
-          { text: '', value: 'data-table-expand' },
+        // { text: '', value: 'data-table-expand' },
         ],
         wordPages: ['странице', 'страницах', 'страницах'],
         wordOperations: ['операция', 'операции', 'операций'],
@@ -327,8 +335,9 @@
           start_period: this.period.start,
           end_period: this.period.end,
           filter: this.filter,
-          offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
+          offset: this.getOffset(this.tableOptions.page, this.tableOptions.itemsPerPage),
           limit: this.tableOptions.itemsPerPage,
+          sortable: this.getSortable(this.tableOptions.sortBy, this.tableOptions.sortDesc),
         }
         // console.log('table/list')
         // console.log(list)
@@ -375,6 +384,7 @@
   width: 25px;
   height: 25px;
   border-radius: 25px;
+  cursor: pointer;
 }
 
 .table-pagination-block {

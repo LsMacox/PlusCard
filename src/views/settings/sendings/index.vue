@@ -31,10 +31,11 @@
                   v-model="valid"
                 >
                   <BaseMasterFieldBlock title="Пригласительное СМС-сообщение">
-                    <span slot="description">
-                      Текст СМС-приглашения клиента c ссылкой на приложение {link}, например 'Ваша ссылка на Plus {link}'
-                      <br> Шаблон {link} может использоваться в тексте приглашения только один раз
-                    </span>
+                    <span
+                      slot="description"
+                      v-html="'Текст СМС-приглашения клиента c ссылкой на приложение {{link}}, например Ваша ссылка на Plus {{link}}<br>' +
+                        'Шаблон {{link}} может использоваться в тексте приглашения только один раз'"
+                    />
                     <template v-slot:input>
                       <v-textarea
                         v-model="programModelInternal.sms_text"
@@ -44,10 +45,27 @@
                         auto-grow
                         placeholder="Пригласительное СМС-сообщение"
                         outlined
-                        maxlength="70"
+                        counter
+                        maxlength="138"
                       />
                     </template>
                   </BaseMasterFieldBlock>
+                  <div class="action">
+                    <v-btn
+                      color="secondary"
+                      :loading="loading"
+                      :disabled="!valid || lockPeriod"
+                      @click="sendTestSms()"
+                    >
+                      Получить тестовую СМС
+                    </v-btn>
+                    <div
+                      v-if="lockPeriod"
+                      class="action-timer"
+                    >
+                      Следующая отправка возможна через {{ timerStr }}
+                    </div>
+                  </div>
                 </v-form>
               </v-row>
             </v-skeleton-loader>
@@ -64,6 +82,7 @@
   export default {
     data () {
       return {
+        loading: false,
         saveAction: false,
         valid: false,
         ProgramReadAction: false,
@@ -72,10 +91,13 @@
         },
         smsTextRules: [
           v => !!v || 'Введите пригласительное сообщение',
-          v => v.length <= 70 || 'Длина смс не превышает 70 символов',
-          v => this.getCountTemplate(v) > 0 || 'Ссылка {link} отсутствует в сообщении',
-          v => this.getCountTemplate(v) === 1 || 'Ссылка {link} используется более одного раза',
+          v => v.length <= 138 || 'Длина смс сообщения не должна превышать 138 символов',
+          v => this.getCountTemplate(v) > 0 || 'Ссылка {{link}} отсутствует в сообщении',
+          v => this.getCountTemplate(v) === 1 || 'Ссылка {{link}} используется более одного раза',
         ],
+        lockPeriod: false,
+        timerStr: '00:00',
+        timerId: null,
       }
     },
     computed: {
@@ -84,20 +106,21 @@
         programModel: 'company/program/programModel',
       }),
       hasChanges () { return JSON.stringify(this.getEditFields(this.programModel)) !== JSON.stringify(this.getEditFields(this.programModelInternal)) },
-
     },
     watch: {
       programId (v) {
         !!v && this.init()
       },
     },
-    created () {
-      this.init()
+    async created () {
+      await this.init()
+      this.setTimer(this.programModel.sms_test_send_at)
     },
     methods: {
       ...mapActions({
         ProgramRead: 'company/program/read',
         updateCRM: 'company/program/updateCRM',
+        updateCRMSmsTest: 'company/program/updateCRMSmsTest',
       }),
       getEditFields (model) {
         return {
@@ -106,12 +129,27 @@
       },
       getCountTemplate (smsText) {
         let count = 0
-        let pos = smsText.indexOf('{link}')
+        let pos = smsText.indexOf('{{link}}')
         while (pos !== -1) {
           count++
-          pos = smsText.indexOf('{link}', pos + 1)
+          pos = smsText.indexOf('{{link}}', pos + 1)
         }
         return count
+      },
+      setTimer (sendAt) {
+        //
+        this.timerId = setInterval((sendAt) => {
+          sendAt = this.$moment.utc(sendAt).local()
+          const diff = this.$moment().diff(sendAt)
+          if (diff >= 300000) {
+            clearInterval(this.timerId)
+            this.lockPeriod = false
+            this.timerStr = '00:00'
+          } else {
+            this.timerStr = this.$moment.unix((300000 - diff) / 1000).format('mm:ss')
+            this.lockPeriod = true
+          }
+        }, 1000, sendAt)
       },
       async init () {
         try {
@@ -122,6 +160,21 @@
           console.error(e)
         } finally {
           this.ProgramReadAction = false
+        }
+      },
+      async sendTestSms () {
+        try {
+          this.loading = true
+          const res = await this.updateCRMSmsTest({ id: this.programId, smsText: this.programModelInternal.sms_text })
+          this.$store.commit('company/program/SET_PROGRAM_MODEL', res)
+          this.setTimer(res.sms_test_send_at)
+          this.$notify({
+            title: 'Настройка рассылки компании',
+            text: 'Отправлено тестовое СМС сообщение',
+            type: 'success',
+          })
+        } finally {
+          this.loading = false
         }
       },
       async cancelEdit () {
@@ -161,4 +214,12 @@
 </script>
 
 <style lang="scss" scoped>
+  .action {
+    display: flex;
+    align-items: center;
+
+    .action-timer {
+      margin-left: 25px;
+    }
+  }
 </style>

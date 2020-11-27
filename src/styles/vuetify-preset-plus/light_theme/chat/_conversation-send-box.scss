@@ -1,0 +1,363 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.app-conversation-send-box {
+  .app--conversation--drop--wrap {
+    background: #fff;
+    display: none;
+    padding: 17px 10px 0;
+    border: 1px dashed #999;
+    overflow: hidden;
+    text-align: center;
+    line-height: calc(100vh - 184px);
+    color: #999;
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+  }
+
+  .app--conversation--sendForm {
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+    position: relative;
+
+    .app--conversation--sendField {
+      display: flex;
+      width: 100%;
+
+      #messageWrapper {
+        width: 100%;
+      }
+
+      .app-conversation--sendForm__message__record {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        height: 62px;
+        border-top: 1px solid $neutral-400;
+        .record-time {
+          position: relative;
+          margin-left: 43px;
+          &:before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: $error;
+            border-radius: 50%;
+            top: 2px;
+            left: -25px;
+          }
+          p {
+            margin-bottom: 0;
+          }
+        }
+        .left-block {
+          display: flex;
+          align-items: center;
+          margin-right: -29px;
+          margin-top: 1px;
+          .record-cancel {
+            width: 31px;
+            height: 31px;
+            min-width: 31px;
+            border-radius: 100%;
+            padding: 0!important;
+            margin-right: 32px;
+            margin-top: 0;
+            .icon-close {
+              color: $primary-base;
+            }
+          }
+          .record-stop {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 117px;
+            height: 117px;
+            border-radius: 100% ;
+            .stop-overlay {
+              position: absolute;
+              width: 130px;
+              height: 130px;
+              background: rgba(234, 76, 42, 0.15);
+              border-radius: 100%;
+            }
+          }
+        }
+      }
+
+      .app-conversation--sendForm__message__record-stop {
+        width: 100%;
+        height: 62px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid $neutral-400;
+        .icon {
+          cursor: pointer;
+        }
+        .right-block {
+          display: flex;
+          .icon-play {
+            color: $primary-base;
+            margin-right: 30px;
+            margin-left: 36px;
+          }
+          .strips {
+            display: flex;
+            align-items: center;
+            .strip {
+              background: $neutral-400;
+              width: 2px;
+              min-height: 4px;
+              margin-right: 2px;
+              border-radius: 50px;
+              transition: 0.1s ease-in-out;
+              &.active {
+                background: $primary-base;
+              }
+            }
+          }
+          .durations {
+            margin-left: 16px;
+            p {
+              margin-bottom: 0;
+            }
+          }
+        }
+        .left-block {
+          margin-top: 8px;
+          margin-right: 20px;
+          .icon-trash {
+            color: $error;
+            margin-right: 20px;
+          }
+          .icon-send {
+            color: $primary-base;
+          }
+        }
+      }
+
+      .app-conversation--sendForm__message__text {
+        display: flex;
+        width: 100%;
+        align-items: flex-end;
+        border-top: 1px solid $neutral-400;
+        &.writes {
+          border-top: 1px solid $primary-base;
+        }
+        .icon {
+          color: $neutral-500;
+          cursor: pointer;
+        }
+        .attach {
+          display: flex;
+          align-items: center;
+          margin: 0 23px 20px 23px;
+        }
+        .icon-close {
+          margin: 0 23px 20px 23px;
+        }
+        .icon-send {
+          color: $primary-base;
+        }
+        .message-text-area {
+          padding-top: 0!important;
+          margin-top: 20px!important;
+          margin-bottom: 20px!important;
+          #message {
+            min-height: 20px!important;
+            @include body-m-regular;
+            color: $neutral-900;
+            &::placeholder {
+              color: $neutral-500;
+              @include body-m-regular;
+            }
+          }
+        }
+        
+        .left-block {
+          margin-right: 20px;
+          padding-top: 8px;
+          margin-bottom: 13px;
+          .icon {
+            margin-left: 19px;
+          }
+        }
+      }
+    }
+
+    .app--conversation--sendForm__button {
+      background: #a4b1c1;
+      border-radius: 10px;
+      height: 31px;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 15px;
+      font-weight: 500;
+      font-size: 13px;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .app--conversation--sendForm__button__recipient {
+      margin-left: 20px;
+    }
+
+    .app--conversation--sendForm__button__theme {
+      padding: 8px 25px;
+      margin-left: 13.71px;
+    }
+
+    .app--conversation--sendForm__button__attach {
+      cursor: pointer;
+      margin-right: 20px;
+
+      .icon-attach {
+        color: $neutral-500;
+      }
+    }
+
+    .app--conversation--sendForm__clear-text {
+      display: flex;
+      align-items: center;
+      color: $neutral-500;
+      margin-right: 22px;
+      margin-left: 22px;
+      vertical-align: middle;
+
+      .icon-close {
+        cursor: pointer;
+      }
+    }
+
+    .app-conversation--sendForm__message__area {
+      margin-top: 5px;
+
+      ::v-deep textarea {
+        @include body-m-regular;
+        color: $neutral-900;
+        padding-top: 4px;
+
+        &::placeholder {
+          color: $neutral-600;
+        }
+      }
+    }
+
+    .app--conversation--sendForm__recorder__wrapper {
+      position: absolute;
+      color: #333;
+      display: flex;
+      align-items: center;
+      top: 35px;
+      left: 120px;
+
+      .app--conversation--sendForm__recorder__indicator {
+        background-color: #ff1010;
+        height: 10px;
+        width: 10px;
+        border-radius: 50%;
+        margin-right: 5px;
+        margin-bottom: 2px;
+        vertical-align: baseline;
+        display: inline-block;
+        animation: blinker-data-v-395362ea 0.5s cubic-bezier(0.5, 0, 1, 1) infinite alternate;
+      }
+
+      // .app--conversation--sendForm__recorder__timer {
+      // }
+
+      .app--conversation--sendForm__recorder__label {
+        font-size: 12px;
+        margin-left: 10px;
+        margin-bottom: 2px;
+      }
+    }
+  }
+
+  @keyframes blinker {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
+  }
+
+  .input-file {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+
+  .input-file+.js-labelFile {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0px;
+    cursor: pointer;
+  }
+
+  // wrapper
+  .app--conversation--sendForm__attachments__wrapper {
+    display: flex;
+    flex-flow: row wrap;
+    padding: 10px 0 10px 25px;
+
+    i {
+      position: absolute;
+      right: 5px;
+      top: 3px;
+      padding: 3px;
+      cursor: pointer;
+    }
+
+    .preview,
+    img {
+      max-height: 111px;
+      max-width: 111px;
+      padding: 5px;
+      vertical-align: middle;
+      text-align: center;
+    }
+  }
+
+  // #message::-webkit-scrollbar-track {
+  //   background-color: $neutral-250;
+  // }
+
+  // #message::-webkit-scrollbar {
+  //   width: 3px !important;
+  //   background-color: $neutral-250;
+  // }
+
+  // #message::-webkit-scrollbar-thumb {
+  //   background-color: $neutral-400;
+  //   border-radius: 50px;
+  // }
+  #message::-webkit-scrollbar {
+    width: 4px;
+    background: $neutral-250;
+    border-radius: 2px;
+  }
+
+  #message::-webkit-scrollbar-thumb {
+    background: $neutral-400;
+    border-radius: 2px;
+    width: 4px;
+  }
+}

@@ -18,7 +18,6 @@ export const ICONIFY_ICONS = {
     'ant-design-youtube-filled': () => import('@iconify/icons-ant-design/youtube-filled'),
     'question-circle-outlined': () => import('@iconify/icons-ant-design/question-circle-outlined'),
 
-
     // bi
     'arrow-left': () => import('@iconify/icons-bi/arrow-left'),
     'bi-phone': () => import('@iconify/icons-bi/phone'),
@@ -28,19 +27,27 @@ export const ICONIFY_ICONS = {
     'bx-check': () => import('@iconify/icons-bx/bx-check'),
     'arrow-back': () => import('@iconify/icons-bx/bx-arrow-back'),
     'bx-bx-building-house': () => import('@iconify/icons-bx/bx-building-house'),
+    'bx-bxs-error-alt': () => import('@iconify-icons/bx/bxs-error-alt'),
+    'bx-bxs-error': () => import('@iconify-icons/bx/bxs-error'),
 
     // codicon
     'chrome-close': () => import('@iconify/icons-codicon/chrome-close'),
 
-    // tabler 
+    // tabler
     'tabler-external-link': () => import('@iconify/icons-tabler/external-link'),
 
     // jam
     'jam-close': () => import('@iconify/icons-jam/close'),
+    'jam-square-minus': () => import('@iconify/icons-jam/minus-rectangle-f'),
+    'jam-square-plus': () => import('@iconify/icons-jam/plus-rectangle-f'),
 
     // carbon
     'carbon-email': () => import('@iconify/icons-carbon/email'),
     'carbon-diagram': () => import('@iconify/icons-carbon/diagram'),
+    // 'carbon-stop': () => import('@iconify-icons/carbon/stop'),
+
+    // clarity
+    'clarity-import-line': () => import('@iconify-icons/clarity/import-line'),
 
     // entypo
     'chevron-right': () => import('@iconify/icons-entypo/chevron-right'),
@@ -71,6 +78,7 @@ export const ICONIFY_ICONS = {
     'ion-warning': () => import('@iconify/icons-ion/warning'),
     'ion-attach': () => import('@iconify/icons-ion/attach-outline'),
     'ion-search-outline': () => import('@iconify/icons-ion/search-outline'),
+    'ion-pause-outline': () => import('@iconify/icons-ion/pause-outline'),
 
     // feather
     'feather-refresh-ccw': () => import('@iconify/icons-feather/refresh-ccw'),
@@ -88,17 +96,29 @@ export const ICONIFY_ICONS = {
     'feather-plus-circle': () => import('@iconify/icons-feather/plus-circle'),
     'feather-edit': () => import('@iconify/icons-feather/edit'),
     'feather-users': () => import('@iconify/icons-feather/users'),
+    'feather-user': () => import('@iconify/icons-feather/user'),
     'feather-shopping-bag': () => import('@iconify/icons-feather/shopping-bag'),
     'feather-copy': () => import('@iconify/icons-feather/copy'),
     'feather-credit-card': () => import('@iconify/icons-feather/credit-card'),
     'feather-minus': () => import('@iconify/icons-feather/minus'),
     'feather-play': () => import('@iconify/icons-feather/play'),
+    'feather-plus': () => import('@iconify/icons-feather/plus'),
+    'feather-mic': () => import('@iconify-icons/feather/mic'),
+    'feather-hash': () => import('@iconify-icons/feather/hash'),
+    'feather-smile': () => import('@iconify-icons/feather/smile'),
+    'feather-send': () => import('@iconify-icons/feather/send'),
+    'feather-star': () => import('@iconify-icons/feather/star'),
+    'feather-volume': () => import('@iconify/icons-feather/volume'),
+    'feather-volume-1': () => import('@iconify/icons-feather/volume-1'),
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),
 
      // ls
     'ls-sort': () => import('@iconify/icons-ls/sort'),
+
+    // mdi
+    'mdi-square-rounded-outline': () => import('@iconify/icons-mdi/square-rounded-outline'),
 
     // octicon
     'octicon-chevron-up-16': () => import('@iconify/icons-octicon/chevron-up-16'),
@@ -115,6 +135,9 @@ export const ICONIFY_ICONS = {
     'eva-plus-outline': () => import('@iconify/icons-eva/plus-outline'),
     'eva-info-fill': () => import('@iconify/icons-eva/info-fill'),
 
+    'eva-checkmark-outline': () => import('@iconify/icons-eva/checkmark-outline'),
+    'eva-square-minus': () => import('@iconify/icons-eva/minus-square-fill'),
+    'eva-square-outline': () => import('@iconify/icons-eva/square-outline'),
 }
 
 for (const icon in ICONIFY_ICONS) {
