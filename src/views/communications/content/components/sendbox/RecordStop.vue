@@ -194,7 +194,7 @@
         this.internalRecordVolumes = []
       },
       deleteRecord () {
-        this.internalExample = Object.assign([], this.internalExample)
+        this.internalRecordList = Object.assign([], this.internalRecordList)
       },
       stopRecorder () {
         if (!this.isRecording) {
