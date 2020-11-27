@@ -23,20 +23,11 @@ export default {
       const elem = this.$refs.conversationField
       if (elem) elem.scrollTop = elem.scrollHeight
     },
-    scrollToMessageById (id) {
-      const feed = this.$refs.conversationField
-      const msg = document.getElementById('message-' + id)
-      console.log(feed)
-
-      if (msg) {
-        console.log('scroll')
-        feed.scrollTop = msg.offsetTop - 80 // поправка скролла ленты сообщений
-      }
-    },
     async updateMessages (messages) {
       this.overlayChat = false
 
       this.toBottomFeed()
+      // обновление поиска по строке
       // массовое прочтение сообщений
       await this.$store.dispatch(
         'chat/message/toRead',
@@ -132,6 +123,8 @@ export default {
         } catch (e) {}
         this.loadingMessagePage = false
       }
+      // Обновление поиска по сообщений, обновление происходит если поиск включен
+      this.searchByFilterString()
       this.feedScrollTop = h
     },
     init () {

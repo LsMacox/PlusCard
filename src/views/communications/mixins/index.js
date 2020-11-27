@@ -22,6 +22,40 @@ export default {
 
       return messageDayAndMounth + ', ' + messageYear
     },
+    getGroupImgData (item) {
+      const
+        imgColor = '#D63DE5'
+      const imgWidth = 48
+      const imgHeight = 48
+
+      const
+        cvs = document.createElement('canvas')
+      const ctx = cvs.getContext('2d')
+
+      cvs.width = imgWidth
+      cvs.height = imgHeight
+      cvs.style.display = 'block'
+
+      // Fill background
+      ctx.moveTo(0, 0)
+      ctx.lineTo(imgWidth, 0)
+      ctx.lineTo(imgWidth, imgHeight)
+      ctx.lineTo(0, imgHeight)
+      ctx.fillStyle = imgColor
+      ctx.fill()
+
+      // Draw font
+      ctx.fillStyle = '#fff'
+      ctx.font = '700 28px Gilroy'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      if (item.name) ctx.fillText(item.name.charAt(0).toUpperCase(), imgWidth / 2, imgHeight / 2 + 1)
+      if (item.display_name) ctx.fillText(item.display_name.charAt(0).toUpperCase(), imgWidth / 2, imgHeight / 2 + 1)
+
+      const imgData = cvs.toDataURL()
+      cvs.remove()
+      return imgData
+    },
     isEmptyObject (obj) {
       return JSON.stringify(obj) === '{}'
     },

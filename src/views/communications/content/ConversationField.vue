@@ -4,9 +4,13 @@
       v-if="!currentConversationId"
       class="empty-field"
     >
-      Выберите чат из списка слева
+      <v-img
+        max-width="186"
+        max-height="156"
+        :src="require('@/assets/png/empty-chat.png')"
+      />
     </div>
-
+    <!-- overlayChat -->
     <div
       v-else-if="overlayChat"
       class="overlayChat"
@@ -21,11 +25,11 @@
       v-else-if="loadingConversations || loadingMessage"
       :loading="loadingConversations || loadingMessage"
       :style="{ height: '100%', width: '100%' }"
-      type="header, body, actions"
+      type="header, body, table-tfoot"
       :types="{
         test: 'avatar, text',
         header: 'list-item-avatar-two-line',
-        body: 'image@3',
+        body: 'image@4',
       }"
     />
     <div
@@ -54,7 +58,7 @@
         <v-skeleton-loader
           :loading="loadingMessagePage"
           height="100%"
-          type="list-item-avatar-three-line@5"
+          type="list-item-avatar-three-line@10"
         >
           <div
             v-for="(item, i) in messages"

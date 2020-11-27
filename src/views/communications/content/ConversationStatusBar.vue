@@ -232,13 +232,14 @@
       conversationAvatar () {
         let avatar = ''
         if (this.activeMembers.length > 2) {
-          avatar = this.conversation.avatar
+          avatar = this.getGroupImgData(this.conversation)
         } else {
           if (
             this.conversation.activeMembers &&
             this.conversation.activeMembers.length > 0
           ) {
-            avatar = this.conversation.activeMembers.filter(member => member.id === this.conversation.creator_id)[0].avatar
+            console.log(this.conversation.activeMembers, this.conversation)
+            avatar = this.conversation.activeMembers.filter(member => member.id === this.conversation.cur_member_id)[0].avatar
           } else {
             avatar = null
           }
@@ -246,10 +247,11 @@
         return avatar
       },
       conversationName () {
-        let name = 'Чат'
-        //
-        if (this.activeMembers.length > 2) name = this.conversation.name
-        else {
+        let name
+
+        if (this.activeMembers.length > 2) {
+          name = this.conversation.display_name
+        } else {
           // ищем во всех участниках, включая удаленных
           // this.members.forEach(item => {
           //   if (item.id !== this.chatUser.id) name = item.display_name
@@ -257,6 +259,9 @@
           name = this.conversation.display_name
         }
         return name
+      },
+      isGroup () {
+        return this.getActiveMembers() > 2
       },
     },
     watch: {
@@ -272,12 +277,17 @@
           this.internalSearchChoose = 0
         }
       },
+      searchCount (v) {
+        if (
+          (v !== 0 && this.internalSearchChoose === 0) ||
+          (this.internalSearchChoose > v)
+        ) {
+          this.internalSearchChoose = 1
+        }
+        if (v === 0) this.internalSearchChoose = 0
+      },
     },
     methods: {
-      getActiveMembers (count) {
-        const members = ['участник', 'участника', 'участников']
-        return count + ' ' + this.declOfNum(count, members)
-      },
       setChosen (item) {
         const conversation = {
           conversation_id: item.id,

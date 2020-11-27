@@ -13,16 +13,21 @@
     <div
       class="app--conversation--sendForm"
     >
-      <!-- <app-reply
-        :dialog.sync="dialogReplyMessage"
-        :name.sync="quotedMessageSender"
-        :message.sync="quotedMessage"
-      /> -->
+      <app-reply
+        :dialog.sync="internalDialogReplyMessage"
+        :name.sync="internalQuotedMessageSender"
+        :message.sync="internalQuotedMessage"
+      />
 
       <!-- <app-topic-bar :conversation-id="conversationId" /> -->
 
       <div
         class="app--conversation--sendField"
+        :class="[
+          internalDialogReplyMessage ? 'reply' :
+          message && message.length ? 'writes'
+          : ''
+        ]"
       >
         <div
           id="messageWrapper"
@@ -72,64 +77,29 @@
               </div>
             </div>
             <!-- ==== record stop ==== -->
-            <div
+            <app-record-stop
               v-if="!isRecording && isStop"
-              class="app-conversation--sendForm__message__record-stop"
-            >
-              <div class="right-block">
-                <iconify-icon
-                  v-if="!isPlay"
-                  class="icon icon-play"
-                  icon="feather-play"
-                  width="21"
-                  @click="switchPlayBackRecording"
-                />
-                <iconify-icon
-                  v-else
-                  class="icon icon-play"
-                  icon="ion-pause-outline"
-                  width="21"
-                  @click="switchPlayBackRecording"
-                />
-                <div class="strips">
-                  <div
-                    v-for="(v, i) in recordVolumes"
-                    :key="i"
-                    class="strip"
-                    :class="[isRecordStripActive(i) ? 'active' : '']"
-                    :style="`height: ${v}px`"
-                  />
-                </div>
-                <div class="durations">
-                  <p class="body-m-regular neutral-600--text">
-                    {{ this.$moment(recordPlayCurrentTime * 1000).format('mm:ss') }}/{{ recordList[0].duration }}
-                  </p>
-                </div>
-              </div>
-              <div class="left-block">
-                <iconify-icon
-                  class="icon icon-trash"
-                  icon="feather-trash"
-                  width="21"
-                  @click="cancelRecorder"
-                />
-                <iconify-icon
-                  class="icon icon-send"
-                  icon="feather-send"
-                  width="21"
-                  @click="sendRecord"
-                />
-              </div>
-            </div>
+              ref="recordStop"
+              :conversation-id="conversationId"
+              :is-recording="isRecording"
+              :is-play.sync="isPlay"
+              :is-stop.sync="isStop"
+              :record-list.sync="recordList"
+              :record-volumes.sync="recordVolumes"
+              :record-play.sync="recordPlay"
+              :record-play-current-time.sync="recordPlayCurrentTime"
+              :recorder="recorder"
+            />
             <!-- ==== text ==== -->
+
             <div
               v-if="!isRecording && !isStop"
               class="app-conversation--sendForm__message__text"
-              :class="[message.length ? 'writes' : '']"
+              :class="[message && message.length ? 'writes' : '']"
             >
               <!-- Attach -->
               <div
-                v-if="!message.length"
+                v-if="!message || !message.length"
                 class="attach"
               >
                 <iconify-icon
@@ -156,7 +126,7 @@
                 @click="clearMessage"
               />
               <v-textarea
-                id="message"
+                id="messageTextArea"
                 ref="messageTextArea"
                 v-model="message"
                 class="message-text-area"
@@ -185,7 +155,7 @@
                 />
                 <!-- Microphone Icon -->
                 <iconify-icon
-                  v-if="!message.length"
+                  v-if="!message || !message.length"
                   id="record"
                   class="icon icon-mic"
                   icon="feather-mic"
@@ -194,7 +164,7 @@
                 />
                 <!-- Send Icon -->
                 <iconify-icon
-                  v-if="message.length"
+                  v-if="message && message.length"
                   class="icon icon-send"
                   icon="feather-send"
                   width="21"
@@ -210,6 +180,9 @@
 </template>
 
 <script>
+  // components
+  import AppReply from './components/sendbox/Reply'
+  import AppRecordStop from './components/sendbox/RecordStop'
 
   // mixins
   import MixinAttachment from '../mixins/conversation-send-box/attachment.js'
@@ -217,17 +190,21 @@
   import MixinRecorder from '../mixins/conversation-send-box/recorder.js'
   import MixinMessage from '../mixins/conversation-send-box/message.js'
   import MixinTyping from '../mixins/conversation-send-box/typing.js'
-  import MixixIndex from '../mixins/index.js'
+  import MixinIndex from '../mixins/index.js'
   import MixinData from '../mixins/conversation-send-box/data.js'
 
   export default {
+    components: {
+      AppReply,
+      AppRecordStop,
+    },
     mixins: [
       MixinAttachment,
       MixinValidate,
       MixinRecorder,
       MixinMessage,
       MixinTyping,
-      MixixIndex,
+      MixinIndex,
       MixinData,
     ],
     props: {
@@ -272,6 +249,9 @@
         topicFilter: false,
         messagesCount: 0,
         //
+        internalDialogReplyMessage: this.dialogReplyMessage,
+        internalQuotedMessageSender: this.quotedMessageSender,
+        internalQuotedMessage: this.quotedMessage,
         dialogMessageUpdate: false,
         dialogMessageDelete: false,
         // reply
@@ -297,20 +277,9 @@
       }
     },
     watch: {
-      volume (v) {
-        let newVolume = Math.round(v * this.recordStripMaxHeight)
-        newVolume = (newVolume < this.recordStripMinHeight)
-          ? this.recordStripMinHeight
-          : newVolume
-        this.recordVolumes.push(newVolume)
-      },
-      isRecording (v) {
-      /// /console.log('records', this.recordList);
-      },
       async message (v) {
+        this.limitTextArea()
         this.sendTypingEvent(this.conversationId)
-        await this.$nextTick()
-        this.handleResizeHeightTextArea()
       },
       selectedTopicId (v) {
         if (!v) this.topicFilter = false
@@ -318,19 +287,35 @@
       conversationId (v) {
         // console.log('current', this.conversation);
         this.message = this.conversation.currentTemplateMessage
-        if (this.dialogReplyMessage) {
+        if (this.internalDialogReplyMessage) {
           this.closeReplyMessage()
         }
         if (this.overlayChat) {
           const elem = this.$refs.conversationField
           if (elem) elem.scrollTop = elem.scrollHeight
           this.overlayChat = false
-          this.dialogReplyMessage = true
+          this.internalDialogReplyMessage = true
           this.sendType = 'forward'
         }
       },
       dialogReplyMessage (v) {
+        this.internalDialogReplyMessage = v
+      },
+      quotedMessageSender (v) {
+        this.internalQuotedMessageSender = v
+      },
+      quotedMessage (v) {
+        this.internalQuotedMessage = v
+      },
+      internalDialogReplyMessage (v) {
+        this.$emit('update:dialogReplyMessage', v)
         if (!v) this.closeReplyMessage()
+      },
+      internalQuotedMessageSender (v) {
+        this.$emit('update:quotedMessageSender', v)
+      },
+      internalQuotedMessage (v) {
+        this.$emit('update:quotedMessage', v)
       },
     },
     mounted () {

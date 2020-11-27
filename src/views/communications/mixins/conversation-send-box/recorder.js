@@ -2,6 +2,18 @@ import Recorder from '@/utils/recorder'
 import { convertTimeMMSS } from '@/utils'
 
 export default {
+  watch: {
+    volume (v) {
+      let newVolume = Math.round(v * this.recordStripMaxHeight)
+      newVolume = (newVolume < this.recordStripMinHeight)
+        ? this.recordStripMinHeight
+        : newVolume
+      this.recordVolumes.push(newVolume)
+    },
+    isRecording (v) {
+    /// /console.log('records', this.recordList);
+    },
+  },
   computed: {
     attemptsLeft () {
       return this.attempts - this.recordList.length
@@ -26,34 +38,44 @@ export default {
     },
   },
   methods: {
-    async sendRecord () {
-      const type = 'send'
-      const message = new FormData()
-      message.append('files[0]', this.recordList[0].blob)
-      message.set('conversation_id', this.conversationId)
-      await this.$store.dispatch('chat/message/send', { type, message })
-      this.cancelRecorder()
-    },
+    // async sendRecord () {
+    //   const type = 'send'
+    //   const message = new FormData()
+    //   message.append('files[0]', this.recordList[0].blob)
+    //   message.set('conversation_id', this.conversationId)
+    //   this.cancelRecorder()
+    //   await this.$store.dispatch('chat/message/send', { type, message })
+    // },
     stopRecord () {
       this.stopRecorder()
       this.getRecorderStrip()
       this.eventRecordPlayEnded()
       this.eventRecordPlayTimeUpdate()
     },
+    stopRecorder () {
+      if (!this.isRecording) {
+        return
+      }
+      this.isStop = true
+      this.recorder.stop()
+      this.recordList = this.recorder.recordList()
+      this.recordPlay = new window.Audio()
+      this.recordPlay.src = this.recordList[0].url
+    },
     getRecorderStrip () {
       const takeCount = Math.floor(this.recordVolumes.length / this.recordStripCount)
       const allTakenCount = (this.recordStripCount * takeCount)
       this._prepareRecordVolumes(allTakenCount, takeCount)
     },
-    cancelRecorder () {
-      this.stopRecorder()
-      this.deleteRecord()
-      this.isStop = false
-      this.startTime = 0
-      this.recordPlay = {}
-      this.recordPlayCurrentTime = 0
-      this.removeRecordStrip()
-    },
+    // cancelRecorder () {
+    //   this.stopRecorder()
+    //   this.deleteRecord()
+    //   this.isStop = false
+    //   this.startTime = 0
+    //   this.recordPlay = {}
+    //   this.recordPlayCurrentTime = 0
+    //   this.removeRecordStrip()
+    // },
     toggleRecorder (e) {
       e.preventDefault()
       e.stopPropagation()
@@ -66,30 +88,30 @@ export default {
         this.recorder.pause()
       }
     },
-    removeRecordStrip () {
-      this.recordVolumes = []
-    },
-    switchPlayBackRecording () {
-      this.isPlay = !this.isPlay
-      if (!this.isPlay) {
-        this.recordPlay.pause()
-      } else {
-        this.recordPlay.play()
-      }
-    },
-    stopRecorder () {
-      if (!this.isRecording) {
-        return
-      }
-      this.isStop = true
-      this.recorder.stop()
-      this.recordList = this.recorder.recordList()
-      this.recordPlay = new window.Audio()
-      this.recordPlay.src = this.recordList[0].url
-    },
-    deleteRecord () {
-      this.recordList.splice(0, 1)
-    },
+    // removeRecordStrip () {
+    //   this.recordVolumes = []
+    // },
+    // switchPlayBackRecording () {
+    //   this.isPlay = !this.isPlay
+    //   if (!this.isPlay) {
+    //     this.recordPlay.pause()
+    //   } else {
+    //     this.recordPlay.play()
+    //   }
+    // },
+    // stopRecorder () {
+    //   if (!this.isRecording) {
+    //     return
+    //   }
+    //   this.isStop = true
+    //   this.recorder.stop()
+    //   this.recordList = this.recorder.recordList()
+    //   this.recordPlay = new window.Audio()
+    //   this.recordPlay.src = this.recordList[0].url
+    // },
+    // deleteRecord () {
+    //   this.recordList.splice(0, 1)
+    // },
     removeRecord (idx) {
       this.recordList.splice(idx, 1)
       this.$set(this.selected, 'url', null)
@@ -112,11 +134,11 @@ export default {
         this.recordPlayCurrentTime = this.recordPlay.currentTime
       }
     },
-    isRecordStripActive (idx) {
-      const duration = (this.recordPlay.duration * 1000)
-      const part = (duration / this.recordStripCount)
-      return (part * idx) <= (this.recordPlayCurrentTime * 1000)
-    },
+    // isRecordStripActive (idx) {
+    //   const duration = (this.recordPlay.duration * 1000)
+    //   const part = (duration / this.recordStripCount)
+    //   return (part * idx) <= (this.recordPlayCurrentTime * 1000)
+    // },
     micFailed () {
       this.recorder.isRecording = false
     },

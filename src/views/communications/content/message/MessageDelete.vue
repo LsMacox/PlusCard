@@ -4,98 +4,75 @@
     class="dialog-message-delete"
     max-width="420"
   >
-    <v-card>
-      <v-toolbar>
-        <v-toolbar-title>Удалить сообщение?</v-toolbar-title>
-        <v-spacer />
-        <v-toolbar-items>
-          <v-btn
-            icon
-            @click="close()"
+    <div class="dialog-message-delete--content">
+      <v-btn
+        text
+        class="btn content__btn-close"
+        @click="close()"
+      >
+        <iconify-icon
+          class="icon"
+          icon="jam-close"
+          width="21"
+        />
+      </v-btn>
+      <div class="content__title">
+        <p class="title-m-bold neutral-900--text">
+          Удалить выбранное сообщение?
+        </p>
+      </div>
+      <div
+        v-if="showDeleteAll"
+        class="content__delete-all-checkbox"
+      >
+        <div class="controls-input">
+          <iconify-icon
+            class="icon-check"
+            icon="eva-checkmark-outline"
+            width="14"
+          />
+          <input
+            id="message-delete-checkbox"
+            v-model="deleteForAll"
+            type="checkbox"
+            class="checkbox"
           >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-toolbar-items>
-      </v-toolbar>
-      <v-card-text>
-        <v-container>
-          <v-row>
-            <v-col>
-              <v-checkbox
-                v-if="showDeleteAll"
-                v-model="deleteForAll"
-                label="Удалить сообщение у всех"
-              />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-divider />
-      <v-card-actions>
+          <label for="message-delete-checkbox">Удалить сообщение у всех</label>
+        </div>
+      </div>
+      <div class="content__controls">
         <v-btn
-          text
+          class="btn btn-cancel"
+          color="primary-100"
           @click="close()"
         >
-          Отмена
+          <iconify-icon
+            class="icon"
+            icon="ion-checkmark-circle-outline"
+            width="21"
+          />
+          <p class="body-m-semibold primary--text">
+            Нет, оставить
+          </p>
         </v-btn>
-        <v-spacer />
         <v-btn
-
-          color="success"
+          class="btn btn-success"
+          color="primary"
           :loading="messageDeleteLoading"
           @click="remove()"
         >
-          Удалить
+          <iconify-icon
+            class="icon"
+            icon="feather-trash"
+            width="21"
+          />
+          <p class="body-m-medium neutral-100--text">
+            Да, удалить
+          </p>
         </v-btn>
-      </v-card-actions>
-    </v-card>
+      </div>
+    </div>
   </v-dialog>
-
-  <!-- <v-dialog
-    v-model="dialog"
-    max-width="350"
-    hide-overlay
-    persistent
-    @click:outside="close()"
-  >
-    <v-card class="modal-card">
-      <div class="modal-header">
-        Удалить сообщение?
-      </div>
-
-      <div class="modal-content">
-        <app-checkbox
-          v-if="showDeleteAll"
-          label="Удалить сообщение у всех"
-          :value.sync="deleteForAll"
-          hint=""
-        />
-      </div>
-
-      <div class="modal-action">
-        <div>
-          <div
-            class="close"
-            @click="close()"
-          >
-            Отмена
-          </div>
-        </div>
-
-        <v-spacer />
-
-        <v-btn
-          class="box-button"
-          icon="clear"
-          color="success"
-          :loading="messageDeleteLoading"
-          @click="remove()"
-        >
-          Удалить
-        </v-btn>
-      </div>
-    </v-card>
-  </v-dialog> -->
 </template>
 
 <script>

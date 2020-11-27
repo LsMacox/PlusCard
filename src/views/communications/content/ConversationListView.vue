@@ -95,6 +95,15 @@
         img404: 'https://storage.yandexcloud.net/plusstorage/users/avatars/default.png',
       }
     },
+    computed: {
+      isGroup () {
+        return this.activeMembers.length > 2
+      },
+      activeMembers () {
+        if (!this.isEmptyObject(this.conversation)) return this.conversation.members.filter(item => item.active)
+        return []
+      },
+    },
     methods: {
       isMemberClient (memberId) {
         return memberId !== this.chatUser.id

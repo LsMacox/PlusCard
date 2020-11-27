@@ -2,126 +2,119 @@
   <div class="message-line">
     <v-spacer v-if="myMessage" />
 
-    <div class="message-block">
+    <div
+      v-click-outside="hideActions"
+      class="message-block"
+    >
+      <div
+        :ref="'messageAction' + item.id"
+        class="message-actions"
+        :class="[showActions ? 'show' : 'hide', actionPlacement]"
+        @mouseover="showActions = true"
+        @mouseleave="showActions = false"
+      >
+        <ul class="action-list">
+          <li class="action-item">
+            <a
+              href="#"
+              @click="openReplyMessage"
+            >
+              <iconify-icon
+                class="icon icon-undo"
+                icon="ion-arrow-undo-outline"
+                width="21"
+              />
+              <p class="body-s-medium neutral-500--text">Ответить</p>
+            </a>
+          </li>
+          <li class="action-item">
+            <a
+              href="#"
+              @click="openForwardMessage"
+            >
+              <iconify-icon
+                class="icon icon-forward"
+                icon="ion-arrow-undo-outline"
+                width="21"
+              />
+              <p class="body-s-medium neutral-500--text">Переслать</p>
+            </a>
+          </li>
+          <li class="action-item">
+            <a
+              href="#"
+              @click="copyMessage"
+            >
+              <iconify-icon
+                class="icon icon-copy"
+                icon="feather-copy"
+                width="21"
+              />
+              <p class="body-s-medium neutral-500--text">Копировать</p>
+            </a>
+          </li>
+          <li class="action-item">
+            <a
+              href="#"
+              @click="openEditMessage"
+            >
+              <iconify-icon
+                class="icon icon-edit"
+                icon="feather-edit"
+                width="21"
+              />
+              <p class="body-s-medium neutral-500--text">Редактировать</p>
+            </a>
+          </li>
+          <li class="action-item">
+            <a href="#">
+              <iconify-icon
+                class="icon icon-checkmark"
+                icon="ion-checkmark-circle-outline"
+                width="21"
+              />
+              <p class="body-s-medium neutral-500--text">Выбрать</p>
+            </a>
+          </li>
+          <li class="action-item">
+            <a
+              href="#"
+              @click="openDeleteMessage"
+            >
+              <iconify-icon
+                class="icon icon-trash"
+                icon="feather-trash"
+                width="21"
+              />
+              <p class="body-s-medium neutral-500--text">Удалить</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+
       <img
         class="message-author-avatar"
         :src="getAuthorAvatar(item)"
+        @error="e => e.target.src = img404"
       >
 
       <div
         :style="
           myMessage
             ? 'width: calc(100% - 15px); margin-right: 15px; '
-            : 'width: calc(100% - 50px);'
-        "
+            : 'width: calc(100% - 50px);'"
+        @contextmenu.prevent="showActions = true"
       >
         <div
           :class="{
             'message-box': true,
             'message-my': myMessage,
           }"
-          @mouseenter="showMenu(item, $event)"
-          @mouseleave="hideMenu(item, $event)"
         >
-          <!-- блок управления -->
-          <div
-            :class="{
-              'message-menu-my': myMessage,
-              'message-menu-other': !myMessage,
-            }"
-            style="display: none; height: 60px"
-          >
-            <div
-              :class="{
-                'message-menu-my-icons': myMessage,
-                'message-menu-other-icons': !myMessage,
-              }"
-            >
-              <v-tooltip
-                :open-delay="$config.tooltipButtonDelay"
-                dark
-                top
-              >
-                <template v-slot:activator="{ on }">
-                  <v-btn
-                    icon
-                    @click="openDelete(item, true)"
-                    v-on="on"
-                  >
-                    <v-icon
-                      :class="
-                        myMessage
-                          ? 'message-menu-my-icon1'
-                          : 'message-menu-other-icon1'"
-                    >
-                      fa-trash-alt
-                    </v-icon>
-                  </v-btn>
-                </template>
-                <span>Удалить</span>
-              </v-tooltip>
-
-              <v-tooltip
-                class="item"
-                :open-delay="$config.tooltipButtonDelay"
-                v-html="'Переслать'"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    :class="
-                      myMessage
-                        ? 'message-menu-my-icon2'
-                        : 'message-menu-other-icon2'
-                    "
-                    @click="openForwardMessage(item)"
-                    v-on="on"
-                  >
-                    fa-reply-all
-                  </v-icon>
-                </template>
-              </v-tooltip>
-
-              <v-tooltip
-                class="item"
-                :open-delay="$config.tooltipButtonDelay"
-                v-html="'Ответить'"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    :class="
-                      myMessage
-                        ? 'message-menu-my-icon2'
-                        : 'message-menu-other-icon2'
-                    "
-                    @click="openReplyMessage(item)"
-                    v-on="on"
-                  >
-                    fa-reply
-                  </v-icon>
-                </template>
-              </v-tooltip>
-
-              <v-tooltip
-                class="item"
-                :open-delay="$config.tooltipButtonDelay"
-                v-html="'Редактировать'"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-icon
-                    v-if="myMessage"
-                    :class="
-                      myMessage
-                        ? 'message-menu-my-icon2'
-                        : 'message-menu-other-icon2'
-                    "
-                    @click="openUpdate(item)"
-                    v-on="on"
-                  >
-                    fa-edit
-                  </v-icon>
-                </template>
-              </v-tooltip>
-            </div>
+          <div class="message-box-author-name">
+            <p class="body-s-semibold neutral-900--text mb-0">
+              {{ getAuthorName(item) }}
+            </p>
           </div>
 
           <!-- блок циатата -->
@@ -176,25 +169,21 @@
             <!-- текст сообщения цитаты -->
             <div
               v-if="item.parent_message.message"
-              class="message-box-text chat-scroll-x"
+              class="quote"
             >
-              <div class="message-box-author">
-                Автор: &nbsp;{{ item.parent_message.sender.name }}
+              <div class="quote-author">
+                <p class="body-s-semibold neutral-700--text mb-0">
+                  {{ item.parent_message.sender.name }}
+                </p>
               </div>
               <div
-                class="message-box-text"
+                class="quote-text"
               >
-                <p class="body-s-regular neutral-900--text mb-0">
+                <p class="body-s-regular neutral-700--text mb-0">
                   {{ formatMessage(item.parent_message.message) }}
                 </p>
               </div>
             </div>
-          </div>
-
-          <div class="message-box-author-name">
-            <p class="body-s-semibold neutral-900--text mb-0">
-              {{ getAuthorName(item) }}
-            </p>
           </div>
 
           <!-- блок сообщения -->
@@ -254,7 +243,7 @@
             <!-- сообщение -->
             <div
               v-if="item.message"
-              class="message-box-text chat-scroll-x"
+              class="message-box-text"
             >
               <p class="body-s-regular neutral-900--text mb-0">
                 {{ formatMessage(item.message) }}
@@ -304,16 +293,15 @@
     </div>
 
     <app-message-update
-      v-if="dialogUpdate"
-      :dialog.sync="dialogUpdate"
+      v-if="dialogEdit"
+      :dialog.sync="dialogEdit"
       :item="editedItem"
     />
-
     <app-message-delete
       v-if="dialogDelete"
       :dialog.sync="dialogDelete"
       :item="editedItem"
-      :show-delete-all="showDeleteAll"
+      :show-delete-all="myMessage"
     />
   </div>
 </template>
@@ -321,6 +309,7 @@
 <script>
   // mixins
   import MixinIndex from '@/views/communications/mixins/index.js'
+  import MixinCalculation from '@/mixins/calculation.js'
 
   // components
   import AppMessageUpdate from './MessageUpdate'
@@ -350,7 +339,10 @@
       AppAttachmentVideo,
       AppAttachmentPurchase,
     },
-    mixins: [MixinIndex],
+    mixins: [
+      MixinCalculation,
+      MixinIndex,
+    ],
     props: {
       item: {
         type: Object,
@@ -378,10 +370,13 @@
     },
     data () {
       return {
-        dialogUpdate: false,
+        dialogEdit: false,
         dialogDelete: false,
         editedItem: {},
         showDeleteAll: false,
+        showActions: false,
+        actionPlacement: '',
+        img404: 'https://storage.yandexcloud.net/plusstorage/users/avatars/default.png',
       }
     },
     computed: {
@@ -431,10 +426,22 @@
         return false
       },
     },
-    methods: {
-      isEmptyObject (obj) {
-        return JSON.stringify(obj) === '{}'
+    watch: {
+      showActions () {
+        const headerHeight = document.querySelector('.app--conversation--header').clientHeight
+        const actionEl = this.$refs['messageAction' + this.item.id]
+        const actionHeight = this.nodeOffsetWH(actionEl, false)
+        const MsgOffsetTop = document.getElementById('message-' + this.item.id).parentNode.offsetTop
+
+        if (((MsgOffsetTop - actionHeight) + 60) > headerHeight) {
+          this.actionPlacement = 'top'
+        } else {
+          this.actionPlacement = 'bottom'
+        }
       },
+    },
+    mounted () {},
+    methods: {
       getAuthorName (item) {
         let author = {}
         let isEmployee = false
@@ -533,39 +540,40 @@
         }
         return null
       },
-      showMenu (message, event) {
-        const elem = document.getElementById('message-' + message.id).querySelector('.message-menu-other')
-        elem.style.display = 'block'
-        elem.style.height = event.srcElement.offsetHeight + 'px'
+      hideActions () {
+        this.showActions = false
       },
-      hideMenu (message, event) {
-        const elem = document.getElementById('message-' + message.id).querySelector('.message-menu-other')
-        elem.style.display = 'none'
-        elem.style.height = '60px'
-      },
-      openUpdate (item) {
+      openEditMessage () {
         // console.log('updated item', item);
-        this.editedItem = Object.assign({}, item)
-        this.dialogUpdate = true
+        this.editedItem = Object.assign({}, this.item)
+        this.dialogEdit = true
       },
-      openDelete (item, bool) {
-        this.editedItem = Object.assign({}, item)
-        this.showDeleteAll = bool
+      openDeleteMessage () {
+        this.showActions = false
+        this.editedItem = Object.assign({}, this.item)
+        this.showDeleteAll = this.myMessage
         this.dialogDelete = true
       },
-      //
-      openReplyMessage (message) {
-        this.$emit('update:quotedMessage', Object.assign({}, message))
-        this.$emit('update:quotedMessageSender', this.getAuthorName(message))
+      openReplyMessage () {
+        this.showActions = false
+        this.$emit('update:quotedMessage', Object.assign({}, this.item))
+        this.$emit('update:quotedMessageSender', this.getAuthorName(this.item))
         this.$emit('update:sendType', 'reply')
         this.$emit('update:dialogReplyMessage', true)
       },
-      openForwardMessage (message) {
-        this.$emit('update:quotedMessage', Object.assign({}, message))
-        this.$emit('update:quotedMessageSender', this.getAuthorName(message))
+      openForwardMessage () {
+        this.showActions = false
+        this.$emit('update:quotedMessage', Object.assign({}, this.item))
+        this.$emit('update:quotedMessageSender', this.getAuthorName(this.item))
         this.$emit('update:sendType', 'forward')
         this.$emit('update:dialogReplyMessage', true)
         this.$emit('update:overlayChat', true)
+      },
+      copyMessage () {
+        navigator.clipboard.writeText(this.item.message)
+          .then(() => {
+            this.showActions = false
+          })
       },
     },
   }

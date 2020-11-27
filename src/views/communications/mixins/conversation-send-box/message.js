@@ -29,7 +29,7 @@ export default {
       this.$store.commit('chat/message/recipients', [])
       this.$emit('send-message')
       this.$store.commit('chat/conversation/setCurrentConversationMessage', '')
-      document.getElementById('message').style.height = 60 + 'px'
+      document.getElementById('messageTextArea').style.height = 60 + 'px'
     },
     // отправляем сообщение
     async send (type) {

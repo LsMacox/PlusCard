@@ -79,6 +79,7 @@ export const ICONIFY_ICONS = {
     'ion-attach': () => import('@iconify/icons-ion/attach-outline'),
     'ion-search-outline': () => import('@iconify/icons-ion/search-outline'),
     'ion-pause-outline': () => import('@iconify/icons-ion/pause-outline'),
+    'ion-arrow-undo-outline': () => import('@iconify/icons-ion/arrow-undo-outline'),
 
     // feather
     'feather-refresh-ccw': () => import('@iconify/icons-feather/refresh-ccw'),

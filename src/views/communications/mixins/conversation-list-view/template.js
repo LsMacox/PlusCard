@@ -6,18 +6,13 @@ export default {
       // есть чат пользователь
       if (this.chatUser && this.chatUser.id) {
         const chatUserId = this.chatUser.id
-        let count = 0
+        const activeMembers = this.activeMembers.length
 
-        // количество активных участников чата
-        item.members.forEach(item => {
-          if (item.active) count++
-        })
-
-        if (count === 1) {
+        if (activeMembers === 1) {
           avatars = [item.members[0].avatar]
         }
 
-        if (count === 2) {
+        if (activeMembers === 2) {
           const member = item.members.filter(item => item.id !== chatUserId)
           if (member.length) {
             avatars = [member[0].avatar]
@@ -25,44 +20,10 @@ export default {
         }
 
         // Group Avatar
-        if (count > 2) avatars = [this.getGroupImgData(item)]
+        if (activeMembers > 2) avatars = [this.getGroupImgData(item)]
       }
 
       return avatars
-    },
-    getGroupImgData (item) {
-      const
-        imgColor = '#D63DE5'
-      const imgWidth = 48
-      const imgHeight = 48
-
-      const
-        cvs = document.createElement('canvas')
-      const ctx = cvs.getContext('2d')
-
-      cvs.width = imgWidth
-      cvs.height = imgHeight
-      cvs.style.display = 'block'
-
-      // Fill background
-      ctx.moveTo(0, 0)
-      ctx.lineTo(imgWidth, 0)
-      ctx.lineTo(imgWidth, imgHeight)
-      ctx.lineTo(0, imgHeight)
-      ctx.fillStyle = imgColor
-      ctx.fill()
-
-      // Draw font
-      ctx.fillStyle = '#fff'
-      ctx.font = '700 28px Gilroy'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      if (item.name) ctx.fillText(item.name.charAt(0).toUpperCase(), imgWidth / 2, imgHeight / 2 + 1)
-      if (item.display_name) ctx.fillText(item.display_name.charAt(0).toUpperCase(), imgWidth / 2, imgHeight / 2 + 1)
-
-      const imgData = cvs.toDataURL()
-      cvs.remove()
-      return imgData
     },
     getName (item) {
       let name = ''

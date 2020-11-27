@@ -4,25 +4,25 @@
       v-if="dialog"
       class="reply-box"
     >
+      <div class="reply-box-close">
+        <iconify-icon
+          class="icon"
+          icon="ion-close-circle-outline"
+          width="21"
+          @click="close"
+        />
+      </div>
       <div class="reply-box-message">
         <div class="reply-box-message-author">
-          {{ name }}
+          <p class="body-s-semibold neutral-900--text">
+            {{ name }}
+          </p>
         </div>
         <div class="reply-box-message-text">
-          {{ getMessage(message) }}
+          <p class="body-s-regular neutral-900--text">
+            {{ getMessage(message) }}
+          </p>
         </div>
-      </div>
-
-      <v-spacer />
-
-      <div style="margin: 3px">
-        <v-icon
-          color="blue"
-          class="reply-box-icon"
-          @click="close()"
-        >
-          clear
-        </v-icon>
       </div>
     </div>
   </div>
@@ -42,8 +42,10 @@
       },
     },
     data () {
-      return {}
+      return {
+      }
     },
+    watch: {},
     methods: {
       close () {
         this.$emit('update:dialog', false)

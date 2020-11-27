@@ -2,18 +2,6 @@
   <div class="app--chat--list">
     <div id="app--conversation--list--container">
       <div class="app--conversation--list--header">
-        <!--
-            <div class="app--conversation--list--buttons">
-                <div class="app--conversation--list--button--wrapper">
-                    <button @click="switchChatList('business')" :class="['app--conversation--list--button', 'app--conversation--list--button--clients',conversationType=='business'?'app--conversation--list--button--active':'']">Клиенты</button>
-                    <span class="app--conversation--list--button--badge" v-if="sumUnreadCount(conversations_business) > 0">{{sumUnreadCount(conversations_business) < 100 ? sumUnreadCount(conversations_business) : '99+'}}</span>
-                </div>
-                <div class="app--conversation--list--button--wrapper">
-                    <button @click="switchChatList('merchant')" :class="['app--conversation--list--button', 'app--conversation--list--button--workers',conversationType=='merchant'?'app--conversation--list--button--active':'']">Сотрудники</button>
-                    <span class="app--conversation--list--button--badge" v-if="sumUnreadCount(conversations_merchant) > 0">{{sumUnreadCount(conversations_merchant) < 100 ? sumUnreadCount(conversations_merchant) : '99+'}}</span>
-                </div>
-            </div>
-            -->
         <v-row justify="space-between">
           <v-col>
             <base-text-field
@@ -246,11 +234,6 @@
           return convList.filter((chat) => chat.unread_count > 0).length || null
         } else {
           return null
-        }
-      },
-      switchChatList (value) {
-        if (value !== this.currentConversationType) {
-          this.$router.push(`/communications/chat/${value}`)
         }
       },
       // TEMPLATE
