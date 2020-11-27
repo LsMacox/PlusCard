@@ -1,6 +1,6 @@
 <template>
   <div
-    v-click-outside="hideList"
+    v-base-click-outside="hideList"
     class="base-select"
     :class="{active: showList}"
   >

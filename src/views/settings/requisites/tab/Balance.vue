@@ -3,10 +3,10 @@
     <div class="container-cash-info">
       <div class="title-cash">
         <h2 class="title-h2">
-          Metro Cash & Carry
+          {{ merchant.name }}
         </h2>
         <div class="block-cash-btn">
-          <span class="cash color-green-text font-weight-bold title-h2">9 999 ₽</span>
+          <span class="cash color-green-text font-weight-bold title-h2">{{ balance + ' ₽' }}</span>
           <v-btn class="custom-gradient-bg">
             <img
               src="@/icons/svg/card-white.svg"
@@ -127,13 +127,14 @@
             title: 'Тарифный план',
             content: [
               {
-                titleNameTariff: 'Тариф PRO',
-                price: '7990',
-                nextPayment: '14 сен, 2021',
+                titleNameTariff: 'Тариф START',
+                price: '2990',
+                nextPayment: '31 дек. 2021',
                 autoRenewal: true,
               },
             ],
           },
+          /*
           {
             title: 'Подключенные механики',
             content: [
@@ -151,8 +152,17 @@
               },
             ],
           },
+            */
         ],
       }
+    },
+    computed: {
+      merchant () {
+        return this.$store.getters.merchant
+      },
+      balance () {
+        return this.merchant ? this.merchant.balance_rub : '0'
+      },
     },
   }
 </script>
@@ -188,6 +198,7 @@
     width: 100%;
   }
   .container-cash-info {
+    margin-top: 68px;
     margin-bottom: 40px;
   }
   .info-wrap:not(:last-of-type) {

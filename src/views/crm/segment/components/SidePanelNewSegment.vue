@@ -250,6 +250,17 @@
         },
         deep: true,
       },
+      editData: {
+        handler: function (v) {
+          console.log(v)
+          if (v.name && v.description) {
+            this.btnCreateShow = true
+          } else {
+            this.btnCreateShow = false
+          }
+        },
+        deep: true,
+      },
     },
     created () {
       document.addEventListener('click', (event) => {

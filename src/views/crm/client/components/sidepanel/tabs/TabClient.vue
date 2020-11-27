@@ -191,12 +191,12 @@
         try {
           this.loading = true
           const payload = {
-            id: this.clientData.id,
-            client_name: this.clientData.client_name,
-            birthday: this.clientData.birthday,
+            id: this.accountClient.id,
+            client_name: this.accountClient.client_name,
+            birthday: this.accountClient.birthday,
             segments: this.clientSegments.map(item => item.id), // передаем только id сегментов
           }
-          console.log(payload)
+          console.log( 'accountUpdate', payload)
           await this.$store.dispatch('crm/client/updateAccount', payload)
         } finally {
           this.loading = false

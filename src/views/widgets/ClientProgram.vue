@@ -9,6 +9,7 @@
     :sub-titles="['Новые', 'Всего']"
     :counts="[newCount, totalCount]"
     :percentage-differences="[newPercentageDifference, totalPercentageDifference]"
+    text-help="Помощь по виджету"
   />
 </template>
 

@@ -738,6 +738,7 @@
           this.loading = true
           const item = {
             id: this.editedShop.id,
+            isNew: this.editedShop.isNew,
             program_id: this.programModel.id,
             name: this.editedShop.name,
             city_id: this.editedShop.city_id,

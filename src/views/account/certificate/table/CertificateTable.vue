@@ -8,6 +8,7 @@
           :single-expand="true"
           :options="tableOptions"
           :expanded.sync="expanded"
+          :item-class="() => 'clickable-row'"
           item-key="id"
           :show-expand="false"
           class="plus-table"
@@ -341,19 +342,19 @@
             sortable: false,
           },
           {
-            text: 'Дата создания',
+            text: 'Создан',
             value: 'created_at',
-            width: '13em',
+            width: '10em',
           },
           {
             text: 'Выпущен',
             value: 'date_issued',
-            width: '13em',
+            width: '10em',
           },
           {
             text: 'Использован',
             value: 'used_at',
-            width: '13em',
+            width: '12em',
           },
           // {
           //   text: '',

@@ -37,6 +37,9 @@
       }
     },
     computed: {
+      purchase () {
+        return this.$store.getters['dashboard/purchase/widgetData']
+      },
       creditCurrent () {
         console.log('current credit')
         console.log(this.credit)
@@ -79,16 +82,16 @@
         let debitDiff = 0
         let expireDiff = 0
 
-        if (this.total && this.credit && this.credit[this.credit.length - 2] > 0) {
-          creditDiff = (this.credit[this.credit.length - 1] / this.total) * 100
+        if (this.purchase.byProgramSum && this.credit && this.credit[this.credit.length - 1] > 0) {
+          creditDiff = (this.credit[this.credit.length - 1] / this.purchase.byProgramSum) * 100
         }
 
-        if (this.total && this.debit && this.debit[this.debit.length - 2] > 0) {
-          debitDiff = (this.debit[this.debit.length - 1] / this.total) * 100
+        if (this.purchase.byProgramSum && this.debit && this.debit[this.debit.length - 1] > 0) {
+          debitDiff = (this.debit[this.debit.length - 1] / this.purchase.byProgramSum) * 100
         }
 
-        if (this.total && this.expired && this.expired[this.expired.length - 2] > 0) {
-          expireDiff = (this.expired[this.expired.length - 1] / this.total) * 100
+        if (this.purchase.byProgramSum && this.expired && this.expired[this.expired.length - 1] > 0) {
+          expireDiff = (this.expired[this.expired.length - 1] / this.purchase.byProgramSum) * 100
         }
 
         return [creditDiff.toFixed(2), debitDiff.toFixed(2), expireDiff.toFixed(2)]

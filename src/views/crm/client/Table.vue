@@ -43,7 +43,7 @@
             >
             <div class="table-cell_avatar-text">
               <div class="body-s-semibold neutral-900--text table-cell_avatar-text2">
-                {{ (item.user && item.user.FIO) ? item.user.FIO : '-' }}
+                {{ getFIO(item.user) + ( (item.client_name && item.client_name != item.user.FIO) ? ` (${item.client_name})` : '' ) }}
               </div>
               <div
                 class="body-xs-semibold neutral-600--text table-cell_avatar-text2"
@@ -123,6 +123,7 @@
   import EmptyClient from './Empty'
   import SidePanelEditClient from './components/SidePanelEditClient'
   import Convertor from '@/mixins/convertor'
+  import User from '@/mixins/user.js'
 
   export default {
     components: {
@@ -130,7 +131,7 @@
       EmptyClient,
       SidePanelEditClient,
     },
-    mixins: [Convertor],
+    mixins: [Convertor, User],
     data () {
       return {
         loadingList: false,
