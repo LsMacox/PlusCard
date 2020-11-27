@@ -27,6 +27,7 @@
         >
           <v-row>
             <v-col>
+            
               <base-text-field
                 v-model.trim="search"
                 :prepend-inner-icon="'$iconify_search-outlined'"
@@ -54,22 +55,23 @@
               sortBy: 'updated_at',
               descending: 'descending',
             }"
+            :search="search_comp"
             @click:row="openBroadcasterClick"
           >
             <!-- <v-data-table
             :headers="headers"
             :items="filtered_moderations"
           > -->
-            <template v-slot:[`item.start_at`]="{ item }">
+            <template v-slot:[`item.startAtFormat`]="{ item }">
               <date-column :value="item.start_at" />
             </template>
-            <template v-slot:[`item.finish_at`]="{ item }">
+            <template v-slot:[`item.finishAtFormat`]="{ item }">
               <date-column :value="item.finish_at" />
             </template>
-            <template v-slot:[`item.last_emit`]="{ item }">
+            <template v-slot:[`item.lastEmitFormat`]="{ item }">
               <date-column :value="item.last_emit" />
             </template>
-            <template v-slot:[`item.next_emit`]="{ item }">
+            <template v-slot:[`item.nextEmitFormat`]="{ item }">
               <date-column :value="item.next_emit" />
             </template>
             <template v-slot:[`item.active`]="{ item }">
@@ -160,21 +162,15 @@
         search: '',
         GetListAction: false,
         headers: [
-          {
-            text: 'ID',
-            align: 'start',
-            value: 'id',
-            width: '7em',
-          },
+          { text: 'ID', align: 'start', value: 'id', width: '7em' },
           { text: 'Название', value: 'name' },
-          { text: 'Режим', value: 'EmitModeText' },
-          { text: 'Старт', value: 'start_at', width: '9em' },
-          { text: 'Окончание', value: 'finish_at', width: '11em' },
-
-          { text: 'Послед. запуск', value: 'last_emit', width: '9em' },
-          { text: 'След. запуск', value: 'next_emit', width: '9em' },
-          { text: '', value: 'active', width: '1em' },
-          { text: '', value: 'actions', width: '1em' },
+          { text: 'Режим', value: 'emitModeText' },
+          { text: 'Старт', value: 'startAtFormat', width: '9em' },
+          { text: 'Окончание', value: 'finishAtFormat', width: '11em' },
+          { text: 'Послед. запуск', value: 'lastEmitFormat', width: '9em' },
+          { text: 'След. запуск', value: 'nextEmitFormat', width: '9em' },
+          { text: '', value: 'active', width: '1em', filterable: false, sortable: false },
+          { text: '', value: 'actions', width: '1em', filterable: false, sortable: false },
 
         ],
       }
@@ -186,12 +182,7 @@
       }),
       filtered_broadcasters () {
         if (this.search_comp) {
-          return this.broadcasters.filter((item) =>
-            item.id === +this.search_comp ||
-            // (item.created_at_format.toLowerCase().includes(this.search_comp)) ||
-            (item.name.toLowerCase().includes(this.search_comp)) ||
-            (item.EmitModeText.toLowerCase().includes(this.search_comp)),
-          )
+          return this.broadcasters.filter((item) => true)
         } else {
           return this.broadcasters
         }

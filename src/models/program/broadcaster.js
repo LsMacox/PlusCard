@@ -1,4 +1,6 @@
 import Vue from 'vue'
+import { config } from '@/config'
+import moment from 'moment'
 
 export default class ProgramEventBroadcaster {
     static EMIT_MODE_ENUM = Object.freeze({
@@ -26,7 +28,31 @@ export default class ProgramEventBroadcaster {
         Vue.set(this, 'changeActiveAction', false)
     }
 
-    get EmitModeText () {
+    dateTimeFormat (dateUtc) {
+      return dateUtc ? moment.utc(dateUtc).local().format(config.date.DATETIME_FORMAT) : ''
+    }
+
+    // getDateTimeFilter(dateField, search){
+    //   return (value, search) =>  this.dateTimeFormat(this[dateField]).toLowerCase().includes(search)  
+    // }
+
+    get startAtFormat () {
+      return this.dateTimeFormat(this.start_at)
+    }
+
+    get finishAtFormat () {
+      return this.dateTimeFormat(this.finish_at)
+    }
+
+    get lastEmitFormat () {
+      return this.dateTimeFormat(this.last_emit)
+    }
+
+    get nextEmitFormat () {
+      return this.dateTimeFormat(this.next_emit)
+    }
+
+    get emitModeText () {
         switch (this.emit_mode) {
             case ProgramEventBroadcaster.EMIT_MODE_ENUM.MANUAL.id:
                 return 'Ручной'
