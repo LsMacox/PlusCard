@@ -6,7 +6,7 @@
     "dev": "vue-cli-service serve --open",
     "serve": "vue-cli-service serve",
     "build:prod": "vue-cli-service build",
-    "release": "git pull && npm install && vue-cli-service build && cp -rf ./dist/. ./app",    
+    "release": "git pull && vue-cli-service build && cp -rf ./dist/. ./app",    
     "deploy": "cp -rf ./dist/. ./app",
     "build:stage": "vue-cli-service build --mode staging",
     "lint": "vue-cli-service lint",    
