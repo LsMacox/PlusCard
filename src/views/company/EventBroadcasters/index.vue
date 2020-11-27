@@ -17,7 +17,7 @@
           cols="auto"
           class="title-m-bold neutral-900--text"
         >
-          Вещатели событий(Акции)
+          Активности клиентов
         </v-col>
         <!-- <v-spacer /> -->
         <v-col
@@ -32,6 +32,7 @@
                 :prepend-inner-icon="'$iconify_search-outlined'"
                 placeholder="Быстрый поиск"
                 style="min-width: 225px"
+                escape-clearable
                 hide-details
                 clearable
               />
@@ -48,7 +49,7 @@
             :item-class="() => 'clickable-row'"
             :is-custom-header="false"
             :total-count="filtered_broadcasters.length"
-            :word-operations="['модерация', 'модерации', 'модераций']"
+            :word-operations="['активность', 'активности', 'активностей']"
             :pagination="{
               sortBy: 'updated_at',
               descending: 'descending',
@@ -65,22 +66,65 @@
             <template v-slot:[`item.finish_at`]="{ item }">
               <date-column :value="item.finish_at" />
             </template>
+            <template v-slot:[`item.last_emit`]="{ item }">
+              <date-column :value="item.last_emit" />
+            </template>
+            <template v-slot:[`item.next_emit`]="{ item }">
+              <date-column :value="item.next_emit" />
+            </template>
+            <template v-slot:[`item.active`]="{ item }">
+              <v-switch
+                v-model="item.active"
+                :loading="item.changeActiveAction"
+                :disabled="item.changeActiveAction"
+                inset
+                hide-details
+                class="custom-switch"
+                @change="activeChange(item, $event)"
+              />
+            </template>
 
             <template v-slot:[`item.actions`]="{ item }">
-              <v-icon @click="openModerationClick(item)">
-                mdi-chevron-right
-              </v-icon>
+              <v-menu
+                offset-y
+              >
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    small
+                    :loading="item.loading"
+                    v-on="on"
+                  >
+                    <v-icon>$iconify_feather-more-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense>
+                  <v-list-item
+                    v-for="(menuItem, index) in getItemActions(item)"
+                    :key="index"
+                    @click="menuItem.action(item)"
+                  >
+                    <v-list-item-icon>
+                      <v-icon color="neutral-500">
+                        {{ menuItem.icon }}
+                      </v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title
+                      :class=" {
+                        'body-s-medium' : true,
+                        'neutral-500--text':true,
+                      }"
+                    >
+                      {{ menuItem.title }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </template>
             <!-- </v-data-table> -->
           </base-table>
         </v-col>
       </v-row>
-      <moderation-form
-        v-if="showDialog"
-        v-model="showDialog"
-        :moderation-id="moderationId"
-        :program-id="programId"
-      />
     </v-container>
     <!-- Заглушка -->
     <base-empty-block-page
@@ -90,7 +134,7 @@
       action-icon="$iconify_ant-design-gift-outlined"
       action-text="Создать акцию"
       action
-      @action="openBroadcasterClick"
+      @action="createBroadcasterClick"
     >
       <template v-slot:image>
         <v-img
@@ -104,11 +148,13 @@
 </template>
 <script>
   import { mapGetters, mapActions } from 'vuex'
-//   import Vue from 'vue'
+  import Permission from '@/mixins/permission'
+  //   import Vue from 'vue'
   export default {
     components: {
       DateColumn: () => import('@/components/colums/DateColumn.vue'),
     },
+    mixins: [Permission],
     data () {
       return {
         search: '',
@@ -121,10 +167,15 @@
             width: '7em',
           },
           { text: 'Название', value: 'name' },
+          { text: 'Режим', value: 'EmitModeText' },
           { text: 'Старт', value: 'start_at', width: '9em' },
-          { text: 'Окончание', value: 'finish_at', width: '9em' },
-          { text: 'Активна', value: 'active', width: '15em' },
+          { text: 'Окончание', value: 'finish_at', width: '11em' },
+
+          { text: 'Послед. запуск', value: 'last_emit', width: '9em' },
+          { text: 'След. запуск', value: 'next_emit', width: '9em' },
+          { text: '', value: 'active', width: '1em' },
           { text: '', value: 'actions', width: '1em' },
+
         ],
       }
     },
@@ -134,7 +185,19 @@
         broadcasters: 'company/event_broadcasters/broadcasters',
       }),
       filtered_broadcasters () {
-        return this.broadcasters.filter((x) => true)
+        if (this.search_comp) {
+          return this.broadcasters.filter((item) =>
+            item.id === +this.search_comp ||
+            // (item.created_at_format.toLowerCase().includes(this.search_comp)) ||
+            (item.name.toLowerCase().includes(this.search_comp)) ||
+            (item.EmitModeText.toLowerCase().includes(this.search_comp)),
+          )
+        } else {
+          return this.broadcasters
+        }
+      },
+      search_comp () {
+        return this.search ? this.search.trim().toLowerCase() : ''
       },
     },
     watch: {
@@ -158,7 +221,40 @@
         })
       },
       openBroadcasterClick (item = null) {
-          
+        // item.emit_mode = 'MANUAL'
+      },
+      createBroadcasterClick () {},
+      async activeChange (item, active) {
+        try {
+          console.log('activeChange', item, active)
+          item.changeActiveAction = true
+          await this.$sleep()
+          // await this.$store.dispatch('configuringIntegrations/configuring_integrations/SetRevokedClient', {
+          //   id: item.id,
+          //   revoked: !active,
+          // })
+        } catch (error) {
+          item.active = !item.active
+        } finally {
+          item.changeActiveAction = false
+        }
+      },
+      deleteBroadcasterClick (item) {},
+      getItemActions (item) {
+        return [
+          {
+            icon: '$iconify_ion-document-outline',
+            title: 'Редактировать',
+            action: () => {},
+            show: this.hasProgramPermission('program-broadcaster-update', item.program_id),
+          },
+          {
+            icon: '$iconify_feather-trash',
+            title: 'Удалить',
+            action: (item) => this.deleteCertOrderClick(item),
+            show: !item.deleted_at && this.hasProgramPermission('program-broadcaster-delete', item.program_id),
+          },
+        ].filter(x => x.show)
       },
     },
   }

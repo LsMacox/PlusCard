@@ -1,7 +1,7 @@
 import ApiService from '@/api/api-client'
 import Vue from 'vue'
-
 import { EVENTS_ENUM } from '@/models/enums'
+import ProgramEventBroadcaster from '@/models/program/broadcaster'
 
 function eventFilter (event) {
     return (item) => {
@@ -17,12 +17,12 @@ function activeFilter (active) {
 export default {
     namespaced: true,
     state: {
-        broadcasters: [],       
+        broadcasters: [],
     },
-    mutations: {        
+    mutations: {
         SET_BROADCASTERS (state, payload) {
             state.broadcasters = payload
-        },      
+        },
               ADD_BROADCASTER (state, newItem) {
             state.broadcasters.push(newItem)
         },
@@ -35,7 +35,7 @@ export default {
         async GetList ({ commit }, programId) {
             const result = await ApiService.get(
                 `/api-cabinet/program/account/event/broadcaster/list?program_id=${programId}`,
-            )            
+            )
             commit('SET_BROADCASTERS', result)
         },
 
@@ -143,7 +143,9 @@ export default {
     },
     getters: {
         broadcasters (state) {
-            return state.broadcasters
-        },       
+            return state.broadcasters.map(item => {
+                return new ProgramEventBroadcaster(item)
+            })
+        },
     },
 }

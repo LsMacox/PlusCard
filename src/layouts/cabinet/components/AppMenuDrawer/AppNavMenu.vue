@@ -91,7 +91,7 @@
         },
         {
           icon: '$iconify_ion-megaphone-outline',
-          title: 'Акции',
+          title: 'Активности',
           to: '/program/broadcasters',
         },
         {
