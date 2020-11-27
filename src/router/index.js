@@ -266,6 +266,13 @@ export default new Router({
           meta: { auth: true, title: 'EventBroadcastersList', icon: 'dashboard' },
         },
         {
+          path: '/program/broadcasters/master',
+          beforeEnter: GuardEmptyPrograms,
+          component: () => import('@/views/company/EventBroadcasters/master'),
+          name: 'EventBroadcasterMaster',
+          meta: { auth: true, title: 'EventBroadcastersMaster', icon: 'dashboard' },
+        },
+        {
           path: 'sendings',
           beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/SkeletonPage'),

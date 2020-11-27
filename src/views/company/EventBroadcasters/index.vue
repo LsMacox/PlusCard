@@ -27,7 +27,6 @@
         >
           <v-row>
             <v-col>
-            
               <base-text-field
                 v-model.trim="search"
                 :prepend-inner-icon="'$iconify_search-outlined'"
@@ -37,6 +36,16 @@
                 hide-details
                 clearable
               />
+            </v-col>
+            <v-col cols="auto">
+              <v-btn
+                color="primary"
+                @click="createBroadcasterClick"
+              >
+                <v-icon left>
+                  $iconify_plus-circle-outlined
+                </v-icon> <span>Создать</span>
+              </v-btn>
             </v-col>
           </v-row>
         </v-col>
@@ -134,7 +143,7 @@
       title="Здесь пока ничего нет :’("
       description="TODO"
       action-icon="$iconify_ant-design-gift-outlined"
-      action-text="Создать акцию"
+      action-text="Создать активность"
       action
       @action="createBroadcasterClick"
     >
@@ -214,7 +223,9 @@
       openBroadcasterClick (item = null) {
         // item.emit_mode = 'MANUAL'
       },
-      createBroadcasterClick () {},
+      createBroadcasterClick () {
+        this.$router.push({ name: 'EventBroadcasterMaster' })
+      },
       async activeChange (item, active) {
         try {
           console.log('activeChange', item, active)
