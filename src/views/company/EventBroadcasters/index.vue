@@ -211,7 +211,8 @@
     methods: {
       ...mapActions({
         GetList: 'company/event_broadcasters/GetList',
-         SetActiveBroadcaster: 'company/event_broadcasters/SetActiveBroadcaster',
+        SetActiveBroadcaster: 'company/event_broadcasters/SetActiveBroadcaster',
+        DeleteBroadcaster: 'company/event_broadcasters/DeleteBroadcaster',
       }),
       loadData () {
         console.log('loadData this.programId', this.programId)
@@ -236,14 +237,23 @@
             id: item.id,
             active: active,
           })
-
         } catch (error) {
           item.active = !item.active
         } finally {
           item.changeActiveAction = false
         }
       },
-      deleteBroadcasterClick (item) {},
+      async deleteBroadcasterClick (item) {
+        try {
+          item.action = true
+          // await this.$sleep()
+          await this.DeleteBroadcaster(item.id)
+        } catch (e) {
+          console.error(e)
+        } finally {
+          item.action = false
+        }
+      },
       getItemActions (item) {
         return [
           {
@@ -255,7 +265,7 @@
           {
             icon: '$iconify_feather-trash',
             title: 'Удалить',
-            action: (item) => this.deleteCertOrderClick(item),
+            action: this.deleteBroadcasterClick,
             show: !item.deleted_at && this.hasProgramPermission('program-broadcaster-delete', item.program_id),
           },
         ].filter(x => x.show)

@@ -36,6 +36,7 @@ export default class ProgramEventBroadcaster {
     constructor (data) {
         Object.assign(this, data)
         Vue.set(this, 'changeActiveAction', false)
+        Vue.set(this, 'action', false)
     }
 
     dateTimeFormat (dateUtc) {
