@@ -19,6 +19,8 @@ export const ICONIFY_ICONS = {
     'question-circle-outlined': () => import('@iconify/icons-ant-design/question-circle-outlined'),
 
     // bi
+    'bi-arrow-down-up': () => import('@iconify-icons/bi/arrow-down-up'),
+    // icons-bi
     'arrow-left': () => import('@iconify/icons-bi/arrow-left'),
     'bi-phone': () => import('@iconify/icons-bi/phone'),
 

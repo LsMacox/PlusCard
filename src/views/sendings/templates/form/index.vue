@@ -2,42 +2,67 @@
   <div>
     <page-header />
     <div class="pls--page-block-center">
-      <v-text-field
-        placeholder="Название шаблона"
-        outlined
+      <v-form
+        :ref="formRef"
+        v-model="valid"
       >
-        <template slot="prepend-inner">
-          <span
-            class="iconify"
-            data-icon="ion:mail-outline"
-            data-inline="false"
-          />
-        </template>
-      </v-text-field>
+        <v-text-field
+          v-model="form.name"
+          placeholder="Название шаблона"
+          outlined
+        >
+          <template slot="prepend-inner">
+            <v-icon>$iconify_feather-edit</v-icon>
+          </template>
+        </v-text-field>
+        <v-text-field
+          v-model="form.title"
+          placeholder="Заголовок сообщения"
+          outlined
+        >
+          <template slot="prepend-inner">
+            <v-icon>$iconify_feather-edit</v-icon>
+          </template>
+        </v-text-field>
+        <v-textarea
+          v-model="form.description"
+          placeholder="Описание сообщения"
+          outlined
+          rows="3"
+        >
+          <template slot="prepend-inner">
+            <v-icon>$iconify_feather-edit</v-icon>
+          </template>
+        </v-textarea>
+        <content-constructor
+          :attachments.sync="form.attachments"
+        />
+      </v-form>
     </div>
   </div>
 </template>
 
 <script>
   import PageHeader from './PageHeader'
+  import ContentConstructor from './ContentConstructor/index'
+
   export default {
     components: {
       PageHeader,
+      ContentConstructor,
     },
     data () {
       return {
-        template: {},
-        types: [
-          { id: 'simple', value: 'Простое' },
-          { id: 'complex', value: 'Комплексное' },
-        ],
+        loading: false,
+        valid: true,
+        formRef: 'form',
+        form: {},
       }
     },
     computed: {
-      defaultTemplate () {
+      defaultForm () {
         return {
           name: null,
-          type: 'simple',
           title: null,
           description: null,
           attachments: [],
@@ -46,7 +71,7 @@
     },
     created () {
       if (this.$route.params.id === 'new') {
-        this.template = Object.copy(this.defaultTemplate)
+        this.form = Object.copy(this.defaultForm)
       }
     },
   }
