@@ -211,6 +211,7 @@
     methods: {
       ...mapActions({
         GetList: 'company/event_broadcasters/GetList',
+         SetActiveBroadcaster: 'company/event_broadcasters/SetActiveBroadcaster',
       }),
       loadData () {
         console.log('loadData this.programId', this.programId)
@@ -230,11 +231,12 @@
         try {
           console.log('activeChange', item, active)
           item.changeActiveAction = true
-          await this.$sleep()
-          // await this.$store.dispatch('configuringIntegrations/configuring_integrations/SetRevokedClient', {
-          //   id: item.id,
-          //   revoked: !active,
-          // })
+          // await this.$sleep()
+          await this.SetActiveBroadcaster({
+            id: item.id,
+            active: active,
+          })
+
         } catch (error) {
           item.active = !item.active
         } finally {
@@ -247,7 +249,7 @@
           {
             icon: '$iconify_ion-document-outline',
             title: 'Редактировать',
-            action: () => {},
+            action: (item) => {},
             show: this.hasProgramPermission('program-broadcaster-update', item.program_id),
           },
           {

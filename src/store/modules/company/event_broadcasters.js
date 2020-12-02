@@ -1,6 +1,5 @@
 import ApiService from '@/api/api-client'
 import Vue from 'vue'
-import { EVENTS_ENUM } from '@/models/enums'
 import ProgramEventBroadcaster from '@/models/program/broadcaster'
 
 function eventFilter (event) {
@@ -23,12 +22,38 @@ export default {
         SET_BROADCASTERS (state, payload) {
             state.broadcasters = payload
         },
-              ADD_BROADCASTER (state, newItem) {
+        ADD_BROADCASTER (state, newItem) {
             state.broadcasters.push(newItem)
+        },
+        UPDATE_BROADCASTER (state, item) {
+            const index = state.broadcasters.findIndex((x) => x.id === item.id)
+            if (index >= 0) {
+                Vue.set(state.broadcasters, index, Object.assign({}, state.broadcasters[index], item))
+            }
         },
         REMOVE_BROADCASTER (state, id) {
             const index = state.broadcasters.findIndex((x) => x.id === id)
-            state.broadcasters.splice(index, 1)
+            if (index >= 0) state.broadcasters.splice(index, 1)
+        },
+        SYNC_HANDLER (state, handler) {
+            const index = state.broadcasters.findIndex((x) => x.id === handler.broadcaster_id)
+            if (index >= 0) {
+                const indexHandler = state.broadcasters[index].handlers.findIndex((x) => x.id === handler.id)
+                if (indexHandler >= 0) {
+                    const handler = state.broadcasters[index].handlers[indexHandler]
+                    Vue.set(state.broadcasters[index].handlers, indexHandler, Object.assign({}, handler, handler))
+                } else {
+                    state.broadcasters[index].handlers.push(handler)
+                }
+            }
+        },
+        REMOVE_HANDLER (state, handler) {
+            const index = state.broadcasters.findIndex((x) => x.id === handler.broadcaster_id)
+            if (index >= 0) {
+                const broadcaster = state.broadcasters[index]
+                const indexHandler = broadcaster.handlers.findIndex((x) => x.id === handler.id)
+                if (indexHandler >= 0) broadcaster.handlers.splice(indexHandler, 1)
+            }
         },
     },
     actions: {
@@ -39,107 +64,105 @@ export default {
             commit('SET_BROADCASTERS', result)
         },
 
-        async DeleteBonusRes ({ commit }, id) {
+        async CheckClientFilter ({ commit }, filter) {
+            const result = await ApiService.post('/api-cabinet/program/account/event/broadcaster/filter/validate', filter)
+            return result
+        },
+
+        async DeleteBroadcaster ({ commit }, id) {
             await ApiService.delete(
-                `/api-cabinet/program/bonus_resources/delete?id=${id}`,
+                `/api-cabinet/program/account/event/broadcaster?broadcaster_id=${id}`,
             )
 
-            commit('REMOVE_BONUS_RESOURCE', id)
+            commit('REMOVE_BROADCASTER', id)
 
             this._vm.$notify({
-                title: 'Удаление бонусной операции',
-                text: 'Бонусная операция успешно удалена',
+                title: 'Удаление активности',
+                text: 'Активность успешно удалена',
                 type: 'success',
             })
         },
-        async CreateBonusRes ({ commit }, { bonusRes, silent }) {
+
+        async CreateBroadcaster ({ commit }, broadcaster) {
             const result = await ApiService.post(
-                '/api-cabinet/program/bonus_resources/add',
-                bonusRes,
+                '/api-cabinet/program/account/event/broadcaster',
+                broadcaster,
             )
 
-            commit('ADD_BONUS_RESOURCE', result)
-            if (!silent) {
-                this._vm.$notify({
-                    title: 'Создание бонусной операции',
-                    text: `Бонусная операция "${result.title}" успешно создана`,
-                    type: 'success',
-                })
-            }
+            commit('ADD_BROADCASTER', result)
+            this._vm.$notify({
+                title: 'Создание активности',
+                text: `Активность "${result.name}" успешно создана`,
+                type: 'success',
+            })
+            return result
         },
-        async UpdateBonusRes ({ commit }, { bonusRes, silent }) {
-            const result = await ApiService.post(
-                '/api-cabinet/program/bonus_resources/update',
-                bonusRes,
+
+        async UpdateBroadcaster ({ commit }, broadcaster) {
+            const result = await ApiService.put(
+                '/api-cabinet/program/account/event/broadcaster',
+                broadcaster,
             )
 
-            commit('UPDATE_BONUS_RESOURCE', result)
-            if (!silent) {
-                this._vm.$notify({
-                    title: 'Обновление бонусной операции',
-                    text: `Бонусная операция "${result.title}" успешно обновлена`,
-                    type: 'success',
-                })
-            }
-        },
-        async SetActiveResource ({ state, commit }, { event, programId, active }) {
-            const bonusResIds = state.bonusResources
-                .filter(x => x.program_id === programId)
-                .filter(eventFilter(event))
-                .map(x => x.id)
-                console.log('bonusResIds', bonusResIds)
-            if (bonusResIds.length === 0) {
-               throw Error('Включение не возможно: требуется заполнить блок')
-            }
+            commit('UPDATE_BROADCASTER', result)
 
-            await ApiService.post(
-                '/api-cabinet/program/bonus_resources/active/set',
+            this._vm.$notify({
+                title: 'Обновление активности',
+                text: `Активность "${result.name}" успешно обновлена`,
+                type: 'success',
+            })
+        },
+
+        async SetActiveBroadcaster ({ state, commit }, { id, active }) {
+            const result = await ApiService.put(
+                '/api-cabinet/program/account/event/broadcaster/active',
                 {
-                    ids: bonusResIds,
-                    program_id: programId,
+                    broadcaster_id: id,
                     active,
                 },
             )
 
-            for (let index = 0; index < bonusResIds.length; index++) {
-                const id = bonusResIds[index]
-                commit('UPDATE_BONUS_RESOURCE_ACTIVE', { id, active })
-            }
+            commit('UPDATE_BROADCASTER', result)
 
             this._vm.$notify({
-                title: 'Бонусная механика',
-                text: `Бонусная механика ${active ? 'включена' : 'выключена'}`,
+                title: 'Активность',
+                text: `Активность ${active ? 'включена' : 'выключена'}`,
                 type: 'success',
             })
         },
-        async get_active_list ({ commit }, id) {
-            ApiService.get(
-                `/api-cabinet/program/bonus_resources/list?program_id=${id}&active=1`,
+
+        async CreateBroadcasterHandler ({ commit }, handler) {
+            const result = await ApiService.post(
+                '/api-cabinet/program/account/event/broadcaster/handler',
+                handler,
             )
-                .then((response) => {
-                    commit('activeBonusResources', response.data.data)
-                })
-                .catch((error) => {
-                    if (error.response) {
-                        /// /console.log(JSON.stringify(error.response.data));
-                    }
-                })
-        },
-        async GetActiveShortList ({ commit }, id) {
-            const response = await ApiService.get(
-                '/api-cabinet/program/bonus/resource/list/short?program_id=' +
-                    id,
-            )
-            // console.log('GetActiveShortList')
-            // console.log(response)
-            commit('activeBonusResourcesShort', response)
-            return response
+
+            commit('SYNC_HANDLER', result)
+            this._vm.$notify({
+                title: 'Создание обработчик создан',
+                // text: `Активность "${result.name}" успешно создана`,
+                type: 'success',
+            })
         },
 
-        FilterBonusRes ({ state }, { event, active }) {
-            console.log('FilterBonusRes')
-            return state.bonusResources.filter(eventFilter(event)).filter(activeFilter(active))
+        async SetActiveBroadcasterHandler ({ state, commit }, { handlerId, active }) {
+            const result = await ApiService.put(
+                '/api-cabinet/program/account/event/broadcaster/handler/active',
+                {
+                    handler_id: handlerId,
+                    active,
+                },
+            )
+
+            commit('SYNC_HANDLER', result)
+
+            this._vm.$notify({
+                title: 'Обработчик',
+                text: `Обработчик ${active ? 'включен' : 'выключен'}`,
+                type: 'success',
+            })
         },
+
     },
     getters: {
         broadcasters (state) {

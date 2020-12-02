@@ -88,7 +88,7 @@
       </v-col>
     </v-row>
 
-    <v-row
+    <v-row v-if="!hideDefaultFooter"
       align="center"
       class="pagination"
     >
@@ -138,6 +138,10 @@
     mixins: [Convertor],
     inheritAttrs: false,
     props: {
+      hideDefaultFooter: {
+        type: Boolean,
+        default: false,
+      },
       isCustomHeader: {
         type: Boolean,
         default: true,

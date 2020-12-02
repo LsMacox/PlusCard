@@ -44,7 +44,7 @@
                   <step-handlers
                     ref="PageHandlers"
                     v-model="broadcaster"
-                    @continue="currentStep=1"
+                    @continue="currentStep=3"
                   />
                 </v-tab-item>
               </v-tabs-items>
@@ -72,6 +72,7 @@
         <span>Создавайте и настраивайте программы и сертификаты,<br> отслеживайте показатели продаж и многое другое.</span>
       </template>
     </base-empty-block-page>
+   
   </div>
 </template>
 
@@ -83,6 +84,7 @@
       StepMain: () => import('./EventBroadcasterFormTabs/tabMain.vue'),
       StepFilter: () => import('./EventBroadcasterFormTabs/tabFilter.vue'),
       StepHandlers: () => import('./EventBroadcasterFormTabs/tabHandlers.vue'),
+      
     },
     constants: {
       DEFAULT_BROADCASTER: {
@@ -99,6 +101,7 @@
         },
         period: null,
         with_trashed: false,
+        async_process: true,
         handlers: [],
       },
       stepList: [
@@ -111,11 +114,11 @@
       return {
         createCertificateLoading: false,
         currentStep: 0,
-        broadcaster: null,
+        broadcaster: null,       
       }
     },
     computed: {
-      ...mapGetters('', ['programId']),
+      ...mapGetters(['programId']),
     },
     created () {
       this.init()
@@ -123,6 +126,9 @@
     methods: {
       init () {
         this.broadcaster = Object.assign({}, this.DEFAULT_BROADCASTER)
+        // this.broadcaster.start_at = this.$moment().toString()
+        this.broadcaster.program_id = this.programId
+        console.log('init', this.broadcaster)
         this.currentStep = 0
       },
       onClickNew () {

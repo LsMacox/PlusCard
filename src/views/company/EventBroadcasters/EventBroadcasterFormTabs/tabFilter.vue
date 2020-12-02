@@ -1,5 +1,5 @@
 <template>
-  <v-container>   
+  <v-container>
     <v-row
       align="center"
       justify="center"
@@ -10,57 +10,37 @@
           v-model="formValid"
         >
           <BaseMasterFieldBlock
-            title="Название"
-            :horisontal="true"
+            title="Отбор клиентов"
+            description="Выберите клиентов, с которыми будет взаимодействовать этот бизнес-процесс."
           >
-            <span
-              slot="description"
-            >Юридическое название компании без кавычек и формы собственности. Есть фирменное название? Отлично! Вводите его.</span>
             <template v-slot:input>
-              <base-text-field
-                v-model="program.name"
-                :validate-on-blur="true"
-                placeholder="Название компании"
-                outlined
-                counter
-                minlength="1"
-                maxlength="20"
-                :rules="[
-                  v => !!v || 'Название компании обязательно',
-                  v => v.length <= 20 || 'Название компании не должно быть более 20 символов'
-                ]"
-              />
-            </template>
-          </BaseMasterFieldBlock>
-
-          <v-row>
-            <v-col>
-              <BaseMasterFieldBlock
-                title="Карта клиента"
-              >
-                <span
-                  slot="description"
-                >Вот так будет выглядеть ваша карта в приложении. Измените цвет карты кликнув на ней и загрузите логотип, кликнув по иконке.</span>
-              </BaseMasterFieldBlock>
-            </v-col>
-            <v-col style="padding-top: 75px;">
-              <company-card
-                :program="program"
-              />
-            </v-col>
-          </v-row>
-
-          <BaseMasterFieldBlock
-            title="Выпуск карты"
-          >
-            <span
-              slot="description"
-            >Хотите ли вы дать вашим клиентам возможность выпускать карту самостоятельно в приложении? Если выключить параметр, то карту сможет выпустить только ваш сотрудник.</span>
-            <template v-slot:input>
-              <base-ext-switch
-                v-model="program.allow_issue"
-                label="Разрешить самостоятельный выпуск карты"
-              />
+              <v-row>
+                <v-col>
+                  <v-textarea
+                    v-if="model.client_filter && model.client_filter.type === 'SQL'"
+                    v-model="model.client_filter.clause"
+                    :rows="3"
+                    auto-grow
+                    placeholder="Укажите фильтр "
+                    outlined
+                    maxlength="10000"
+                    :success-messages="clientFilterSuccessMessage"
+                    :error-messages="clientFilterErrorMessage"
+                    :loading="clientValidationAction"
+                    @blur="checkFilter"
+                    @input="resetClientValidation"
+                  />
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <base-ext-switch
+                    v-model="model.with_trashed"
+                    label="Отбирать удаленных клиентов"
+                    @change="checkFilter"
+                  />
+                </v-col>
+              </v-row>
             </template>
           </BaseMasterFieldBlock>
 
@@ -86,40 +66,93 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapActions } from 'vuex'
 
   export default {
     components: {
-      CompanyCard: () => import('@/components/dialogs/CompanyCard'),
     },
     model: {
-      prop: 'program',
+      prop: 'model',
       event: 'change',
     },
     props: {
-      program: {
+      model: {
         type: Object,
         required: true,
       },
     },
     data () {
       return {
-
         formValid: false,
+        clientFilterSuccessMessage: null,
+        clientFilterErrorMessage: null,
+        clientValidationAction: false,
 
       }
     },
     computed: {
       valid () {
-        return this.formValid && this.program.logo
+        return this.formValid && !this.clientFilterErrorMessage
+      },
+      clientFilterRules () {
+        return [
+          this.checkFilter,
+        ]
       },
     },
     created () {
 
     },
     methods: {
-      onNextClick () {
-        if (this.$refs.form.validate()) {
+      ...mapActions({
+        CheckClientFilter: 'company/event_broadcasters/CheckClientFilter',
+      }),
+      resetClientValidation () {
+        console.log('resetClientValidation')
+        this.clientFilterSuccessMessage = null
+        this.clientFilterErrorMessage = null
+      },
+      clientFilterChange (event) {
+        console.log('event', event)
+        this.clientFilterSuccessMessage = null
+      },
+      async checkFilter () {
+        this.resetClientValidation()
+
+        try {
+          this.clientValidationAction = true
+          if (this.model.client_filter && this.model.client_filter.type === 'SQL' && this.model.client_filter.clause) {
+            if (this.model.client_filter.clause.length > 10000) throw new Error('Превышение максимальной длины')
+
+            const postData = {
+              program_id: this.model.program_id,
+              client_filter: this.model.client_filter,
+              with_trashed: this.model.with_trashed,
+              goal_id: null,
+            }
+            const result = await this.CheckClientFilter(postData)
+            if (result && !result.error) {
+              this.clientFilterSuccessMessage = `В выборке ${result.count} клиентов`
+            } else {
+              this.clientFilterErrorMessage = result.error
+            }
+          }
+        } catch (e) {
+          console.error(e)
+          this.clientFilterErrorMessage = e.message
+        } finally {
+          this.clientValidationAction = false
+        }
+
+        return !this.clientFilterErrorMessage
+      },
+
+      async validate () {
+        return this.$refs.form.validate() && await this.checkFilter()
+      },
+      async onNextClick () {
+        const valid = await this.validate()
+        if (valid) {
           this.$emit('continue', true)
         }
       },

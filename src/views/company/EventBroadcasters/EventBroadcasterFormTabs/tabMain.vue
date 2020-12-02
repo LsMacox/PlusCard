@@ -36,8 +36,30 @@
           >
             <template v-slot:input>
               <v-row>
-                <v-col>Дата и время начала работы</v-col>.
-                <v-col>Дата и время окончания работы</v-col>.
+                <v-col>
+                  <base-date-text-field
+                    :date.sync="model.start_at"
+                    date-format="DD.MM.YYYY HH:mm:ss"
+                    class="date-start"
+                    placeholder="Дата и время начала работы"
+                    :rules="[
+                      v => validateDates(v),
+                    ]"
+                    time-picker
+                  />
+                </v-col>
+                <v-col>
+                  <base-date-text-field
+                    :date.sync="model.finish_at"
+                    date-format="DD.MM.YYYY HH:mm:ss"
+                    class="date-start"
+                    placeholder="Дата и время окончания работы"
+                    :rules="[
+                      v => validateDates(v),
+                    ]"
+                    time-picker
+                  />
+                </v-col>.
               </v-row>
             </template>
           </BaseMasterFieldBlock>
@@ -67,6 +89,7 @@
             description="Выберите один из режимов запуска бизнес-процесса и настройте его параметры. "
           >
             <template v-slot:input>
+              {{ model.period }}
               <v-row>
                 <v-col>
                   <v-radio-group
@@ -82,6 +105,61 @@
                       :value="item.id"
                     />
                   </v-radio-group>
+                </v-col>
+              </v-row>
+              <v-row
+                v-if="emitMode=== ProgramEventBroadcaster.EMIT_MODE_ENUM.EVENT.id "
+                align="center"
+              >
+                <v-col>
+                  <v-select
+                    v-model="model.listen_event"
+                    class=""
+                    :items="accountEventList"
+                    item-text="text"
+                    item-value="id"
+                    placeholder="Выберите событие"
+                    outlined
+                    :rules="[
+                      v => !!v || 'Выберите событие',
+                    ]"
+                  />
+                </v-col>
+              </v-row>
+              <v-row
+                v-if="emitMode=== ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id && model.period "
+                align="center"
+              >
+                <v-col cols="auto">
+                  Запускать процесс каждые
+                </v-col>
+                <v-col cols="auto">
+                  <base-text-field
+                    v-model.number="model.period.value"
+                    :validate-on-blur="true"
+                    :style="{width: '72px'}"
+                    :key-filter-regexp="/(\d|Delete|Backspace|Enter)/"
+                    outlined
+                    :rules="[
+                      v => !!v || 'обязательно',
+                    ]"
+                  />
+                </v-col>
+                <v-col cols="auto">
+                  <v-select
+                    v-model="model.period.type"
+                    :style="{width: '150px'}"
+                    class=""
+                    :items="periodTypeList"
+                    item-text="text"
+                    item-value="id"
+                    placeholder="Период"
+                    outlined
+                    hide-details=""
+                    :rules="[
+                      v => !!v || 'Выберите периодичность',
+                    ]"
+                  />
                 </v-col>
               </v-row>
             </template>
@@ -127,9 +205,15 @@
         required: true,
       },
     },
+    constants: {
+      ProgramEventBroadcaster,
+      periodTypeList: ProgramEventBroadcaster.PERIOD_ENUM.toList(),
+      accountEventList: [
+        { id: 'id', text: 'text' },
+      ],
+    },
     data () {
       return {
-
         formValid: false,
         emitModeList: [
           { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.MANUAL.id, text: 'Ручной запуск' },
@@ -137,20 +221,49 @@
           { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id, text: 'По расписанию' },
           { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.EVENT.id, text: 'По событию' },
         ],
-
       }
     },
     computed: {
 
       emitMode: {
-        get: function () { return this.model.emit_mode },
-        set: function (v) { this.model.emit_mode = v },
+        get: function () {
+          if (this.model.emit_mode === ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id) {
+            return this.model.period && this.model.period.type === ProgramEventBroadcaster.PERIOD_ENUM.ONCE.id
+              ? ProgramEventBroadcaster.PERIOD_ENUM.ONCE.id : ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id
+          } else {
+            return this.model.emit_mode
+          }
+        },
+        set: function (v) {
+          this.model.emit_mode = v
+          if (v === ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id) {
+            this.model.period = {
+              type: ProgramEventBroadcaster.PERIOD_ENUM.DAY.id,
+              value: null,
+            }
+          } else if (v === ProgramEventBroadcaster.PERIOD_ENUM.ONCE.id) {
+            this.model.emit_mode = ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id
+            this.model.period = {
+              type: ProgramEventBroadcaster.PERIOD_ENUM.ONCE.id,
+              value: null,
+            }
+          } else {
+            this.model.period = null
+          }
+        },
       },
     },
     created () {
 
     },
     methods: {
+      validateDates (v) {
+        if (this.model.start_at && this.model.finish_at) {
+          return this.$moment(this.model.start_at).diff(this.$moment(this.model.finish_at)) < 0 || 'Дата окончания должна быть больше начала'
+        } else {
+          return true
+        }
+      },
       onNextClick () {
         if (this.$refs.form.validate()) {
           this.$emit('continue', true)

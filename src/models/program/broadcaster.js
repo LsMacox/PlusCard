@@ -21,6 +21,16 @@ export default class ProgramEventBroadcaster {
         find (id) {
             return this[id] || this.default
         },
+        toList () {
+            return [
+              this.SECOND,
+              this.MINUTE,
+              this.HOUR,
+              this.DAY,
+              this.MONTH,
+              this.YEAR,
+            ]
+          },
     });
 
     constructor (data) {

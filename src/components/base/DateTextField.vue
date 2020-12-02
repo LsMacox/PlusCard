@@ -8,11 +8,11 @@
       <base-text-field
         ref="text-field"
         v-model="dateText"
-        v-mask="'##.##.####'"
-        v-bind="$attrs"
-        maxlength="10"
+        v-mask="mask"
+        v-bind="$attrs"       
         autocomplete="none"
         :autofocus="false"
+        :rules="rules"
         @focus="show()"
       >
         <template v-slot:append>
@@ -35,6 +35,7 @@
       v-model="dateRange"
       :class="{show: showDatePicker, 'date-range-picker': true, 'date-range-picker--left': left, }"
       opens="inline"
+      :time-picker="timePicker"
       :ranges="false"
       :auto-apply="true"
       :show-dropdowns="true"
@@ -90,6 +91,7 @@
   import { mask } from 'vue-the-mask'
   import DateRangePicker from 'vue2-daterange-picker'
   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
+  import { config } from '@/config'
 
   export default {
     name: 'DateTextField',
@@ -106,39 +108,56 @@
       },
       dateFormat: {
         type: String,
-        default: '',
+        default: config.date.DATE_FORMAT,
       },
       left: {
         type: Boolean,
         default: false,
       },
+      timePicker: {
+        type: Boolean,
+        default: false,
+      },
+      rules: {
+        type: Array,
+        default: undefined,
+      },
+
     },
     data () {
       return {
         dateText: '',
         showDatePicker: false,
         dateRange: {
-          startDate: new Date(Date.now()).toISOString().split('T')[0],
+          startDate: new Date(),
         },
       }
     },
-    computed: {},
+    computed: {
+      mask () {
+        return this.dateFormat.replace(/[DMYHhms]/g, '#')
+      },
+    },
     watch: {
       dateText (v) {
-        const date = this.$moment(v, this.dateFormat).toString()
+        const date = this.$moment(v, this.dateFormat).toISOString()
         console.log('update:date', date)
         this.$emit('update:date', date)
       },
     },
     created () {
-      if (this.date) this.dateText = this.$moment(this.date).format(this.$config.date.DATE_FORMAT)
+      if (this.date) {
+        this.dateRange.startDate = this.$moment(this.date)
+        this.dateText = this.$moment(this.date).format(this.dateFormat)
+      }
     },
     methods: {
       updateDatePicker (v) {
         this.showDatePicker = false
-        this.dateText = v.startDate.toISOString().split('T')[0]
         if (this.dateFormat.length) {
           this.dateText = this.$moment(v.startDate).format(this.dateFormat)
+        } else {
+          this.dateText = v.startDate.toISOString().split('T')[0]
         }
       },
       show () {

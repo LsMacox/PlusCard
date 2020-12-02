@@ -1,11 +1,11 @@
 <template>
   <v-navigation-drawer
     v-model="dialog"
-    class="cert-details"
+    class="base-drawer-dialog"
     fixed
     right
     temporary
-    :stateless="stateless"
+    :stateless="stateless"    
     :width="width"
   >
     <template v-slot:prepend>
