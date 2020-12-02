@@ -68,7 +68,9 @@ const actions = {
     async list ({ commit }, item) {
             // eslint-disable-next-line no-useless-catch
         try {
-            // console.log('merchant_id', merchant_id)
+            console.log('<ITEM>')
+            console.log(item)
+            console.log('<ITEM>')
             const success = await ApiService.post('api-cabinet/client/certificate/list2', item)
             commit('certificates', success.certificates)
             commit('totalCount', success.totalCount)
