@@ -7,7 +7,7 @@
         </v-icon>
       </div>
       <div style="cursor: pointer;">
-        {{ getTitle(block.type) }}
+        {{ getBlockTitle(block.type) }}
       </div>
       <v-spacer />
       <div>
@@ -57,7 +57,7 @@
 </template>
 
 <script>
-  import Block from './block'
+  import BlockMixin from './block'
   import BlockText from './BlockText'
   import BlockImage from './BlockImage'
   import BlockImages from './BlockImages'
@@ -76,7 +76,7 @@
       BlockFriend,
       BlockFriends,
     },
-    mixins: [Block],
+    mixins: [BlockMixin],
     props: {
       block: {
         type: Object,
@@ -87,23 +87,9 @@
       return {}
     },
     methods: {
-      getTitle (type) {
-        switch (type) {
-          case 'text':
-            return 'Текст'
-          case 'image':
-            return 'Изображение'
-          case 'images':
-            return 'Галерея'
-          case 'video':
-            return 'Видео'
-          case 'videos':
-            return 'Видеогалерея'
-          case 'friend':
-            return 'Друг'
-          case 'friends':
-            return 'Друзья'
-        }
+      getBlockTitle (type) {
+        const button = this.buttons.find(item => item.type === type)
+        return button.title
       },
       remove () {
         this.$emit('remove')

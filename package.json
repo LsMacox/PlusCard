@@ -17,6 +17,8 @@
   },
   "dependencies": {
     "@iconify-icons/bi": "^1.1.0",
+    "@iconify-icons/dashicons": "^1.1.0",
+    "@iconify-icons/fa-solid": "^1.1.0",
     "@riophae/vue-treeselect": "github:riophae/vue-treeselect",
     "@tinymce/tinymce-vue": "^3.2.2",
     "array-sort": "^1.0.0",

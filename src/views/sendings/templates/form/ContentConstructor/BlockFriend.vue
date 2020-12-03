@@ -14,10 +14,10 @@
 </template>
 
 <script>
-  import Block from './block'
+  import BlockMixin from './block'
 
   export default {
-    mixins: [Block],
+    mixins: [BlockMixin],
     props: {
       block: {
         type: Object,
