@@ -31,6 +31,8 @@ export const ICONIFY_ICONS = {
     'bx-bx-building-house': () => import('@iconify/icons-bx/bx-building-house'),
     'bx-bxs-error-alt': () => import('@iconify-icons/bx/bxs-error-alt'),
     'bx-bxs-error': () => import('@iconify-icons/bx/bxs-error'),
+    'bx-bx-text': () => import('@iconify-icons/bx/bx-text'),
+    'bx-bxs-image': () => import('@iconify-icons/bx/bxs-image'),
 
     // codicon
     'chrome-close': () => import('@iconify/icons-codicon/chrome-close'),
@@ -50,10 +52,18 @@ export const ICONIFY_ICONS = {
 
     // clarity
     'clarity-import-line': () => import('@iconify-icons/clarity/import-line'),
+    'clarity-image-line': () => import('@iconify-icons/clarity/image-line'),
+    'clarity-image-gallery-line': () => import('@iconify-icons/clarity/image-gallery-line'),
+    'clarity-image-gallery-solid': () => import('@iconify-icons/clarity/image-gallery-solid'),
+    'clarity-video-gallery-line': () => import('@iconify-icons/clarity/video-gallery-line'),
+    'clarity-video-gallery-solid': () => import('@iconify-icons/clarity/video-gallery-solid'),
 
     // entypo
     'chevron-right': () => import('@iconify/icons-entypo/chevron-right'),
     'chevron-left': () => import('@iconify/icons-entypo/chevron-right'),
+
+    // dashicons
+    'dashicons-video-alt3': () => import('@iconify-icons/dashicons/video-alt3'),
 
     // ion
     'ion-checkmark-done': () => import('@iconify/icons-ion/checkmark-done'),
@@ -112,6 +122,10 @@ export const ICONIFY_ICONS = {
     'feather-star': () => import('@iconify-icons/feather/star'),
     'feather-volume': () => import('@iconify/icons-feather/volume'),
     'feather-volume-1': () => import('@iconify/icons-feather/volume-1'),
+
+    // fa-solid
+    'fa-solid-user': () => import('@iconify-icons/fa-solid/user'),
+    'fa-solid-user-friends': () => import('@iconify-icons/fa-solid/user-friends'),
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),

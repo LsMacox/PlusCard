@@ -3,18 +3,28 @@
     <!-- добавление блоков -->
     <div class="pls--pushcon-menu">
       <div class="pls--pushcon-menu-items">
-        <div
+        <v-tooltip
           v-for="(item, i) in buttons"
           :key="i"
-          class="pls--pushcon-menu-item"
-          @click="add(item.type)"
+          open-delay="1000"
+          right
         >
-          <v-icon
-            class="pls--pushcon-menu-item-icon"
-          >
-            $iconify_{{ item.icon }}
-          </v-icon>
-        </div>
+          <template v-slot:activator="{ on, attrs }">
+            <div
+              class="pls--pushcon-menu-item"
+              v-bind="attrs"
+              v-on="on"
+              @click="add(item.type)"
+            >
+              <v-icon
+                class="pls--pushcon-menu-item-icon"
+              >
+                $iconify_{{ item.icon }}
+              </v-icon>
+            </div>
+          </template>
+          <span>{{ item.title }}</span>
+        </v-tooltip>
       </div>
     </div>
     <!-- лента блоков -->
@@ -46,12 +56,14 @@
 <script>
   import draggable from 'vuedraggable'
   import Block from './Block'
+  import BlockMixin from './block'
 
   export default {
     components: {
       draggable,
       Block,
     },
+    mixins: [BlockMixin],
     props: {
       attachments: {
         type: Array,
@@ -61,15 +73,6 @@
     data () {
       return {
         localAttachments: [],
-        buttons: [
-          { type: 'text', icon: 'feather-edit' },
-          { type: 'image', icon: 'feather-edit' },
-          { type: 'images', icon: 'feather-edit' },
-          { type: 'video', icon: 'feather-edit' },
-          { type: 'videos', icon: 'feather-edit' },
-          { type: 'friend', icon: 'feather-edit' },
-          { type: 'friends', icon: 'feather-edit' },
-        ],
         dragging: false,
       }
     },
