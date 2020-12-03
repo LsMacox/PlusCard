@@ -35,7 +35,7 @@
           </div>
         </div>
         <div
-          v-if="tab === 0"
+          v-if="getTabIndex === 0"
           class="save"
         >
           <v-btn

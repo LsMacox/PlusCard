@@ -397,9 +397,6 @@
         return this.$store.getters['auth/auth/merchant_id']
       },
       certificates () {
-        console.log(
-          this.$store.getters['account/certificate/certificate/certificates'],
-        )
         return this.$store.getters[
           'account/certificate/certificate/certificates'
         ].map(x => {

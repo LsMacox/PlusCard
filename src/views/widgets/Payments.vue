@@ -1,61 +1,45 @@
 <template>
-  <vertical-progress-frame
+  <cert-payment-statuses-frame
     class="w-payment"
     title="Выплаты"
-    :sub-titles="['Начислений', 'Списаний', 'Сгораний']"
-    :percentage-differences="[creditRatio, debitRatio, expiredRatio]"
-  >
-    <template>
-      <div>
-        sdfkj
-      </div>
-    </template>
-  </vertical-progress-frame>
+    :sub-titles="['Всего', 'Выплачено', 'Ожидает', 'Не выплачено', 'Не требуется']"
+    :colors="['#4776E6', '#00D15D', '#FFA338', '#EA4C2A', '#B5B5C4']"
+    :percentage-differences="payments"
+  />
 </template>
 
 <script>
-  import VerticalProgressFrame from '@/views/widgets/frames/VerticalProgressFrame'
+  import CertPaymentStatusesFrame from '@/views/widgets/frames/CertPaymentStatusesFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
 
   export default {
-    components: {VerticalProgressFrame },
+    components: { CertPaymentStatusesFrame },
     mixins: [WidgetFunctions],
     props: {
       widgetData: {
-        type: Object,
-        default: () => {},
+        type: Array,
+        default: () => [0, 0, 0, 0, 0],
       },
     },
     data () {
       return {
-        creditRatio: 0,
-        debitRatio: 0,
-        expiredRatio: 0,
+        payments: [0, 0, 0, 0, 0],
       }
     },
     computed: {
-      ratio () {
-        return 0
-      },
     },
     watch: {
       widgetData (v) {
         if (v) {
-          this.creditRatio = v.bonusRatio[0]
-          this.debitRatio = v.bonusRatio[1]
-          this.expiredRatio = v.bonusRatio[2]
+          this.payments = v
         }
       },
     },
     mounted () {
-      console.log('bonus ratio')
+      console.log('WIDGET_DATE')
       console.log(this.widgetData)
-      console.log('bonus ratio')
-      if (this.widgetData && this.widgetData.bonusRatio) {
-        this.creditRatio = this.widgetData.bonusRatio[0]
-        this.debitRatio = this.widgetData.bonusRatio[1]
-        this.expiredRatio = this.widgetData.bonusRatio[2]
-      }
+      console.log('WIDGET_DATE')
+      this.payments = this.widgetData
     },
     methods: {},
   }

@@ -3,18 +3,16 @@
     <v-col
       :cols="6"
       :sm="6"
-      :md="3"
+      :md="6"
     >
-      <certificates
-        :widget-data="widgetClientData"
-      />
+      <certificates />
     </v-col>
     <v-col
       :cols="6"
       :sm="6"
-      :md="3"
+      :md="6"
     >
-      <payments/>
+      <payments :widget-data="payments" />
     </v-col>
   </v-row>
 </template>
@@ -30,26 +28,26 @@
     },
     data () {
       return {
+        widgetData: [],
       }
     },
     computed: {
-      widgetClientData () {
-        return this.$store.getters['widget/bonusClients/widgetData']
-      },
-      widgetOperationData () {
-        return this.$store.getters['widget/operations/widgetData']
+      payments () {
+        return this.$store.getters['account/certificate/certificate/payments']
       },
     },
-    mounted () {},
-    methods: {
-      fetchData () {
-        this.$store.dispatch('widget/bonusClients/widget', this.widgetRequest)
-        this.$store.dispatch('widget/operations/widget', this.widgetRequest)
-        this.$store.dispatch('widget/bonuses/widget', this.widgetRequest)
-        // this.$store.dispatch('widget/operators/widget', this.widgetRequest)
-        // this.$store.dispatch('widget/operators/operators')
+    watch: {
+      payments (v) {
+        console.log('WIDGETLINE')
+        console.log(v)
+        console.log('WIDGETLINE')
+        this.widgetData = v
       },
     },
+    mounted () {
+      this.widgetData = this.payments
+    },
+    methods: {},
   }
 </script>
 

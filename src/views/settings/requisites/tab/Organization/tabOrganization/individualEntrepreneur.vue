@@ -75,9 +75,9 @@
               ]"
             />
           </div>
-          <div class="simple-width-md">
+          <div class="simple-width-sm mr-20">
             <p class="desc-13 color-text-dark font-weight-600">
-              ИНН
+              Введите ИНН
             </p>
             <base-text-field
               v-model="details.enterTin"
@@ -91,13 +91,13 @@
             />
           </div>
         </div>
-        <div class="block-two-input" style="margin-bottom: 64px">
+        <div class="block-two-input">
           <div class="simple-width-md mr-20">
             <p class="desc-13 color-text-dark font-weight-600">
               Расчетный счет
             </p>
             <base-text-field
-              v-model="details.correspondentAccount"
+              v-model="details.checkingAccount"
               placeholder="Введите № расчетного счета"
               outlined
               maxlength="20"
@@ -105,6 +105,51 @@
                     v => !!v || 'Поле обязательно',
                     v => !!isNumber(v, 'correspondentAccount') || ''
               ]"
+            />
+          </div>
+          <div class="simple-width-md">
+            <p class="desc-13 color-text-dark font-weight-600">
+              БИК
+            </p>
+            <base-text-field
+                v-model="details.enterBic"
+                placeholder="Введите БИК"
+                maxlength="9"
+                outlined
+                :rules="[
+                    v => !!v || 'Поле обязательно',
+                    v => !!isNumber(v, 'enterBic') || ''
+                  ]"
+            />
+          </div>
+        </div>
+        <div class="block-two-input" style="margin-bottom: 64px">
+          <div class="simple-width-md mr-20">
+            <p class="desc-13 color-text-dark font-weight-600">
+              Название банка
+            </p>
+            <base-text-field
+                v-model="details.bankName"
+                maxlength="255"
+                placeholder="Введите название банка"
+                outlined
+                class="mg-input-custom"
+            />
+          </div>
+          <div class="simple-width-md">
+            <p class="desc-13 color-text-dark font-weight-600">
+              Корреспондентский счет
+            </p>
+            <base-text-field
+                maxlength="20"
+                v-model="details.correspondentAccount"
+                placeholder="Введите № корреспондентского счета"
+                outlined
+                :rules="[
+                    v => !!v || 'Поле обязательно',
+                    v => !!isNumber(v, 'correspondentAccount') || ''
+                  ]"
+                class="mg-input-custom"
             />
           </div>
         </div>
