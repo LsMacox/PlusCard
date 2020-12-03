@@ -14,7 +14,7 @@
               class="pls--pushcon-menu-item"
               v-bind="attrs"
               v-on="on"
-              @click="add(item.type)"
+              @click="add(item.type, item.disable)"
             >
               <v-icon
                 class="pls--pushcon-menu-item-icon"
@@ -29,7 +29,6 @@
     </div>
     <!-- лента блоков -->
     <div class="pls--pushcon-tape">
-      {{ localAttachments }}
       <draggable
         :list="localAttachments"
         class="list-group"
@@ -44,7 +43,7 @@
         >
           <block
             :block="item"
-            @update:block="updateAttachments(i, $event)"
+            @update:block="updateLocalAttachments(i, $event)"
             @remove="remove(i)"
           />
         </div>
@@ -140,37 +139,44 @@
       }
     },
     methods: {
-      add (type) {
-        switch (type) {
-          case 'text':
-            this.localAttachments.push(Object.copy(this.blockText))
-            break
-          case 'image':
-            this.localAttachments.push(Object.copy(this.blockImage))
-            break
-          case 'images':
-            this.localAttachments.push(Object.copy(this.blockImages))
-            break
-          case 'video':
-            this.localAttachments.push(Object.copy(this.blockVideo))
-            break
-          case 'videos':
-            this.localAttachments.push(Object.copy(this.blockVideos))
-            break
-          case 'friend':
-            this.localAttachments.push(Object.copy(this.blockFriend))
-            break
-          case 'friends':
-            this.localAttachments.push(Object.copy(this.blockFriends))
-            break
+      add (type, disable) {
+        if (!disable) {
+          switch (type) {
+            case 'text':
+              this.localAttachments.push(Object.copy(this.blockText))
+              break
+            case 'image':
+              this.localAttachments.push(Object.copy(this.blockImage))
+              break
+            case 'images':
+              this.localAttachments.push(Object.copy(this.blockImages))
+              break
+            case 'video':
+              this.localAttachments.push(Object.copy(this.blockVideo))
+              break
+            case 'videos':
+              this.localAttachments.push(Object.copy(this.blockVideos))
+              break
+            case 'friend':
+              this.localAttachments.push(Object.copy(this.blockFriend))
+              break
+            case 'friends':
+              this.localAttachments.push(Object.copy(this.blockFriends))
+              break
+          }
         }
       },
       remove (i) {
         this.localAttachments.splice(i, 1)
+        this.updateAttachments(this.localAttachments)
       },
-      updateAttachments (i, v) {
+      updateLocalAttachments (i, v) {
         this.localAttachments[i] = v
         this.localAttachments = Object.assign([], this.localAttachments)
+        this.updateAttachments(this.localAttachments)
+      },
+      updateAttachments (v) {
+        this.$emit('update:attachments', Object.copy(v))
       },
     },
   }

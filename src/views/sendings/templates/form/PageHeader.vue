@@ -7,7 +7,7 @@
       @click="$router.back()"
     >
       <v-icon left>
-        $iconify_plus-circle-outlined
+        $iconify_arrow-back
       </v-icon>Назад
     </v-btn>
     <v-spacer />
@@ -15,7 +15,9 @@
       color="secondary"
       :text="true"
       :ripple="false"
-      @click=""
+      :loading="loading"
+      :disabled="!form.attachments.length"
+      @click="createOrUpdate()"
     >
       <v-icon left>
         $iconify_plus-circle-outlined
@@ -26,9 +28,43 @@
 
 <script>
   export default {
+    props: {
+      form: {
+        type: Object,
+        default: () => ({}),
+      },
+    },
+    data () {
+      return {
+        loading: false,
+      }
+    },
     computed: {
       program () {
         return this.$store.getters['company/program/program']
+      },
+      template () {
+        return this.$store.getters['company/notification/template']
+      },
+    },
+    methods: {
+      async createOrUpdate () {
+        try {
+          this.loading = true
+          const item = {
+            program_id: this.program.id,
+            id: this.form.id,
+            name: this.form.name,
+            title: this.form.title,
+            description: this.form.description,
+            body: this.form.attachments,
+          }
+          console.log(this.item)
+          if (this.form.id) await this.$store.dispatch('company/notifications/update', item)
+          else await this.$store.dispatch('company/notifications/create', item)
+        } finally {
+          this.loading = false
+        }
       },
     },
   }

@@ -1,22 +1,36 @@
 <template>
   <div>
-    <v-textarea
+    <editor
       v-model="localBlock.value"
-      placeholder="Введите текст"
-      outlined
-      rows="3"
-    >
-      <template slot="prepend-inner">
-        <v-icon>$iconify_feather-edit</v-icon>
-      </template>
-    </v-textarea>
+      api-key=""
+      output-format="html"
+      :init="{
+        height: 264,
+        language: 'ru',
+        menubar: false,
+        statusbar: false,
+        plugins: [
+          'advlist autolink lists link image charmap print preview anchor',
+          'searchreplace visualblocks code fullscreen',
+          'insertdatetime media table paste code help wordcount'
+        ],
+        toolbar:
+          'undo redo | formatselect | bold italic backcolor | \
+           alignleft aligncenter alignright alignjustify | \
+           bullist numlist outdent indent | removeformat | help'
+      }"
+    />
   </div>
 </template>
 
 <script>
+  import Editor from '@tinymce/tinymce-vue'
   import BlockMixin from './block'
 
   export default {
+    components: {
+      Editor,
+    },
     mixins: [BlockMixin],
     props: {
       block: {
@@ -37,11 +51,20 @@
         },
         deep: true,
       },
+      editor: {
+        handler (v) {
+          console.log(v)
+          // this.updateBlock(v)
+        },
+        deep: true,
+      },
     },
     created () {
       this.initBlock()
     },
-    methods: {},
+    methods: {
+
+    },
   }
 </script>
 

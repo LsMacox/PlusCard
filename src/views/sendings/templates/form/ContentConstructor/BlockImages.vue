@@ -7,6 +7,7 @@
     >
       <input
         :ref="(inputRef + i)"
+        :key="(inputRef + i) + 'input'"
         type="file"
         class="pls--pushcon-block-image-input"
         @change="beforeUpload((inputRef + i))"

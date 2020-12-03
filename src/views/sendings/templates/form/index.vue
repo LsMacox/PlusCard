@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header />
+    <page-header :form="form" />
     <div class="pls--page-block-center">
       <v-form
         :ref="formRef"
@@ -35,7 +35,8 @@
           </template>
         </v-textarea>
         <content-constructor
-          :attachments.sync="form.attachments"
+          :attachments="form.attachments"
+          @update:attachments="updateAttachments"
         />
       </v-form>
     </div>
@@ -62,6 +63,7 @@
     computed: {
       defaultForm () {
         return {
+          id: null,
           name: null,
           title: null,
           description: null,
@@ -73,6 +75,11 @@
       if (this.$route.params.id === 'new') {
         this.form = Object.copy(this.defaultForm)
       }
+    },
+    methods: {
+      updateAttachments (v) {
+        this.form.attachments = Object.copy(v)
+      },
     },
   }
 </script>
