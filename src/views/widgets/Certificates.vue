@@ -1,5 +1,5 @@
 <template>
-  <base-diagram-frame
+  <cert-diagram-frame
     class="w-certificate"
     :diagram-labels="diagramLabels.reverse()"
     :diagram-data="diagramData.reverse()"
@@ -11,11 +11,11 @@
 </template>
 
 <script>
-  import BaseDiagramFrame from '@/views/widgets/frames/BaseDiagramFrame'
+  import CertDiagramFrame from '@/views/widgets/frames/CertDiagramFrame'
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
 
   export default {
-    components: { BaseDiagramFrame },
+    components: { CertDiagramFrame },
     mixins: [WidgetFunctions],
     props: {
       widgetData: {

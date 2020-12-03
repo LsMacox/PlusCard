@@ -48,6 +48,8 @@ export default {
             } else if (details.org_type === 'IP') {
                 data = {
                     address: details.address,
+                    bank_code: details.enterBic,
+                    bank_name: details.bankName,
                     fio: details.fullNameHead,
                     inn: details.enterTin,
                     name: details.legalName,
@@ -55,6 +57,7 @@ export default {
                     org_type: details.org_type,
                     phone: details.phoneFax.replace(/[+\- ()]/gm, ''),
                     settlement_account: details.checkingAccount,
+                    correspondent_account: details.correspondentAccount,
                 }
             } else if (details.org_type === 'FL') {
                 data = {
