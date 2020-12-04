@@ -133,7 +133,7 @@
       blockButton () {
         return {
           type: 'button',
-          text: 'Действие',
+          text: 'Перейти',
           color: 'blue',
           action: null,
         }
