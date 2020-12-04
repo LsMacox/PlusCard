@@ -282,8 +282,22 @@ export default new Router({
         {
           path: 'sendings',
           beforeEnter: GuardEmptyPrograms,
-          component: () => import('@/views/SkeletonPage'),
+          component: () => import('@/views/sendings/index'),
           name: 'Sendings',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        {
+          path: 'sendings/templates',
+          beforeEnter: GuardEmptyPrograms,
+          component: () => import('@/views/sendings/templates/index'),
+          name: 'SendingsTemplates',
+          meta: { auth: false, title: 'Help', icon: 'dashboard' },
+        },
+        {
+          path: 'sendings/templates/:id',
+          beforeEnter: GuardEmptyPrograms,
+          component: () => import('@/views/sendings/templates/form/index'),
+          name: 'SendingsTemplatesForm',
           meta: { auth: false, title: 'Help', icon: 'dashboard' },
         },
         {

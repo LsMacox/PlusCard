@@ -112,6 +112,7 @@
           this.companyCreateAction = true
           const program = {
             name: this.program.name,
+            slogan: this.program.slogan,
             logo: this.program.fileLogo && this.program.fileLogo.data ? this.program.fileLogo : this.program.logo,
             color: this.program.bgcolor1,
 

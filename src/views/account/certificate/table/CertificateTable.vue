@@ -397,9 +397,6 @@
         return this.$store.getters['auth/auth/merchant_id']
       },
       certificates () {
-        console.log(
-          this.$store.getters['account/certificate/certificate/certificates'],
-        )
         return this.$store.getters[
           'account/certificate/certificate/certificates'
         ].map(x => {
@@ -415,6 +412,9 @@
       },
       filter () {
         return this.$store.getters['account/certificate/filter/filter']
+      },
+      period () {
+        return this.$store.getters['widget/filter/period']
       },
     },
     watch: {
@@ -443,6 +443,9 @@
         if (v) {
           this.fetchData()
         }
+      },
+      period (v) {
+        if (v) this.fetchData()
       },
     },
     created () {
@@ -575,6 +578,8 @@
         this.$store
           .dispatch('account/certificate/certificate/list', {
             program_id: this.program.id,
+            start_period: this.period.start,
+            end_period: this.period.end,
             filter: this.filter,
             offset: this.getOffset(this.tableOptions.page, this.tableOptions.itemsPerPage),
             limit: this.tableOptions.itemsPerPage,

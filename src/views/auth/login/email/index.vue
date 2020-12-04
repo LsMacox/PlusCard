@@ -98,7 +98,7 @@
               style="width: 100%;"
               :loading="loading"
               :disabled="!valid"
-              @click="login()"
+              @click="login(merchant_id)"
             >
               <span
                 class="iconify"
@@ -176,6 +176,7 @@
     computed: {
       ...mapGetters('auth/auth', [
         'merchants',
+        'merchant_id',
         'merchant',
         'device',
       ]),
@@ -183,6 +184,7 @@
     mounted () {
       this.$store.dispatch('auth/auth/InitDevice')
       window.addEventListener('keyup', this.onKeyUp)
+      if (this.$route.query.merch_id) this.$store.commit('auth/auth/SET_MERCHANT_ID', this.$route.query.merch_id)
     },
     beforeDestroy () {
       window.removeEventListener('keyup', this.onKeyUp)
@@ -192,7 +194,6 @@
         if (this.$route.path !== path) this.$router.push(path)
       },
       onKeyUp (e) {
-        console.log('onKeyUp', e)
         if (this.valid && e.key === 'Enter') {
           this.login()
         }

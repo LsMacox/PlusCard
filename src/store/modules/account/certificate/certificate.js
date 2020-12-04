@@ -5,6 +5,7 @@ const state = {
     certificates: [],
     programCertificates: [],
     totalCount: 0,
+    payments: [],
 }
 
 const mutations = {
@@ -27,6 +28,10 @@ const mutations = {
     add (state, payload) {
         const items = state.certificates
         items.push(payload)
+    },
+
+    payments (state, payload) {
+        state.payments = payload
     },
 
     update_statuses (state, payload) {
@@ -68,10 +73,32 @@ const actions = {
     async list ({ commit }, item) {
             // eslint-disable-next-line no-useless-catch
         try {
-            // console.log('merchant_id', merchant_id)
             const success = await ApiService.post('api-cabinet/client/certificate/list2', item)
             commit('certificates', success.certificates)
             commit('totalCount', success.totalCount)
+
+            console.log(success.certificates)
+            if (success && success.certificates) {
+                const payments = [0, 0, 0, 0, 0]
+                success.certificates.forEach(cert => {
+                    switch (cert.merchant_order_status) {
+                        case 'not_paid':
+                            payments[3] += 1
+                            break
+                        case 'not_required':
+                            payments[4] += 1
+                            break
+                        case 'succeded':
+                            payments[1] += 1
+                            break
+                        case 'wait':
+                            payments[2] += 1
+                            break
+                    }
+                })
+                payments[0] = payments[1] + payments[2] + payments[3] + payments[4]
+                commit('payments', payments)
+            }
         } catch (error) {
             throw error
         }
@@ -159,6 +186,9 @@ const getters = {
     },
     totalCount (state) {
         return state.totalCount
+    },
+    payments (state) {
+        return state.payments
     },
 }
 

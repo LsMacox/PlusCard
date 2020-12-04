@@ -94,20 +94,20 @@
               </div>
             </div>
 
-            <div
-              v-if="fastFilter.issueDate.id && fastFilter.issueDate.label"
-              class="app__filter-chip"
-            >
-              <div class="app__filter-chip-content">
-                {{ fastFilter.issueDate.label }}
-                <v-icon
-                  class="app__filter-chip-icon-append"
-                  @click="clearItemFastFilter('issueDate', { startDate: null, endDate: null })"
-                >
-                  $iconify_jam-close
-                </v-icon>
-              </div>
-            </div>
+            <!--            <div-->
+            <!--              v-if="fastFilter.issueDate.id && fastFilter.issueDate.label"-->
+            <!--              class="app__filter-chip"-->
+            <!--            >-->
+            <!--              <div class="app__filter-chip-content">-->
+            <!--                {{ fastFilter.issueDate.label }}-->
+            <!--                <v-icon-->
+            <!--                  class="app__filter-chip-icon-append"-->
+            <!--                  @click="clearItemFastFilter('issueDate', { startDate: null, endDate: null })"-->
+            <!--                >-->
+            <!--                  $iconify_jam-close-->
+            <!--                </v-icon>-->
+            <!--              </div>-->
+            <!--            </div>-->
 
             <!--поле ввода-->
             <input
@@ -164,7 +164,52 @@
             <v-row>
               <v-col>
                 <div class="app__filter-content-header">
-                  Сертификаты<br>
+                  Сертификаты
+                  <v-menu
+                      v-model="chevronUp"
+                      class="certificate-toolbar-select"
+                      :rounded="false"
+                      offset-y
+                  >
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                          text
+                          color="primary"
+                          dark
+                          v-bind="attrs"
+                          class="archive-status-btn"
+                          v-on="on"
+                      >
+                        {{ archiveStatus.text }}
+                        <v-icon class="archive-status-chevron">
+                          {{ !chevronUp ? 'fas fa-chevron-down' : 'fas fa-chevron-up' }}
+                        </v-icon>
+                      </v-btn>
+                    </template>
+                    <v-list>
+                      <v-list-item
+                          v-for="(item, index) in archiveStatuses"
+                          :key="index"
+                          class="archive-status-menu-item"
+                          @click="archiveStatusHandler(item)"
+                      >
+                        <v-list-item-title>
+                          {{ item.text }}
+                          <div
+                              v-if="archiveStatus.id === item.id"
+                              class="archive-status-check-icon"
+                          >
+                                          <span
+                                              class="iconify"
+                                              data-icon="bx:bx-check"
+                                              data-inline="false"
+                                          />
+                          </div>
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-menu>
+                  <br>
                 </div>
                 <div
                   v-for="(item, i) in programCertificates"
@@ -245,77 +290,6 @@
             <v-row>
               <v-col>
                 <div class="app__filter-content-header">
-                  Выпущен
-                </div>
-                <div v-if="totalCount > 0">
-                  <date-range-picker
-                    ref="picker"
-                    v-model="filter.issueDate"
-                    opens="right"
-                    :ranges="false"
-                    :auto-apply="false"
-                    :linked-calendars="false"
-                    :locale-data="{
-                      firstDay: 0,
-                      separator: ' * ',
-                      applyLabel: 'Применить',
-                      cancelLabel: 'Отменить',
-                      monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
-                      daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-                    }"
-                  >
-                    <template
-                      #input="picker"
-                      style="min-width: 350px;"
-                    >
-                      <div class="date-range-value">
-                        {{ issueDateRange(picker.startDate, picker.endDate) }}
-                      </div>
-                      <div class="calendar-icon">
-                        <span
-                          class="iconify"
-                          data-icon="feather:calendar"
-                          data-inline="false"
-                        />
-                      </div>
-                    </template>
-
-                    <div
-                      slot="footer"
-                      slot-scope="data"
-                    >
-                      <div class="footer-content">
-                        <div class="range">
-                          {{ formatRange(data.rangeText) }}
-                        </div>
-                        <div class="actions">
-                          <v-btn
-                            color="primary"
-                            small
-                            @click="data.clickCancel()"
-                          >
-                            Отменить
-                          </v-btn>
-                          <v-btn
-                            small
-                            color="primary"
-                            @click="data.clickApply"
-                          >
-                            <span
-                              class="iconify"
-                              data-icon="carbon:checkmark-outline"
-                              data-inline="false"
-                            />
-                            Применить
-                          </v-btn>
-                        </div>
-                      </div>
-                    </div>
-                  </date-range-picker>
-                </div>
-              </v-col>
-              <v-col>
-                <div class="app__filter-content-header">
                   Покупатели
                 </div>
                 <div>
@@ -341,18 +315,19 @@
 </template>
 
 <script>
-  import DateRangePicker from 'vue2-daterange-picker'
   import 'vue2-daterange-picker/dist/vue2-daterange-picker.css'
 
   export default {
     components: {
-      DateRangePicker,
-    },
-    props: {
-      archiveStatus: {},
     },
     data () {
       return {
+        chevronUp: false,
+        // filter: null,
+        archiveStatuses: [
+          { id: 'work', text: 'в работе' },
+          { id: 'archive', text: 'в архиве' },
+        ],
         filter: null,
         fastFilter: {},
         show: false,
@@ -436,13 +411,22 @@
       programCertificates () {
         return this.$store.getters['account/certificate/certificate/programCertificates']
       },
+      archiveStatus: {
+        get () {
+          return this.$store.getters['account/certificate/filter/archiveStatus']
+        },
+        set (v) {
+          this.$store.commit('account/certificate/filter/archiveStatus', v)
+        },
+      },
       emptyFastFilter () {
         if (this.fastFilter.certPaymentStatus.length ||
           this.fastFilter.certOrderStatus.length ||
           this.fastFilter.certMerchantOrderStatus.length ||
           this.fastFilter.buyers.length ||
           this.fastFilter.certificates.length ||
-          (this.fastFilter.issueDate.startDate && this.fastFilter.issueDate.endDate)
+          this.fastFilter.archiveStatus
+        // (this.fastFilter.issueDate.startDate && this.fastFilter.issueDate.endDate)
         ) {
           return false
         }
@@ -477,6 +461,10 @@
       this.$store.dispatch('account/certificate/buyers/buyers', this.program.id)
     },
     methods: {
+      archiveStatusHandler (item) {
+        this.chevronUp = !this.chevronUp
+        this.$store.commit('account/certificate/filter/archiveStatus', item)
+      },
       statusIcon (status) {
         if (status === 'wait_payment') {
           status = 'wait'
@@ -504,15 +492,15 @@
 
         return require('@/icons/svg/' + status + '.svg')
       },
-      issueDateRange (startDate, endDate) {
-        let dateRange = ''
-        if (startDate === null || endDate === null) {
-          dateRange = 'Выберите период выпуска сертификата'
-        } else {
-          dateRange = this.$moment(startDate).format('DD.MM.YYYY') + ' - ' + this.$moment(endDate).format('DD.MM.YYYY')
-        }
-        return dateRange
-      },
+      // issueDateRange (startDate, endDate) {
+      //   let dateRange = ''
+      //   if (startDate === null || endDate === null) {
+      //     dateRange = 'Выберите период выпуска сертификата'
+      //   } else {
+      //     dateRange = this.$moment(startDate).format('DD.MM.YYYY') + ' - ' + this.$moment(endDate).format('DD.MM.YYYY')
+      //   }
+      //   return dateRange
+      // },
       formatRange (range) {
         const start = range.split(' - ')[0]
         const end = range.split(' - ')[1]
@@ -528,12 +516,22 @@
       },
       getFilterClass (field, item) {
         // const filter = Object.assign({}, this.filter)
+        console.log('FIELD get...')
+        console.log(field)
+        console.log(item)
+        console.log('FIELD get...')
+
         if (this.filter && this.filter[field].includes(item.id)) {
           return 'app__filter-content-chip app__filter-content-chip-active'
         }
         return 'app__filter-content-chip'
       },
       setFilter (field, item) {
+        console.log('FIELD...')
+        console.log(field)
+        console.log(item)
+        console.log('FIELD...')
+
         const index = this.filter[field].indexOf(item.id)
         if (index === -1) {
           this.filter[field].push(item.id)
@@ -546,6 +544,15 @@
         console.log('FAST__FILTER')
         console.log(filter)
         console.log('FAST__FILTER')
+        // filter.archiveStatus.forEach(item => {
+        //   const archiveStatus = this.programCertificates.find(objItem => objItem.id === item)
+        //   if (archiveStatus) {
+        //     const obj = { id: item, label: `Архивный статус: ${archiveStatus.text}` }
+        //     if (!this.fastFilter.archiveStatus.find(objItem => objItem.id === item)) {
+        //       this.fastFilter.archiveStatus.push(obj)
+        //     }
+        //   }
+        // })
         filter.certificates.forEach(item => {
           const certificate = this.programCertificates.find(objItem => objItem.id === item)
           if (certificate) {
@@ -592,38 +599,38 @@
           }
         })
 
-        if (filter.issueDate.startDate !== null && filter.issueDate.endDate !== null) {
-          const obj = { id: 'issueDate', label: `Выпущен: ${this.$moment(filter.issueDate.startDate).format('DD.MM.YYYY')} - ${this.$moment(filter.issueDate.endDate).format('DD.MM.YYYY')}` }
-          this.fastFilter.issueDate = obj
-        }
+        // if (filter.issueDate.startDate !== null && filter.issueDate.endDate !== null) {
+        //   const obj = { id: 'issueDate', label: `Выпущен: ${this.$moment(filter.issueDate.startDate).format('DD.MM.YYYY')} - ${this.$moment(filter.issueDate.endDate).format('DD.MM.YYYY')}` }
+        //   this.fastFilter.issueDate = obj
+        // }
       },
       clearItemFastFilter (field, item) {
-        if (field === 'issueDate') {
-          this.fastFilter.issueDate.id = null
-          this.fastFilter.issueDate.label = null
+        // if (field === 'issueDate') {
+        //   this.fastFilter.issueDate.id = null
+        //   this.fastFilter.issueDate.label = null
+        //
+        //   const filter = JSON.parse(JSON.stringify(this.filterStore))
+        //
+        //   // filter[field].startDate = null
+        //   // filter[field].endDate = null
+        //
+        //   this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
+        // } else {
+        const i = this.fastFilter[field].findIndex(objItem => objItem.id === item.id)
+        if (i !== -1) this.fastFilter[field].splice(i, 1)
 
-          const filter = JSON.parse(JSON.stringify(this.filterStore))
+        console.log('sdjkfhsdkjfhdskjf')
+        console.log(this.fastFilter)
+        console.log('sdjkfhsdkjfhdskjf')
 
-          filter[field].startDate = null
-          filter[field].endDate = null
-
-          this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
-        } else {
-          const i = this.fastFilter[field].findIndex(objItem => objItem.id === item.id)
-          if (i !== -1) this.fastFilter[field].splice(i, 1)
-
-          console.log('sdjkfhsdkjfhdskjf')
-          console.log(this.fastFilter)
-          console.log('sdjkfhsdkjfhdskjf')
-
-          const filter = JSON.parse(JSON.stringify(this.filterStore))
-          const j = filter[field].findIndex(elem => elem.id === elem.id)
-          if (j !== -1) {
-            filter[field].splice(j, 1)
-          }
-
-          this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
+        const filter = JSON.parse(JSON.stringify(this.filterStore))
+        const j = filter[field].findIndex(elem => elem.id === elem.id)
+        if (j !== -1) {
+          filter[field].splice(j, 1)
         }
+
+        this.$store.commit('account/certificate/filter/filter', JSON.parse(JSON.stringify(filter)))
+        // }
       },
       clearFastFilter () {
         this.filter = JSON.parse(JSON.stringify(this.filterDefault))
@@ -822,5 +829,43 @@
 
 .date-range-value {
   float: left;
+}
+
+.archive-status-btn {
+  text-transform: lowercase;
+  font-family: Gilroy;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 22px;
+  &::before {
+    background-color: transparent!important;
+  }
+}
+
+.archive-status-menu-item {
+  .v-list-item__title {
+    font-family: Gilroy;
+    font-style: normal;
+    font-size: 15px;
+    line-height: 21px;
+    color: rgb(145, 145, 161) !important;
+
+    svg {
+      font-size: 26px;
+    }
+  }
+}
+
+.archive-status-check-icon {
+  float: right;
+  position: relative;
+  top: -6px;
+  color: #4776e6!important;
+}
+
+.archive-status-chevron {
+  font-size: 14px;
+  padding-left: 7px;
 }
 </style>
