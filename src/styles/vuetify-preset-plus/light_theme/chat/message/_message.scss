@@ -7,6 +7,10 @@
   width: 100%;
   margin: 15px 0;
 
+  &.select {
+    background: linear-gradient(270deg, $neutral-250 0%, rgba(242, 242, 247, 0) 100%);
+  }
+
   .message-author-avatar {
     margin: 0 12px 0 20px;
     width: 48px;
@@ -44,11 +48,11 @@
 
       &.top {
         right: 0;
-        top: -282px;
+        top: -198px;
       }
 
       &.bottom {
-        bottom: -282px;
+        bottom: -198px;
         &:after {
           top: -25px;
         }
@@ -56,6 +60,14 @@
           bottom: inherit;
           top: -5px;
         }
+      }
+
+      &.message-my.top {
+        top: -282px;
+      }
+
+      &.message-my.bottom {
+        bottom: -282px;
       }
       
       &:before {
@@ -128,9 +140,16 @@
       border: 1px solid $neutral-250;
       box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1);
       border-radius: 10px 10px 10px 0px;
+      
+      &:hover {
+        .message-box-edit {
+          display: block;
+        }
+      }
 
       &.message-my {
         background-color: $neutral-250;
+        border: 1px solid $neutral-300;
       }
 
       /* меню сообщения мое */
@@ -244,6 +263,17 @@
       .message-box-message {
         .message-box-text {
           margin-top: 5px;
+        }
+      }
+
+      /* кнопка редактирования */
+      .message-box-edit {
+        display: none;
+        float: right;
+        margin-top: -16px;
+        .icon-edit {
+          cursor: pointer;
+          color: $neutral-400;
         }
       }
 

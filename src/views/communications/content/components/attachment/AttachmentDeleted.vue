@@ -1,6 +1,8 @@
 <template>
   <div class="attachment-deleted">
-    <v-icon>delete_forever</v-icon>Вложение удалено
+    <p class="body-l-regular neutral-900--text mb-0">
+      Вложение удалено
+    </p>
   </div>
 </template>
 

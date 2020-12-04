@@ -1,0 +1,31 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.app--component--edit {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 62px;
+  border-top: 1px solid $neutral-400;
+  .edit-box {
+    display: flex;
+    .edit-box-close {
+      margin-left: 22px;
+      margin-top: 8px;
+      .icon {
+        cursor: pointer;
+        color: $neutral-500;
+      }
+    }
+    .edit-box-message {
+      margin-left: 16px;
+      margin-top: 2px;
+      p::nth-child(2) {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 500px;
+        overflow: hidden;
+      }
+    }
+  }
+}

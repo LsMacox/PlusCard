@@ -42,6 +42,7 @@ export default {
         messages = this.$store.getters['chat/message/messages'][
           this.currentConversationId
         ]
+        console.log('update messages', messages)
         if (this.topicFilter) {
           const newMessages = {}
           for (const item in messages) {

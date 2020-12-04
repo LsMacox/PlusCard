@@ -44,7 +44,7 @@ export const ICONIFY_ICONS = {
     // carbon
     'carbon-email': () => import('@iconify/icons-carbon/email'),
     'carbon-diagram': () => import('@iconify/icons-carbon/diagram'),
-    // 'carbon-stop': () => import('@iconify-icons/carbon/stop'),
+    'carbon-stop': () => import('@iconify-icons/carbon/stop'),
 
     // clarity
     'clarity-import-line': () => import('@iconify-icons/clarity/import-line'),
@@ -96,6 +96,7 @@ export const ICONIFY_ICONS = {
     'feather-coffee': () => import('@iconify/icons-feather/coffee'),
     'feather-plus-circle': () => import('@iconify/icons-feather/plus-circle'),
     'feather-edit': () => import('@iconify/icons-feather/edit'),
+    'feather-edit-2': () => import('@iconify-icons/feather/edit-2'),
     'feather-users': () => import('@iconify/icons-feather/users'),
     'feather-user': () => import('@iconify/icons-feather/user'),
     'feather-shopping-bag': () => import('@iconify/icons-feather/shopping-bag'),

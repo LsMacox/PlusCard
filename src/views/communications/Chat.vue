@@ -1,19 +1,27 @@
 <template>
   <div class="app--chat__container">
-    <app-conversation-list />
-    <app-conversation-field />
+    <app-conversation-empty v-show="showEmpty" />
+    <app-conversation-list
+      :show-empty="showEmpty"
+      @toogleEmpty="toogleEmpty"
+    />
+    <template v-if="!showEmpty">
+      <app-conversation-field />
+    </template>
   </div>
 </template>
 
 <script>
   import AppConversationList from './content/ConversationList'
   import AppConversationField from './content/ConversationField'
+  import AppConversationEmpty from './content/ConversationEmpty'
   import { mapGetters } from 'vuex'
 
   export default {
     components: {
       AppConversationList,
       AppConversationField,
+      AppConversationEmpty,
     },
     props: {
       conversationType: {
@@ -29,6 +37,7 @@
     data () {
       return {
         dialogCreate: false,
+        showEmpty: false,
       }
     },
     computed: {
@@ -62,6 +71,9 @@
       conversationId (v) {
         this.currentConversationId = v
       },
+      showEmpty (v) {
+        console.log('showEmpty', v)
+      },
     },
     created () {
       this.currentConversationType = this.conversationType
@@ -77,6 +89,9 @@
       },
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
+      },
+      toogleEmpty (v) {
+        this.showEmpty = v
       },
     },
   }

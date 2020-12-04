@@ -1,7 +1,6 @@
 <template>
   <div class="app--component-reply">
     <div
-      v-if="dialog"
       class="reply-box"
     >
       <div class="reply-box-close">
@@ -29,15 +28,21 @@
 </template>
 
 <script>
+  // Mixins
+  import MixinIndex from '@/views/communications/mixins/index.js'
+
   export default {
+    mixins: [
+      MixinIndex,
+    ],
     props: {
-      dialog: Boolean,
-      name: {
-        type: String,
+      conversationId: {
+        type: [Number, String],
         default: '',
       },
+      isReplyMessage: Boolean,
       message: {
-        type: Object,
+        type: [Object, Array],
         required: true,
       },
     },
@@ -45,32 +50,21 @@
       return {
       }
     },
+    computed: {
+      payload () {
+        return this.$store.getters['chat/data/payload'](this.conversationId)
+      },
+      // template
+      name () {
+        console.log('msgItem:', this.message)
+        console.log('payload:', this.payload)
+        return this.getAuthorName(this.message, this.payload)
+      },
+    },
     watch: {},
     methods: {
       close () {
-        this.$emit('update:dialog', false)
-      },
-      getMessage (item) {
-        const message = item
-        if (message) {
-          // console.log(message)
-          if (message && message.attachments.length) {
-            if (message.attachments[0].type === 'message/text') {
-              return message.attachments[0].content
-            }
-            if (message.attachments[0].type === 'plus/account') return 'карта'
-            if (message.attachments[0].type === 'media/image') {
-              return 'изображение'
-            }
-            if (message.attachments[0].type === 'media/audio') {
-              return 'аудиосообщение'
-            }
-            if (message.attachments[0].type === 'media/video') return 'видео'
-            if (message.attachments[0].type === 'media/file') return 'файл'
-          }
-          return message.message
-        }
-        return ''
+        this.$emit('update:isReplyMessage', false)
       },
     },
   }

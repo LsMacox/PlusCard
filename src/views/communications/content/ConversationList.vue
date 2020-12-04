@@ -1,5 +1,8 @@
 <template>
-  <div class="app--chat--list">
+  <div
+    v-if="!showEmpty"
+    class="app--chat--list"
+  >
     <div id="app--conversation--list--container">
       <div class="app--conversation--list--header">
         <v-row justify="space-between">
@@ -57,7 +60,8 @@
             <div
               v-for="(item, i) in groupedConversation"
               :key="i"
-              :class="getClass(item.id)"
+              class="list-item"
+              :class="{'list-item-active': (item.id === currentConversationId)}"
               @click="conversationChat(item.id)"
             >
               <conversation-list-view
@@ -124,6 +128,9 @@
       MixinIndex,
       MixinData,
     ],
+    props: {
+      showEmpty: Boolean,
+    },
     data () {
       return {
         dialogCreate: false,
@@ -173,8 +180,15 @@
           (item) => !item.chosen,
         )
         simpleChat = this.conversationsSorted(simpleChat)
+        const res = chosenChat.concat(simpleChat)
 
-        return chosenChat.concat(simpleChat) || []
+        if (!res || !res.length) {
+          this.$emit('toogleEmpty', true)
+          return []
+        }
+
+        this.$emit('toogleEmpty', false)
+        return chosenChat.concat(simpleChat)
       },
       chatUser () {
         return this.$store.getters['chat/chatUser/chatUser']
@@ -235,11 +249,6 @@
         } else {
           return null
         }
-      },
-      // TEMPLATE
-      getClass (id) {
-        if (id === this.currentConversationId) { return 'list-item list-item-active' }
-        return 'list-item'
       },
       async openCreate () {
         this.chatMemberListAction = true
@@ -330,6 +339,7 @@
           this.$store.commit('chat/conversation/currentConversationId', null)
           // переходим на роут общего списка
           const path = '/communications/chat/business'
+          this.$emit('toogleEmpty', true)
           this.toRoute(path)
         }
       },

@@ -69,7 +69,6 @@ export default {
 
       if (state.messages && state.messages[conversationId]) {
         state.messages[conversationId][payload.id] = payload
-        // обновление реактивности
         state.messages = Object.assign({}, state.messages)
       }
     },
@@ -183,7 +182,7 @@ export default {
       // подставляем в ответ id чата
       // result.conversation_id = id
       commit('messages', result)
-
+      
       // добавляем в последнее сообщение в список чатов
       const keys = Object.keys(state.messages[id])
       const last = state.messages[id][keys[keys.length - 1]]
@@ -194,7 +193,7 @@ export default {
     },
 
     async typing ({ commit, rootState }, typing) {
-       await ApiService.get('/api/message/typing?conversation_id=' + typing)
+      await ApiService.get('/api/message/typing?conversation_id=' + typing)
       // commit('loading', false)
     },
 
@@ -211,17 +210,17 @@ export default {
             },
           },
         )
-}
+      }
       if (type === 'reply') {
         result = await ApiService.post('/api/message/reply',
           message,
         )
-}
+      }
       if (type === 'forward') {
         result = await ApiService.post('/api/message/forward',
           message,
         )
-}
+      }    
       /// /console.log('/api/message/send')
       /// /console.log(success)
 
@@ -262,6 +261,7 @@ export default {
       /// /console.log('/api/message/update')
       /// /console.log(success)
       // обновляем сообщение в массиве сообщений
+      console.log(result)
       commit('updateInMessages', result)
     },
 

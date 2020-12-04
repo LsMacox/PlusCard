@@ -26,7 +26,7 @@ export default {
       return this.$store.getters['chat/topic/selectedTopicId']
     },
     recipients () {
-      return this.$store.getters['chat/`message/recipients']
+      return this.$store.getters['chat/message/recipients']
     },
   },
 }

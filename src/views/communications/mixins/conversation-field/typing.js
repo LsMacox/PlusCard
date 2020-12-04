@@ -10,10 +10,10 @@ export default {
       }
       // enter отправка сообщения
       if ($event.ctrlKey === false && $event.code === 'Enter') {
-        if (!this.sending) this.send(this.sendType)
+        if (!this.sending) this.send()
       }
       if ($event.ctrlKey === false && $event.code === 'NumpadEnter') {
-        if (!this.sending) this.send(this.sendType)
+        if (!this.sending) this.send()
       }
     },
     sendTypingEvent (conversationId) {

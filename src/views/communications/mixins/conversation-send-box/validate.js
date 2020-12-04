@@ -3,7 +3,7 @@ export default {
     validateSendMessage () {
       if (
         this.$store.getters['chat/message/messages'] &&
-        this.$store.getters['chat/message/messages'][this.conversationId]
+        this.$store.getters['chat/message/messages'][this.currentConversationId]
       ) {
         // проверка на строку из пробелов и вложения
         if (
@@ -11,18 +11,17 @@ export default {
           this.files.length ||
           this.message.trim() !== '' ||
           this.message.replace('\n', '').trim() !== '' ||
-          (this.quotedMessage && this.quotedMessage.id)
+          this.replyMessageId
         ) {
           return true
         }
       }
-      this.clearForm()
       return false
     },
     validateAttachment () {
       if (
         typeof this.$store.getters['chat/message/messages'][
-          this.conversationId
+          this.currentConversationId
         ] !== 'undefined'
       ) { return true }
       return false
@@ -42,13 +41,6 @@ export default {
             })
           }
           this.previewAttachFile(attachFile, i)
-        /*
-                          if (attachFile.type == 'image/png' || attachFile.type == 'image/jpeg') {
-
-                          } else {
-                              this.$refs.attachFile.value = null
-                          }
-                          */
         }
       }
       this.$refs.attachFile.type = 'text'

@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="internalDialog"
+    v-model="internalIsDelete"
     class="dialog-message-delete"
     max-width="420"
   >
@@ -78,8 +78,8 @@
 <script>
   export default {
     props: {
-      dialog: Boolean,
-      item: {
+      isDelete: Boolean,
+      msgItem: {
         type: Object,
         default: null,
       },
@@ -87,43 +87,38 @@
     },
     data () {
       return {
+        internalIsDelete: this.isDelete,
         deleteForAll: false,
         messageDeleteLoading: false,
       }
     },
-    computed: {
-      internalDialog: {
-        get () {
-          return this.dialog
-        },
-        set (val) {
-          if (val === this.dialog) return
-          this.$emit('update:dialog', val)
-        },
+    watch: {
+      isDelete (v) {
+        this.internalIsDelete = v
       },
-    },
-    created () {
-
+      internalIsDelete (v) {
+        this.$emit('update:isDelete', v)
+      },
     },
     methods: {
       close () {
-        this.internalDialog = false
+        this.internalIsDelete = false
       },
       async remove () {
         const message = {
-          conversation_id: this.item.conversation_id,
-          message_id: this.item.id,
+          conversation_id: this.msgItem.conversation_id,
+          message_id: this.msgItem.id,
         }
         this.messageDeleteLoading = true
-        if (this.deleteForAll) {
+        if (this.deleteForAll && this.showDeleteAll) {
           this.$store.dispatch('chat/message/deleteAll', message).then(() => {
-            this.internalDialog = false
+            this.internalIsDelete = false
           }).finally(() => {
             this.messageDeleteLoading = false
           })
         } else {
           this.$store.dispatch('chat/message/delete', message).then(() => {
-            this.internalDialog = false
+            this.internalIsDelete = false
           }).finally(() => {
             this.messageDeleteLoading = false
           })

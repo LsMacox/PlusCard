@@ -55,32 +55,24 @@
         @scroll="scrollFeed"
       >
         <!-- прелоадер старых сообщений  -->
-        <v-skeleton-loader
-          :loading="loadingMessagePage"
-          height="100%"
-          type="list-item-avatar-three-line@10"
+        <div
+          v-for="item in messages"
+          :key="item.id"
+          class="app--conversation--message-box"
         >
-          <div
-            v-for="(item, i) in messages"
-            :key="i + item.id"
-            class="app--conversation--message-box"
-          >
-            <div :id="`message-${item.id}`">
-              <message
-                :item="item"
-                :conversation-id="currentConversationId"
-                :my-message="
-                  chatUser.id == item.sender_id &&
-                    (profile.id == item.real_sender_id || !realChatName)"
-                :dialog-reply-message.sync="dialogReplyMessage"
-                :quoted-message.sync="quotedMessage"
-                :quoted-message-sender.sync="quotedMessageSender"
-                :send-type.sync="sendType"
-                :overlay-chat.sync="overlayChat"
-              />
-            </div>
+          <div :id="`message-${item.id}`">
+            <message
+              :item="item"
+              :conversation-id="currentConversationId"
+              :my-message="
+                chatUser.id == item.sender_id &&
+                  (profile.id == item.real_sender_id || !realChatName)"
+              :is-close-action.sync="isMessageCloseActions"
+              @reply="openReply"
+              @edit="openEdit"
+            />
           </div>
-        </v-skeleton-loader>
+        </div>
       </div>
 
       <!-- строка typing -->
@@ -90,11 +82,11 @@
 
       <!-- форма отправки -->
       <conversation-send-box
-        :conversation-id="currentConversationId"
-        :dialog-reply-message.sync="dialogReplyMessage"
-        :quoted-message.sync="quotedMessage"
-        :quoted-message-sender.sync="quotedMessageSender"
-        :send-type.sync="sendType"
+        :messages="messages"
+        :is-reply-message.sync="isReplyMessage"
+        :is-edit-message.sync="isEditMessage"
+        :reply-message-id="replyMessageId"
+        :edit-message-id="editMessageId"
         @send-message="toBottomFeed()"
       />
     </div>
@@ -144,29 +136,20 @@
         // scroll
         messageIdToScrollPage: null,
         feedScrollTop: null,
+        // Boolean
         loadingMessage: false,
-        //
-        previewDialog: false,
         topicFilter: false,
-        //
-        messagesCount: 0,
-        //
-        dialogMessageUpdate: false,
-        dialogMessageDelete: false,
-        // reply
-        dialogReplyMessage: false,
-        quotedMessage: {},
-        quotedMessageSender: null,
         overlayChat: false,
-        // edit,update
-        updatedMessageId: null,
-        deletedMessageId: null,
         sending: false,
-        messageMenu: false,
-        posX: 0,
-        posY: 0,
         // message
         newMessage: '',
+        isMessageCloseActions: false,
+        // message reply
+        isReplyMessage: false,
+        replyMessageId: NaN,
+        // message edit
+        isEditMessage: false,
+        editMessageId: NaN,
         // attach files
         attachFileName: '',
         attachFileType: '',
@@ -177,7 +160,6 @@
         files: [],
         filesPreview: [],
         // types
-        sendType: 'send',
         typingTime: null,
         // drag
         dragAndDropCapable: false,
@@ -185,16 +167,10 @@
     },
     computed: {
       conversationProgram () {
-        if (!this.isEmptyObject(this.conversation)) {
-          return this.conversation.program
-        }
-        return {}
+        return this.$store.getters['chat/data/conversationProgram'](this.currentConversationId)
       },
       realChatName () {
-        if (!this.isEmptyObject(this.conversationProgram)) {
-          return this.conversationProgram.real_chat_name
-        }
-        return false
+        return this.$store.getters['chat/data/realChatName'](this.currentConversationId)
       },
     },
     watch: {
@@ -214,14 +190,14 @@
         }
         // Перемещение ленты чата на сообщение с которого началась загрузка страницы сообщений
         await this.$nextTick()
-        if (this.$refs[this.messageIdToScrollPage]) {
-          const msg = this.$refs[this.messageIdToScrollPage][0]
+        if (document.getElementById(this.messageIdToScrollPage)) {
+          const msg = document.getElementById(this.messageIdToScrollPage)
 
           if (msg) {
             const conversationField = this.$refs.conversationField
             if (conversationField) {
-              conversationField.scrollTop = msg.offsetTop - 150
-            } // 150 px поправка скрола
+              conversationField.scrollTop = msg.offsetTop - 115
+            } // 115 px поправка скрола
           }
         }
       },
@@ -240,6 +216,14 @@
       }
     },
     methods: {
+      openReply (replyMessageId) {
+        this.isReplyMessage = true
+        this.replyMessageId = replyMessageId
+      },
+      openEdit (editMessageId) {
+        this.isEditMessage = true
+        this.editMessageId = editMessageId
+      },
       clearForm () {
         this.newMessage = ''
         this.attachFileName = ''
@@ -249,9 +233,6 @@
         this.files = []
         this.filesPreview = []
         this.$refs.attachFile.value = null
-        this.quotedMessage = {}
-        this.dialogReplyMessage = false
-        this.sendType = 'send'
         this.$store.commit('chat/topic/selectedTopicId', null)
         this.$store.commit('chat/message/recipients', [])
         this.sending = false

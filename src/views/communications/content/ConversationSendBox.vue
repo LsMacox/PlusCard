@@ -14,19 +14,25 @@
       class="app--conversation--sendForm"
     >
       <app-reply
-        :dialog.sync="internalDialogReplyMessage"
-        :name.sync="internalQuotedMessageSender"
-        :message.sync="internalQuotedMessage"
+        v-if="internalIsReplyMessage && !internalIsEditMessage"
+        :conversation-id="currentConversationId"
+        :is-reply-message.sync="internalIsReplyMessage"
+        :message="messages[replyMessageId]"
       />
 
-      <!-- <app-topic-bar :conversation-id="conversationId" /> -->
+      <app-edit
+        v-if="internalIsEditMessage"
+        :conversation-id="currentConversationId"
+        :is-edit-message.sync="internalIsEditMessage"
+        :message="messages[editMessageId]"
+      />
 
       <div
         class="app--conversation--sendField"
         :class="[
-          internalDialogReplyMessage ? 'reply' :
-          message && message.length ? 'writes'
-          : ''
+          internalIsReplyMessage ? 'reply' :
+          internalIsEditMessage ? 'edit' :
+          message && message.length ? 'writes' : ''
         ]"
       >
         <div
@@ -37,53 +43,28 @@
             style="height: 100%"
           >
             <!-- ==== record ==== -->
-            <div
+            <app-record-start
               v-if="isRecording"
-              class="app-conversation--sendForm__message__record"
-            >
-              <div class="record-time">
-                <p class="body-m-regular neutral-600--text">
-                  {{ recordedTime }}
-                </p>
-              </div>
-              <div class="left-block">
-                <v-btn
-                  class="record-cancel"
-                  color="primary-100"
-                  @click="cancelRecorder()"
-                >
-                  <iconify-icon
-                    class="icon-close"
-                    icon="jam-close"
-                    width="21"
-                  />
-                </v-btn>
-                <v-btn
-                  class="record-stop"
-                  color="error"
-                  @click="stopRecord()"
-                >
-                  <div
-                    class="stop-overlay"
-                    :style="`width: calc(130px + ${Math.round(volume * 60)}px);
-                               height: calc(130px + ${Math.round(volume * 60)}px);`"
-                  />
-                  <iconify-icon
-                    class="icon-stop"
-                    icon="carbon-stop"
-                    width="21"
-                  />
-                </v-btn>
-              </div>
-            </div>
-            <!-- ==== record stop ==== -->
-            <app-record-stop
-              v-if="!isRecording && isStop"
-              ref="recordStop"
-              :conversation-id="conversationId"
+              :conversation-id="currentConversationId"
               :is-recording="isRecording"
               :is-play.sync="isPlay"
               :is-stop.sync="isStop"
+              :record-strip-count="recordStripCount"
+              :record-strip-max-height="recordStripMaxHeight"
+              :record-list.sync="recordList"
+              :record-volumes.sync="recordVolumes"
+              :record-play.sync="recordPlay"
+              :record-play-current-time.sync="recordPlayCurrentTime"
+              :recorder="recorder"
+            />
+            <!-- ==== record stop ==== -->
+            <app-record-stop
+              v-if="!isRecording && isStop && recordList.length"
+              :conversation-id="currentConversationId"
+              :is-recording="isRecording"
+              :is-play.sync="isPlay"
+              :is-stop.sync="isStop"
+              :record-strip-count="recordStripCount"
               :record-list.sync="recordList"
               :record-volumes.sync="recordVolumes"
               :record-play.sync="recordPlay"
@@ -91,7 +72,6 @@
               :recorder="recorder"
             />
             <!-- ==== text ==== -->
-
             <div
               v-if="!isRecording && !isStop"
               class="app-conversation--sendForm__message__text"
@@ -138,7 +118,7 @@
                 placeholder="Напишите сообщение..."
                 @change="changeCurrent"
                 @keyup.ctrl.enter="addLine($event)"
-                @keypress.enter.exact.stop="send(sendType)"
+                @keypress.enter.exact.stop="send"
               />
               <div class="left-block">
                 <!-- Hash Icon -->
@@ -168,7 +148,7 @@
                   class="icon icon-send"
                   icon="feather-send"
                   width="21"
-                  @click="send(sendType)"
+                  @click="send"
                 />
               </div>
             </div>
@@ -181,8 +161,10 @@
 
 <script>
   // components
+  import AppEdit from './components/sendbox/Edit'
   import AppReply from './components/sendbox/Reply'
   import AppRecordStop from './components/sendbox/RecordStop'
+  import AppRecordStart from './components/sendbox/RecordStart'
 
   // mixins
   import MixinAttachment from '../mixins/conversation-send-box/attachment.js'
@@ -195,8 +177,10 @@
 
   export default {
     components: {
+      AppEdit,
       AppReply,
       AppRecordStop,
+      AppRecordStart,
     },
     mixins: [
       MixinAttachment,
@@ -208,27 +192,27 @@
       MixinData,
     ],
     props: {
-      conversationId: {
-        required: true,
+      messages: {
+        type: [Array, Object],
+        default () {
+          return []
+        },
+      },
+
+      isReplyMessage: Boolean,
+      isEditMessage: Boolean,
+
+      replyMessageId: {
         type: [String, Number],
-      },
-      dialogReplyMessage: Boolean,
-      quotedMessage: {
-        type: Object,
-        default: null,
-      },
-      quotedMessageSender: {
-        type: String,
         default: '',
       },
-      sendType: {
-        type: String,
-        default: 'send',
+      editMessageId: {
+        type: [String, Number],
+        default: '',
       },
     },
     data () {
       return {
-        startTime: 0,
         cursorIn: false,
         // recorder
         attempts: 5,
@@ -249,12 +233,12 @@
         topicFilter: false,
         messagesCount: 0,
         //
-        internalDialogReplyMessage: this.dialogReplyMessage,
-        internalQuotedMessageSender: this.quotedMessageSender,
-        internalQuotedMessage: this.quotedMessage,
-        dialogMessageUpdate: false,
         dialogMessageDelete: false,
         // reply
+        internalIsReplyMessage: this.isReplyMessage,
+        // edit
+        internalIsEditMessage: this.isEditMessage,
+        editMessageTextOld: '',
         overlayChat: false,
         //
         updatedMessageId: null,
@@ -276,46 +260,89 @@
         filesPreview: [],
       }
     },
+    computed: {
+      chatUser () {
+        return this.$store.getters['chat/chatUser/chatUser']
+      },
+      profile () {
+        return this.$store.getters.user
+      },
+      currentConversationId () {
+        return this.$store.getters['chat/conversation/currentConversationId']
+      },
+      employees () {
+        if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.chat_members || []
+        return []
+      },
+      members () {
+        if (!this.isEmptyObject(this.conversation)) return this.conversation.members || []
+        return []
+      },
+      conversation () {
+        const conversation = this.$store.getters[
+          'chat/conversation/conversations'
+        ].filter((item) => item.id === this.currentConversationId)
+        if (conversation.length) return conversation[0]
+        return {}
+      },
+      conversationProgram () {
+        if (!this.isEmptyObject(this.conversation)) {
+          return this.conversation.program
+        }
+        return {}
+      },
+      realChatName () {
+        if (!this.isEmptyObject(this.conversationProgram)) {
+          return this.conversationProgram.real_chat_name
+        }
+        return false
+      },
+    },
     watch: {
       async message (v) {
         this.limitTextArea()
-        this.sendTypingEvent(this.conversationId)
+        this.sendTypingEvent(this.currentConversationId)
+      },
+      isReplyMessage (v) {
+        this.internalIsReplyMessage = v
+      },
+      isEditMessage (v) {
+        this.internalIsEditMessage = v
+      },
+      internalIsReplyMessage (v) {
+        this.$emit('update:isReplyMessage', v)
+        if (v) this.internalIsEditMessage = false
+      },
+      internalIsEditMessage (v) {
+        this.$emit('update:isEditMessage', v)
+        if (v) {
+          this.internalIsReplyMessage = false
+          if (
+            this.chatUser.id === this.messages[this.editMessageId].sender_id &&
+            (this.profile.id === this.messages[this.editMessageId].real_sender_id ||
+              !this.realChatName)
+          ) {
+            this.message = this.messages[this.editMessageId].message
+            this.editMessageTextOld = this.messages[this.editMessageId].message
+          } else {
+            this.message = ''
+            this.internalIsEditMessage = false
+          }
+        } else {
+          this.message = ''
+        }
       },
       selectedTopicId (v) {
         if (!v) this.topicFilter = false
       },
-      conversationId (v) {
-        // console.log('current', this.conversation);
+      currentConversationId (v) {
         this.message = this.conversation.currentTemplateMessage
-        if (this.internalDialogReplyMessage) {
-          this.closeReplyMessage()
-        }
         if (this.overlayChat) {
           const elem = this.$refs.conversationField
           if (elem) elem.scrollTop = elem.scrollHeight
           this.overlayChat = false
-          this.internalDialogReplyMessage = true
-          this.sendType = 'forward'
+          this.internalIsReplyMessage = true
         }
-      },
-      dialogReplyMessage (v) {
-        this.internalDialogReplyMessage = v
-      },
-      quotedMessageSender (v) {
-        this.internalQuotedMessageSender = v
-      },
-      quotedMessage (v) {
-        this.internalQuotedMessage = v
-      },
-      internalDialogReplyMessage (v) {
-        this.$emit('update:dialogReplyMessage', v)
-        if (!v) this.closeReplyMessage()
-      },
-      internalQuotedMessageSender (v) {
-        this.$emit('update:quotedMessageSender', v)
-      },
-      internalQuotedMessage (v) {
-        this.$emit('update:quotedMessage', v)
       },
     },
     mounted () {
@@ -326,7 +353,6 @@
             document.getElementById('conversationWrap').offsetWidth + 'px'
           document.getElementById('conversationDrop').style.display = 'block'
         })
-
       this.init()
     },
     methods: {

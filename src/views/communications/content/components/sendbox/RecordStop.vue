@@ -1,5 +1,7 @@
 <template>
-  <div class="app-conversation--sendForm__message__record-stop">
+  <div
+    class="app-conversation--sendForm__message__record-stop"
+  >
     <div class="right-block">
       <iconify-icon
         v-if="!isPlay"
@@ -17,7 +19,7 @@
       />
       <div class="strips">
         <div
-          v-for="(v, i) in internalRecordVolumes"
+          v-for="(v, i) in recordVolumes"
           :key="i"
           class="strip"
           :class="[isRecordStripActive(i) ? 'active' : '']"
@@ -26,7 +28,7 @@
       </div>
       <div class="durations">
         <p class="body-m-regular neutral-600--text">
-          {{ internalRecordPlayCurrentTime !== 0 ? this.$moment(internalRecordPlayCurrentTime * 1000).format('mm:ss') + '/' : '' }}{{ internalRecordList[0].duration }}
+          {{ this.$moment(recordPlayCurrentTime * 1000).format('mm:ss') }}/{{ recordList[0].duration }}
         </p>
       </div>
     </div>
@@ -78,10 +80,8 @@
         default: '',
       },
       recordPlay: {
-        type: HTMLAudioElement,
-        default: function () {
-          return {}
-        },
+        type: [Object, HTMLAudioElement],
+        default: new window.Audio(),
       },
       recorder: {
         type: Object,
@@ -91,120 +91,69 @@
       },
     },
     data () {
-      return {
-        internalRecordVolumes: Array.from(this.recordVolumes),
-        internalRecorder: Object.assign({}, this.recorder),
-        internalRecordList: this.recordList.map(a => Object.assign({}, a)),
-        internalIsPlay: this.isPlay,
-        internalIsStop: this.isStop,
-        internalRecordPlay: this.recordPlay,
-        internalRecordPlayCurrentTime: this.recordPlayCurrentTime,
-      }
+      return {}
     },
-    watch: {
-      internalIsPlay (v) {
-        this.$emit('update:isPlay', v)
-      },
-      internalIsStop (v) {
-        this.$emit('update:isStop', v)
-      },
-      internalRecordPlayCurrentTime (v) {
-        this.$emit('update:recordPlayCurrentTime', v)
-      },
-      internalRecorder: {
-        deep: true,
-        handler (v) {
-          this.$emit('update:recorder', v)
-        },
-      },
-      internalRecordVolumes: {
-        deep: true,
-        handler (v) {
-          this.$emit('update:recordVolumes', v)
-        },
-      },
-      internalRecordPlay: {
-        deep: true,
-        handler (v) {
-          this.$emit('update:recordPlay', v)
-        },
-      },
-      internalRecordList: {
-        deep: true,
-        handler (v) {
-          console.log('this.internalRecordList')
-          console.log(this.internalRecordList)
-          this.$emit('update:recordList', v)
-        },
-      },
-      // isPlay (v) {
-      //   this.internalIsPlay = v
-      // },
-      // isStop (v) {
-      //   this.internalIsStop = v
-      // },
-      // recorder (v) {
-      //   this.internalRecorder = Object.assign({}, v)
-      // },
-      // recordList (v) {
-      //   console.log('recordList change')
-      //   this.internalRecordList = Array.from(v.map(a => Object.assign({}, a)))
-      // },
-      // recordVolumes (v) {
-      //   this.internalRecordVolumes = Array.from(v.map(a => Object.assign({}, a)))
-      // },
-      // recordPlay (v) {
-      //   this.internalRecordPlay = v
-      // },
-    },
+    watch: {},
     mounted () {
-      console.log('mounted', this.internalRecordList)
+      this.eventRecordPlayEnded()
+      this.eventRecordPlayTimeUpdate()
     },
     methods: {
       isRecordStripActive (idx) {
-        const duration = (this.internalRecordPlay.duration * 1000)
+        const duration = (this.recordPlay.duration * 1000)
         const part = (duration / this.recordStripCount)
-        return (part * idx) <= (this.internalRecordPlayCurrentTime * 1000)
+        return (part * idx) <= (this.recordPlayCurrentTime * 1000)
       },
       switchPlayBackRecording () {
-        this.internalIsPlay = !this.internalIsPlay
-        if (!this.internalIsPlay) {
-          this.internalRecordPlay.pause()
+        const isPlay = !this.isPlay
+        this.$emit('update:isPlay', !this.isPlay)
+        if (!isPlay) {
+          this.recordPlay.pause()
         } else {
-          this.internalRecordPlay.play()
+          this.recordPlay.play()
         }
       },
       async sendRecord () {
         const type = 'send'
         const message = new FormData()
-        message.append('files[0]', this.internalRecordList[0].blob)
+        message.append('files[0]', this.recordList[0].blob)
         message.set('conversation_id', this.conversationId)
         this.cancelRecorder()
         await this.$store.dispatch('chat/message/send', { type, message })
       },
       cancelRecorder () {
-        this.stopRecorder()
         this.deleteRecord()
-        this.internalIsStop = false
-        this.internalRecordPlay = {}
-        this.internalRecordPlayCurrentTime = 0
+        this.stopRecorder()
+        this.$emit('update:isStop', false)
+        this.$emit('update:recordPlay', {})
         this.removeRecordStrip()
       },
       removeRecordStrip () {
-        this.internalRecordVolumes = []
+        this.$emit('update:recordVolumes', [])
       },
       deleteRecord () {
-        this.internalRecordList = Object.assign([], this.internalRecordList)
+        this.$emit('update:recordList', [])
       },
       stopRecorder () {
         if (!this.isRecording) {
           return
         }
-        this.internalIsStop = true
-        this.internalRecorder.stop()
-        this.internalRecordList = this.internalRecorder.recordList()
-        this.internalRecordPlay = new window.Audio()
-        this.internalRecordPlay.src = this.internalRecordList[0].url
+        this.$emit('update:isStop', true)
+        this.recorder.stop()
+        this.$emit('update:recordList', this.recorder.recordList())
+        const recordPlay = new window.Audio()
+        recordPlay.src = this.recorder.recordList()[0].url
+        this.$emit('update:recordPlay', recordPlay)
+      },
+      eventRecordPlayEnded () {
+        this.recordPlay.onended = () => {
+          if (this.isPlay) this.$emit('update:isPlay', false)
+        }
+      },
+      eventRecordPlayTimeUpdate () {
+        this.recordPlay.ontimeupdate = () => {
+          this.$emit('update:recordPlayCurrentTime', this.recordPlay.currentTime)
+        }
       },
     },
   }

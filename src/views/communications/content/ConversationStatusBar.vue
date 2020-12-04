@@ -6,18 +6,24 @@
           class="header-avatar"
           max-width="48"
           max-height="48"
-          :src="conversationAvatar"
+          :src="avatar"
         />
         <div class="header-info">
-          <p class="body-m-semibold neutral-900--text">
-            {{ conversationName }}
+          <p
+            class="body-m-semibold neutral-900--text"
+            :style="isGroup ? 'margin-top: 12px' : ''"
+          >
+            {{ name }}
           </p>
-          <div class="online">
+          <div
+            v-if="!isGroup"
+            class="online"
+          >
             <p
               class="body-s-semibold"
-              :class="[isConversationOnline ? 'success--text' : 'error--text']"
+              :class="[isOnline ? 'success--text' : 'error--text']"
             >
-              {{ isConversationOnline ? 'В сети' : 'Не в сети' }}
+              {{ isOnline ? 'В сети' : 'Не в сети' }}
             </p>
           </div>
         </div>
@@ -214,42 +220,34 @@
         return this.$store.getters['chat/chatUser/chatUser']
       },
       conversation () {
-        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
-        if (conversation.length) return conversation[0]
-        return {}
+        return this.$store.getters['chat/data/conversation'](this.conversationId)
       },
       members () {
-        if (!this.isEmptyObject(this.conversation)) return this.conversation.members
-        return []
+        return this.$store.getters['chat/data/members'](this.conversationId)
       },
       activeMembers () {
-        if (!this.isEmptyObject(this.conversation)) return this.conversation.members.filter(item => item.active)
-        return []
+        return this.$store.getters['chat/data/activeMembers'](this.conversationId)
       },
-      isConversationOnline () {
+      isOnline () {
+        console.log(this.conversation)
         return true
       },
-      conversationAvatar () {
+      avatar () {
         let avatar = ''
-        if (this.activeMembers.length > 2) {
+        if (this.isGroup) {
           avatar = this.getGroupImgData(this.conversation)
+        } else if (this.activeMembers && this.activeMembers.length > 1) {
+          const creator = this.activeMembers.filter(member => member.id === this.conversation.creator_id)[0]
+          avatar = creator.avatar
         } else {
-          if (
-            this.conversation.activeMembers &&
-            this.conversation.activeMembers.length > 0
-          ) {
-            console.log(this.conversation.activeMembers, this.conversation)
-            avatar = this.conversation.activeMembers.filter(member => member.id === this.conversation.cur_member_id)[0].avatar
-          } else {
-            avatar = null
-          }
+          avatar = this.img404
         }
         return avatar
       },
-      conversationName () {
+      name () {
         let name
 
-        if (this.activeMembers.length > 2) {
+        if (this.isGroup) {
           name = this.conversation.display_name
         } else {
           // ищем во всех участниках, включая удаленных
@@ -261,7 +259,7 @@
         return name
       },
       isGroup () {
-        return this.getActiveMembers() > 2
+        return this.activeMembers.length > 2
       },
     },
     watch: {

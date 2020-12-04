@@ -2,8 +2,21 @@
 @import "@/styles/_typography.sass";
 
 .attachment-deleted {
-  padding: 5px;
-  margin-bottom: 5px;
-  font-size: 11px;
-  border-left: 4px solid #C0C0C0;
+  position: relative;
+  margin-bottom: 20px;
+  p {
+    margin-top: 18px;
+    margin-left: 10px;
+    text-decoration: underline;
+  }
+  &:before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    height: 38px;
+    background: #4776E6;
+    border-radius: 60px;
+    left: 0px;
+    top: -8px;
+  }
 }

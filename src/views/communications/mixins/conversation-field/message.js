@@ -34,67 +34,37 @@ export default {
         this.currentConversationId,
       )
     },
-    async send (type) {
-      if (this.validateSendMessage) {
-        this.sending = true
-        // токен чат-пользователя для операций с чатами
-        const message = {
-          conversation_id: this.currentConversationId,
-          message_id: this.quotedMessage ? this.quotedMessage.id : null,
-          message: this.newMessage,
-          media: this.files,
-          topic_id: this.selectedTopicId,
-          recipients: Array.from(new Set(this.recipients)),
-          type: type,
-        }
-
-        await this.$store.dispatch('chat/message/send', message)
-        this.clearForm()
-      }
-    },
     async fetchData (id) {
       // id чата
       if (id) {
-        this.loadingMessage = true
-
         // асинхронная загрузка
         if (Object.keys(this.messages).length) {
           console.log('асинхронная загрузка')
-          try {
-            this.$store.dispatch('chat/topic/list', id)
-            this.$store.dispatch('chat/group/list', id)
-
-            const conversation = {
-              id,
-              offset: 0,
-              limit: 20,
-            }
-
-            this.$store.dispatch('chat/message/list', conversation)
-          } catch (e) {
-            console.error(e)
-          } finally {
-            this.loadingMessage = false
-          }
+          this._loadData(id)
         } else { // синхронная загрузка
           console.log('синхронная загрузка')
-          try {
-            await this.$store.dispatch('chat/topic/list', id)
-            await this.$store.dispatch('chat/group/list', id)
-
-            const conversation = {
-              id,
-              offset: 0,
-              limit: 20,
-            }
-
-            await this.$store.dispatch('chat/message/list', conversation)
-          } catch (e) {
-            console.error(e)
-          } finally {
-            this.loadingMessage = false
-          }
+          this.loadingMessage = true
+          await this._loadData(id)
         }
+      }
+    },
+    async _loadData (convId) {
+      console.log('loadData', convId)
+      try {
+        await this.$store.dispatch('chat/topic/list', convId)
+        await this.$store.dispatch('chat/group/list', convId)
+
+        const conversation = {
+          id: convId,
+          offset: 0,
+          limit: 20,
+        }
+
+        await this.$store.dispatch('chat/message/list', conversation)
+      } catch (e) {
+        console.error(e)
+      } finally {
+        this.loadingMessage = false
       }
     },
     async scrollFeed (e) {
@@ -102,12 +72,13 @@ export default {
 
       // загрузка страницы сообщений
       if (this.feedScrollTop > 0 && h === 0) {
+        this.loadingMessagePage = true
+
         const keys = Object.keys(this.messages)
         if (keys.length) {
-          this.messageIdToScrollPage = `message${keys[0]}`
+          this.messageIdToScrollPage = `message-${keys[0]}`
         }
 
-        this.loadingMessagePage = true
         try {
           const conversation = {
             id: this.currentConversationId,
@@ -120,8 +91,9 @@ export default {
           }
 
           await this.$store.dispatch('chat/message/list', conversation)
-        } catch (e) {}
-        this.loadingMessagePage = false
+        } finally {
+          this.loadingMessagePage = false
+        }
       }
       // Обновление поиска по сообщений, обновление происходит если поиск включен
       this.searchByFilterString()
