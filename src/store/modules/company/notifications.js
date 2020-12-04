@@ -73,9 +73,9 @@ const actions = {
     async read ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.get(`/api-cabinet/program/notifications?id=${item.id}`)
-            // console.log('/api-cabinet/staff')
-            // console.log(result)
+            const result = await ApiService.get(`/api-cabinet/program/notifications/${item.id}`)
+            console.log(`/api-cabinet/program/notifications/${item.id}`)
+            console.log(result)
             commit('SET_TEMPLATE', result)
         } catch (error) {
             throw error
@@ -102,10 +102,15 @@ const actions = {
     async delete ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.delete(`/api-cabinet/program/notifications?id=${item.id}`)
+            await ApiService.delete(`/api-cabinet/program/notifications/${item.id}`)
             // console.log('/api-cabinet/staff')
             // console.log(result)
-            commit('REMOVE', result)
+            commit('REMOVE', item)
+            this._vm.$notify({
+                type: 'success',
+                title: 'Шаблоны рассылки',
+                text: 'Шаблон удален',
+            })
         } catch (error) {
             throw error
         }

@@ -13,11 +13,14 @@ export default {
         }
     },
     methods: {
-        initBlock () {
-            this.localBlock = Object.copy(this.block)
+        initBlock (v) {
+            this.localBlock = Object.copy(v)
         },
         updateBlock (v) {
-            this.$emit('update:block', Object.copy(v))
+            this.$emit('update:block', v)
+        },
+        objectComparison (o1, o2) {
+            return JSON.stringify(o1) === JSON.stringify(o2)
         },
     },
 }

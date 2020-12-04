@@ -16,7 +16,7 @@
       :text="true"
       :ripple="false"
       :loading="loading"
-      :disabled="!form.attachments.length"
+      :disabled="form.attachments && !form.attachments.length"
       @click="createOrUpdate()"
     >
       <v-icon left>
@@ -27,7 +27,10 @@
 </template>
 
 <script>
+  import Routing from '@/mixins/routing'
+
   export default {
+    mixins: [Routing],
     props: {
       form: {
         type: Object,
@@ -57,11 +60,13 @@
             name: this.form.name,
             title: this.form.title,
             description: this.form.description,
-            body: this.form.attachments,
+            // body: this.form.description,
+            attachments: this.form.attachments,
           }
-          console.log(this.item)
+          console.log(item)
           if (this.form.id) await this.$store.dispatch('company/notifications/update', item)
           else await this.$store.dispatch('company/notifications/create', item)
+          this.toRoute('/sendings/templates')
         } finally {
           this.loading = false
         }

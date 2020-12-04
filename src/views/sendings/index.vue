@@ -1,14 +1,15 @@
 <template>
   <div>
-    <page-header />
+    <sending-page-header />
   </div>
 </template>
 
 <script>
-  import PageHeader from './PageHeader'
+  import SendingPageHeader from './SendingPageHeader'
+
   export default {
     components: {
-      PageHeader,
+      SendingPageHeader,
     },
     data () {
       return {
