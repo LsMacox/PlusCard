@@ -22,6 +22,7 @@ export default class ProgramEventBroadcasterHandler {
               this.NOTIFICATION,
               this.SEGMENT_IN,
               this.SEGMENT_OUT,
+              this.LOG,
             ]
           },
     });

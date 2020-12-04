@@ -266,6 +266,13 @@ export default new Router({
           meta: { auth: true, title: 'EventBroadcastersList', icon: 'dashboard' },
         },
         {
+          path: '/program/broadcaster/:id',
+          component: () => import('@/views/company/EventBroadcasters/EventBroadcasterFormTabs/index.vue'),
+          props: (route) => ({ broadcasterId: +route.params.id, startPage: route.hash || '#main' }),
+          name: 'EventBroadcasterForm',
+          meta: { auth: true, title: 'EventBroadcasterForm', icon: 'dashboard' },
+        },
+        {
           path: '/program/broadcasters/master',
           beforeEnter: GuardEmptyPrograms,
           component: () => import('@/views/company/EventBroadcasters/master'),

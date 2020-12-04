@@ -93,6 +93,7 @@
           icon: '$iconify_ion-megaphone-outline',
           title: 'Активности',
           to: '/program/broadcasters',
+          alias: ['EventBroadcastersList', 'EventBroadcasterMaster', 'EventBroadcasterForm'],
         },
         {
           icon: '$iconify_ion-mail-outline',

@@ -17,10 +17,14 @@ export default {
     namespaced: true,
     state: {
         broadcasters: [],
+        accountEventPickList: [],
     },
     mutations: {
         SET_BROADCASTERS (state, payload) {
             state.broadcasters = payload
+        },
+        SET_ACCOUNT_EVENT_PICK_LIST (state, payload) {
+            state.accountEventPickList = payload
         },
         ADD_BROADCASTER (state, newItem) {
             state.broadcasters.push(newItem)
@@ -64,6 +68,13 @@ export default {
             commit('SET_BROADCASTERS', result)
         },
 
+        async GetEventList ({ commit }, programId) {
+            const result = await ApiService.get(
+                '/api-cabinet/program/account/action/settings',
+            )
+            commit('SET_ACCOUNT_EVENT_PICK_LIST', result)
+        },
+
         async CheckClientFilter ({ commit }, filter) {
             const result = await ApiService.post('/api-cabinet/program/account/event/broadcaster/filter/validate', filter)
             return result
@@ -81,6 +92,14 @@ export default {
                 text: 'Активность успешно удалена',
                 type: 'success',
             })
+        },
+
+        async GetBroadcaster  ({ commit }, id) {
+            const result = await ApiService.get(
+                `/api-cabinet/program/account/event/broadcaster?broadcaster_id=${id}`,
+            )
+            commit('UPDATE_BROADCASTER', result)
+            return result
         },
 
         async CreateBroadcaster ({ commit }, broadcaster) {
@@ -139,7 +158,33 @@ export default {
 
             commit('SYNC_HANDLER', result)
             this._vm.$notify({
-                title: 'Создание обработчик создан',
+                title: 'Обработчик создан',
+                // text: `Активность "${result.name}" успешно создана`,
+                type: 'success',
+            })
+            return result
+        },
+
+        async UpdateBroadcasterHandler ({ commit }, handler) {
+            const result = await ApiService.put(
+                '/api-cabinet/program/account/event/broadcaster/handler',
+                handler,
+            )
+
+            commit('SYNC_HANDLER', result)
+            this._vm.$notify({
+                title: 'Обработчик обновлен',
+                // text: `Активность "${result.name}" успешно создана`,
+                type: 'success',
+            })
+            return result
+        },
+        async DeleteBroadcasterHandler ({ commit }, handlerId) {
+           await ApiService.delete(`/api-cabinet/program/account/event/broadcaster/handler?handler_id=${handlerId}`)
+
+            // commit('SYNC_HANDLER', result)
+            this._vm.$notify({
+                title: 'Обработчик удален',
                 // text: `Активность "${result.name}" успешно создана`,
                 type: 'success',
             })
@@ -170,5 +215,6 @@ export default {
                 return new ProgramEventBroadcaster(item)
             })
         },
+        accountEventPickList: (state) => state.accountEventPickList,
     },
 }

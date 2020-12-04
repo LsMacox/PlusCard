@@ -10,7 +10,7 @@
           :items="data"
           :search="search"
           :options="tableOptions"
-          item-key="uuid"
+          item-key="id"
           :class="className"
           :item-class="itemClass"
           class="plus-table"
@@ -88,7 +88,8 @@
       </v-col>
     </v-row>
 
-    <v-row v-if="!hideDefaultFooter"
+    <v-row
+      v-if="!hideDefaultFooter"
       align="center"
       class="pagination"
     >

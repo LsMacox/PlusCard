@@ -4,7 +4,7 @@
       align="center"
       justify="center"
     >
-      <v-col cols="8">
+      <v-col>
         <v-form
           ref="form"
           v-model="formValid"
@@ -47,14 +47,18 @@
           <v-row>
             <v-col>
               <v-btn
-                :disabled="!valid"
+                :disabled="!formValid"
                 color="primary"
                 class="master-next-btn"
+                :loading="actionLoading"
                 @click="onNextClick"
               >
-                Далее
-                <v-icon right>
-                  mdi-arrow-right
+                {{ actionText }}
+                <v-icon
+                  v-if="!!actionIcon"
+                  :rigth="!actionLeft"
+                >
+                  {{ actionIcon }}
                 </v-icon>
               </v-btn>
             </v-col>
@@ -80,6 +84,16 @@
         type: Object,
         required: true,
       },
+      actionText: {
+        type: String,
+        default: 'Далее',
+      },
+      actionLeft: Boolean,
+      actionIcon: {
+        type: String,
+        default: 'mdi-arrow-right',
+      },
+      actionLoading: Boolean,
     },
     data () {
       return {

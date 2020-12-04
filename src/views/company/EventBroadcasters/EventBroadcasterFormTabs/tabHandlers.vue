@@ -4,21 +4,19 @@
       align="center"
       justify="center"
     >
-      <v-col cols="8">
+      <v-col>
         <BaseMasterFieldBlock
           title="Обработчики"
           description="Настройте обработчики, которые нужны для обработки этой активности клиента"
         >
           <template v-slot:input>
-            {{ handlers }}
+            <!-- {{ handlers }} -->
             <v-row v-if="model.handlers && model.handlers.length">
               <v-col>
                 <base-table
-
                   class-name="table-handlers"
                   :headers="headers"
                   :data="handlers"
-
                   :is-custom-header="false"
                   :total-count="model.handlers.length"
                   :word-operations="['активность', 'активности', 'активностей']"
@@ -85,6 +83,7 @@
         <v-row>
           <v-col>
             <v-btn
+              v-if="!model.id"
               :disabled="!valid"
               color="primary"
               :loading="CreateBroadcasterAction"
@@ -134,8 +133,9 @@
         headers: [
           { text: 'ID', align: 'start', value: 'idText', width: '7em' },
           { text: 'Действие', value: 'actionText' },
-          { text: '', value: 'active', width: '1em', filterable: false, sortable: false },
-          { text: '', value: 'actions', width: '1em', filterable: false, sortable: false },
+          { text: '', value: '', filterable: false, sortable: false },
+          { text: '', value: 'active', width: 1, filterable: false, sortable: false },
+          { text: '', value: 'actions', width: 1, filterable: false, sortable: false },
 
         ],
         editedHandler: null,
@@ -234,7 +234,7 @@
       },
       onSaveHandler (handler) {
         console.log('onSaveHandler', handler)
-        handler.id = this.$uuid()
+        handler.id = handler.id || this.$uuid()
         this.ADD_HANDLER(handler)
       },
       onDeleteHandler (handler) {

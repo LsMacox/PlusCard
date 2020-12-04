@@ -68,7 +68,7 @@
             </v-icon>Сохранить
           </v-btn>
         </v-col>
-        <v-col v-if="model.id  && !model.deleted_at">
+        <v-col v-if="model.id && !model.deleted_at">
           <v-btn
             text
             color="error"
@@ -122,6 +122,10 @@
     methods: {
       ...mapActions({
         getPickList: 'crm/segment/getPickList',
+        CreateBroadcasterHandler: 'company/event_broadcasters/CreateBroadcasterHandler',
+        UpdateBroadcasterHandler: 'company/event_broadcasters/UpdateBroadcasterHandler',
+        DeleteBroadcasterHandler: 'company/event_broadcasters/DeleteBroadcasterHandler',
+
       }),
       async loadPickSegments () {
         try {
@@ -135,8 +139,9 @@
       },
       async deleteClick () {
         try {
+          this.deleteAction = true
           if (this.model.broadcaster_id && this.model.id) {
-            await this.$sleep()
+            await this.DeleteBroadcasterHandler(this.model.id)
           } else {
 
           }
@@ -145,7 +150,7 @@
         } catch (e) {
 
         } finally {
-
+          this.deleteAction = false
         }
       },
       async saveHandlerClick () {
@@ -153,11 +158,16 @@
 
         try {
           this.saveHandlerAction = true
+          let savedModel = this.model
           if (this.model.broadcaster_id) {
-            await this.$sleep()
+            if (this.model.isNew) {
+              savedModel = await this.CreateBroadcasterHandler(Object.assign({ name: this.$uuid() }, this.model))
+            } else {
+              savedModel = await this.UpdateBroadcasterHandler(Object.assign({ handler_id: this.model.id }, this.model))
+            }
           }
           this.close()
-          this.$emit('save', this.model)
+          this.$emit('save', savedModel)
         } catch (error) {
           console.error(error)
         } finally {

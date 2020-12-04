@@ -15,10 +15,14 @@
             class="cert-master-row"
             no-gutters
           >
-            <v-col :cols="8">
+            <v-col
+              :cols="12"                       
+              :sm="10"
+              :md="8"
+            >
               <v-tabs-items
-                v-model="currentStep"
                 v-if="broadcaster"
+                v-model="currentStep"
               >
                 <v-tab-item
                   :value="0"
@@ -72,7 +76,6 @@
         <span>Создавайте и настраивайте программы и сертификаты,<br> отслеживайте показатели продаж и многое другое.</span>
       </template>
     </base-empty-block-page>
-   
   </div>
 </template>
 
@@ -84,7 +87,6 @@
       StepMain: () => import('./EventBroadcasterFormTabs/tabMain.vue'),
       StepFilter: () => import('./EventBroadcasterFormTabs/tabFilter.vue'),
       StepHandlers: () => import('./EventBroadcasterFormTabs/tabHandlers.vue'),
-      
     },
     constants: {
       DEFAULT_BROADCASTER: {
@@ -114,7 +116,7 @@
       return {
         createCertificateLoading: false,
         currentStep: 0,
-        broadcaster: null,       
+        broadcaster: null,
       }
     },
     computed: {

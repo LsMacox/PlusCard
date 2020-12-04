@@ -8,6 +8,7 @@ export default class ProgramEventBroadcaster {
         PERIOD: { id: 'PERIOD', text: 'Периодический запуск' },
         EVENT: { id: 'EVENT', text: 'Запуск по событию' },
         PARENT: { id: 'PARENT', text: 'Запуск по родителя' },
+        ACCOUNT: { id: 'ACCOUNT', text: 'Запуск клиентом' },
     });
 
     static PERIOD_ENUM = Object.freeze({
@@ -65,6 +66,8 @@ export default class ProgramEventBroadcaster {
 
     get emitModeText () {
         switch (this.emit_mode) {
+            case ProgramEventBroadcaster.EMIT_MODE_ENUM.PARENT.id: return 'Родителем'
+            case ProgramEventBroadcaster.EMIT_MODE_ENUM.ACCOUNT.id: return 'Клиентом'
             case ProgramEventBroadcaster.EMIT_MODE_ENUM.MANUAL.id:
                 return 'Ручной'
             case ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id:

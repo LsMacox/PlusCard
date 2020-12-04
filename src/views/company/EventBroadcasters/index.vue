@@ -56,7 +56,7 @@
             class-name="table-moderations"
             :headers="headers"
             :data="filtered_broadcasters"
-            :item-class="() => 'clickable-row'"
+            :item-class="() => 'no-clickable-row'"
             :is-custom-header="false"
             :total-count="filtered_broadcasters.length"
             :word-operations="['активность', 'активности', 'активностей']"
@@ -160,6 +160,7 @@
 <script>
   import { mapGetters, mapActions } from 'vuex'
   import Permission from '@/mixins/permission'
+  import ProgramEventBroadcaster from '@/models/program/broadcaster'
   //   import Vue from 'vue'
   export default {
     components: {
@@ -257,9 +258,22 @@
       getItemActions (item) {
         return [
           {
-            icon: '$iconify_ion-document-outline',
-            title: 'Редактировать',
+            icon: '$iconify_feather-play',
+            title: 'Запустить',
             action: (item) => {},
+            show: item.active && item.emit_mode === ProgramEventBroadcaster.EMIT_MODE_ENUM.MANUAL.id && this.hasProgramPermission('program-broadcaster-run', item.program_id),
+          },
+          {
+            icon: '$iconify_feather-edit',
+            title: 'Редактировать',
+            action: (item) => {
+              this.$router.push({
+                name: 'EventBroadcasterForm',
+                params: {
+                  id: item.id,
+                },
+              })
+            },
             show: this.hasProgramPermission('program-broadcaster-update', item.program_id),
           },
           {

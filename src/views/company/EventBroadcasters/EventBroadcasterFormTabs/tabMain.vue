@@ -4,7 +4,7 @@
       align="center"
       justify="center"
     >
-      <v-col cols="8">
+      <v-col>
         <v-form
           ref="form"
           v-model="formValid"
@@ -89,7 +89,6 @@
             description="Выберите один из режимов запуска бизнес-процесса и настройте его параметры. "
           >
             <template v-slot:input>
-              {{ model.period }}
               <v-row>
                 <v-col>
                   <v-radio-group
@@ -114,9 +113,10 @@
                 <v-col>
                   <v-select
                     v-model="model.listen_event"
+                    :loading="GetEventListAction"
                     class=""
-                    :items="accountEventList"
-                    item-text="text"
+                    :items="accountEventPickList"
+                    item-text="name"
                     item-value="id"
                     placeholder="Выберите событие"
                     outlined
@@ -168,14 +168,19 @@
           <v-row>
             <v-col>
               <v-btn
+                v-show="actionShow"
                 :disabled="!formValid"
                 color="primary"
                 class="master-next-btn"
+                :loading="actionLoading"
                 @click="onNextClick"
               >
-                Далее
-                <v-icon right>
-                  mdi-arrow-right
+                {{ actionText }}
+                <v-icon
+                  v-if="!!actionIcon"
+                  :rigth="!actionLeft"
+                >
+                  {{ actionIcon }}
                 </v-icon>
               </v-btn>
             </v-col>
@@ -187,7 +192,7 @@
 </template>
 
 <script>
-//   import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
 
   import ProgramEventBroadcaster from '@/models/program/broadcaster'
 
@@ -204,6 +209,20 @@
         type: Object,
         required: true,
       },
+      actionText: {
+        type: String,
+        default: 'Далее',
+      },
+      actionLeft: Boolean,
+      actionIcon: {
+        type: String,
+        default: 'mdi-arrow-right',
+      },
+      actionLoading: Boolean,
+      actionShow: {
+        type: Boolean,
+        default: true,
+      },
     },
     constants: {
       ProgramEventBroadcaster,
@@ -215,15 +234,20 @@
     data () {
       return {
         formValid: false,
+        GetEventListAction: false,
         emitModeList: [
           { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.MANUAL.id, text: 'Ручной запуск' },
           { id: ProgramEventBroadcaster.PERIOD_ENUM.ONCE.id, text: 'Единоразово' },
           { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id, text: 'По расписанию' },
           { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.EVENT.id, text: 'По событию' },
+          { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.ACCOUNT.id, text: 'Запуск клиентом' },
         ],
       }
     },
     computed: {
+      ...mapGetters({
+        accountEventPickList: 'company/event_broadcasters/accountEventPickList',
+      }),
 
       emitMode: {
         get: function () {
@@ -254,9 +278,27 @@
       },
     },
     created () {
-
+      this.loadEventList()
     },
     methods: {
+      ...mapActions({
+        GetEventList: 'company/event_broadcasters/GetEventList',
+      }),
+
+      validate () {
+        return this.$refs.form.validate()
+      },
+      async loadEventList () {
+        try {
+          this.GetEventListAction = true
+          await this.GetEventList()
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.GetEventListAction = false
+        }
+      },
+
       validateDates (v) {
         if (this.model.start_at && this.model.finish_at) {
           return this.$moment(this.model.start_at).diff(this.$moment(this.model.finish_at)) < 0 || 'Дата окончания должна быть больше начала'
@@ -265,7 +307,7 @@
         }
       },
       onNextClick () {
-        if (this.$refs.form.validate()) {
+        if (this.validate()) {
           this.$emit('continue', true)
         }
       },
