@@ -5,8 +5,12 @@ export default {
     state: {
         loading: false,
         segments: [],
+        pickSegments: [],
     },
     mutations: {
+        SET_PICK_SEGMENTS (state, payload) {
+            state.pickSegments = payload
+        },
         segments (state, payload) {
             state.segments = payload
         },
@@ -70,6 +74,16 @@ export default {
             commit('segments', result)
             commit('loading', false)
         },
+        
+        async getPickList ({ commit }, programId) {
+            const result = await ApiService.get('/api-cabinet/program/client/segment/picklist', {
+                params: {
+                    program_id: programId,
+                },
+            })
+
+            commit('SET_PICK_SEGMENTS', result)
+        },
         async createSegment ({ commit }, payload) {
             const result = await ApiService.post('/api-cabinet/program/client/segment/create', payload)
 
@@ -98,6 +112,9 @@ export default {
     getters: {
         segments (state) {
             return state.segments
+        },
+        pickSegments (state) {
+            return state.pickSegments
         },
     },
 }

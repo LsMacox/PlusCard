@@ -1,12 +1,14 @@
 <template>
   <cert-diagram-frame
     class="w-certificate"
-    :diagram-labels="diagramLabels.reverse()"
-    :diagram-data="diagramData.reverse()"
-    :diagram-height="90"
+    :diagram-data="widgetData"
+    :diagram-labels="widgetData"
+    :diagram-height="46"
+    title="Сертификаты"
     :titles="titles"
-    :count="currentCount"
-    :percentage-difference="percentageDifference"
+    sub-title="шт на сумму:"
+    :count="count"
+    :sum="sum"
   />
 </template>
 
@@ -21,42 +23,75 @@
       widgetData: {
         type: Array,
         default () {
-          return [5].fill({
-            all_count: 0,
-            total_sum: 0,
-            certs_count: 0,
-            certs_increment: 0,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          })
+          return [
+            {
+              count: 10,
+              date_start: '2020-09-08',
+              date_end: '2020-09-08',
+            },
+            {
+              count: 20,
+              date_start: '2020-09-08',
+              date_end: '2020-09-08',
+            },
+            {
+              count: 30,
+              date_start: '2020-09-08',
+              date_end: '2020-09-08',
+            },
+            {
+              count: 40,
+              date_start: '2020-09-08',
+              date_end: '2020-09-08',
+            },
+            {
+              count: 50,
+              date_start: '2020-09-08',
+              date_end: '2020-09-08',
+            },
+          ]
         },
       },
     },
     data () {
       return {
-        titles: ['сертификат', 'сертификата', 'сертификатов'],
+        count: 0,
+        sum: 0,
+        titles: ['клиент', 'клиента', 'клиентов'],
       }
     },
     computed: {
-      currentCount () {
-        return this.widgetData.length ? this.widgetData[0].certs_count : 0
-      },
-      percentageDifference () {
-        if (this.widgetData && this.widgetData.length >= 2) {
-          if (this.widgetData[1].certs_count > 0) {
-            return this.relativeChange(this.widgetData[0].certs_count, this.widgetData[1].certs_count)
-          }
-        }
-        return 0
-      },
       diagramLabels () {
-        return this.prepareDiagramLabels(this.widgetData, 'certs_count')
+        return this.prepareDiagramLabels(this.widgetData, 'count')
       },
       diagramData () {
-        return this.$_.map(this.widgetData, 'certs_count')
+        return this.$_.map(this.widgetData, 'count')
+      },
+      diagramTotalData () {
+        return this.$_.map(this.widgetData, 'count')
       },
     },
-    mounted () {},
-    methods: {},
+    watch: {
+      // widgetData (v) {
+      //   if (v && v[0] && v[1]) {
+      //     const newData = v[0]
+      //     const totalData = v[1]
+      //     this.newCount = newData.length ? newData[newData.length - 1].count : 0
+      //     this.totalCount = totalData.length ? totalData[totalData.length - 1].count : 0
+      //     this.newPercentageDifference = this.relativeChange(newData[newData.length - 1].count ?? 0, newData[newData.length - 2].count ?? 0) ?? 0
+      //     this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1].count ?? 0, totalData[totalData.length - 2].count ?? 0) ?? 0
+      //   }
+      // },
+    },
+    mounted () {
+      this.count = this.widgetData.length ? this.widgetData[this.widgetData.length - 1].count : 0
+      this.sum = this.relativeChange(this.widgetData[this.widgetData.length - 1].count, this.widgetData[this.widgetData.length - 2].count) ?? 0
+    },
   }
 </script>
+
+<style lang="scss">
+
+//@import "@/styles/vuetify-preset-plus/light_theme/widgets/_client-program.scss";
+
+</style>

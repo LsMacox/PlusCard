@@ -1,5 +1,7 @@
 <template>
-  <widget-template :class-name="widgetClasses">
+  <cert-widget-template
+      :class-name="widgetClasses"
+  >
     <template v-slot:header-left>
       <p class="body-m-semibold">
         {{ title }}
@@ -59,17 +61,17 @@
         </div>
       </div>
     </template>
-  </widget-template>
+  </cert-widget-template>
 </template>
 
 <script>
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
-  import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
+  import CertWidgetTemplate from '@/views/widgets/components/CertWidgetTemplate'
 
   export default {
     name: 'DoubleDiagramFrame',
     components: {
-      WidgetTemplate,
+      CertWidgetTemplate,
     },
     mixins: [WidgetFunctions],
     inheritAttrs: false,
@@ -170,16 +172,109 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 
-@import "@/styles/vuetify-preset-plus/light_theme/widgets/frames/_cert-payment-statuses-frame.scss";
+@import "./src/styles/vuetify-preset-plus/light_theme/variables";
+
+.f-vertical-progress {
+  .f-vertical-progress__body {
+    justify-content: space-between!important;
+    .f-vertical-progress__box {
+      .f-vertical-progress__box-container {
+        margin-top: 10px;
+
+        &:nth-child(1) {
+          margin-top: 14.5px;
+          .f-vertical-progress__info-statistics  {
+            .statistics__percent {
+              color: $primary-base
+            }
+          }
+        }
+
+        &:nth-child(2) {
+          .f-vertical-progress__info-statistics  {
+            .statistics__percent {
+              color: $warning-500
+            }
+          }
+        }
+
+        &:nth-child(3) {
+          .f-vertical-progress__info-statistics  {
+            .statistics__percent {
+              color: $chart-500
+            }
+          }
+        }
+
+        .f-vertical-progress__box-info {
+          .f-vertical-progress__info-title {
+            margin-bottom: 5px;
+            p {
+              margin-bottom: 0;
+              color: $neutral-500;
+            }
+          }
+        }
+
+        .f-vertical-progress__info-statistics {
+          .statistics__number {
+            float: left;
+            margin-right: 8px;
+            width: 100px;
+          }
+          .statistics__percent-all {
+            float: left;
+            margin-right: 18px;
+          }
+          .statistics__percent {
+            margin-top: 5px;
+            display: inline-block;
+          }
+        }
+      }
+    }
+    .f-vertical-progress__diagram {
+      margin-top: auto;
+      transform: rotate(-90deg) translateX(12px) translateY(44px);
+      .f-vertical-progress__diagram-progress {
+        .v-progress-linear {
+          height: 12px!important;
+          width: 47px;
+          margin-bottom: 12px!important;
+          margin-left: 88px;
+        }
+        .v-progress-linear-wrapper {
+          padding-bottom: 88px;
+        }
+        .v-progress-linear-info {
+          transform: rotate(90deg) translateX(26px) translateY(8px);
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 960px) {
+  .f-vertical-progress__diagram {
+    .f-vertical-progress__diagram-progress {
+      .v-progress-linear-wrapper {
+        padding-bottom: 68px!important;
+      }
+    }
+  }
+}
 
 .w-payment__diagram-progress {
   height: 166px;
 }
-
 .widget-box {
   height: 166px!important;
+}
+
+.widget-box .widget-box__body {
+  justify-content: space-between!important;
 }
 
 @media (min-width: 960px) {

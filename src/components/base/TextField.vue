@@ -68,7 +68,6 @@
       />
     </template>
     <template v-slot:append>
-   
       <v-row
         no-gutters
         class="append-slot-row"
@@ -181,7 +180,6 @@
           </v-icon>
         </v-col>
       </v-row>
- 
     </template>
     <!-- Слот отображения ошибки -->
     <!-- <template v-slot:message="{key, message}">
@@ -218,6 +216,7 @@
         type: String,
         default: 'tooltip',
       },
+      escapeClearable: Boolean,
 
       keyFilterRegexp: {
         type: RegExp, // string, integer, number
@@ -257,6 +256,7 @@
         default: undefined,
       },
       clearable: Boolean,
+
       color: {
         type: String,
         default: undefined,
@@ -469,6 +469,9 @@
 
       onKeydown (e) {
         // console.log('onKeydown', e)
+        if (this.escapeClearable && e.key === 'Escape') {
+          this.internalValue = ''
+        }
 
         if (this.keyFilterRegexp && !this.keyFilterRegexp.test(e.key)) e.preventDefault()
         e && this.$nextTick(() => this.$emit('keydown', e))
