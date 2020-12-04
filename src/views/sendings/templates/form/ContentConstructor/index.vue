@@ -130,12 +130,18 @@
           ],
         }
       },
+      blockButton () {
+        return {
+          type: 'button',
+          text: 'Действие',
+          color: 'blue',
+          action: null,
+        }
+      },
     },
     watch: {
       attachments: {
         handler (v) {
-          console.log('watch !!!!')
-          console.log(v)
           this.localAttachments = Object.copy(v)
           this.localAttachments = Object.assign([], this.localAttachments)
         },
@@ -143,8 +149,6 @@
       },
     },
     created () {
-      console.log('this.attachments.length')
-      console.log(this.attachments.length)
       if (this.attachments && this.attachments.length) {
         this.localAttachments = Object.copy(this.attachments)
       } else {
@@ -175,6 +179,9 @@
               break
             case 'friends':
               this.localAttachments.push(Object.copy(this.blockFriends))
+              break
+            case 'button':
+              this.localAttachments.push(Object.copy(this.blockButton))
               break
           }
         }

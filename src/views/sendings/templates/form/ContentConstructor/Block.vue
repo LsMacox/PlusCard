@@ -53,6 +53,11 @@
       :block="block"
       @update:block="updateBlock"
     />
+    <block-button
+      v-if="block.type === 'button'"
+      :block="block"
+      @update:block="updateBlock"
+    />
   </div>
 </template>
 
@@ -65,6 +70,7 @@
   import BlockVideos from './BlockVideos'
   import BlockFriend from './BlockFriend'
   import BlockFriends from './BlockFriends'
+  import BlockButton from './BlockButton'
 
   export default {
     components: {
@@ -75,6 +81,7 @@
       BlockVideos,
       BlockFriend,
       BlockFriends,
+      BlockButton,
     },
     mixins: [BlockMixin],
     props: {

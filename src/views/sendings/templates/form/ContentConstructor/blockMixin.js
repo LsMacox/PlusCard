@@ -9,6 +9,7 @@ export default {
                 { type: 'videos', icon: 'clarity-video-gallery-solid', title: 'Видеогалерея', disable: true },
                 { type: 'friend', icon: 'fa-solid-user', title: 'Друг', disable: true },
                 { type: 'friends', icon: 'fa-solid-user-friends', title: 'Друзья', disable: true },
+                { type: 'button', icon: 'emojione-monotone-b-button', title: 'Кнопка', disable: false },
             ],
         }
     },

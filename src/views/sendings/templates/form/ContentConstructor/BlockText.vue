@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ localBlock.value }}
     <editor
       v-model="localBlock.value"
       api-key=""
