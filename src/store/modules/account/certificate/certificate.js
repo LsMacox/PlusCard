@@ -6,6 +6,7 @@ const state = {
     programCertificates: [],
     totalCount: 0,
     payments: [],
+    widgetData: [],
 }
 
 const mutations = {
@@ -32,6 +33,10 @@ const mutations = {
 
     payments (state, payload) {
         state.payments = payload
+    },
+
+    widget (state, payload) {
+        state.widgetData = payload
     },
 
     update_statuses (state, payload) {
@@ -103,6 +108,7 @@ const actions = {
             throw error
         }
     },
+
     async programCertificates ({ commit }, programId) {
         console.log(programId)
         // eslint-disable-next-line no-useless-catch
