@@ -26,7 +26,7 @@
 
 <script>
   import Editor from '@tinymce/tinymce-vue'
-  import BlockMixin from './block'
+  import BlockMixin from './blockMixin'
 
   export default {
     components: {

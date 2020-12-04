@@ -57,7 +57,7 @@
 </template>
 
 <script>
-  import BlockMixin from './block'
+  import BlockMixin from './blockMixin'
   import BlockText from './BlockText'
   import BlockImage from './BlockImage'
   import BlockImages from './BlockImages'

@@ -47,7 +47,7 @@
 </template>
 
 <script>
-  import BlockMixin from './block'
+  import BlockMixin from './blockMixin'
   import File from '@/mixins/file'
 
   export default {

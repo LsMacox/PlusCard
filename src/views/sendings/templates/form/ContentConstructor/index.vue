@@ -54,8 +54,8 @@
 
 <script>
   import draggable from 'vuedraggable'
-  import Block from './Block'
-  import BlockMixin from './block'
+  import Block from './Block.vue'
+  import BlockMixin from './blockMixin'
 
   export default {
     components: {

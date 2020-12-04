@@ -14,7 +14,7 @@
 </template>
 
 <script>
-  import BlockMixin from './block'
+  import BlockMixin from './blockMixin'
 
   export default {
     mixins: [BlockMixin],
