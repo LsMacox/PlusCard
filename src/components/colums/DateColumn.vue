@@ -1,11 +1,14 @@
 <template>
-  <div>
+  <div v-if="value">
     <div class="">
       {{ getDate(value) }}
     </div>
     <div class="body-xs-semibold neutral-600--text">
       {{ 'в\u00A0' + getTime(value) }}
     </div>
+  </div>
+  <div v-else>
+    -
   </div>
 </template>
 

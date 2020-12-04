@@ -8,8 +8,9 @@
           v-bind="$attrs"
           :headers="headers"
           :items="data"
+          :search="search"
           :options="tableOptions"
-          item-key="uuid"
+          item-key="id"
           :class="className"
           :item-class="itemClass"
           class="plus-table"
@@ -21,7 +22,10 @@
           :hide-default-header="isCustomHeader"
           v-on="inputListeners"
         >
-          <template v-if="isCustomHeader" v-slot:[`header`]="{ props }">
+          <template
+            v-if="isCustomHeader"
+            v-slot:[`header`]="{ props }"
+          >
             <thead class="v-data-table-header">
               <tr>
                 <th
@@ -85,6 +89,7 @@
     </v-row>
 
     <v-row
+      v-if="!hideDefaultFooter"
       align="center"
       class="pagination"
     >
@@ -134,7 +139,11 @@
     mixins: [Convertor],
     inheritAttrs: false,
     props: {
-      isCustomHeader:{
+      hideDefaultFooter: {
+        type: Boolean,
+        default: false,
+      },
+      isCustomHeader: {
         type: Boolean,
         default: true,
       },
@@ -145,6 +154,10 @@
       itemClass: {
         type: Function,
         default: undefined,
+      },
+      search: {
+        type: [String],
+        default: '',
       },
       headers: {
         type: Array,

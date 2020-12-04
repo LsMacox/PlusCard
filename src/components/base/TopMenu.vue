@@ -5,7 +5,10 @@
       no-gutters
     >
       <v-col>
-        <v-row no-gutters class="header-row">
+        <v-row
+          no-gutters
+          class="header-row"
+        >
           <v-col :cols="3">
             <v-btn
               v-if="showCancel"
@@ -23,12 +26,20 @@
           </v-col>
 
           <v-col :cols="6">
-             <v-row justify="center" v-if="$slots.header" no-gutters style="text-align: center;">
+            <v-row
+              v-if="$slots.header"
+              justify="center"
+              no-gutters
+              style="text-align: center;"
+            >
               <v-col>
                 <slot name="header" />
               </v-col>
             </v-row>
-            <div v-else class="form-menu__item-block">
+            <div
+              v-else
+              class="form-menu__item-block"
+            >
               <div
                 v-for="(item, index) in menu"
                 :key="index"
@@ -37,7 +48,7 @@
               >
                 {{ item.name }}
               </div>
-            </div>           
+            </div>
           </v-col>
           <v-col :cols="3">
             <v-row
@@ -70,7 +81,10 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row no-gutters v-if="$slots.default">
+    <v-row
+      v-if="$slots.default"
+      no-gutters
+    >
       <slot />
     </v-row>
   </v-row>
@@ -186,7 +200,7 @@
   // margin: $page-content-padding-disable;
   // padding: $page-content-padding;
   background: $material-light-backgroung-color;
-  z-index: 200;
+   z-index: 2;
   // margin: -34px -34px 0 -34px;
   // padding: 42px 34px;
 
