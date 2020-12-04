@@ -31,6 +31,12 @@
     },
     computed: {},
     watch: {
+      block: {
+        handler (v) {
+          if (!this.objectComparison(v, this.localBlock)) this.initBlock(v)
+        },
+        deep: true,
+      },
       localBlock: {
         handler (v) {
           this.updateBlock(v)
@@ -39,7 +45,7 @@
       },
     },
     created () {
-      this.initBlock()
+      this.initBlock(this.block)
     },
     methods: {},
   }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-header :form="form" />
+    <form-page-header :form="form" />
     <div class="pls--page-block-center">
       <v-form
         :ref="formRef"
@@ -44,12 +44,12 @@
 </template>
 
 <script>
-  import PageHeader from './PageHeader'
+  import FormPageHeader from './FormPageHeader'
   import ContentConstructor from './ContentConstructor/index'
 
   export default {
     components: {
-      PageHeader,
+      FormPageHeader,
       ContentConstructor,
     },
     data () {
@@ -70,15 +70,35 @@
           attachments: [],
         }
       },
+      template () {
+        return this.$store.getters['company/notifications/template']
+      },
     },
-    created () {
-      if (this.$route.params.id === 'new') {
-        this.form = Object.copy(this.defaultForm)
-      }
+    async created () {
+      await this.initForm()
     },
     methods: {
       updateAttachments (v) {
         this.form.attachments = Object.copy(v)
+      },
+      async initForm () {
+        if (this.$route.params.id === 'new') {
+          this.form = Object.copy(this.defaultForm)
+        } else if (this.$route.params.id) {
+          await this.fetchData()
+          this.form = Object.copy(this.template)
+        }
+      },
+      async fetchData () {
+        try {
+          this.loading = true
+          const item = {
+            id: this.$route.params.id,
+          }
+          await this.$store.dispatch('company/notifications/read', item)
+        } finally {
+          this.loading = false
+        }
       },
     },
   }

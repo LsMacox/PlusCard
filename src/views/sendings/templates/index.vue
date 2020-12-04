@@ -1,14 +1,41 @@
 <template>
   <div>
-    <page-header />
+    <template-page-header />
+    <template-table />
   </div>
 </template>
 
 <script>
-  import PageHeader from './PageHeader'
+  import TemplatePageHeader from './TemplatePageHeader'
+  import TemplateTable from './TemplateTable'
+
   export default {
     components: {
-      PageHeader,
+      TemplatePageHeader,
+      TemplateTable,
+    },
+    data () {
+      return {
+        loading: false,
+      }
+    },
+    computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+    },
+    async created () {
+      await this.fetchData()
+    },
+    methods: {
+      async fetchData () {
+        try {
+          this.loading = true
+          await this.$store.dispatch('company/notifications/list', { program_id: this.program.id })
+        } finally {
+          this.loading = false
+        }
+      },
     },
   }
 </script>

@@ -18,11 +18,7 @@
 
 <script>
   export default {
-    computed: {
-      program () {
-        return this.$store.getters['company/program/program']
-      },
-    },
+    computed: {},
   }
 </script>
 

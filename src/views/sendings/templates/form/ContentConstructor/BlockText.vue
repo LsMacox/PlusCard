@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ localBlock.value }}
     <editor
       v-model="localBlock.value"
       api-key=""
@@ -45,22 +46,21 @@
     },
     computed: {},
     watch: {
+      block: {
+        handler (v) {
+          if (!this.objectComparison(v, this.localBlock)) this.initBlock(v)
+        },
+        deep: true,
+      },
       localBlock: {
         handler (v) {
           this.updateBlock(v)
         },
         deep: true,
       },
-      editor: {
-        handler (v) {
-          console.log(v)
-          // this.updateBlock(v)
-        },
-        deep: true,
-      },
     },
     created () {
-      this.initBlock()
+      this.initBlock(this.block)
     },
     methods: {
 

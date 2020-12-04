@@ -2,29 +2,44 @@
   <widget-template :class-name="widgetClasses">
     <template v-slot:header-left>
       <p class="body-m-semibold">
-        <span class="wc-base">{{ count }}</span> {{ declOfNum(count, titles) }}
+        {{ title }}
       </p>
     </template>
 
     <template v-slot:body>
-      <v-progress-circular
-        v-show="diagramData.length == 0"
-        indeterminate
-        color="primary"
-        :class="generateClassesByPrefix(widgetClasses, '__progress')"
-      />
       <div
-        v-if="diagramData.length"
-        :class="generateClassesByPrefix(widgetClasses, '__diagram')"
+        :class="generateClassesByPrefix(widgetClasses, '__box')"
+        class="d-flex flex-column"
       >
-        <base-line-graph
-          :labels="diagramLabels"
-          :data="diagramData"
-          :point-radius="diagramOptions.pointRadius"
-          :point-border-width="diagramOptions.pointBorderWidth"
-          :tooltips="diagramOptions.tooltips"
-          :height="diagramHeight"
-        />
+        <div
+          :class="generateClassesByPrefix(widgetClasses, '__box-container')"
+          class="d-flex"
+        >
+          <div :class="generateClassesByPrefix(widgetClasses, '__box-info')">
+            <div :class="generateClassesByPrefix(widgetClasses, '__info-title')">
+              <p class="body-s-semibold">
+                {{ count }} шт на сумму
+              </p>
+            </div>
+            <div
+              :class="generateClassesByPrefix(widgetClasses, '__info-statistics')"
+            >
+              <p class="statistics__number title-m-bold">
+                {{ sum }} &#8381
+              </p>
+            </div>
+          </div>
+          <div :class="generateClassesByPrefix(widgetClasses, '__box-diagram')">
+            <base-line-graph
+              :height="diagramHeight"
+              :labels="diagramLabels"
+              :data="diagramData"
+              :tooltips="diagramOptions.tooltips"
+              :point-radius="diagramOptions.pointRadius"
+              :point-border-width="diagramOptions.pointBorderWidth"
+            />
+          </div>
+        </div>
       </div>
     </template>
   </widget-template>
@@ -36,11 +51,20 @@
   import BaseLineGraph from '@/views/widgets/components/graphs/BaseLineGraph'
 
   export default {
-    name: 'BaseDiagramFrame',
-    components: { BaseLineGraph, WidgetTemplate },
+    name: 'DoubleDiagramFrame',
+    components: {
+      BaseLineGraph,
+      WidgetTemplate,
+    },
     mixins: [WidgetFunctions],
     inheritAttrs: false,
     props: {
+      name: {
+        type: String,
+        default () {
+          return undefined
+        },
+      },
       diagramData: {
         type: Array,
         default () {
@@ -57,11 +81,19 @@
         type: Number,
         default: 90,
       },
+      title: {
+        type: String,
+        default: '',
+      },
+      subTitle: {
+        type: String,
+        default: '',
+      },
       count: {
         type: Number,
         default: 0,
       },
-      percentageDifference: {
+      sum: {
         type: Number,
         default: 0,
       },
@@ -71,21 +103,27 @@
           return []
         },
       },
+      textHelp: {
+        type: String,
+        default: null,
+      },
     },
     data () {
       var _this = this
       return {
+        dialogHelp: false,
         diagramOptions: {
-          pointRadius: 6,
-          pointBorderWidth: 4,
+          pointRadius: 4,
+          pointBorderWidth: 2.5,
           tooltips: {
             display: true,
             callbacks: {
               title: function (tooltipItem, data) {
-                console.log('tooltipItem')
-                console.log(tooltipItem)
-                console.log('tooltipItem')
-                return tooltipItem[0].xLabel.count + ' ' + _this.declOfNum(tooltipItem[0].xLabel.count, _this.titles)
+                if (_this.name === 'purchase') {
+                  return tooltipItem[0].value + ' руб.'
+                } else {
+                  return tooltipItem[0].value + ' ' + _this.declOfNum(parseInt(tooltipItem[0].value), _this.titles)
+                }
               },
               label: function (tooltipItem, data) {
                 var startDate = tooltipItem.xLabel.start_period
@@ -103,7 +141,7 @@
     },
     computed: {
       widgetClasses () {
-        return this.parentClass !== undefined ? this.parentClass + ' f-base' : 'f-base'
+        return this.parentClass !== undefined ? this.parentClass + ' f-double' : 'f-double'
       },
     },
     mounted () {},
@@ -111,6 +149,73 @@
   }
 </script>
 
-<style lang="scss">
-@import "@/styles/vuetify-preset-plus/light_theme/widgets/frames/_base-frame.scss";
+<style lang="scss" scoped>
+
+@import "./src/styles/vuetify-preset-plus/light_theme/variables";
+
+.statistics__number {
+  color: $primary-base;
+}
+
+.widget-box {
+  height: 166px!important;
+}
+
+.f-double {
+  .f-double__body {
+
+    .f-double__box {
+      width: 100%;
+      .f-double__box-container {
+        justify-content: space-between;
+        margin-top: 20px;
+
+        .f-double__box-info {
+          .f-double__info-title {
+            margin-bottom: 5px;
+            p {
+              margin-bottom: 0;
+              color: $neutral-500;
+            }
+          }
+        }
+
+        .f-double__box-diagram {
+          width: 75%!important;
+        }
+
+        &:nth-child(1) {
+          .f-double__box-diagram {
+            margin-top: -9px;
+          }
+        }
+
+        &:nth-child(2) {
+          margin-top: 18px;
+          .f-double__box-diagram {
+            opacity: 0.7;
+          }
+        }
+
+        .f-double__info-statistics {
+          .statistics__number {
+            float: left;
+            margin-right: 8px;
+          }
+          .statistics__percent {
+            margin-top: 5px;
+            display: inline-block;
+          }
+        }
+
+        .f-double__box-diagram {
+          margin-top: -2px;
+          width: 100px;
+          float: left;
+        }
+      }
+    }
+  }
+}
+
 </style>

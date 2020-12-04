@@ -3,14 +3,15 @@
     <v-col
       :cols="6"
       :sm="6"
-      :md="6"
+      :md="12"
+      :lg="6"
     >
-      <certificates />
+      <certificates :widget-data="widgetData" />
     </v-col>
     <v-col
       :cols="6"
-      :sm="6"
-      :md="6"
+      :md="12"
+      :lg="6"
     >
       <payments :widget-data="payments" />
     </v-col>
@@ -28,7 +29,33 @@
     },
     data () {
       return {
-        widgetData: [],
+        widgetData: [
+          {
+            count: 10,
+            date_start: '2020-09-08',
+            date_end: '2020-09-08',
+          },
+          {
+            count: 20,
+            date_start: '2020-09-08',
+            date_end: '2020-09-08',
+          },
+          {
+            count: 30,
+            date_start: '2020-09-08',
+            date_end: '2020-09-08',
+          },
+          {
+            count: 40,
+            date_start: '2020-09-08',
+            date_end: '2020-09-08',
+          },
+          {
+            count: 50,
+            date_start: '2020-09-08',
+            date_end: '2020-09-08',
+          },
+        ],
       }
     },
     computed: {
