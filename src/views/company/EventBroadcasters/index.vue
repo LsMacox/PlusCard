@@ -155,6 +155,11 @@
         />
       </template>
     </base-empty-block-page>
+    <broadcaster-log-dialog
+      v-if="dialog"
+      v-model="dialog"
+      :broadcaster-id="selectedId"
+    />
   </v-skeleton-loader>
 </template>
 <script>
@@ -165,12 +170,15 @@
   export default {
     components: {
       DateColumn: () => import('@/components/colums/DateColumn.vue'),
+      BroadcasterLogDialog: () => import('./EventBroadcasterFormTabs/broadcasterLog.vue'),
     },
     mixins: [Permission],
     data () {
       return {
         search: '',
         GetListAction: false,
+        selectedId: null,
+        dialog: false,
         headers: [
           { text: 'ID', align: 'start', value: 'id', width: '7em' },
           { text: 'Название', value: 'name' },
@@ -287,6 +295,15 @@
               })
             },
             show: this.hasProgramPermission('program-broadcaster-update', item.program_id),
+          },
+          {
+            icon: '$iconify_feather-edit',
+            title: 'Логи',
+            action: (item) => {
+              this.selectedId = item.id
+              this.dialog = true
+            },
+            show: true,
           },
           {
             icon: '$iconify_feather-trash',

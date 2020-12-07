@@ -14,7 +14,7 @@
           :class="className"
           :item-class="itemClass"
           class="plus-table"
-          :show-expand="Boolean(expanded.length)"
+          :show-expand="showExpand"          
           :expanded.sync="expanded"
           :sort-by="pagination.sortBy"
           :sort-desc="pagination.descending === 'descending' ? true : false"
@@ -65,7 +65,7 @@
             </td>
           </template>
 
-          <template
+          <!-- <template
             v-slot:[`item.data-table-expand`]="{ expand, isExpanded }"
           >
             <slot
@@ -73,7 +73,7 @@
               :isExpand="isExpanded"
               name="item.data-table-expand"
             />
-          </template>
+          </template> -->
 
           <template
             v-for="hItem in headersSlots"
@@ -146,6 +146,10 @@
       isCustomHeader: {
         type: Boolean,
         default: true,
+      },
+      showExpand: {
+        type: Boolean,
+        default: false,
       },
       className: {
         type: String,
