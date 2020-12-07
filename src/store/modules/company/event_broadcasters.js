@@ -17,11 +17,15 @@ export default {
     namespaced: true,
     state: {
         broadcasters: [],
+        broadcasterPickList: [],
         accountEventPickList: [],
     },
     mutations: {
         SET_BROADCASTERS (state, payload) {
             state.broadcasters = payload
+        },
+        SET_PICK_BROADCASTERS (state, payload) {
+            state.broadcasterPickList = payload
         },
         SET_ACCOUNT_EVENT_PICK_LIST (state, payload) {
             state.accountEventPickList = payload
@@ -66,6 +70,12 @@ export default {
                 `/api-cabinet/program/account/event/broadcaster/list?program_id=${programId}`,
             )
             commit('SET_BROADCASTERS', result)
+        },
+        async GetPickList ({ commit }, programId) {
+            const result = await ApiService.get(
+                `/api-cabinet/program/account/event/broadcaster/picklist?program_id=${programId}`,
+            )
+            commit('SET_PICK_BROADCASTERS', result)
         },
 
         async GetEventList ({ commit }, programId) {
@@ -229,5 +239,10 @@ export default {
             })
         },
         accountEventPickList: (state) => state.accountEventPickList,
+        broadcasterPickList: (state) => state.broadcasterPickList,
+        broadcasterAccountPickList: (state) => {
+            return state.broadcasterPickList.filter(item => item.emit_mode === ProgramEventBroadcaster.EMIT_MODE_ENUM.ACCOUNT.id)
+        },
+
     },
 }
