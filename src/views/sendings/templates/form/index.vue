@@ -74,6 +74,14 @@
         return this.$store.getters['company/notifications/template']
       },
     },
+    watch: {
+      template: {
+        handler (v) {
+          this.updateAttachments(v.attachments)
+        },
+        deep: true,
+      },
+    },
     async created () {
       await this.initForm()
     },

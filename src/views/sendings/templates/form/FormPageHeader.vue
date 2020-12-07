@@ -16,7 +16,7 @@
       :text="true"
       :ripple="false"
       :loading="loading"
-      @click="createOrUpdate()"
+      @click="update()"
     >
       <v-icon left>
         $iconify_plus-circle-outlined
@@ -26,10 +26,10 @@
 </template>
 
 <script>
-  import Routing from '@/mixins/routing'
+  import RoutingMixin from '@/mixins/routing'
 
   export default {
-    mixins: [Routing],
+    mixins: [RoutingMixin],
     props: {
       form: {
         type: Object,
@@ -50,7 +50,7 @@
       },
     },
     methods: {
-      async createOrUpdate () {
+      async update () {
         try {
           this.loading = true
           /*
@@ -110,11 +110,7 @@
             }
           }
           // console.log(item)
-          if (this.form.id) {
-            await this.$store.dispatch('company/notifications/update', formData)
-          } else {
-            await this.$store.dispatch('company/notifications/create', formData)
-          }
+          await this.$store.dispatch('company/notifications/update', formData)
           this.toRoute('/sendings/templates')
         } finally {
           this.loading = false

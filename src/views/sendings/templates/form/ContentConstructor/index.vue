@@ -14,7 +14,7 @@
               class="pls--pushcon-menu-item"
               v-bind="attrs"
               v-on="on"
-              @click="add(item.type, item.disable)"
+              @click="add(item.type, i, item.disable)"
             >
               <v-icon
                 class="pls--pushcon-menu-item-icon"
@@ -77,12 +77,15 @@
       return {
         localAttachments: [],
         dragging: false,
+        addedBtn: null,
       }
     },
     computed: {
+      template () {
+        return this.$store.getters['company/notifications/template']
+      },
       blockText () {
         return {
-          id: null,
           type: 'TEXT',
           value: {
             text: null,
@@ -91,7 +94,6 @@
       },
       blockImage () {
         return {
-          id: null,
           type: 'IMAGE',
           value: {
             url: null,
@@ -100,7 +102,6 @@
       },
       blockImages () {
         return {
-          id: null,
           type: 'IMAGES',
           value: [
             {
@@ -111,7 +112,6 @@
       },
       blockVideo () {
         return {
-          id: null,
           type: 'VIDEO',
           value: {
             url: null,
@@ -120,7 +120,6 @@
       },
       blockVideos () {
         return {
-          id: null,
           type: 'VIDEOS',
           value: [
             {
@@ -131,7 +130,6 @@
       },
       blockFriend () {
         return {
-          id: null,
           type: 'FRIEND',
           value: {
             url: null,
@@ -140,7 +138,6 @@
       },
       blockFriends () {
         return {
-          id: null,
           type: 'FRIENDS',
           value: [
             {
@@ -151,7 +148,6 @@
       },
       blockButton () {
         return {
-          id: null,
           type: 'BUTTON',
           value: {
             text: 'Перейти',
@@ -172,44 +168,31 @@
       },
     },
     created () {
-      if (this.attachments && this.attachments.length) {
-        this.localAttachments = Object.copy(this.attachments)
-      } else {
-        this.localAttachments.push(Object.copy(this.blockText))
-      }
+      this.localAttachments = Object.copy(this.attachments)
     },
     methods: {
-      add (type, disable) {
-        if (!disable) {
-          switch (type) {
-            case 'TEXT':
-              this.localAttachments.push(Object.copy(this.blockText))
-              break
-            case 'IMAGE':
-              this.localAttachments.push(Object.copy(this.blockImage))
-              break
-            case 'IMAGES':
-              this.localAttachments.push(Object.copy(this.blockImages))
-              break
-            case 'VIDEO':
-              this.localAttachments.push(Object.copy(this.blockVideo))
-              break
-            case 'VIDEOS':
-              this.localAttachments.push(Object.copy(this.blockVideos))
-              break
-            case 'FRIEND':
-              this.localAttachments.push(Object.copy(this.blockFriend))
-              break
-            case 'FRIENDS':
-              this.localAttachments.push(Object.copy(this.blockFriends))
-              break
-            case 'BUTTON':
-              this.localAttachments.push(Object.copy(this.blockButton))
-              break
+      async add (type, index, disable) {
+        if (this.addedBtn !== index || !disable) {
+          try {
+            this.loading = true
+            this.addedBtn = index
+            const item = {
+              template_id: this.template.id,
+              type,
+            }
+            switch (type) {
+              case 'TEXT':
+                item.value = { text: '<p>Текст нового сообщения</p>' }
+            }
+            console.log(item)
+            await this.$store.dispatch('company/notifications/createAttachment', item)
+          } finally {
+            this.loading = false
+            this.addedBtn = null
           }
         }
       },
-      remove (i) {
+      async remove (i) {
         // вложение уже загружено в базу
         if (this.localAttachments[i].id) {
           this.localAttachments[i].deleted = true // метка удаления вложения

@@ -49,14 +49,13 @@ const actions = {
         // eslint-disable-next-line no-useless-catch
         try {
             const result = await ApiService.post('/api-cabinet/program/notifications/create', item)
-            // console.log('/api-cabinet/staff')
-            // console.log(result)
             commit('ADD', result)
             this._vm.$notify({
                 type: 'success',
                 title: 'Шаблоны рассылки',
                 text: 'Шаблон успешно создан',
             })
+            return result
         } catch (error) {
             throw error
         }
@@ -119,6 +118,45 @@ const actions = {
                 type: 'success',
                 title: 'Шаблоны рассылки',
                 text: 'Шаблон удален',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
+    /*
+     * ATTACHMENTS
+     */
+
+    async createAttachment ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.post('/api-cabinet/program/notifications/attachments', item)
+            // console.log(result)
+            commit('UPDATE', result)
+            commit('SET_TEMPLATE', result)
+            this._vm.$notify({
+                type: 'success',
+                title: 'Шаблоны рассылки',
+                text: 'Блок успешно создан',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async deleteAttachment ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.delete(`/api-cabinet/program/notifications/attachments/${item.id}`)
+            // console.log('/api-cabinet/staff')
+            // console.log(result)
+            commit('UPDATE', result)
+            commit('SET_TEMPLATE', result)
+            this._vm.$notify({
+                type: 'success',
+                title: 'Шаблоны рассылки',
+                text: 'Блок удален',
             })
         } catch (error) {
             throw error

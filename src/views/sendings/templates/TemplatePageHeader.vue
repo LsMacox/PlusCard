@@ -7,7 +7,8 @@
     <v-btn
       class="pls--page-header-btn-right"
       color="primary"
-      :to="{name: 'SendingsTemplatesForm', params: { id: 'new' }}"
+      :loading="loading"
+      @click="create()"
     >
       <v-icon left>
         $iconify_plus-circle-outlined
@@ -17,8 +18,40 @@
 </template>
 
 <script>
+  import RoutingMixin from '@/mixins/routing'
+
   export default {
-    computed: {},
+    mixins: [RoutingMixin],
+    data () {
+      return {
+        loading: false,
+      }
+    },
+    computed: {
+      program () {
+        return this.$store.getters['company/program/program']
+      },
+      templates () {
+        return this.$store.getters['company/notifications/templates']
+      },
+    },
+    methods: {
+      async create () {
+        try {
+          this.loading = true
+          const item = {
+            program_id: this.program.id,
+            name: `Новый шаблон сообщения ${this.templates.length + 1}`,
+            title: `Новый шаблон сообщения ${this.templates.length + 1}`,
+          }
+          // console.log(item)
+          const result = await this.$store.dispatch('company/notifications/create', item)
+          this.toRoute(`/sendings/templates/${result.id}`)
+        } finally {
+          this.loading = false
+        }
+      },
+    },
   }
 </script>
 
