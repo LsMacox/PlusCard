@@ -84,6 +84,12 @@ export default {
             const result = await ApiService.post('/api-cabinet/program/account/event/broadcaster/run', {
                 broadcaster_id: id,
             })
+            commit('UPDATE_BROADCASTER', result)
+            this._vm.$notify({
+                title: 'Запуск активности',
+                text: 'Запуск активности прошел успешно',
+                type: 'success',
+            })
             return result
         },
 

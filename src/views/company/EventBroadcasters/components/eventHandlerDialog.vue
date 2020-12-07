@@ -46,7 +46,29 @@
               :rules="[
                 v => !!v || 'Выберите сегмент',
               ]"
-              :loading="getPickListAction"
+              :loading="getSegmenPickListAction"
+            />
+          </BaseDialogFieldBlock>
+        </v-col>
+      </v-row>
+      <v-row v-if="model.action_type === ACTION_ENUM.NOTIFICATION.id">
+        <v-col>
+          <BaseDialogFieldBlock
+            title="Шаблон рассылки"
+            description=""
+          >
+            <v-select
+              v-model="model.action_json.template_id"
+              class=""
+              :items="templatePickList"
+              item-text="name"
+              item-value="id"
+              placeholder="Выберите шаблон"
+              outlined
+              :rules="[
+                v => !!v || 'Выберите шаблон',
+              ]"
+              :loading="getNotifyPickListAction"
             />
           </BaseDialogFieldBlock>
         </v-col>
@@ -109,32 +131,45 @@
         valid: false,
         saveHandlerAction: false,
         deleteAction: false,
-        getPickListAction: false,
+        getSegmenPickListAction: false,
+        getNotifyPickListAction: false,
 
       }
     },
     computed: {
       ...mapGetters('crm/segment', ['pickSegments']),
+      ...mapGetters('company/notifications', ['templatePickList']),
     },
     mounted () {
       this.loadPickSegments()
+      this.loadPickNotify()
     },
     methods: {
       ...mapActions({
-        getPickList: 'crm/segment/getPickList',
+        getSegmentPickList: 'crm/segment/getPickList',
+        getNotifyPickList: 'company/notifications/getPickList',
         CreateBroadcasterHandler: 'company/event_broadcasters/CreateBroadcasterHandler',
         UpdateBroadcasterHandler: 'company/event_broadcasters/UpdateBroadcasterHandler',
         DeleteBroadcasterHandler: 'company/event_broadcasters/DeleteBroadcasterHandler',
-
       }),
       async loadPickSegments () {
         try {
-          this.getPickListAction = true
-          await this.getPickList(this.model.program_id)
+          this.getSegmenPickListAction = true
+          await this.getSegmentPickList(this.model.program_id)
         } catch (e) {
-
+          console.error(e)
         } finally {
-          this.getPickListAction = false
+          this.getSegmenPickListAction = false
+        }
+      },
+      async loadPickNotify () {
+        try {
+          this.getNotifyPickListAction = true
+          await this.getNotifyPickList(this.model.program_id)
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.getNotifyPickListAction = false
         }
       },
       async deleteClick () {
