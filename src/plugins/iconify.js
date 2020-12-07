@@ -154,6 +154,9 @@ export const ICONIFY_ICONS = {
     'eva-checkmark-outline': () => import('@iconify/icons-eva/checkmark-outline'),
     'eva-square-minus': () => import('@iconify/icons-eva/minus-square-fill'),
     'eva-square-outline': () => import('@iconify/icons-eva/square-outline'),
+
+    // emojione-monotone
+    'emojione-monotone-b-button': () => import('@iconify-icons/emojione-monotone/b-button'),
 }
 
 for (const icon in ICONIFY_ICONS) {
