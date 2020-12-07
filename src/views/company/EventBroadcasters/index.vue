@@ -103,7 +103,7 @@
                   <v-btn
                     icon
                     small
-                    :loading="item.loading"
+                    :loading="item.action"
                     v-on="on"
                   >
                     <v-icon>$iconify_feather-more-vertical</v-icon>
@@ -213,6 +213,7 @@
       ...mapActions({
         GetList: 'company/event_broadcasters/GetList',
         SetActiveBroadcaster: 'company/event_broadcasters/SetActiveBroadcaster',
+        RunBroadcaster: 'company/event_broadcasters/RunBroadcaster',
         DeleteBroadcaster: 'company/event_broadcasters/DeleteBroadcaster',
       }),
       loadData () {
@@ -255,12 +256,23 @@
           item.action = false
         }
       },
+      async runBroadcasterClick (item) {
+        try {
+          item.action = true
+          // await this.$sleep()
+          await this.RunBroadcaster(item.id)
+        } catch (e) {
+          console.error(e)
+        } finally {
+          item.action = false
+        }
+      },
       getItemActions (item) {
         return [
           {
             icon: '$iconify_feather-play',
             title: 'Запустить',
-            action: (item) => {},
+            action: this.runBroadcasterClick,
             show: item.active && item.emit_mode === ProgramEventBroadcaster.EMIT_MODE_ENUM.MANUAL.id && this.hasProgramPermission('program-broadcaster-run', item.program_id),
           },
           {

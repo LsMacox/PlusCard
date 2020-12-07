@@ -42,7 +42,7 @@ export default {
         SYNC_HANDLER (state, handler) {
             const index = state.broadcasters.findIndex((x) => x.id === handler.broadcaster_id)
             if (index >= 0) {
-                const indexHandler = state.broadcasters[index].handlers.findIndex((x) => x.id === handler.id)
+                const indexHandler = state.broadcasters[index].handlers?.findIndex((x) => x.id === handler.id)
                 if (indexHandler >= 0) {
                     const handler = state.broadcasters[index].handlers[indexHandler]
                     Vue.set(state.broadcasters[index].handlers, indexHandler, Object.assign({}, handler, handler))
@@ -55,7 +55,7 @@ export default {
             const index = state.broadcasters.findIndex((x) => x.id === handler.broadcaster_id)
             if (index >= 0) {
                 const broadcaster = state.broadcasters[index]
-                const indexHandler = broadcaster.handlers.findIndex((x) => x.id === handler.id)
+                const indexHandler = broadcaster.handlers?.findIndex((x) => x.id === handler.id)
                 if (indexHandler >= 0) broadcaster.handlers.splice(indexHandler, 1)
             }
         },
@@ -77,6 +77,13 @@ export default {
 
         async CheckClientFilter ({ commit }, filter) {
             const result = await ApiService.post('/api-cabinet/program/account/event/broadcaster/filter/validate', filter)
+            return result
+        },
+
+        async RunBroadcaster ({ commit }, id) {
+            const result = await ApiService.post('/api-cabinet/program/account/event/broadcaster/run', {
+                broadcaster_id: id,
+            })
             return result
         },
 
