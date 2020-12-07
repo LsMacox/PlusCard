@@ -19,42 +19,42 @@
       </div>
     </div>
     <block-text
-      v-if="block.type === 'text'"
+      v-if="block.type === 'TEXT'"
       :block="block"
       @update:block="updateBlock"
     />
     <block-image
-      v-if="block.type === 'image'"
+      v-if="block.type === 'IMAGE'"
       :block="block"
       @update:block="updateBlock"
     />
     <block-images
-      v-if="block.type === 'images'"
+      v-if="block.type === 'IMAGES'"
       :block="block"
       @update:block="updateBlock"
     />
     <block-video
-      v-if="block.type === 'video'"
+      v-if="block.type === 'VIDEO'"
       :block="block"
       @update:block="updateBlock"
     />
     <block-videos
-      v-if="block.type === 'videos'"
+      v-if="block.type === 'VIDEOS'"
       :block="block"
       @update:block="updateBlock"
     />
     <block-friend
-      v-if="block.type === 'friend'"
+      v-if="block.type === 'FRIEND'"
       :block="block"
       @update:block="updateBlock"
     />
     <block-friends
-      v-if="block.type === 'friends'"
+      v-if="block.type === 'FRIENDS'"
       :block="block"
       @update:block="updateBlock"
     />
     <block-button
-      v-if="block.type === 'button'"
+      v-if="block.type === 'BUTTON'"
       :block="block"
       @update:block="updateBlock"
     />

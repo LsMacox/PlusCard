@@ -64,8 +64,11 @@
             attachments: this.form.attachments,
           }
           console.log(item)
-          if (this.form.id) await this.$store.dispatch('company/notifications/update', item)
-          else await this.$store.dispatch('company/notifications/create', item)
+          if (this.form.id) {
+            await this.$store.dispatch('company/notifications/update', item)
+          } else {
+            await this.$store.dispatch('company/notifications/create', item)
+          }
           this.toRoute('/sendings/templates')
         } finally {
           this.loading = false

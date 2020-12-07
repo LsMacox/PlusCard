@@ -78,19 +78,19 @@
     computed: {
       blockText () {
         return {
-          type: 'text',
+          type: 'TEXT',
           value: null,
         }
       },
       blockImage () {
         return {
-          type: 'image',
+          type: 'IMAGE',
           value: null,
         }
       },
       blockImages () {
         return {
-          type: 'images',
+          type: 'IMAGES',
           value: [
             {
               url: null,
@@ -100,13 +100,13 @@
       },
       blockVideo () {
         return {
-          type: 'video',
+          type: 'VIDEO',
           value: null,
         }
       },
       blockVideos () {
         return {
-          type: 'videos',
+          type: 'VIDEOS',
           value: [
             {
               url: null,
@@ -116,13 +116,13 @@
       },
       blockFriend () {
         return {
-          type: 'friend',
+          type: 'FRIEND',
           value: null,
         }
       },
       blockFriends () {
         return {
-          type: 'friends',
+          type: 'FRIENDS',
           value: [
             {
               url: null,
@@ -132,7 +132,7 @@
       },
       blockButton () {
         return {
-          type: 'button',
+          type: 'BUTTON',
           text: 'Перейти',
           color: 'blue',
           action: null,
@@ -159,28 +159,28 @@
       add (type, disable) {
         if (!disable) {
           switch (type) {
-            case 'text':
+            case 'TEXT':
               this.localAttachments.push(Object.copy(this.blockText))
               break
-            case 'image':
+            case 'IMAGE':
               this.localAttachments.push(Object.copy(this.blockImage))
               break
-            case 'images':
+            case 'IMAGES':
               this.localAttachments.push(Object.copy(this.blockImages))
               break
-            case 'video':
+            case 'VIDEO':
               this.localAttachments.push(Object.copy(this.blockVideo))
               break
-            case 'videos':
+            case 'VIDEOS':
               this.localAttachments.push(Object.copy(this.blockVideos))
               break
-            case 'friend':
+            case 'FRIEND':
               this.localAttachments.push(Object.copy(this.blockFriend))
               break
-            case 'friends':
+            case 'FRIENDS':
               this.localAttachments.push(Object.copy(this.blockFriends))
               break
-            case 'button':
+            case 'BUTTON':
               this.localAttachments.push(Object.copy(this.blockButton))
               break
           }
