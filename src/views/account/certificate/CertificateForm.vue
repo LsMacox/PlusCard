@@ -1,6 +1,7 @@
 <template>
   <BaseDrawerDialog
     v-model="dialog"
+    class="cert-details"
     stateless
   >
     <template v-slot:actions>
