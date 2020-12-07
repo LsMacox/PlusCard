@@ -16,7 +16,6 @@
       :text="true"
       :ripple="false"
       :loading="loading"
-      :disabled="form.attachments && !form.attachments.length"
       @click="createOrUpdate()"
     >
       <v-icon left>
@@ -54,6 +53,19 @@
       async createOrUpdate () {
         try {
           this.loading = true
+          /*
+          for (let i = 0; i < this.form.attachments.length; i++) {
+            switch (this.form.attachments[i].type) {
+              case 'IMAGE':
+              case 'VIDEO':
+              case 'FRIEND':
+                // есть загружаемый файл
+                if (this.form.attachments[i].value.file) {
+                  this.form.attachments[i].value.url = null
+                }
+                console.log(this.form.attachments[i].value.file)
+            }
+          }
           const item = {
             program_id: this.program.id,
             id: this.form.id,
@@ -63,11 +75,45 @@
             // body: this.form.description,
             attachments: this.form.attachments,
           }
-          console.log(item)
+          */
+          const formData = new FormData()
+          formData.append('id', this.form.id)
+          formData.append('program_id', this.program.id)
+          formData.append('name', this.form.name)
+          formData.append('title', this.form.title)
+          formData.append('description', this.form.description)
+
+          for (let i = 0; i < this.form.attachments.length; i++) {
+            switch (this.form.attachments[i].type) {
+              case 'TEXT':
+                formData.append(`attachments[${i}][id]`, this.form.attachments[i].id)
+                formData.append(`attachments[${i}][type]`, this.form.attachments[i].type)
+                formData.append(`attachments[${i}][value][text]`, this.form.attachments[i].value.text)
+                break
+
+              case 'IMAGE':
+              case 'VIDEO':
+              case 'FRIEND':
+                console.log('FormData')
+                console.log(this.form.attachments[i].value.url)
+                console.log(this.form.attachments[i].value.data)
+                formData.append(`attachments[${i}][id]`, this.form.attachments[i].id)
+                formData.append(`attachments[${i}][type]`, this.form.attachments[i].type)
+                // есть загружаемый файл
+                if (this.form.attachments[i].value.data) {
+                  formData.append(`attachments[${i}][value][url]`, null)
+                  formData.append(`attachments[${i}][value][data]`, this.form.attachments[i].value.data)
+                } else {
+                  formData.append(`attachments[${i}][value][url]`, this.form.attachments[i].value.url)
+                }
+                break
+            }
+          }
+          // console.log(item)
           if (this.form.id) {
-            await this.$store.dispatch('company/notifications/update', item)
+            await this.$store.dispatch('company/notifications/update', formData)
           } else {
-            await this.$store.dispatch('company/notifications/create', item)
+            await this.$store.dispatch('company/notifications/create', formData)
           }
           this.toRoute('/sendings/templates')
         } finally {

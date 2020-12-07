@@ -8,11 +8,11 @@
     >
     <div>
       <v-img
-        v-if="block.value"
+        v-if="localBlock.value.url"
         class="pls--pushcon-block-image-img"
         height="150"
         width="150"
-        :src="block.value"
+        :src="localBlock.value.url"
         @click="openFileWindow(inputRef)"
       >
         <div
@@ -101,10 +101,11 @@
             text: 'Превышен максимальный размер файла',
           })
         }
-        this.block.value = await this.readAsDataURL(file)
+        this.localBlock.value.url = await this.readAsDataURL(file)
+        this.localBlock.value.data = file
       },
       removeFile (inputRef) {
-        this.block.value = null
+        this.localBlock.value.url = null
         this.$refs[inputRef].value = null
       },
     },

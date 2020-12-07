@@ -2,10 +2,10 @@
   <div class="pls--pushcon-block-button">
     <div
       class="pls--pushcon-block-button-btn"
-      :style="`background-color: ${localBlock.color}`"
+      :style="`background-color: ${localBlock.value.color}`"
       @click.stop="updateBtn = true"
     >
-      {{ localBlock.text }}
+      {{ localBlock.value.text }}
     </div>
     <!-- боковая панель -->
     <div
@@ -38,7 +38,7 @@
                   style="height: 65px"
                 >
                   <v-select
-                    v-model="localBlock.color"
+                    v-model="localBlock.value.color"
                     :items="colors"
                     placeholder="Тип кнопки"
                     outlined
@@ -49,7 +49,7 @@
                   style="height: 65px"
                 >
                   <v-text-field
-                    v-model="localBlock.text"
+                    v-model="localBlock.value.text"
                     :rules="[
                       v => String(v).length <= 50 || 'Фамилия должна быть не более 50 символов',
                     ]"
@@ -64,7 +64,7 @@
                   style="height: 65px"
                 >
                   <v-select
-                    v-model="localBlock.broadcaster_id"
+                    v-model="localBlock.value.broadcaster_id"
                     class=""
                     :items="broadcasterAccountPickList"
                     item-text="name"
@@ -76,8 +76,9 @@
                     ]"
                     :loading="getBroadcasterPickListAction"
                   />
-                  <v-text-field v-if="false"
-                    v-model="localBlock.action"
+                  <v-text-field
+                    v-if="false"
+                    v-model="localBlock.value.action"
                     :rules="[
                       v => String(v).length <= 50 || 'Фамилия должна быть не более 50 символов',
                     ]"

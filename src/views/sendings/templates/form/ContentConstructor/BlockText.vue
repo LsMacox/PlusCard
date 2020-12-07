@@ -1,7 +1,7 @@
 <template>
   <div>
     <editor
-      v-model="localBlock.value"
+      v-model="localBlock.value.text"
       api-key=""
       output-format="html"
       :init="{

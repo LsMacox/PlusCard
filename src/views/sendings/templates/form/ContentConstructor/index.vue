@@ -39,13 +39,17 @@
         <div
           v-for="(item, i) in localAttachments"
           :key="i"
-          class="pls--pushcon-tape-block"
         >
-          <block
-            :block.sync="item"
-            @update:block="updateLocalAttachments(i, $event)"
-            @remove="remove(i)"
-          />
+          <div
+            v-if="!item.deleted"
+            class="pls--pushcon-tape-block"
+          >
+            <block
+              :block.sync="item"
+              @update:block="updateLocalAttachments(i, $event)"
+              @remove="remove(i)"
+            />
+          </div>
         </div>
       </draggable>
     </div>
@@ -78,18 +82,25 @@
     computed: {
       blockText () {
         return {
+          id: null,
           type: 'TEXT',
-          value: null,
+          value: {
+            text: null,
+          },
         }
       },
       blockImage () {
         return {
+          id: null,
           type: 'IMAGE',
-          value: null,
+          value: {
+            url: null,
+          },
         }
       },
       blockImages () {
         return {
+          id: null,
           type: 'IMAGES',
           value: [
             {
@@ -100,12 +111,16 @@
       },
       blockVideo () {
         return {
+          id: null,
           type: 'VIDEO',
-          value: null,
+          value: {
+            url: null,
+          },
         }
       },
       blockVideos () {
         return {
+          id: null,
           type: 'VIDEOS',
           value: [
             {
@@ -116,12 +131,16 @@
       },
       blockFriend () {
         return {
+          id: null,
           type: 'FRIEND',
-          value: null,
+          value: {
+            url: null,
+          },
         }
       },
       blockFriends () {
         return {
+          id: null,
           type: 'FRIENDS',
           value: [
             {
@@ -132,10 +151,14 @@
       },
       blockButton () {
         return {
+          id: null,
           type: 'BUTTON',
-          text: 'Перейти',
-          color: 'blue',
-          action: null,
+          value: {
+            text: 'Перейти',
+            color: 'blue',
+            broadcaster_id: null,
+            action: null,
+          },
         }
       },
     },
@@ -187,7 +210,14 @@
         }
       },
       remove (i) {
-        this.localAttachments.splice(i, 1)
+        // вложение уже загружено в базу
+        if (this.localAttachments[i].id) {
+          this.localAttachments[i].deleted = true // метка удаления вложения
+
+          // вложения нет в базе
+        } else {
+          this.localAttachments.splice(i, 1)
+        }
         this.updateAttachments(this.localAttachments)
       },
       updateLocalAttachments (i, v) {
@@ -196,7 +226,7 @@
         this.updateAttachments(this.localAttachments)
       },
       updateAttachments (v) {
-        this.$emit('update:attachments', Object.copy(v))
+        this.$emit('update:attachments', v)
       },
     },
   }
