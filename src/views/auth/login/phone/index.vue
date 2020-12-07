@@ -99,8 +99,12 @@
   import { mask } from 'vue-the-mask'
   import { mapGetters } from 'vuex'
   import Routing from '@/mixins/routing'
+  import VueRecaptcha from 'vue-recaptcha'
 
   export default {
+    components: {
+      VueRecaptcha,
+    },
     directives: { mask },
     mixins: [Routing],
     data () {
