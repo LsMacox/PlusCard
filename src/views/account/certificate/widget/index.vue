@@ -6,7 +6,7 @@
       :md="12"
       :lg="6"
     >
-      <certificates :widget-data="widgetData" />
+      <certificates :widget-data="periodData" />
     </v-col>
     <v-col
       :cols="6"
@@ -29,38 +29,14 @@
     },
     data () {
       return {
-        widgetData: [
-          {
-            count: 10,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-          {
-            count: 20,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-          {
-            count: 30,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-          {
-            count: 40,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-          {
-            count: 50,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-        ],
       }
     },
     computed: {
       payments () {
         return this.$store.getters['account/certificate/certificate/payments']
+      },
+      periodData () {
+        return this.$store.getters['account/certificate/certificate/widgetData']
       },
     },
     watch: {
@@ -72,13 +48,19 @@
       },
     },
     mounted () {
-      this.widgetData = this.payments
     },
     methods: {},
   }
 </script>
 
 <style lang="scss" scoped>
+@media (max-width: 1620px) {
+  .col-lg-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
 .widget-line {
   padding: 24px 0 0 0;
 }

@@ -18,14 +18,14 @@
           <div :class="generateClassesByPrefix(widgetClasses, '__box-info')">
             <div :class="generateClassesByPrefix(widgetClasses, '__info-title')">
               <p class="body-s-semibold">
-                {{ count }} шт на сумму
+                {{ count }} {{ subTitle }}
               </p>
             </div>
             <div
               :class="generateClassesByPrefix(widgetClasses, '__info-statistics')"
             >
               <p class="statistics__number title-m-bold">
-                {{ sum }} &#8381
+                {{ formatNumberString(sum) }} &#8381
               </p>
             </div>
           </div>
@@ -49,6 +49,7 @@
   import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
   import WidgetTemplate from '@/views/widgets/components/WidgetTemplate'
   import BaseLineGraph from '@/views/widgets/components/graphs/BaseLineGraph'
+  import FormatNumber from '@/mixins/formatNumber'
 
   export default {
     name: 'DoubleDiagramFrame',
@@ -56,7 +57,7 @@
       BaseLineGraph,
       WidgetTemplate,
     },
-    mixins: [WidgetFunctions],
+    mixins: [WidgetFunctions, FormatNumber],
     inheritAttrs: false,
     props: {
       name: {
@@ -217,5 +218,4 @@
     }
   }
 }
-
 </style>

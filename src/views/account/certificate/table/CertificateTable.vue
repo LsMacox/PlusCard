@@ -69,7 +69,7 @@
 
           <template v-slot:item.nominal.selling_price="{ item }">
             <span style="float: right">
-              {{ formatBum(item.nominal.selling_price) }} &#8381
+              {{ formatNum(item.nominal.selling_price) }} &#8381
             </span>
           </template>
 
@@ -555,7 +555,7 @@
           cert.loading = false
         })
       },
-      formatBum (num) {
+      formatNum (num) {
         var int = String(Math.trunc(num))
         if (int.length <= 3) return int
         var space = 0
