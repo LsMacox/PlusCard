@@ -3,6 +3,7 @@ import ApiService from '@/api/api-client'
 const getDefaultState = () => {
     return {
         templates: [],
+        templatePickList: [],
         template: {},
     }
 }
@@ -13,6 +14,9 @@ const mutations = {
     RESET_STATE: (state) => Object.assign(state, getDefaultState()),
     SET_TEMPLATES (state, payload) {
         state.templates = payload
+    },
+    SET_TEMPLATE_PICK_LIST (state, payload) {
+        state.templatePickList = payload
     },
     SET_TEMPLATE (state, payload) {
         state.template = payload
@@ -70,10 +74,15 @@ const actions = {
         }
     },
 
+    async getPickList ({ commit }, programId) {
+            const result = await ApiService.get(`/api-cabinet/program/notifications/shortlist?program_id=${programId}`)
+            commit('SET_TEMPLATE_PICK_LIST', result)
+    },
+
     async read ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.get(`/api-cabinet/program/notifications/${item.id}`)
+            const result = await ApiService.get(`/api-cabinet/program/notification/${item.id}`)
             console.log(`/api-cabinet/program/notifications/${item.id}`)
             console.log(result)
             commit('SET_TEMPLATE', result)
@@ -120,6 +129,7 @@ const actions = {
 
 const getters = {
     templates: state => state.templates,
+    templatePickList: state => state.templatePickList,
     template: state => state.template,
 }
 

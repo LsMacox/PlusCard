@@ -99,7 +99,7 @@
       </v-col>
     </v-row>
     <eventHandlerDialog
-      v-if="showHandlerDialog"
+      v-if="editedHandler"
       v-model="showHandlerDialog"
       :model="editedHandler"
       @save="onSaveHandler"

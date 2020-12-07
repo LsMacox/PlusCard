@@ -63,7 +63,20 @@
                   cols="12"
                   style="height: 65px"
                 >
-                  <v-text-field
+                  <v-select
+                    v-model="localBlock.broadcaster_id"
+                    class=""
+                    :items="broadcasterAccountPickList"
+                    item-text="name"
+                    item-value="id"
+                    placeholder="Выберите активность"
+                    outlined
+                    :rules="[
+                      v => !!v || 'Выберите активность',
+                    ]"
+                    :loading="getBroadcasterPickListAction"
+                  />
+                  <v-text-field v-if="false"
                     v-model="localBlock.action"
                     :rules="[
                       v => String(v).length <= 50 || 'Фамилия должна быть не более 50 символов',
@@ -103,6 +116,7 @@
 <script>
   import SidePanel from '@/components/base/SidePanel'
   import BlockMixin from './blockMixin'
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     components: {
@@ -120,13 +134,17 @@
         localBlock: {},
         updateBtn: false,
         valid: false,
+        getBroadcasterPickListAction: false,
         colors: [
           { value: 'blue', text: 'Синий' },
           { value: 'red', text: 'Красный' },
         ],
       }
     },
-    computed: {},
+    computed: {
+      ...mapGetters('company/event_broadcasters', ['broadcasterAccountPickList']),
+      ...mapGetters(['programId']),
+    },
     watch: {
       block: {
         handler (v) {
@@ -143,8 +161,22 @@
     },
     created () {
       this.initBlock(this.block)
+      this.loadBroadcasterPickList()
     },
     methods: {
+      ...mapActions({
+        GetBroadcasterPickList: 'company/event_broadcasters/GetPickList',
+      }),
+      async loadBroadcasterPickList () {
+        try {
+          this.getBroadcasterPickListAction = true
+          await this.GetBroadcasterPickList(this.programId)
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.getBroadcasterPickListAction = false
+        }
+      },
 
     },
   }
