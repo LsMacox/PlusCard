@@ -52,7 +52,7 @@
               style="width: 100%;"
               :loading="loading"
               :disabled="!valid"
-              @click="login()"
+              @click="submit()"
             >
               <span
                 class="iconify"
@@ -83,6 +83,15 @@
         </div>
       </v-form>
     </div>
+
+    <vue-recaptcha
+      ref="recaptcha"
+      size="invisible"
+      :sitekey="$config.app.RECAPTCHA_SITE_KEY"
+      :load-recaptcha-script="true"
+      @verify="login"
+      @expired="onCaptchaExpired"
+    />
   </div>
 </template>
 
@@ -120,6 +129,9 @@
       this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
+      onCaptchaExpired () {
+        this.$refs.recaptcha.reset()
+      },
       toConfirm (phone) {
         console.log('toConfirm', phone)
         this.$router.push({
@@ -134,7 +146,11 @@
         }
         return p
       },
-      async login () {
+      submit () {
+        if (!this.$refs.form.validate()) return
+        this.$refs.recaptcha.execute()
+      },
+      async login (recaptchaToken) {
         console.log('<login>')
 
         if (!this.$refs.form.validate()) return
@@ -144,6 +160,7 @@
           device_id: this.device.id,
           device_token: this.device.token,
           device_type: this.device.type,
+          recaptcha_token: recaptchaToken,
         }
         console.log(user)
         try {
