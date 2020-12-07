@@ -29,38 +29,14 @@
     },
     data () {
       return {
-        widgetData: [
-          {
-            count: 10,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-          {
-            count: 20,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-          {
-            count: 30,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-          {
-            count: 40,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-          {
-            count: 50,
-            date_start: '2020-09-08',
-            date_end: '2020-09-08',
-          },
-        ],
       }
     },
     computed: {
       payments () {
         return this.$store.getters['account/certificate/certificate/payments']
+      },
+      widgetData () {
+        return this.$store.getters['account/certificate/certificate/widgetData']
       },
     },
     watch: {
@@ -72,7 +48,6 @@
       },
     },
     mounted () {
-      this.widgetData = this.payments
     },
     methods: {},
   }

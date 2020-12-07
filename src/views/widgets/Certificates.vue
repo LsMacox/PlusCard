@@ -1,8 +1,8 @@
 <template>
   <cert-diagram-frame
     class="w-certificate"
-    :diagram-data="widgetData"
-    :diagram-labels="widgetData"
+    :diagram-data="periodData"
+    :diagram-labels="periodData"
     :diagram-height="46"
     title="Сертификаты"
     :titles="titles"
@@ -55,9 +55,10 @@
     },
     data () {
       return {
+        periodData: [],
         count: 0,
         sum: 0,
-        titles: ['клиент', 'клиента', 'клиентов'],
+        titles: ['сертификат', 'сертификата', 'сертификатов'],
       }
     },
     computed: {
@@ -84,8 +85,25 @@
       // },
     },
     mounted () {
-      this.count = this.widgetData.length ? this.widgetData[this.widgetData.length - 1].count : 0
-      this.sum = this.relativeChange(this.widgetData[this.widgetData.length - 1].count, this.widgetData[this.widgetData.length - 2].count) ?? 0
+      if (this.widgetData) {
+        this.widgetData[0].data.forEach(item => {
+          this.count += 1
+          this.sum += item.nominal.selling_price
+        })
+        // this.periodData[i].count = this.widgetData[i].data.length
+        // this.periodData[i].date_start = this.widgetData[i].date_start
+        // this.periodData[i].date_end = this.widgetData[i].date_end
+
+        let i = 0
+        this.widgetData.forEach(item => {
+          this.periodData[i] = this.widgetData[i].data.length
+          i += 1
+        })
+      }
+      console.log('ok...')
+      console.log(this.periodData)
+      console.log('ok...') // this.count = this.widgetData.length ? this.widgetData[this.widgetData.length - 1].count : 0
+      // this.sum = this.relativeChange(this.widgetData[this.widgetData.length - 1].count, this.widgetData[this.widgetData.length - 2].count) ?? 0
     },
   }
 </script>
