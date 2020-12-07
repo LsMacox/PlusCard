@@ -6,7 +6,7 @@
       :md="12"
       :lg="6"
     >
-      <certificates :widget-data="widgetData" />
+      <certificates :widget-data="periodData" />
     </v-col>
     <v-col
       :cols="6"
@@ -35,7 +35,7 @@
       payments () {
         return this.$store.getters['account/certificate/certificate/payments']
       },
-      widgetData () {
+      periodData () {
         return this.$store.getters['account/certificate/certificate/widgetData']
       },
     },
