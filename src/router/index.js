@@ -215,7 +215,7 @@ export default new Router({
         },
         {
           path: '/icons',
-          component: () => import('@/views/ui_kit/Icons.vue'),
+          component: () => import('@/views/ui_kit/IconifyIcons.vue'),
           name: 'icons',
           meta: { title: 'ui_kit', icon: 'ui_kit' },
         },

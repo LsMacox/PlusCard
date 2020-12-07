@@ -52,11 +52,10 @@
       </v-row>
       <v-row>
         <v-col>
-          <base-table
-            class-name="table-moderations"
+          <base-table           
             :headers="headers"
             :data="filtered_broadcasters"
-            :item-class="() => 'no-clickable-row'"
+            :item-class="() => 'clickable-row'"
             :is-custom-header="false"
             :total-count="filtered_broadcasters.length"
             :word-operations="['активность', 'активности', 'активностей']"
@@ -64,6 +63,7 @@
               sortBy: 'updated_at',
               descending: 'descending',
             }"
+           
             :search="search_comp"
             @click:row="openBroadcasterClick"
           >
@@ -232,8 +232,9 @@
           this.GetListAction = false
         })
       },
-      openBroadcasterClick (item = null) {
-        // item.emit_mode = 'MANUAL'
+      openBroadcasterClick (item) {
+        this.selectedId = item.id
+        this.dialog = true
       },
       createBroadcasterClick () {
         this.$router.push({ name: 'EventBroadcasterMaster' })
@@ -278,6 +279,12 @@
       getItemActions (item) {
         return [
           {
+            icon: '$iconify_ion-document-outline',
+            title: 'Работа',
+            action: this.openBroadcasterClick,
+            show: true,
+          },
+          {
             icon: '$iconify_feather-play',
             title: 'Запустить',
             action: this.runBroadcasterClick,
@@ -296,15 +303,7 @@
             },
             show: this.hasProgramPermission('program-broadcaster-update', item.program_id),
           },
-          {
-            icon: '$iconify_feather-edit',
-            title: 'Логи',
-            action: (item) => {
-              this.selectedId = item.id
-              this.dialog = true
-            },
-            show: true,
-          },
+          
           {
             icon: '$iconify_feather-trash',
             title: 'Удалить',

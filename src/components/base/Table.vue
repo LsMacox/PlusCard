@@ -14,8 +14,8 @@
           :class="className"
           :item-class="itemClass"
           class="plus-table"
-          :show-expand="showExpand"          
-          :expanded.sync="expanded"
+          :show-expand="showExpand"
+          :expanded.sync="expandedMutation"
           :sort-by="pagination.sortBy"
           :sort-desc="pagination.descending === 'descending' ? true : false"
           hide-default-footer
@@ -60,9 +60,10 @@
           </template>
 
           <template v-slot:expanded-item="{ item }">
-            <td>
-              More info about {{ item.bsid }}
-            </td>
+            <slot
+              :item="item"
+              name="expanded-item"
+            />
           </template>
 
           <!-- <template
@@ -87,7 +88,7 @@
         </v-data-table>
       </v-col>
     </v-row>
-
+    {{tableOptions}}
     <v-row
       v-if="!hideDefaultFooter"
       align="center"
@@ -130,6 +131,11 @@
 <script>
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import Convertor from '@/mixins/convertor.js'
+
+  const defaultOptions = {
+    page: 1,
+    itemsPerPage: 25,
+  }
 
   export default {
     name: 'Table',
@@ -194,10 +200,7 @@
       options: {
         type: Object,
         default: () => {
-          return {
-            page: 1,
-            itemsPerPage: 25,
-          }
+          return defaultOptions
         },
       },
       pagination: {
@@ -239,10 +242,21 @@
     },
     data () {
       return {
-        tableOptions: this.options,
+        tableOptions: {
+          page: 1,
+          itemsPerPage: 25,
+        },
       }
     },
     computed: {
+      expandedMutation: {
+        get () {
+          return this.expanded
+        },
+        set (v) {
+          this.$emit('update:expanded', v)
+        },
+      },
       headersSlots () {
         return this.headers.filter(x => this.$slots[`item.${x.value}`] || this.$scopedSlots[`item.${x.value}`])
       },

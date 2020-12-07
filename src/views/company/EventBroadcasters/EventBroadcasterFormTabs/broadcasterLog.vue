@@ -2,10 +2,15 @@
   <BaseDrawerDialog
     v-model="dialog"
     title="Срабатывания активности клиентов"
-    width="700px"
+    width="800px"
   >
+    <!-- <v-row>
+      <v-col class="body-l-semibold">
+        {{}}
+      </v-col>
+    </v-row> -->
     <v-skeleton-loader
-      :loading="GetBroadcasterLogAction"
+      :loading="GetBroadcasterLogAction && false"
       :style="{ height: '100%', width: '100%' }"
       type="card-heading, image@3"
     >
@@ -34,41 +39,100 @@
                   clearable
                 />
               </v-col>
+             
             </v-row>
           </v-col>
+           <v-col cols="auto">
+                <v-btn
+                  color="primary"
+                  @click="loadData"
+                >
+                  <v-icon left>$iconify_feather-refresh-ccw</v-icon> Обновить
+                </v-btn>
+              </v-col>
         </v-row>
         <v-row>
           <v-col>
             <base-table
-              :headers="headers"
+              :headers="headersMain"
               :data="filtered_list"
               :is-custom-header="false"
               :total-count="filtered_list.length"
+              :loading="GetBroadcasterLogAction"
+              :item-class="() => 'clickable-row'"
               :word-operations="['событие', 'события', 'событий']"
               :pagination="{
                 sortBy: 'created_at',
                 descending: 'descending',
               }"
-               :expanded.sync="expanded"
+              
+              :expanded.sync="expanded"
               :search="search_comp"
               show-expand
+              @click:row="(item) => {
+                const index = expanded.findIndex(x => x.id === item.id)
+                if (index>=0) {
+                  expanded.splice(index,1)
+                } else {
+                  expanded.push(item)
+                }
+              }"
             >
               <template v-slot:[`item.createdAtFormat`]="{ item }">
                 <date-column :value="item.created_at" />
               </template>
 
-              <template v-slot:[`item.account`]="{ item }">
+              <template v-slot:[`item.AccountSearchField`]="{ item }">
                 <account-column :value="item.account" />
               </template>
               <template v-slot:[`item.result`]="{ item }">
                 <span v-if="false">{{ item.totalCount }}:</span> <span class="success--text">{{ item.successCount }}</span>/</span> <span class="error--text">{{ item.failCount }}</span>
               </template>
-              <template v-slot:item.expanded-item="{ expand, isExpanded }">
-                <td :colspan="headers.length">
-                  More info about {{ item.id }}
+              <template v-slot:expanded-item="{ item }">
+                <td
+                  v-if="item.event_process.length>0"
+                  :colspan="headersMain.length"
+                >
+                  <v-data-table
+                    :headers="processHeaders"
+                    :items="item.event_process"
+                    hide-default-footer
+                    :expanded.sync="item.expanded"
+                    dense
+                  >
+                    <template v-slot:[`item.created_at`]="row">
+                      <date-column :value="row.item.created_at" />
+                    </template>
+                    <template v-slot:[`item.handler`]="row">
+                      {{ row.item.handler.actionText }}
+                    </template>
+                    <template v-slot:[`item.status`]="row">
+                      <v-btn
+                        icon
+                        x-small
+                        @click="statusClick(item, row.item)"
+                      >
+                        <v-icon>{{ STATUS_ENUM.find(row.item.status).icon }}</v-icon>
+                      </v-btn>
+                    </template>
+
+                    <template v-slot:expanded-item="row">
+                      <td
+                        :colspan="processHeaders.length"
+                        class="error--text"
+                      >
+                        {{ row.item.error }}
+                      </td>
+                    </template>
+                  </v-data-table>
+                </td>
+                <td
+                  v-else
+                  :colspan="headersMain.length"
+                >
+                  Данные отсутствуют
                 </td>
               </template>
-
             <!-- </v-data-table> -->
             </base-table>
           </v-col>
@@ -83,6 +147,8 @@
 
   import ProgramEventBroadcaster from '@/models/program/broadcaster'
   import ProgramEventBroadcasterEventProcess from '@/models/program/broadcasterEventProcess'
+  import ProgramEventBroadcasterHandler from '@/models/program/broadcasterHandler'
+  import Account from '@/models/program/account'
   import dialogable from '@/mixins/dialogable.js'
   import { config } from '@/config'
   import Vue from 'vue'
@@ -99,6 +165,9 @@
         required: true,
       },
     },
+    constants: {
+      STATUS_ENUM: ProgramEventBroadcasterEventProcess.STATUS_ENUM,
+    },
 
     data () {
       return {
@@ -106,16 +175,16 @@
         GetBroadcasterLogAction: false,
         eventList: [],
         expanded: [],
-        headers: [
-          { text: 'ID', align: 'start', value: 'id', width: '7em' },
-          { text: 'Дата', value: 'createdAtFormat' },
-          { text: 'Клиент', value: 'account' },
-          { text: 'Обработка', value: 'result' },
+        headersMain: [
+          { text: 'ID', align: 'start', value: 'id', width: '6em' },
+          { text: 'Дата', value: 'createdAtFormat', width: '10em' },
+          { text: 'Клиент', value: 'AccountSearchField' },
+          { text: 'Обработка', value: 'result', width: '10em' },
         ],
         processHeaders: [
           { text: 'ID', align: 'start', value: 'id', width: '7em' },
           { text: 'Дата', value: 'created_at' },
-          { text: 'Действие', value: 'action_type' },
+          { text: 'Действие', value: 'handler' },
           { text: 'Статус', value: 'status' },
         ],
       }
@@ -124,13 +193,17 @@
       eventListMaped () {
         return this.eventList.map(item => {
           Vue.set(item, 'createdAtFormat', this.$moment.utc(item.created_at).local().format(config.date.DATETIME_FORMAT))
-          const totalCount = item.event_process.length
+
           const successCount = item.event_process.filter(p => p.status === ProgramEventBroadcasterEventProcess.STATUS_ENUM.done.id).length
           const failCount = item.event_process.filter(p => p.status === ProgramEventBroadcasterEventProcess.STATUS_ENUM.fail.id).length
           Vue.set(item, 'totalCount', item.event_process.length)
           Vue.set(item, 'successCount', successCount)
           Vue.set(item, 'failCount', failCount)
-          Vue.set(item, 'result', `${totalCount} действий: ${successCount} - успешно, ${failCount} - с ошибками `)
+          Vue.set(item, 'expanded', [])
+          Vue.set(item, 'account', new Account(item.account))
+          Vue.set(item, 'AccountSearchField', item.account.searchField)
+          Vue.set(item, 'event_process', item.event_process.map(item => new ProgramEventBroadcasterEventProcess(item)))
+
           return item
         })
       },
@@ -156,6 +229,15 @@
       ...mapActions({
         GetBroadcasterLog: 'company/event_broadcasters/GetBroadcasterLog',
       }),
+      statusClick (item, processItem) {
+        if (processItem.status !== this.STATUS_ENUM.fail.id) return
+        const index = item.expanded.findIndex(x => x.id === item.id)
+        if (index >= 0) {
+          item.expanded.splice(processItem, 1)
+        } else {
+          item.expanded.push(processItem)
+        }
+      },
       async loadData () {
         if (!this.broadcasterId) return
         try {
