@@ -53,6 +53,7 @@
     },
     data () {
       return {
+        loading: false,
         localBlock: {},
         inputRef: 'inputFile',
         maxFileSize: 10240000, // 10 Mb
@@ -101,11 +102,24 @@
             text: 'Превышен максимальный размер файла',
           })
         }
-        this.localBlock.value.url = await this.readAsDataURL(file)
-        this.localBlock.value.data = file
+        // this.localBlock.value.url = await this.readAsDataURL(file)
+        // this.localBlock.value.data = file
+        await this.uploadFile(file)
+      },
+      async uploadFile (file) {
+        try {
+          this.loading = true
+          const formData = new FormData()
+          formData.append('id', this.localBlock.id)
+          formData.append('type', this.localBlock.type)
+          formData.append('files[0]', file)
+          await this.$store.dispatch('company/notifications/updateAttachment', formData)
+        } finally {
+          this.removeFile(this.inputRef)
+          this.loading = false
+        }
       },
       removeFile (inputRef) {
-        this.localBlock.value.url = null
         this.$refs[inputRef].value = null
       },
     },

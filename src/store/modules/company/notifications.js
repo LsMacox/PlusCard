@@ -144,6 +144,23 @@ const actions = {
         }
     },
 
+    async updateAttachment ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.post('/api-cabinet/program/notifications/attachments/update', item)
+            // console.log(result)
+            commit('UPDATE', result)
+            commit('SET_TEMPLATE', result)
+            this._vm.$notify({
+                type: 'success',
+                title: 'Шаблоны рассылки',
+                text: 'Блок успешно изменен',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
     async sortAttachment ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
