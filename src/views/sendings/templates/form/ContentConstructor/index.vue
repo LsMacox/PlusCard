@@ -33,8 +33,7 @@
         :list="localAttachments"
         class="list-group"
         ghost-class="pls--pushcon-tape-ghost"
-        @start="dragging = true"
-        @end="dragging = false"
+        @end="sort()"
       >
         <div
           v-for="(item, i) in localAttachments"
@@ -76,7 +75,6 @@
     data () {
       return {
         localAttachments: [],
-        dragging: false,
         addedBtn: null,
       }
     },
@@ -137,12 +135,26 @@
           }
         }
       },
+      async sort () {
+        try {
+          this.loading = true
+          const item = {
+            template_id: this.template.id,
+            sortable: this.localAttachments.map(item => item.id),
+          }
+          console.log(item)
+          await this.$store.dispatch('company/notifications/sortAttachment', item)
+        } finally {
+          this.loading = false
+        }
+      },
       async remove (i) {
         try {
           this.loading = true
           const item = {
             id: this.localAttachments[i].id,
           }
+          console.log(item)
           await this.$store.dispatch('company/notifications/deleteAttachment', item)
         } finally {
           this.loading = false

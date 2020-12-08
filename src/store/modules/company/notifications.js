@@ -109,7 +109,7 @@ const actions = {
     async delete ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            await ApiService.delete(`/api-cabinet/program/notifications/${item.id}`)
+            await ApiService.delete(`/api-cabinet/program/notifications?id=${item.id}`)
             // console.log('/api-cabinet/staff')
             // console.log(result)
             commit('REMOVE', item)
@@ -139,6 +139,17 @@ const actions = {
                 title: 'Шаблоны рассылки',
                 text: 'Блок успешно создан',
             })
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async sortAttachment ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.put('/api-cabinet/program/notifications/attachments/sort', item)
+            commit('UPDATE', result)
+            commit('SET_TEMPLATE', result)
         } catch (error) {
             throw error
         }
