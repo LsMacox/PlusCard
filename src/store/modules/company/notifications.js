@@ -3,7 +3,7 @@ import ApiService from '@/api/api-client'
 const getDefaultState = () => {
     return {
         templates: [],
-        templatePickList: [],
+        notificationPickList: [],
         template: {},
     }
 }
@@ -15,8 +15,8 @@ const mutations = {
     SET_TEMPLATES (state, payload) {
         state.templates = payload
     },
-    SET_TEMPLATE_PICK_LIST (state, payload) {
-        state.templatePickList = payload
+    SET_NOTIFICATION_PICK_LIST (state, payload) {
+        state.notificationPickList = payload
     },
     SET_TEMPLATE (state, payload) {
         state.template = payload
@@ -76,7 +76,7 @@ const actions = {
 
     async getPickList ({ commit }, programId) {
             const result = await ApiService.get(`/api-cabinet/program/notifications/shortlist?program_id=${programId}`)
-            commit('SET_TEMPLATE_PICK_LIST', result)
+            commit('SET_NOTIFICATION_PICK_LIST', result)
     },
 
     async read ({ commit }, item) {
@@ -192,7 +192,7 @@ const actions = {
 
 const getters = {
     templates: state => state.templates,
-    templatePickList: state => state.templatePickList,
+    notificationPickList: state => state.notificationPickList,
     template: state => state.template,
 }
 

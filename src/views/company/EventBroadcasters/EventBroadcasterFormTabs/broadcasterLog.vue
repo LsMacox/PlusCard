@@ -89,7 +89,6 @@
                 <account-column :value="item.account" />
               </template>
               <template v-slot:[`item.result`]="{ item }">
-                {{item.result}}
                 <span v-if="false">{{ item.totalCount }}:</span> <span class="success--text">{{ item.successCount }}</span>/<span class="error--text">{{ item.failCount }}</span>
               </template>
               <template v-slot:expanded-item="{ item }">
