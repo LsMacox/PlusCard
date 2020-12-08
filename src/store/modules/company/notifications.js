@@ -197,7 +197,7 @@ const actions = {
             this._vm.$notify({
                 type: 'success',
                 title: 'Шаблоны рассылки',
-                text: 'Блок удален',
+                text: 'Файл удален',
             })
         } catch (error) {
             throw error
