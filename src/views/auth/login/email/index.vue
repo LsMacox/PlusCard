@@ -215,13 +215,14 @@
           this.login()
         }
       },
-      async login () {
+      async login (recaptchaToken) {
         const user = {
           email: this.form.email,
           password: this.form.password,
           device_id: this.device.id,
           device_token: this.device.token,
           device_type: this.device.type,
+          recaptcha_token: recaptchaToken,
           merch_id: this.merchant_id,
         }
         console.log(user)
