@@ -1,8 +1,8 @@
 <template>
   <cert-diagram-frame
     class="w-certificate"
-    :diagram-data="widgetData"
-    :diagram-labels="widgetData"
+    :diagram-data="periodData"
+    :diagram-labels="diagramLabels"
     :diagram-height="46"
     title="Сертификаты"
     :titles="titles"
@@ -55,37 +55,76 @@
     },
     data () {
       return {
+        periodData: [0, 0, 0, 0, 0],
+        labelData: [],
         count: 0,
         sum: 0,
-        titles: ['клиент', 'клиента', 'клиентов'],
+        titles: ['сертификат', 'сертификата', 'сертификатов'],
       }
     },
     computed: {
       diagramLabels () {
-        return this.prepareDiagramLabels(this.widgetData, 'count')
-      },
-      diagramData () {
-        return this.$_.map(this.widgetData, 'count')
-      },
-      diagramTotalData () {
-        return this.$_.map(this.widgetData, 'count')
+        return this.prepareDiagramLabels(this.labelData, 'count')
       },
     },
     watch: {
-      // widgetData (v) {
-      //   if (v && v[0] && v[1]) {
-      //     const newData = v[0]
-      //     const totalData = v[1]
-      //     this.newCount = newData.length ? newData[newData.length - 1].count : 0
-      //     this.totalCount = totalData.length ? totalData[totalData.length - 1].count : 0
-      //     this.newPercentageDifference = this.relativeChange(newData[newData.length - 1].count ?? 0, newData[newData.length - 2].count ?? 0) ?? 0
-      //     this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1].count ?? 0, totalData[totalData.length - 2].count ?? 0) ?? 0
-      //   }
-      // },
+      widgetData (v) {
+        this.count = 0
+        this.sum = 0
+        if (v) {
+          if (v[0] && v[0].data) {
+            v[0].data.forEach(item => {
+              this.count += 1
+              this.sum += item.nominal.selling_price
+            })
+          }
+
+          let i = 0
+          this.periodData = []
+          this.labelData = []
+          v.forEach(item => {
+            this.periodData[i] = v[i].data.length
+            this.labelData.push({
+              count: item.data.length,
+              date_start: item.date_start,
+              date_end: item.date_end,
+            })
+            i += 1
+          })
+        }
+        this.periodData = this.periodData.reverse()
+        this.labelData = this.labelData.reverse()
+        console.log('label')
+        console.log(this.labelData)
+        console.log('label')
+      },
     },
     mounted () {
-      this.count = this.widgetData.length ? this.widgetData[this.widgetData.length - 1].count : 0
-      this.sum = this.relativeChange(this.widgetData[this.widgetData.length - 1].count, this.widgetData[this.widgetData.length - 2].count) ?? 0
+      if (this.widgetData) {
+        if (this.widgetData[0] && this.widgetData[0].data) {
+          this.widgetData[0].data.forEach(item => {
+            this.count += 1
+            this.sum += item.nominal.selling_price
+          })
+        }
+        let i = 0
+        this.periodData = []
+        this.labelData = []
+        this.widgetData.forEach(item => {
+          this.periodData[i] = this.widgetData[i].data.length
+          this.labelData.push({
+            count: item.data.length,
+            date_start: item.date_start,
+            date_end: item.date_end,
+          })
+          i += 1
+        })
+      }
+      this.periodData = this.periodData.reverse()
+      this.labelData = this.labelData.reverse()
+      console.log('label')
+      console.log(this.labelData)
+      console.log('label')
     },
   }
 </script>

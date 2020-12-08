@@ -79,8 +79,10 @@ const actions = {
             // eslint-disable-next-line no-useless-catch
         try {
             const success = await ApiService.post('api-cabinet/client/certificate/list2', item)
+            console.log(success)
             commit('certificates', success.certificates)
             commit('totalCount', success.totalCount)
+            commit('widget', success.periodsData)
 
             console.log(success.certificates)
             if (success && success.certificates) {
@@ -195,6 +197,9 @@ const getters = {
     },
     payments (state) {
         return state.payments
+    },
+    widgetData (state) {
+      return state.widgetData
     },
 }
 
