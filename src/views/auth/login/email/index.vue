@@ -138,7 +138,7 @@
     <select-merchant
       v-else
       :merchants="merchants"
-      @select="login"
+      @select="submit"
     />
     <vue-recaptcha
       ref="recaptcha"
