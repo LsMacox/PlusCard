@@ -53,29 +53,15 @@
       async update () {
         try {
           this.loading = true
-          /*
-          for (let i = 0; i < this.form.attachments.length; i++) {
-            switch (this.form.attachments[i].type) {
-              case 'IMAGE':
-              case 'VIDEO':
-              case 'FRIEND':
-                // есть загружаемый файл
-                if (this.form.attachments[i].value.file) {
-                  this.form.attachments[i].value.url = null
-                }
-                console.log(this.form.attachments[i].value.file)
-            }
-          }
           const item = {
-            program_id: this.program.id,
             id: this.form.id,
             name: this.form.name,
             title: this.form.title,
             description: this.form.description,
             // body: this.form.description,
-            attachments: this.form.attachments,
+            attachments: this.form.attachments.filter(item => item.type === 'TEXT'),
           }
-          */
+          /*
           const formData = new FormData()
           formData.append('id', this.form.id)
           formData.append('program_id', this.program.id)
@@ -109,8 +95,9 @@
                 break
             }
           }
-          // console.log(item)
-          await this.$store.dispatch('company/notifications/update', formData)
+          */
+          console.log(item)
+          await this.$store.dispatch('company/notifications/update', item)
           this.toRoute('/sendings/templates')
         } finally {
           this.loading = false

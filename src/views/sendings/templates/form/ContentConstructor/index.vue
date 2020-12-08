@@ -84,79 +84,6 @@
       template () {
         return this.$store.getters['company/notifications/template']
       },
-      blockText () {
-        return {
-          type: 'TEXT',
-          value: {
-            text: null,
-          },
-        }
-      },
-      blockImage () {
-        return {
-          type: 'IMAGE',
-          value: {
-            url: null,
-          },
-        }
-      },
-      blockImages () {
-        return {
-          type: 'IMAGES',
-          value: [
-            {
-              url: null,
-            },
-          ],
-        }
-      },
-      blockVideo () {
-        return {
-          type: 'VIDEO',
-          value: {
-            url: null,
-          },
-        }
-      },
-      blockVideos () {
-        return {
-          type: 'VIDEOS',
-          value: [
-            {
-              url: null,
-            },
-          ],
-        }
-      },
-      blockFriend () {
-        return {
-          type: 'FRIEND',
-          value: {
-            url: null,
-          },
-        }
-      },
-      blockFriends () {
-        return {
-          type: 'FRIENDS',
-          value: [
-            {
-              url: null,
-            },
-          ],
-        }
-      },
-      blockButton () {
-        return {
-          type: 'BUTTON',
-          value: {
-            text: 'Перейти',
-            color: 'blue',
-            broadcaster_id: null,
-            action: null,
-          },
-        }
-      },
     },
     watch: {
       attachments: {
@@ -172,7 +99,7 @@
     },
     methods: {
       async add (type, index, disable) {
-        if (this.addedBtn !== index || !disable) {
+        if (!disable && this.addedBtn !== index) {
           try {
             this.loading = true
             this.addedBtn = index
@@ -183,8 +110,26 @@
             switch (type) {
               case 'TEXT':
                 item.value = { text: '<p>Текст нового сообщения</p>' }
+                break
+
+              case 'IMAGE':
+              case 'VIDEO':
+              case 'FRIEND':
+                item.value = {
+                  url: null,
+                }
+                break
+
+              case 'IMAGES':
+              case 'VIDEOS':
+              case 'FRIENDS':
+                item.value = [
+                  {
+                    url: null,
+                  },
+                ]
+                break
             }
-            console.log(item)
             await this.$store.dispatch('company/notifications/createAttachment', item)
           } finally {
             this.loading = false
@@ -193,15 +138,15 @@
         }
       },
       async remove (i) {
-        // вложение уже загружено в базу
-        if (this.localAttachments[i].id) {
-          this.localAttachments[i].deleted = true // метка удаления вложения
-
-          // вложения нет в базе
-        } else {
-          this.localAttachments.splice(i, 1)
+        try {
+          this.loading = true
+          const item = {
+            id: this.localAttachments[i].id,
+          }
+          await this.$store.dispatch('company/notifications/deleteAttachment', item)
+        } finally {
+          this.loading = false
         }
-        this.updateAttachments(this.localAttachments)
       },
       updateLocalAttachments (i, v) {
         this.localAttachments[i] = v

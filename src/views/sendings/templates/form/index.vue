@@ -77,7 +77,7 @@
     watch: {
       template: {
         handler (v) {
-          this.updateAttachments(v.attachments)
+          this.updateForm(v)
         },
         deep: true,
       },
@@ -86,6 +86,9 @@
       await this.initForm()
     },
     methods: {
+      updateForm (v) {
+        this.form = Object.copy(v)
+      },
       updateAttachments (v) {
         this.form.attachments = Object.copy(v)
       },

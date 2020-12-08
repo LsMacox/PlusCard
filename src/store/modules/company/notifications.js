@@ -48,8 +48,9 @@ const actions = {
     async create ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.post('/api-cabinet/program/notifications/create', item)
+            const result = await ApiService.post('/api-cabinet/program/notifications', item)
             commit('ADD', result)
+            commit('SET_TEMPLATE', result) // после создания шаблона переход на форму редактирования
             this._vm.$notify({
                 type: 'success',
                 title: 'Шаблоны рассылки',
@@ -81,9 +82,7 @@ const actions = {
     async read ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.get(`/api-cabinet/program/notification/${item.id}`)
-            console.log(`/api-cabinet/program/notifications/${item.id}`)
-            console.log(result)
+            const result = await ApiService.get(`/api-cabinet/program/notifications?id=${item.id}`)
             commit('SET_TEMPLATE', result)
         } catch (error) {
             throw error
@@ -93,7 +92,7 @@ const actions = {
     async update ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.post('/api-cabinet/program/notifications/update', item)
+            const result = await ApiService.put('/api-cabinet/program/notifications', item)
             // console.log('/api-cabinet/staff')
             // console.log(result)
             commit('UPDATE', result)
@@ -148,9 +147,7 @@ const actions = {
     async deleteAttachment ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.delete(`/api-cabinet/program/notifications/attachments/${item.id}`)
-            // console.log('/api-cabinet/staff')
-            // console.log(result)
+            const result = await ApiService.delete(`/api-cabinet/program/notifications/attachments?id=${item.id}`)
             commit('UPDATE', result)
             commit('SET_TEMPLATE', result)
             this._vm.$notify({
