@@ -45,9 +45,16 @@
               class="v-progress-linear-wrapper"
           >
             <v-progress-linear
+              v-if="i > 0"
               :rounded="true"
-              :value="percentageDifferences[i]"
+              :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"
               :color="colors[i]"
+            />
+            <v-progress-linear
+                v-else
+                :rounded="true"
+                :value="100"
+                :color="colors[i]"
             />
             <div class="v-progress-linear-info">
               <div class="body-s-semibold">

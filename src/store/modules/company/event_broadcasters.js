@@ -71,6 +71,7 @@ export default {
             )
             commit('SET_BROADCASTERS', result)
         },
+
         async GetPickList ({ commit }, programId) {
             const result = await ApiService.get(
                 `/api-cabinet/program/account/event/broadcaster/picklist?program_id=${programId}`,
@@ -89,6 +90,15 @@ export default {
             const result = await ApiService.post('/api-cabinet/program/account/event/broadcaster/filter/validate', filter)
             return result
         },
+
+        async GetBroadcasterLog  ({ commit }, id) {
+            const result = await ApiService.get(
+                `/api-cabinet/program/account/event/broadcaster/log?broadcaster_id=${id}`,
+            )
+            // commit('UPDATE_BROADCASTER', result)
+            return result
+        },
+
 
         async RunBroadcaster ({ commit }, id) {
             const result = await ApiService.post('/api-cabinet/program/account/event/broadcaster/run', {
