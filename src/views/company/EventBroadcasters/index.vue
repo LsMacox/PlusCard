@@ -93,6 +93,7 @@
                 inset
                 hide-details
                 class="custom-switch"
+                @click.stop=""
                 @change="activeChange(item, $event)"
               />
             </template>
