@@ -138,7 +138,7 @@
     <select-merchant
       v-else
       :merchants="merchants"
-      @select="recaptchaExecute"
+      @select="submitMerchant"
     />
     <vue-recaptcha
       ref="recaptcha"
@@ -202,6 +202,10 @@
     methods: {
       recaptchaExecute () {
         this.$refs.recaptcha.execute()
+      },
+      submitMerchant (merchantId) {
+        this.$store.commit('auth/auth/SET_MERCHANT_ID', merchantId)
+        this.recaptchaExecute()
       },
       submit () {
         if (!this.$refs.form.validate()) return
