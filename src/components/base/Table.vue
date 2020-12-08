@@ -14,8 +14,8 @@
           :class="className"
           :item-class="itemClass"
           class="plus-table"
-          :show-expand="Boolean(expanded.length)"
-          :expanded.sync="expanded"
+          :show-expand="showExpand"
+          :expanded.sync="expandedMutation"
           :sort-by="pagination.sortBy"
           :sort-desc="pagination.descending === 'descending' ? true : false"
           hide-default-footer
@@ -60,12 +60,13 @@
           </template>
 
           <template v-slot:expanded-item="{ item }">
-            <td>
-              More info about {{ item.bsid }}
-            </td>
+            <slot
+              :item="item"
+              name="expanded-item"
+            />
           </template>
 
-          <template
+          <!-- <template
             v-slot:[`item.data-table-expand`]="{ expand, isExpanded }"
           >
             <slot
@@ -73,7 +74,7 @@
               :isExpand="isExpanded"
               name="item.data-table-expand"
             />
-          </template>
+          </template> -->
 
           <template
             v-for="hItem in headersSlots"
@@ -87,7 +88,6 @@
         </v-data-table>
       </v-col>
     </v-row>
-
     <v-row
       v-if="!hideDefaultFooter"
       align="center"
@@ -104,7 +104,7 @@
           <select-page-limit
             min-width="200px"
             :items="paginationOptions"
-            :model.sync="options.itemsPerPage"
+            :model.sync="tableOptions.itemsPerPage"
             item-value="value"
             item-label="text"
           />
@@ -113,7 +113,7 @@
 
           <div class="text-center">
             <v-pagination
-              v-model="options.page"
+              v-model="tableOptions.page"
               next-icon="fas fa-chevron-right"
               prev-icon="fas fa-chevron-left"
               :length="pagesCount"
@@ -131,6 +131,11 @@
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import Convertor from '@/mixins/convertor.js'
 
+  const defaultOptions = {
+    page: 1,
+    itemsPerPage: 25,
+  }
+
   export default {
     name: 'Table',
     components: {
@@ -146,6 +151,10 @@
       isCustomHeader: {
         type: Boolean,
         default: true,
+      },
+      showExpand: {
+        type: Boolean,
+        default: false,
       },
       className: {
         type: String,
@@ -190,10 +199,7 @@
       options: {
         type: Object,
         default: () => {
-          return {
-            page: 1,
-            itemsPerPage: 25,
-          }
+          return defaultOptions
         },
       },
       pagination: {
@@ -235,23 +241,24 @@
     },
     data () {
       return {
-        tableOptions: this.options,
+        tableOptions: Object.assign({}, defaultOptions, this.options ) ,
       }
     },
     computed: {
+      expandedMutation: {
+        get () {
+          return this.expanded
+        },
+        set (v) {
+          this.$emit('update:expanded', v)
+        },
+      },
       headersSlots () {
         return this.headers.filter(x => this.$slots[`item.${x.value}`] || this.$scopedSlots[`item.${x.value}`])
       },
       pagesCount () {
         const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
-        if (count) {
-          if (this.options.page > count) {
-            this.changeTableOption('page', count)
-          }
-          return count
-        }
-        this.changeTableOption('page', 1)
-        return 1
+        return count || 1
       },
       inputListeners () {
         var _this = this
@@ -270,6 +277,11 @@
         )
       },
     },
+    watch: {
+      pagesCount (v) {
+        this.tableOptions.page = (this.tableOptions.page > v) ? v : 1
+      },
+    },
     created () {
     },
     methods: {
@@ -285,9 +297,7 @@
           this.pagination.descending = 'none'
         }
       },
-      changeTableOption (option, val) {
-        this.tableOptions[option] = val
-      },
+      
     },
   }
 </script>

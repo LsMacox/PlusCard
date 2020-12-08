@@ -53,16 +53,18 @@
       <v-row>
         <v-col>
           <base-table
-            class-name="table-moderations"
             :headers="headers"
             :data="filtered_broadcasters"
-            :item-class="() => 'no-clickable-row'"
+            :item-class="() => 'clickable-row'"
             :is-custom-header="false"
             :total-count="filtered_broadcasters.length"
             :word-operations="['активность', 'активности', 'активностей']"
             :pagination="{
               sortBy: 'updated_at',
               descending: 'descending',
+            }"
+            :options="{
+              itemsPerPage: 5
             }"
             :search="search_comp"
             @click:row="openBroadcasterClick"
@@ -155,6 +157,11 @@
         />
       </template>
     </base-empty-block-page>
+    <broadcaster-log-dialog
+      v-if="dialog"
+      v-model="dialog"
+      :broadcaster-id="selectedId"
+    />
   </v-skeleton-loader>
 </template>
 <script>
@@ -165,12 +172,15 @@
   export default {
     components: {
       DateColumn: () => import('@/components/colums/DateColumn.vue'),
+      BroadcasterLogDialog: () => import('./EventBroadcasterFormTabs/broadcasterLog.vue'),
     },
     mixins: [Permission],
     data () {
       return {
         search: '',
         GetListAction: false,
+        selectedId: null,
+        dialog: false,
         headers: [
           { text: 'ID', align: 'start', value: 'id', width: '7em' },
           { text: 'Название', value: 'name' },
@@ -224,8 +234,9 @@
           this.GetListAction = false
         })
       },
-      openBroadcasterClick (item = null) {
-        // item.emit_mode = 'MANUAL'
+      openBroadcasterClick (item) {
+        this.selectedId = item.id
+        this.dialog = true
       },
       createBroadcasterClick () {
         this.$router.push({ name: 'EventBroadcasterMaster' })
@@ -270,6 +281,12 @@
       getItemActions (item) {
         return [
           {
+            icon: '$iconify_ion-document-outline',
+            title: 'История работы',
+            action: this.openBroadcasterClick,
+            show: true,
+          },
+          {
             icon: '$iconify_feather-play',
             title: 'Запустить',
             action: this.runBroadcasterClick,
@@ -288,6 +305,7 @@
             },
             show: this.hasProgramPermission('program-broadcaster-update', item.program_id),
           },
+
           {
             icon: '$iconify_feather-trash',
             title: 'Удалить',
