@@ -138,7 +138,7 @@
     <select-merchant
       v-else
       :merchants="merchants"
-      @select="submit"
+      @select="recaptchaExecute"
     />
     <vue-recaptcha
       ref="recaptcha"
@@ -200,9 +200,12 @@
       window.removeEventListener('keyup', this.onKeyUp)
     },
     methods: {
+      recaptchaExecute () {
+        this.$refs.recaptcha.execute()
+      },
       submit () {
         if (!this.$refs.form.validate()) return
-        this.$refs.recaptcha.execute()
+        this.recaptchaExecute()
       },
       onCaptchaExpired () {
         this.$refs.recaptcha.reset()
