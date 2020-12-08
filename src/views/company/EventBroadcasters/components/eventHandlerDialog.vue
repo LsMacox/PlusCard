@@ -54,19 +54,19 @@
       <v-row v-if="model.action_type === ACTION_ENUM.NOTIFICATION.id">
         <v-col>
           <BaseDialogFieldBlock
-            title="Шаблон рассылки"
+            title="Активная рассылка"
             description=""
           >
             <v-select
-              v-model="model.action_json.template_id"
+              v-model="model.action_json.notification_id"
               class=""
-              :items="templatePickList"
+              :items="notificationPickList"
               item-text="name"
               item-value="id"
-              placeholder="Выберите шаблон"
+              placeholder="Выберите рассылку"
               outlined
               :rules="[
-                v => !!v || 'Выберите шаблон',
+                v => !!v || 'Выберите рассылку',
               ]"
               :loading="getNotifyPickListAction"
             />
@@ -138,7 +138,7 @@
     },
     computed: {
       ...mapGetters('crm/segment', ['pickSegments']),
-      ...mapGetters('company/notifications', ['templatePickList']),
+      ...mapGetters('company/notifications', ['notificationPickList']),
     },
     mounted () {
       this.loadPickSegments()
