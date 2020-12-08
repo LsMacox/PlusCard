@@ -88,7 +88,6 @@
         </v-data-table>
       </v-col>
     </v-row>
-    {{tableOptions}}
     <v-row
       v-if="!hideDefaultFooter"
       align="center"
@@ -105,7 +104,7 @@
           <select-page-limit
             min-width="200px"
             :items="paginationOptions"
-            :model.sync="options.itemsPerPage"
+            :model.sync="tableOptions.itemsPerPage"
             item-value="value"
             item-label="text"
           />
@@ -114,7 +113,7 @@
 
           <div class="text-center">
             <v-pagination
-              v-model="options.page"
+              v-model="tableOptions.page"
               next-icon="fas fa-chevron-right"
               prev-icon="fas fa-chevron-left"
               :length="pagesCount"
@@ -242,10 +241,7 @@
     },
     data () {
       return {
-        tableOptions: {
-          page: 1,
-          itemsPerPage: 25,
-        },
+        tableOptions: Object.assign({}, defaultOptions, this.options ) ,
       }
     },
     computed: {
@@ -262,14 +258,7 @@
       },
       pagesCount () {
         const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
-        if (count) {
-          if (this.options.page > count) {
-            this.changeTableOption('page', count)
-          }
-          return count
-        }
-        this.changeTableOption('page', 1)
-        return 1
+        return count || 1
       },
       inputListeners () {
         var _this = this
@@ -288,6 +277,11 @@
         )
       },
     },
+    watch: {
+      pagesCount (v) {
+        this.tableOptions.page = (this.tableOptions.page > v) ? v : 1
+      },
+    },
     created () {
     },
     methods: {
@@ -303,9 +297,7 @@
           this.pagination.descending = 'none'
         }
       },
-      changeTableOption (option, val) {
-        this.tableOptions[option] = val
-      },
+      
     },
   }
 </script>

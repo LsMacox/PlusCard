@@ -52,7 +52,7 @@
       </v-row>
       <v-row>
         <v-col>
-          <base-table           
+          <base-table
             :headers="headers"
             :data="filtered_broadcasters"
             :item-class="() => 'clickable-row'"
@@ -63,7 +63,9 @@
               sortBy: 'updated_at',
               descending: 'descending',
             }"
-           
+            :options="{
+              itemsPerPage: 5
+            }"
             :search="search_comp"
             @click:row="openBroadcasterClick"
           >
@@ -280,7 +282,7 @@
         return [
           {
             icon: '$iconify_ion-document-outline',
-            title: 'Работа',
+            title: 'История работы',
             action: this.openBroadcasterClick,
             show: true,
           },
@@ -303,7 +305,7 @@
             },
             show: this.hasProgramPermission('program-broadcaster-update', item.program_id),
           },
-          
+
           {
             icon: '$iconify_feather-trash',
             title: 'Удалить',

@@ -39,17 +39,18 @@
                   clearable
                 />
               </v-col>
-             
             </v-row>
           </v-col>
-           <v-col cols="auto">
-                <v-btn
-                  color="primary"
-                  @click="loadData"
-                >
-                  <v-icon left>$iconify_feather-refresh-ccw</v-icon> Обновить
-                </v-btn>
-              </v-col>
+          <v-col cols="auto">
+            <v-btn
+              color="primary"
+              @click="loadData"
+            >
+              <v-icon left>
+                $iconify_feather-refresh-ccw
+              </v-icon> Обновить
+            </v-btn>
+          </v-col>
         </v-row>
         <v-row>
           <v-col>
@@ -65,7 +66,9 @@
                 sortBy: 'created_at',
                 descending: 'descending',
               }"
-              
+              :options="{
+                itemsPerPage: 5
+              }"
               :expanded.sync="expanded"
               :search="search_comp"
               show-expand
@@ -86,7 +89,8 @@
                 <account-column :value="item.account" />
               </template>
               <template v-slot:[`item.result`]="{ item }">
-                <span v-if="false">{{ item.totalCount }}:</span> <span class="success--text">{{ item.successCount }}</span>/</span> <span class="error--text">{{ item.failCount }}</span>
+                {{item.result}}
+                <span v-if="false">{{ item.totalCount }}:</span> <span class="success--text">{{ item.successCount }}</span>/<span class="error--text">{{ item.failCount }}</span>
               </template>
               <template v-slot:expanded-item="{ item }">
                 <td
@@ -143,11 +147,11 @@
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex'
+  import { mapActions } from 'vuex'
 
-  import ProgramEventBroadcaster from '@/models/program/broadcaster'
+  // import ProgramEventBroadcaster from '@/models/program/broadcaster'
   import ProgramEventBroadcasterEventProcess from '@/models/program/broadcasterEventProcess'
-  import ProgramEventBroadcasterHandler from '@/models/program/broadcasterHandler'
+  // import ProgramEventBroadcasterHandler from '@/models/program/broadcasterHandler'
   import Account from '@/models/program/account'
   import dialogable from '@/mixins/dialogable.js'
   import { config } from '@/config'
@@ -199,6 +203,7 @@
           Vue.set(item, 'totalCount', item.event_process.length)
           Vue.set(item, 'successCount', successCount)
           Vue.set(item, 'failCount', failCount)
+          Vue.set(item, 'result', (failCount > 0 ? ['ошибка', 'error', 'fail'] : ['ok', 'успешно']).join(';'))
           Vue.set(item, 'expanded', [])
           Vue.set(item, 'account', new Account(item.account))
           Vue.set(item, 'AccountSearchField', item.account.searchField)
