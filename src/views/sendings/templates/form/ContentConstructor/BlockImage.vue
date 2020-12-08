@@ -6,7 +6,7 @@
       class="pls--pushcon-block-image-input"
       @change="beforeUpload(inputRef)"
     >
-    <div>
+    <div v-if="!loading">
       <v-img
         v-if="localBlock.value.url"
         class="pls--pushcon-block-image-img"
@@ -17,7 +17,7 @@
       >
         <div
           class="pls--pushcon-block-image-img-delete"
-          @click.stop="removeFile(inputRef)"
+          @click.stop="removeFile()"
         >
           <v-icon>
             $iconify_chrome-close
@@ -34,6 +34,14 @@
         >
           +
         </v-icon>
+      </div>
+    </div>
+    <div v-else>
+      <div class="pls--pushcon-block-image-img">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        />
       </div>
     </div>
   </div>
@@ -113,13 +121,25 @@
           formData.append('id', this.localBlock.id)
           formData.append('type', this.localBlock.type)
           formData.append('files[0]', file)
-          await this.$store.dispatch('company/notifications/updateAttachment', formData)
+          await this.$store.dispatch('company/notifications/uploadAttachmentFile', formData)
         } finally {
-          this.removeFile(this.inputRef)
+          this.clearFile(this.inputRef)
           this.loading = false
         }
       },
-      removeFile (inputRef) {
+      async removeFile () {
+        try {
+          this.loading = true
+          const item = {
+            id: this.localBlock.id,
+          }
+          await this.$store.dispatch('company/notifications/deleteAttachmentFile', item)
+        } finally {
+          this.clearFile(this.inputRef)
+          this.loading = false
+        }
+      },
+      clearFile (inputRef) {
         this.$refs[inputRef].value = null
       },
     },
