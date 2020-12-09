@@ -70,10 +70,13 @@
     mounted () {
       const newData = this.widgetData[0]
       const totalData = this.widgetData[1]
-      this.newCount = newData.length ? newData[newData.length - 1].count : 0
-      this.totalCount = totalData.length ? totalData[totalData.length - 1].count : 0
-      this.newPercentageDifference = this.relativeChange(newData[newData.length - 1].count, newData[newData.length - 2].count) ?? 0
-      this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1].count, totalData[totalData.length - 2].count) ?? 0
+
+      if (newData.length > 0 && totalData.length > 0) {
+        this.newCount = newData.length ? newData[newData.length - 1].count : 0
+        this.totalCount = totalData.length ? totalData[totalData.length - 1].count : 0
+        this.newPercentageDifference = this.relativeChange(newData[newData.length - 1].count, newData[newData.length - 2].count) ?? 0
+        this.totalPercentageDifference = this.relativeChange(totalData[totalData.length - 1].count, totalData[totalData.length - 2].count) ?? 0
+      }
     },
   }
 </script>
