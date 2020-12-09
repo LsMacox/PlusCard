@@ -67,8 +67,6 @@ const actions = {
         // eslint-disable-next-line no-useless-catch
         try {
             const result = await ApiService.get(`/api-cabinet/program/notification/template/list?program_id=${item.program_id}`)
-            console.log('/api-cabinet/program/notifications/list')
-            console.log(result)
             commit('SET_TEMPLATES', result)
         } catch (error) {
             throw error
@@ -76,8 +74,8 @@ const actions = {
     },
 
     async getPickList ({ commit }, programId) {
-            const result = await ApiService.get(`/api-cabinet/program/notifications/shortlist?program_id=${programId}`)
-            commit('SET_NOTIFICATION_PICK_LIST', result)
+        const result = await ApiService.get(`/api-cabinet/program/notifications/shortlist?program_id=${programId}`)
+        commit('SET_NOTIFICATION_PICK_LIST', result)
     },
 
     async read ({ commit }, item) {

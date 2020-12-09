@@ -16,20 +16,39 @@
     <v-btn
       class="pls--page-header-btn-right"
       color="primary"
-      @click=""
+      @click="openCreate()"
     >
       <v-icon left>
         $iconify_plus-circle-outlined
       </v-icon> Создать рассылку
     </v-btn>
+    <sending-create
+      v-if="dialogCreate"
+      v-model="dialogCreate"
+    />
   </div>
 </template>
 
 <script>
+  import SendingCreate from './SendingCreate'
+
   export default {
+    components: {
+      SendingCreate,
+    },
+    data () {
+      return {
+        dialogCreate: false,
+      }
+    },
     computed: {
       program () {
         return this.$store.getters['company/program/program']
+      },
+    },
+    methods: {
+      openCreate () {
+        this.dialogCreate = true
       },
     },
   }

@@ -1,15 +1,18 @@
 <template>
   <div>
     <sending-page-header />
+    <sending-table />
   </div>
 </template>
 
 <script>
   import SendingPageHeader from './SendingPageHeader'
+  import SendingTable from './SendingTable'
 
   export default {
     components: {
       SendingPageHeader,
+      SendingTable,
     },
     data () {
       return {
@@ -28,6 +31,7 @@
       async fetchData () {
         try {
           this.loading = true
+          await this.$store.dispatch('company/sendings/list', { program_id: this.program.id })
           await this.$store.dispatch('company/notifications/list', { program_id: this.program.id })
         } finally {
           this.loading = false
