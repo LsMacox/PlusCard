@@ -68,6 +68,8 @@
               <v-col>
                 <v-btn
                   color="secondary"
+                  :text="true"
+                    :ripple="false"
                   @click="createHandlerClick"
                 >
                   <v-icon left>
@@ -79,6 +81,9 @@
             </v-row>
           </template>
         </BaseMasterFieldBlock>
+        <v-row>
+          <v-col />
+        </v-row>
         <v-row>
           <v-col />
         </v-row>
@@ -112,7 +117,7 @@
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex'
+  import { mapActions } from 'vuex'
   import Vue from 'vue'
   import ProgramEventBroadcasterHandler from '@/models/program/broadcasterHandler'
 

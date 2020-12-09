@@ -16,9 +16,10 @@
             no-gutters
           >
             <v-col
-              :cols="12"                       
-              :sm="10"
-              :md="8"
+              :cols="12"
+              :sm="12"
+              :md="10"
+              :lg="8"
             >
               <v-tabs-items
                 v-if="broadcaster"

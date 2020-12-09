@@ -6,7 +6,7 @@
         :menu="pageList"
         :loading="saveAction"
         :show-action="!GetBroadcasterAction && hasChanges"
-        cancelButtonText="Закрыть"
+        cancel-button-text="Закрыть"
         @cancelbutton="cancelEdit()"
         @actionbutton="globalSave()"
       >
@@ -25,50 +25,50 @@
               :style="{height: '100%', width: '100%'}"
               type="image@3, actions"
             >
-              <v-row no-gutters><v-col>
-
-                <v-tabs-items
-                  v-if="broadcaster"
-                  v-model="currentPage"
-                >
-                  <v-tab-item
-                    :value="0"
-                    eager
+              <v-row no-gutters>
+                <v-col>
+                  <v-tabs-items
+                    v-if="broadcaster"
+                    v-model="currentPage"
                   >
-                    <tabMain
-                      ref="tabMain"
-                      v-model="broadcaster"
-                      action-text="Сохранить"
-                      action-icon=""
-                      :action-loading="saveAction"
-                      :action-show="hasChanges"
-                      @continue="globalSave"
-                    />
-                  </v-tab-item>
-                  <v-tab-item
-                    :value="1"
-                    eager
-                  >
-                    <tabFilter
-                      ref="tabFilter"
-                      v-model="broadcaster"
-                      action-text="Сохранить"
-                      action-icon=""
-                      :action-loading="saveAction"
-                      :action-show="hasChanges"
-                      @continue="globalSave"
-                    />
-                  </v-tab-item>
-                  <v-tab-item
-                    :value="2"
-                    eager
-                  >
-                    <tabHandlers
-                      ref="tabHandlers"
-                      v-model="broadcaster"
-                    />
-                  </v-tab-item>
-                </v-tabs-items>
+                    <v-tab-item
+                      :value="0"
+                      eager
+                    >
+                      <tabMain
+                        ref="tabMain"
+                        v-model="broadcaster"
+                        action-text="Сохранить"
+                        action-icon=""
+                        :action-loading="saveAction"
+                        :action-show="hasChanges"
+                        @continue="globalSave"
+                      />
+                    </v-tab-item>
+                    <v-tab-item
+                      :value="1"
+                      eager
+                    >
+                      <tabFilter
+                        ref="tabFilter"
+                        v-model="broadcaster"
+                        action-text="Сохранить"
+                        action-icon=""
+                        :action-loading="saveAction"
+                        :action-show="hasChanges"
+                        @continue="globalSave"
+                      />
+                    </v-tab-item>
+                    <v-tab-item
+                      :value="2"
+                      eager
+                    >
+                      <tabHandlers
+                        ref="tabHandlers"
+                        v-model="broadcaster"
+                      />
+                    </v-tab-item>
+                  </v-tabs-items>
                 </v-col>
               </v-row>
             </v-skeleton-loader>
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-  import Vue from 'vue'
+
   import { mapGetters, mapActions } from 'vuex'
 
   export default {

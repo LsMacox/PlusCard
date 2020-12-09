@@ -144,12 +144,15 @@
     <base-empty-block-page
       v-else
       title="Здесь пока ничего нет :’("
-      description="TODO"
       action-icon="$iconify_ant-design-gift-outlined"
       action-text="Создать активность"
       action
       @action="createBroadcasterClick"
     >
+      <template v-slot:description>
+        Настройка активностей позволяет автоматически запускать различные действия:
+        добавление в сегмент или удаление из сегмента клиентов, запуск рассылок, обработка нажатия кнопки в рассылке, выпуск карты и прочие
+      </template>
       <template v-slot:image>
         <v-img
           src="@/assets/png/settings-dummy.png"

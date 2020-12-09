@@ -2,17 +2,6 @@ import ApiService from '@/api/api-client'
 import Vue from 'vue'
 import ProgramEventBroadcaster from '@/models/program/broadcaster'
 
-function eventFilter (event) {
-    return (item) => {
-        return item.rules && item.rules.event === event
-    }
-}
-function activeFilter (active) {
-    return (item) => {
-        return item.bonus_score && item.bonus_score.active === active
-    }
-}
-
 export default {
     namespaced: true,
     state: {
@@ -98,7 +87,6 @@ export default {
             // commit('UPDATE_BROADCASTER', result)
             return result
         },
-
 
         async RunBroadcaster ({ commit }, id) {
             const result = await ApiService.post('/api-cabinet/program/account/event/broadcaster/run', {

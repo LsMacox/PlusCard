@@ -32,7 +32,7 @@
 
           <BaseMasterFieldBlock
             title="Время работы процесса"
-            description="Укажите период запуска активности. После окончания указанного периода времени, процесс самостоятельно отключится."
+            description="После окончания указанного периода времени, активность самостоятельно отключится."
           >
             <template v-slot:input>
               <v-row>
@@ -66,7 +66,7 @@
 
           <BaseMasterFieldBlock
             title="Описание"
-            description="Введите описание активности"
+            description="Описание октивности позволяет сделать пояснение для сотрудников, какие действия будут выполняться в результате работы активности. Клиенты этот тект не видят."
           >
             <template v-slot:input>
               <v-textarea
@@ -86,7 +86,7 @@
 
           <BaseMasterFieldBlock
             title="Режим запуска"
-            description="Выберите один из режимов запуска бизнес-процесса и настройте его параметры. "
+            description="Выберите один из режимов запуска активности и настройте её параметры."
           >
             <template v-slot:input>
               <v-row>
@@ -104,6 +104,14 @@
                       :value="item.id"
                     />
                   </v-radio-group>
+                </v-col>
+              </v-row>
+              <v-row v-if="emitModeObject && emitModeObject.comment">
+                <v-col cols="auto">
+                  <v-icon>$iconify_feather-info</v-icon>
+                </v-col>
+                <v-col class="body-m-regular neutral-600--text">
+                  {{ emitModeObject.comment }}
                 </v-col>
               </v-row>
               <v-row
@@ -236,11 +244,31 @@
         formValid: false,
         GetEventListAction: false,
         emitModeList: [
-          { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.MANUAL.id, text: 'Ручной запуск' },
-          { id: ProgramEventBroadcaster.PERIOD_ENUM.ONCE.id, text: 'Единоразово' },
-          { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id, text: 'По расписанию' },
-          { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.EVENT.id, text: 'По событию' },
-          { id: ProgramEventBroadcaster.EMIT_MODE_ENUM.ACCOUNT.id, text: 'Запуск клиентом' },
+          {
+            id: ProgramEventBroadcaster.EMIT_MODE_ENUM.MANUAL.id,
+            text: 'Ручной запуск',
+            comment: 'Режим ручного запуска необходим в том случае, когда сотрудник сам выбирает, когда необходимо выполнить активность. Активность будет выполняться только после нажатия кнопки "Выполнить" в списке активностей. При этом, если попытка запуска будет произведена не в преиод, указанный в настройках активности, то она не выполнится. Такие активности можно запускать многократно нажимая кнопку "Выполнить" в списке активностей.',
+          },
+          {
+            id: ProgramEventBroadcaster.PERIOD_ENUM.ONCE.id,
+            text: 'Единоразово',
+            comment: 'В этом режиме активность выполнится один раз автоматически, когда наступит время начачла её работы. Если укзаннное время уже наступило, то такая активность будет запущена сразу после её ключения в списке.',
+          },
+          {
+            id: ProgramEventBroadcaster.EMIT_MODE_ENUM.PERIOD.id,
+            text: 'По расписанию',
+            comment: 'Этот режим позволит запускать активность с заданным интервалом времени. Все запуски будут происходить при вклюении активности в списке и при условии попадания в интервал времени работы активности, указанный в её настройках.',
+          },
+          {
+            id: ProgramEventBroadcaster.EMIT_MODE_ENUM.EVENT.id,
+            text: 'По событию',
+            comment: 'Такой режим позволит настроить запуск активности по возникновению события пользователя. Такая активность будет запущена только для того пользователя, у которого возникло собитие. В настройках запуска необходимо выбрать тип события, по котрому пудет произведен запуск.',
+          },
+          {
+            id: ProgramEventBroadcaster.EMIT_MODE_ENUM.ACCOUNT.id,
+            text: 'Запуск клиентом',
+            comment: 'Такие активности запускаются только для клиентов нажавших кнопку в рассылке. Выбор запускаемой активности производится в настройках кнопки в шаблоне рассылки.',
+          },
         ],
       }
     },
@@ -248,6 +276,10 @@
       ...mapGetters({
         accountEventPickList: 'company/event_broadcasters/accountEventPickList',
       }),
+
+      emitModeObject () {
+        return this.$_.findWhere(this.emitModeList, { id: this.emitMode })
+      },
 
       emitMode: {
         get: function () {

@@ -124,6 +124,7 @@ export const ICONIFY_ICONS = {
     'feather-star': () => import('@iconify-icons/feather/star'),
     'feather-volume': () => import('@iconify/icons-feather/volume'),
     'feather-volume-1': () => import('@iconify/icons-feather/volume-1'),
+    'feather-info': () => import('@iconify/icons-feather/info'),
 
     // fa-solid
     'fa-solid-user': () => import('@iconify-icons/fa-solid/user'),

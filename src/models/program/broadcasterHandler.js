@@ -1,6 +1,4 @@
 import Vue from 'vue'
-import { config } from '@/config'
-import moment from 'moment'
 
 export default class ProgramEventBroadcasterHandler {
     static ACTION_ENUM = Object.freeze({

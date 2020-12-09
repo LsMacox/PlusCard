@@ -45,7 +45,7 @@ export default class ProgramEventBroadcaster {
     }
 
     // getDateTimeFilter(dateField, search){
-    //   return (value, search) =>  this.dateTimeFormat(this[dateField]).toLowerCase().includes(search)  
+    //   return (value, search) =>  this.dateTimeFormat(this[dateField]).toLowerCase().includes(search)
     // }
 
     get startAtFormat () {
