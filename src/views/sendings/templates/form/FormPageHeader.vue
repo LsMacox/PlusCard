@@ -19,7 +19,7 @@
       @click="update()"
     >
       <v-icon left>
-        $iconify_plus-circle-outlined
+        $iconify_ion-checkmark-circle-outline
       </v-icon>Сохранить
     </v-btn>
   </div>

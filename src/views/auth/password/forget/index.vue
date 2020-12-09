@@ -31,7 +31,7 @@
         class="auth-form"
       >
         <v-text-field
-          v-model="form.email"
+          v-model.trim="form.email"
           placeholder="Введите еmail"
           class="auth-text-field"
           outlined
