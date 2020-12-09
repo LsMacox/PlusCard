@@ -7,9 +7,18 @@
       :lg="8"
     >
       <div class="toolbar-col toolbar-col-left">
-        <div class="toolbar-name">
-          {{ program.name }}
-        </div>
+        <v-tooltip top>
+          <template v-slot:activator="{ on, attrs }">
+            <div
+                class="toolbar-name"
+                v-bind="attrs"
+                v-on="on"
+            >
+              {{ program.name }}
+            </div>
+          </template>
+          <span> {{ program.name }} </span>
+        </v-tooltip>
         <div class="toolbar-period">
           <date-range-select
             min-width="250px"
