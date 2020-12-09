@@ -32,6 +32,7 @@
           outlined
           required
           :rules="phoneRules"
+          @keyup.enter="submit()"
         >
           <template slot="prepend-inner">
             <v-img
@@ -157,7 +158,7 @@
       async login (recaptchaToken) {
         console.log('<login>')
 
-        if (!this.$refs.form.validate()) return
+        if (!this.$refs.form.validate() || !recaptchaToken) return
 
         const user = {
           phone: this.clearPhoneMask(this.form.phone),

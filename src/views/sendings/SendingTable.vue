@@ -28,30 +28,19 @@
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <div style="display: flex; align-items: center;">
-          <div
-            v-if="item.active"
-            class="body-s-medium mb-0"
-          >
-            <v-icon
-              class="activity-icon"
-              @click.stop="active(item, false)"
-            >
-              $iconify_bx-bx-stop-circle
-            </v-icon>
-          </div>
-          <div
-            v-else
-            class="body-s-medium mb-0"
-          >
-            <v-icon
-              class="activity-icon"
-              @click.stop="active(item, true)"
-            >
-              $iconify_bx-bx-play-circle
-            </v-icon>
-          </div>
+          <v-switch
+            v-model="item.active"
+            :loading="item.changeActiveAction"
+            :disabled="item.changeActiveAction"
+            inset
+            hide-details
+            class="custom-switch"
+            @change="active(item, $event)"
+          />
+
           <div class="body-s-medium mb-0 ml-1">
             <v-icon
+              style="position: relative; top: 4px;"
               @click.stop="remove(item)"
             >
               $iconify_feather-trash
@@ -65,6 +54,7 @@
 
 <script>
   import Routing from '@/mixins/routing'
+  import Vue from 'vue'
 
   export default {
     mixins: [Routing],
@@ -86,21 +76,24 @@
         return this.$store.getters['company/program/program']
       },
       sendings () {
-        return this.$store.getters['company/sendings/sendings']
+        return this.$store.getters['company/sendings/sendings'].map(x => {
+          Vue.set(x, 'changeActiveAction', false)
+          return x
+        })
       },
     },
     methods: {
       async active (item, active) {
         try {
-          this.loading = true
+          item.changeActiveAction = true
           const send = {
             id: item.id,
-            active,
+            active: active,
           }
           console.log(item)
           await this.$store.dispatch('company/sendings/active', send)
         } finally {
-          this.loading = false
+          item.changeActiveAction = false
         }
       },
       async remove (item) {
