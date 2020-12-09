@@ -17,6 +17,7 @@
                   class-name="table-handlers"
                   :headers="headers"
                   :data="handlers"
+                  :item-class="() => 'clickable-row'"
                   :is-custom-header="false"
                   :total-count="model.handlers.length"
                   :word-operations="['активность', 'активности', 'активностей']"
@@ -28,6 +29,7 @@
 
                   hide-default-footer
                   :search="search_comp"
+                  @click:row="openHandlerFormClick"
                 >
                   <template v-slot:[`item.active`]="{ item }">
                     <v-switch
@@ -37,6 +39,7 @@
                       inset
                       hide-details
                       class="custom-switch"
+                      @click.stop=""
                       @change="activeChange(item, $event)"
                     />
                   </template>
