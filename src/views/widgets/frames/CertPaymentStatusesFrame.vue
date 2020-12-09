@@ -35,31 +35,86 @@
 <!--          </div>-->
 <!--        </div>-->
 <!--      </div>-->
-      <div
-        :class="generateClassesByPrefix(widgetClasses, '__diagram')"
-      >
-        <div :class="generateClassesByPrefix(widgetClasses, '__diagram-progress')">
-          <div
-              v-for="(subTitle, i) in subTitles"
-              :key="i"
-              class="v-progress-linear-wrapper"
-          >
-            <v-progress-linear
-              :rounded="true"
-              :value="percentageDifferences[i]"
-              :color="colors[i]"
-            />
-            <div class="v-progress-linear-info">
-              <div class="body-s-semibold">
-                {{ percentageDifferences[i] }}
+<!--      <div-->
+<!--        :class="generateClassesByPrefix(widgetClasses, '__diagram')"-->
+<!--      >-->
+<!--        <div :class="generateClassesByPrefix(widgetClasses, '__diagram-progress')">-->
+<!--          <div-->
+<!--              v-for="(subTitle, i) in subTitles"-->
+<!--              :key="i"-->
+<!--              class="v-progress-linear-wrapper"-->
+<!--          >-->
+<!--            <v-progress-linear-->
+<!--              v-if="i > 0"-->
+<!--              :rounded="true"-->
+<!--              :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"-->
+<!--              :color="colors[i]"-->
+<!--            />-->
+<!--            <v-progress-linear-->
+<!--                v-else-->
+<!--                :rounded="true"-->
+<!--                :value="100"-->
+<!--                :color="colors[i]"-->
+<!--            />-->
+<!--            <div class="v-progress-linear-info">-->
+<!--              <div class="body-s-semibold">-->
+<!--                {{ percentageDifferences[i] }}-->
+<!--              </div>-->
+<!--              <div class="body-s-semibold wc-neutral">-->
+<!--                {{ subTitle }}-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+        <div
+            class="row"
+            style="margin-top: 12px;"
+        >
+
+            <div
+                v-for="(subTitle, i) in subTitles"
+                :key="i"
+                class="col-2 v-progress-linear-wrapper"
+            >
+              <div class="row">
+                <div class="col-1">
+                  <v-progress-linear
+                      v-if="i > 0"
+                      :rounded="true"
+                      :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"
+                      :color="colors[i]"
+                      height="12"
+                      style="transform: rotate(-90deg)"
+                  />
+                  <v-progress-linear
+                      v-else
+                      :rounded="true"
+                      :value="100"
+                      :color="colors[i]"
+                      height="12"
+                      style="transform: rotate(-90deg)"
+                  />
+                </div>
               </div>
-              <div class="body-s-semibold wc-neutral">
-                {{ subTitle }}
+              <div class="row">
+                <div class="col-12">
+                  <div class="v-progress-linear-info">
+                    <div class="body-s-semibold">
+                      {{ percentageDifferences[i] }}
+                    </div>
+                    <div class="body-s-semibold wc-neutral">
+                      {{ subTitle }}
+                    </div>
+                  </div>
+                </div>
               </div>
+
             </div>
-          </div>
+
         </div>
-      </div>
+
     </template>
   </cert-widget-template>
 </template>
@@ -178,6 +233,7 @@
 
 .f-vertical-progress {
   .f-vertical-progress__body {
+    margin-top: 32px!important;
     justify-content: space-between!important;
     .f-vertical-progress__box {
       .f-vertical-progress__box-container {
@@ -246,12 +302,17 @@
           margin-left: 88px;
         }
         .v-progress-linear-wrapper {
-          padding-bottom: 88px;
-        }
-        .v-progress-linear-info {
-          transform: rotate(90deg) translateX(26px) translateY(8px);
+          padding-bottom: 35px;
         }
       }
+    }
+    .v-progress-linear-info {
+      margin-top: 4px;
+      margin-left: 20px;
+    }
+
+    .v-progress-linear {
+      width: 47px!important;
     }
   }
 }
@@ -260,7 +321,7 @@
   .f-vertical-progress__diagram {
     .f-vertical-progress__diagram-progress {
       .v-progress-linear-wrapper {
-        padding-bottom: 68px!important;
+        padding-bottom: 35px!important;
       }
     }
   }
@@ -277,10 +338,8 @@
   justify-content: space-between!important;
 }
 
-@media (min-width: 960px) {
-  .col-md-4 {
-    flex: 0 0 31.66666667%;
-    max-width: 31.66666667%;
-  }
+.col-2 {
+  flex: 0 0 19.666667%;
+  max-width: 19.666667%;
 }
 </style>

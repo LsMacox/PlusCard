@@ -6,18 +6,18 @@
       class="pls--pushcon-block-image-input"
       @change="beforeUpload(inputRef)"
     >
-    <div>
+    <div v-if="!loading">
       <v-img
-        v-if="block.value"
+        v-if="localBlock.value.url"
         class="pls--pushcon-block-image-img"
         height="150"
         width="150"
-        :src="block.value"
+        :src="localBlock.value.url"
         @click="openFileWindow(inputRef)"
       >
         <div
           class="pls--pushcon-block-image-img-delete"
-          @click.stop="removeFile(inputRef)"
+          @click.stop="removeFile()"
         >
           <v-icon>
             $iconify_chrome-close
@@ -34,6 +34,15 @@
         >
           +
         </v-icon>
+      </div>
+    </div>
+    <div v-else>
+      <div class="pls--pushcon-block-image-img">
+        <v-progress-circular
+          class="pls--pushcon-block-image-preloader"
+          indeterminate
+          color="primary"
+        />
       </div>
     </div>
   </div>
@@ -53,6 +62,7 @@
     },
     data () {
       return {
+        loading: false,
         localBlock: {},
         inputRef: 'inputFile',
         maxFileSize: 10240000, // 10 Mb
@@ -101,10 +111,36 @@
             text: 'Превышен максимальный размер файла',
           })
         }
-        this.block.value = await this.readAsDataURL(file)
+        // this.localBlock.value.url = await this.readAsDataURL(file)
+        // this.localBlock.value.data = file
+        await this.uploadFile(file)
       },
-      removeFile (inputRef) {
-        this.block.value = null
+      async uploadFile (file) {
+        try {
+          this.loading = true
+          const formData = new FormData()
+          formData.append('id', this.localBlock.id)
+          formData.append('type', this.localBlock.type)
+          formData.append('files[0]', file)
+          await this.$store.dispatch('company/notifications/uploadAttachmentFile', formData)
+        } finally {
+          this.clearFile(this.inputRef)
+          this.loading = false
+        }
+      },
+      async removeFile () {
+        try {
+          this.loading = true
+          const item = {
+            id: this.localBlock.id,
+          }
+          await this.$store.dispatch('company/notifications/deleteAttachmentFile', item)
+        } finally {
+          this.clearFile(this.inputRef)
+          this.loading = false
+        }
+      },
+      clearFile (inputRef) {
         this.$refs[inputRef].value = null
       },
     },

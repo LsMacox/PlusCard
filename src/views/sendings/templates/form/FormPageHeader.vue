@@ -16,21 +16,20 @@
       :text="true"
       :ripple="false"
       :loading="loading"
-      :disabled="form.attachments && !form.attachments.length"
-      @click="createOrUpdate()"
+      @click="update()"
     >
       <v-icon left>
-        $iconify_plus-circle-outlined
+        $iconify_ion-checkmark-circle-outline
       </v-icon>Сохранить
     </v-btn>
   </div>
 </template>
 
 <script>
-  import Routing from '@/mixins/routing'
+  import RoutingMixin from '@/mixins/routing'
 
   export default {
-    mixins: [Routing],
+    mixins: [RoutingMixin],
     props: {
       form: {
         type: Object,
@@ -51,11 +50,10 @@
       },
     },
     methods: {
-      async createOrUpdate () {
+      async update () {
         try {
           this.loading = true
           const item = {
-            program_id: this.program.id,
             id: this.form.id,
             name: this.form.name,
             title: this.form.title,
@@ -64,8 +62,7 @@
             attachments: this.form.attachments,
           }
           console.log(item)
-          if (this.form.id) await this.$store.dispatch('company/notifications/update', item)
-          else await this.$store.dispatch('company/notifications/create', item)
+          await this.$store.dispatch('company/notifications/update', item)
           this.toRoute('/sendings/templates')
         } finally {
           this.loading = false

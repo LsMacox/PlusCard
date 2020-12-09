@@ -14,7 +14,7 @@
               class="pls--pushcon-menu-item"
               v-bind="attrs"
               v-on="on"
-              @click="add(item.type, item.disable)"
+              @click="add(item.type, i, item.disable)"
             >
               <v-icon
                 class="pls--pushcon-menu-item-icon"
@@ -33,19 +33,22 @@
         :list="localAttachments"
         class="list-group"
         ghost-class="pls--pushcon-tape-ghost"
-        @start="dragging = true"
-        @end="dragging = false"
+        @end="sort()"
       >
         <div
           v-for="(item, i) in localAttachments"
           :key="i"
-          class="pls--pushcon-tape-block"
         >
-          <block
-            :block.sync="item"
-            @update:block="updateLocalAttachments(i, $event)"
-            @remove="remove(i)"
-          />
+          <div
+            v-if="!item.deleted"
+            class="pls--pushcon-tape-block"
+          >
+            <block
+              :block.sync="item"
+              @update:block="updateLocalAttachments(i, $event)"
+              @remove="remove(i)"
+            />
+          </div>
         </div>
       </draggable>
     </div>
@@ -72,71 +75,12 @@
     data () {
       return {
         localAttachments: [],
-        dragging: false,
+        addedBtn: null,
       }
     },
     computed: {
-      blockText () {
-        return {
-          type: 'text',
-          value: null,
-        }
-      },
-      blockImage () {
-        return {
-          type: 'image',
-          value: null,
-        }
-      },
-      blockImages () {
-        return {
-          type: 'images',
-          value: [
-            {
-              url: null,
-            },
-          ],
-        }
-      },
-      blockVideo () {
-        return {
-          type: 'video',
-          value: null,
-        }
-      },
-      blockVideos () {
-        return {
-          type: 'videos',
-          value: [
-            {
-              url: null,
-            },
-          ],
-        }
-      },
-      blockFriend () {
-        return {
-          type: 'friend',
-          value: null,
-        }
-      },
-      blockFriends () {
-        return {
-          type: 'friends',
-          value: [
-            {
-              url: null,
-            },
-          ],
-        }
-      },
-      blockButton () {
-        return {
-          type: 'button',
-          text: 'Перейти',
-          color: 'blue',
-          action: null,
-        }
+      template () {
+        return this.$store.getters['company/notifications/template']
       },
     },
     watch: {
@@ -149,46 +93,81 @@
       },
     },
     created () {
-      if (this.attachments && this.attachments.length) {
-        this.localAttachments = Object.copy(this.attachments)
-      } else {
-        this.localAttachments.push(Object.copy(this.blockText))
-      }
+      this.localAttachments = Object.copy(this.attachments)
     },
     methods: {
-      add (type, disable) {
-        if (!disable) {
-          switch (type) {
-            case 'text':
-              this.localAttachments.push(Object.copy(this.blockText))
-              break
-            case 'image':
-              this.localAttachments.push(Object.copy(this.blockImage))
-              break
-            case 'images':
-              this.localAttachments.push(Object.copy(this.blockImages))
-              break
-            case 'video':
-              this.localAttachments.push(Object.copy(this.blockVideo))
-              break
-            case 'videos':
-              this.localAttachments.push(Object.copy(this.blockVideos))
-              break
-            case 'friend':
-              this.localAttachments.push(Object.copy(this.blockFriend))
-              break
-            case 'friends':
-              this.localAttachments.push(Object.copy(this.blockFriends))
-              break
-            case 'button':
-              this.localAttachments.push(Object.copy(this.blockButton))
-              break
+      async add (type, index, disable) {
+        if (!disable && this.addedBtn !== index) {
+          try {
+            this.loading = true
+            this.addedBtn = index
+            const item = {
+              template_id: this.template.id,
+              type,
+            }
+            switch (type) {
+              case 'TEXT':
+                item.value = { text: '<p>Текст нового сообщения</p>' }
+                break
+
+              case 'IMAGE':
+              case 'VIDEO':
+              case 'FRIEND':
+                item.value = {
+                  url: null,
+                }
+                break
+
+              case 'IMAGES':
+              case 'VIDEOS':
+              case 'FRIENDS':
+                item.value = [
+                  {
+                    url: null,
+                  },
+                ]
+                break
+
+              case 'BUTTON':
+                item.value = {
+                  broadcaster_id: null,
+                  text: 'Перейти',
+                  color: 'blue',
+                  success: null,
+                }
+                break
+            }
+            await this.$store.dispatch('company/notifications/createAttachment', item)
+          } finally {
+            this.loading = false
+            this.addedBtn = null
           }
         }
       },
-      remove (i) {
-        this.localAttachments.splice(i, 1)
-        this.updateAttachments(this.localAttachments)
+      async sort () {
+        try {
+          this.loading = true
+          const item = {
+            template_id: this.template.id,
+            sortable: this.localAttachments.map(item => item.id),
+          }
+          console.log(item)
+          await this.$store.dispatch('company/notifications/sortAttachment', item)
+        } finally {
+          this.loading = false
+        }
+      },
+      async remove (i) {
+        try {
+          this.loading = true
+          const item = {
+            id: this.localAttachments[i].id,
+          }
+          console.log(item)
+          await this.$store.dispatch('company/notifications/deleteAttachment', item)
+        } finally {
+          this.loading = false
+        }
       },
       updateLocalAttachments (i, v) {
         this.localAttachments[i] = v
@@ -196,7 +175,7 @@
         this.updateAttachments(this.localAttachments)
       },
       updateAttachments (v) {
-        this.$emit('update:attachments', Object.copy(v))
+        this.$emit('update:attachments', v)
       },
     },
   }

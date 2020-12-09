@@ -49,15 +49,15 @@ const actions = {
     async create ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.post('/api-cabinet/program/notifications/create', item)
-            // console.log('/api-cabinet/staff')
-            // console.log(result)
+            const result = await ApiService.post('/api-cabinet/program/notification/template', item)
             commit('ADD', result)
+            commit('SET_TEMPLATE', result) // после создания шаблона переход на форму редактирования
             this._vm.$notify({
                 type: 'success',
                 title: 'Шаблоны рассылки',
                 text: 'Шаблон успешно создан',
             })
+            return result
         } catch (error) {
             throw error
         }
@@ -66,7 +66,7 @@ const actions = {
     async list ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.get(`/api-cabinet/program/notifications/list?program_id=${item.program_id}`)
+            const result = await ApiService.get(`/api-cabinet/program/notification/template/list?program_id=${item.program_id}`)
             console.log('/api-cabinet/program/notifications/list')
             console.log(result)
             commit('SET_TEMPLATES', result)
@@ -83,9 +83,7 @@ const actions = {
     async read ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.get(`/api-cabinet/program/notification/${item.id}`)
-            console.log(`/api-cabinet/program/notifications/${item.id}`)
-            console.log(result)
+            const result = await ApiService.get(`/api-cabinet/program/notification/template?id=${item.id}`)
             commit('SET_TEMPLATE', result)
         } catch (error) {
             throw error
@@ -95,7 +93,7 @@ const actions = {
     async update ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            const result = await ApiService.post('/api-cabinet/program/notifications/update', item)
+            const result = await ApiService.put('/api-cabinet/program/notification/template', item)
             // console.log('/api-cabinet/staff')
             // console.log(result)
             commit('UPDATE', result)
@@ -112,7 +110,7 @@ const actions = {
     async delete ({ commit }, item) {
         // eslint-disable-next-line no-useless-catch
         try {
-            await ApiService.delete(`/api-cabinet/program/notifications/${item.id}`)
+            await ApiService.delete(`/api-cabinet/program/notification/template?id=${item.id}`)
             // console.log('/api-cabinet/staff')
             // console.log(result)
             commit('REMOVE', item)
@@ -120,6 +118,87 @@ const actions = {
                 type: 'success',
                 title: 'Шаблоны рассылки',
                 text: 'Шаблон удален',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
+    /*
+     * ATTACHMENTS
+     */
+
+    async createAttachment ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.post('/api-cabinet/program/notifications/attachments', item)
+            // console.log(result)
+            commit('UPDATE', result)
+            commit('SET_TEMPLATE', result)
+            this._vm.$notify({
+                type: 'success',
+                title: 'Шаблоны рассылки',
+                text: 'Блок успешно создан',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async sortAttachment ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.put('/api-cabinet/program/notifications/attachments/sort', item)
+            commit('UPDATE', result)
+            commit('SET_TEMPLATE', result)
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async deleteAttachment ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.delete(`/api-cabinet/program/notifications/attachments?id=${item.id}`)
+            commit('UPDATE', result)
+            commit('SET_TEMPLATE', result)
+            this._vm.$notify({
+                type: 'success',
+                title: 'Шаблоны рассылки',
+                text: 'Блок удален',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async uploadAttachmentFile ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.post('/api-cabinet/program/notifications/attachments/file', item)
+            // console.log(result)
+            commit('UPDATE', result)
+            commit('SET_TEMPLATE', result)
+            this._vm.$notify({
+                type: 'success',
+                title: 'Шаблоны рассылки',
+                text: 'Блок успешно изменен',
+            })
+        } catch (error) {
+            throw error
+        }
+    },
+
+    async deleteAttachmentFile ({ commit }, item) {
+        // eslint-disable-next-line no-useless-catch
+        try {
+            const result = await ApiService.delete(`/api-cabinet/program/notifications/attachments/file?id=${item.id}`)
+            commit('UPDATE', result)
+            commit('SET_TEMPLATE', result)
+            this._vm.$notify({
+                type: 'success',
+                title: 'Шаблоны рассылки',
+                text: 'Файл удален',
             })
         } catch (error) {
             throw error
