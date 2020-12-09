@@ -33,6 +33,8 @@ export const ICONIFY_ICONS = {
     'bx-bxs-error': () => import('@iconify-icons/bx/bxs-error'),
     'bx-bx-text': () => import('@iconify-icons/bx/bx-text'),
     'bx-bxs-image': () => import('@iconify-icons/bx/bxs-image'),
+    'bx-bx-play-circle': () => import('@iconify-icons/bx/bx-play-circle'),
+    'bx-bx-stop-circle': () => import('@iconify-icons/bx/bx-stop-circle'),
 
     // codicon
     'chrome-close': () => import('@iconify/icons-codicon/chrome-close'),
@@ -156,7 +158,7 @@ export const ICONIFY_ICONS = {
     'eva-square-outline': () => import('@iconify/icons-eva/square-outline'),
 
     // emojione-monotone
-    // 'emojione-monotone-b-button': () => import('@iconify-icons/emojione-monotone/b-button'),
+    'emojione-monotone-b-button': () => import('@iconify-icons/emojione-monotone/b-button'),
 }
 
 for (const icon in ICONIFY_ICONS) {

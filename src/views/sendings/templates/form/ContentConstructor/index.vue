@@ -133,7 +133,10 @@
                   broadcaster_id: null,
                   text: 'Перейти',
                   color: 'blue',
-                  success: null,
+                  success: {
+                    title: null,
+                    text: null,
+                  },
                 }
                 break
             }

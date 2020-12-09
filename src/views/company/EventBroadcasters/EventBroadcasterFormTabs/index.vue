@@ -6,6 +6,7 @@
         :menu="pageList"
         :loading="saveAction"
         :show-action="!GetBroadcasterAction && hasChanges"
+        cancelButtonText="Закрыть"
         @cancelbutton="cancelEdit()"
         @actionbutton="globalSave()"
       >

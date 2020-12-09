@@ -81,12 +81,28 @@
                 </v-col>
                 <v-col
                   cols="12"
+                  style="height: 65px"
+                >
+                  <v-text-field
+                    v-model="form.value.success.title"
+                    :rules="[
+                      v => !!v || 'Заголовок обязателен',
+                      v => String(v).length <= 255 || 'Заголовок должен быть не более 255 символов',
+                    ]"
+                    class="panel-crm__form-input panel-crm_new_client__form-input"
+                    type="text"
+                    placeholder="Заголовок успешного выполнения"
+                    outlined
+                  />
+                </v-col>
+                <v-col
+                  cols="12"
                 >
                   <v-textarea
-                    v-model="form.value.success"
+                    v-model="form.value.success.text"
                     :rules="[
-                      v => !!v || 'Сообщение успешного выполнения',
-                      v => String(v).length <= 255 || 'Сообщение успешного выполнения должно быть не более 255 символов',
+                      v => !!v || 'Сообщение обязательно',
+                      v => String(v).length <= 255 || 'Сообщение должно быть не более 255 символов',
                     ]"
                     class=""
                     rows="4"
