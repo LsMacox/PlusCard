@@ -171,11 +171,11 @@ export default {
     },
     getters: {
         bonusResources (state) {
-            return state.bonusResources.map(x => {                
+            return state.bonusResources.map(x => {
                 Vue.set(x, 'rules', Object.assign({
                     event: null,
                     expire_days: null,
-                }, x.rules))               
+                }, x.rules))
                 return x
             })
         },
