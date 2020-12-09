@@ -78,14 +78,17 @@
                     ]"
                     :loading="getBroadcasterPickListAction"
                   />
+                </v-col>
+                <v-col
+                  cols="12"
+                >
                   <v-textarea
-                    v-if="false"
                     v-model="form.value.success"
                     :rules="[
                       v => !!v || 'Сообщение успешного выполнения',
                       v => String(v).length <= 255 || 'Сообщение успешного выполнения должно быть не более 255 символов',
                     ]"
-                    class="panel-crm__form-input panel-crm_new_client__form-input"
+                    class=""
                     rows="4"
                     placeholder="Сообщение успешного выполнения"
                     outlined
