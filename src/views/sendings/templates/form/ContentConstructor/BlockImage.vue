@@ -39,6 +39,7 @@
     <div v-else>
       <div class="pls--pushcon-block-image-img">
         <v-progress-circular
+          class="pls--pushcon-block-image-preloader"
           indeterminate
           color="primary"
         />

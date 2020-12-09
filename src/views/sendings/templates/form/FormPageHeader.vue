@@ -59,43 +59,8 @@
             title: this.form.title,
             description: this.form.description,
             // body: this.form.description,
-            attachments: this.form.attachments.filter(item => item.type === 'TEXT'),
+            attachments: this.form.attachments,
           }
-          /*
-          const formData = new FormData()
-          formData.append('id', this.form.id)
-          formData.append('program_id', this.program.id)
-          formData.append('name', this.form.name)
-          formData.append('title', this.form.title)
-          formData.append('description', this.form.description)
-
-          for (let i = 0; i < this.form.attachments.length; i++) {
-            switch (this.form.attachments[i].type) {
-              case 'TEXT':
-                formData.append(`attachments[${i}][id]`, this.form.attachments[i].id)
-                formData.append(`attachments[${i}][type]`, this.form.attachments[i].type)
-                formData.append(`attachments[${i}][value][text]`, this.form.attachments[i].value.text)
-                break
-
-              case 'IMAGE':
-              case 'VIDEO':
-              case 'FRIEND':
-                console.log('FormData')
-                console.log(this.form.attachments[i].value.url)
-                console.log(this.form.attachments[i].value.data)
-                formData.append(`attachments[${i}][id]`, this.form.attachments[i].id)
-                formData.append(`attachments[${i}][type]`, this.form.attachments[i].type)
-                // есть загружаемый файл
-                if (this.form.attachments[i].value.data) {
-                  formData.append(`attachments[${i}][value][url]`, null)
-                  formData.append(`attachments[${i}][value][data]`, this.form.attachments[i].value.data)
-                } else {
-                  formData.append(`attachments[${i}][value][url]`, this.form.attachments[i].value.url)
-                }
-                break
-            }
-          }
-          */
           console.log(item)
           await this.$store.dispatch('company/notifications/update', item)
           this.toRoute('/sendings/templates')
