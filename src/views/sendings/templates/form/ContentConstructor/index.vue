@@ -127,6 +127,15 @@
                   },
                 ]
                 break
+
+              case 'BUTTON':
+                item.value = {
+                  broadcaster_id: null,
+                  text: 'Перейти',
+                  color: 'blue',
+                  success: null,
+                }
+                break
             }
             await this.$store.dispatch('company/notifications/createAttachment', item)
           } finally {

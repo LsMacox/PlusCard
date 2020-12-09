@@ -36,7 +36,7 @@
         class="auth-form"
       >
         <v-text-field
-          v-model="form.email"
+          v-model.trim="form.email"
           placeholder="Введите еmail"
           class="auth-text-field"
           outlined
@@ -55,7 +55,7 @@
         </v-text-field>
 
         <v-text-field
-          v-model="form.password"
+          v-model.trim="form.password"
           :type="visible1 ? 'text' : 'password'"
           placeholder="Введите пароль"
           class="auth-text-field"

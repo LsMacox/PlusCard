@@ -3,7 +3,7 @@
     <div
       class="pls--pushcon-block-button-btn"
       :style="`background-color: ${localBlock.value.color}`"
-      @click.stop="updateBtn = true"
+      @click.stop="openUpdate()"
     >
       {{ localBlock.value.text }}
     </div>
@@ -13,6 +13,7 @@
       style="text-align: left;"
     >
       <side-panel
+        v-if="updateBtn"
         v-model="updateBtn"
         :width="483"
         class="panel-crm panel-crm_new_client"
@@ -38,7 +39,7 @@
                   style="height: 65px"
                 >
                   <v-select
-                    v-model="localBlock.value.color"
+                    v-model="form.value.color"
                     :items="colors"
                     placeholder="Тип кнопки"
                     outlined
@@ -49,9 +50,10 @@
                   style="height: 65px"
                 >
                   <v-text-field
-                    v-model="localBlock.value.text"
+                    v-model="form.value.text"
                     :rules="[
-                      v => String(v).length <= 50 || 'Фамилия должна быть не более 50 символов',
+                      v => !!v || 'Текст кнопки обязателен',
+                      v => String(v).length <= 50 || 'Текст кнопки должен быть не более 50 символов',
                     ]"
                     class="panel-crm__form-input panel-crm_new_client__form-input"
                     type="text"
@@ -64,7 +66,7 @@
                   style="height: 65px"
                 >
                   <v-select
-                    v-model="localBlock.value.broadcaster_id"
+                    v-model="form.value.broadcaster_id"
                     class=""
                     :items="broadcasterAccountPickList"
                     item-text="name"
@@ -76,15 +78,19 @@
                     ]"
                     :loading="getBroadcasterPickListAction"
                   />
-                  <v-text-field
-                    v-if="false"
-                    v-model="localBlock.value.action"
+                </v-col>
+                <v-col
+                  cols="12"
+                >
+                  <v-textarea
+                    v-model="form.value.success"
                     :rules="[
-                      v => String(v).length <= 50 || 'Фамилия должна быть не более 50 символов',
+                      v => !!v || 'Сообщение успешного выполнения',
+                      v => String(v).length <= 255 || 'Сообщение успешного выполнения должно быть не более 255 символов',
                     ]"
-                    class="panel-crm__form-input panel-crm_new_client__form-input"
-                    type="text"
-                    placeholder="Действие"
+                    class=""
+                    rows="4"
+                    placeholder="Сообщение успешного выполнения"
                     outlined
                   />
                 </v-col>
@@ -93,7 +99,7 @@
                     class="panel-crm_new_client__btn-add-client"
                     color="primary"
                     :disabled="!valid"
-                    @click="updateBtn = false"
+                    @click="saveBtn()"
                   >
                     <iconify-icon
                       class="icon-check-circle"
@@ -134,6 +140,7 @@
       return {
         localBlock: {},
         updateBtn: false,
+        form: {},
         valid: false,
         getBroadcasterPickListAction: false,
         colors: [
@@ -168,6 +175,14 @@
       ...mapActions({
         GetBroadcasterPickList: 'company/event_broadcasters/GetPickList',
       }),
+      openUpdate () {
+        this.form = Object.copy(this.localBlock)
+        this.updateBtn = true
+      },
+      saveBtn () {
+        this.localBlock = Object.copy(this.form)
+        this.updateBtn = false
+      },
       async loadBroadcasterPickList () {
         try {
           this.getBroadcasterPickListAction = true
