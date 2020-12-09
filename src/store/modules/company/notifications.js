@@ -1,4 +1,5 @@
 import ApiService from '@/api/api-client'
+import Vue from 'vue'
 
 const getDefaultState = () => {
     return {
@@ -129,7 +130,10 @@ const actions = {
 
 const getters = {
     templates: state => state.templates,
-    notificationPickList: state => state.notificationPickList,
+    notificationPickList: state => state.notificationPickList.map(item => {
+        Vue.set(item, 'disabled', !item.active)
+        return item
+    }),
     template: state => state.template,
 }
 

@@ -5,16 +5,8 @@ import moment from 'moment'
 export default class ProgramEventBroadcasterHandler {
     static ACTION_ENUM = Object.freeze({
         default: { id: null, text: '-' },
-        BONUS_DEBIT: {
-            id: 'BONUS_DEBIT',
-            text: 'Списать бонусы',
-            disabled: true,
-        },
-        BONUS_CREDIT: {
-            id: 'BONUS_CREDIT',
-            text: 'Начислить бонусы',
-            disabled: true,
-        },
+        BONUS_DEBIT: { id: 'BONUS_DEBIT', text: 'Списать бонусы' },
+        BONUS_CREDIT: { id: 'BONUS_CREDIT', text: 'Начислить бонусы' },
         NOTIFICATION: { id: 'NOTIFICATION', text: 'Создать рассылку' },
         SEGMENT_IN: { id: 'SEGMENT_IN', text: 'Добавить в сегмент' },
         SEGMENT_OUT: { id: 'SEGMENT_OUT', text: 'Исключить из сегмента' },

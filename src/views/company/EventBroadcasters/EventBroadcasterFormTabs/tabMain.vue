@@ -66,7 +66,7 @@
 
           <BaseMasterFieldBlock
             title="Описание"
-            description="TODO"
+            description="Введите описание активности"
           >
             <template v-slot:input>
               <v-textarea

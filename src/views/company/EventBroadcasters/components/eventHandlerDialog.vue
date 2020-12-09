@@ -25,54 +25,23 @@
               :rules="[
                 v => !!v || 'Выберите действие',
               ]"
+              @change="onChangeAction"
             />
           </BaseDialogFieldBlock>
         </v-col>
       </v-row>
-      <v-row v-if="[ACTION_ENUM.SEGMENT_IN.id, ACTION_ENUM.SEGMENT_OUT.id].includes(model.action_type) ">
-        <v-col>
-          <BaseDialogFieldBlock
-            title="Сегмент"
-            description=""
-          >
-            <v-select
-              v-model="model.action_json.segment_id"
-              class=""
-              :items="pickSegments"
-              item-text="name"
-              item-value="id"
-              placeholder="Выберите сегмент"
-              outlined
-              :rules="[
-                v => !!v || 'Выберите сегмент',
-              ]"
-              :loading="getSegmenPickListAction"
-            />
-          </BaseDialogFieldBlock>
-        </v-col>
-      </v-row>
-      <v-row v-if="model.action_type === ACTION_ENUM.NOTIFICATION.id">
-        <v-col>
-          <BaseDialogFieldBlock
-            title="Активная рассылка"
-            description=""
-          >
-            <v-select
-              v-model="model.action_json.notification_id"
-              class=""
-              :items="notificationPickList"
-              item-text="name"
-              item-value="id"
-              placeholder="Выберите рассылку"
-              outlined
-              :rules="[
-                v => !!v || 'Выберите рассылку',
-              ]"
-              :loading="getNotifyPickListAction"
-            />
-          </BaseDialogFieldBlock>
-        </v-col>
-      </v-row>
+      <handler-segment-action
+        v-if="[ACTION_ENUM.SEGMENT_IN.id, ACTION_ENUM.SEGMENT_OUT.id].includes(model.action_type)"
+        v-model="model"
+      />
+      <handler-notification-action
+        v-else-if="model.action_type === ACTION_ENUM.NOTIFICATION.id"
+        v-model="model"
+      />
+      <handler-bonus-action
+        v-else-if="[ACTION_ENUM.BONUS_DEBIT.id, ACTION_ENUM.BONUS_CREDIT.id].includes(model.action_type)"
+        v-model="model"
+      />
 
       <v-row
         justify="space-between"
@@ -114,7 +83,11 @@
   import ProgramEventBroadcasterHandler from '@/models/program/broadcasterHandler'
 
   export default {
-    components: {},
+    components: {
+      HandlerSegmentAction: () => import('./HandlerSegmentAction'),
+      HandlerNotificationAction: () => import('./HandlerNotificationAction'),
+      HandlerBonusAction: () => import('./HandlerBonusAction'),
+    },
     mixins: [dialogable],
     props: {
       model: {
@@ -141,8 +114,8 @@
       ...mapGetters('company/notifications', ['notificationPickList']),
     },
     mounted () {
-      this.loadPickSegments()
-      this.loadPickNotify()
+      // this.loadPickSegments()
+      // this.loadPickNotify()
     },
     methods: {
       ...mapActions({
@@ -152,6 +125,11 @@
         UpdateBroadcasterHandler: 'company/event_broadcasters/UpdateBroadcasterHandler',
         DeleteBroadcasterHandler: 'company/event_broadcasters/DeleteBroadcasterHandler',
       }),
+
+      onChangeAction () {
+        this.model.action_json = {}
+      },
+
       async loadPickSegments () {
         try {
           this.getSegmenPickListAction = true
