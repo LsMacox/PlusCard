@@ -17,8 +17,9 @@
         >
           <v-col
             :cols="10"
-            :sm="10"
-            :md="8"
+            :sm="12"
+            :md="10"
+            :lg="8"
           >
             <v-skeleton-loader
               :loading="GetBroadcasterAction"
