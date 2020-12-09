@@ -24,6 +24,14 @@
         return this.$store.getters['company/program/program']
       },
     },
+    watch: {
+      program: {
+        async handler (v) {
+          if (v && v.id) await this.fetchData()
+        },
+        deep: true,
+      },
+    },
     async created () {
       await this.fetchData()
     },
