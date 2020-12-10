@@ -1,4 +1,14 @@
 export default {
+    data () {
+      return {
+          tableSettings: {
+              pagination: {
+                  sortBy: 'id',
+                  descending: 'ascending',
+              },
+          },
+      }
+    },
     methods: {
         getOffset (page, limit) {
             return (page * limit) - limit
@@ -18,6 +28,29 @@ export default {
                 })
             }
             return sortable
+        },
+        getDataTableSetting (key, value = null) {
+            console.log(value)
+            let v = JSON.parse(localStorage.getItem('tables'))
+            if (!v) {
+                v = {}
+            }
+            if (!v[key]) {
+                if (!value) value = this.tableSettings
+                v[key] = value
+                this.setDataTableSetting(key, v)
+            }
+            console.log("JSON.parse(localStorage.getItem('tables'))[key]")
+            console.log(JSON.parse(localStorage.getItem('tables'))[key])
+            return JSON.parse(localStorage.getItem('tables'))[key]
+        },
+        setDataTableSetting (key, value) {
+            let v = JSON.parse(localStorage.getItem('tables'))
+            if (!v) {
+                v = {}
+            }
+            v[key] = value
+            localStorage.setItem('tables', JSON.stringify(v))
         },
     },
 }

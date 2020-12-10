@@ -20,18 +20,22 @@
            bullist numlist outdent indent | removeformat | help'
       }"
     />
+    <div style="margin: 7px 0 0 0; text-align: right;">
+      длина сообщения: {{ String(localBlock.value.text).length }} {{ declOfNum(String(localBlock.value.text).length, ['символ', 'символа', 'символов']) }}
+    </div>
   </div>
 </template>
 
 <script>
   import Editor from '@tinymce/tinymce-vue'
   import BlockMixin from './blockMixin'
+  import ConvertorMixin from '@/mixins/convertor'
 
   export default {
     components: {
       Editor,
     },
-    mixins: [BlockMixin],
+    mixins: [BlockMixin, ConvertorMixin],
     props: {
       block: {
         type: Object,
@@ -53,6 +57,7 @@
       },
       localBlock: {
         handler (v) {
+          // if (String(v.value.text).length > 2048) this.localBlock.value.text = String(v.value.text).slice(0, 2049)
           this.updateBlock(v)
         },
         deep: true,

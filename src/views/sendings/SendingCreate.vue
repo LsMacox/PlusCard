@@ -36,7 +36,7 @@
                   ]"
                   class="panel-crm__form-input panel-crm_new_client__form-input"
                   type="text"
-                  placeholder="Текст кнопки"
+                  placeholder="Название рассылки"
                   outlined
                 />
               </v-col>

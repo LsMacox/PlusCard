@@ -1,10 +1,12 @@
 <template>
   <div class="pls--page-table">
+    {{ tableSettings }}
     <base-table
       class-name="table-segment"
       :headers="tableHeaders"
       :data="templates"
       :word-operations="['шаблон', 'шаблона', 'шаблонов']"
+      :pagination="tableSettings.pagination"
       @click:row="updateTemplate"
     >
       <template v-slot:[`item.id`]="{ item }">
@@ -24,16 +26,26 @@
       </template>
       <template v-slot:[`item.created_at`]="{ item }">
         <p class="body-s-medium mb-0">
-          {{ item.created_at }}
+          {{ getDateTimeMin(item.created_at) }}
         </p>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <p class="body-s-medium mb-0">
-          <v-icon
-            @click.stop="remove(item)"
+          <v-tooltip
+            open-delay="1000"
+            top
           >
-            $iconify_feather-trash
-          </v-icon>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-bind="attrs"
+                v-on="on"
+                @click.stop="remove(item)"
+              >
+                $iconify_feather-trash
+              </v-icon>
+            </template>
+            <span>Удалить шаблон</span>
+          </v-tooltip>
         </p>
       </template>
     </base-table>
@@ -41,10 +53,12 @@
 </template>
 
 <script>
-  import Routing from '@/mixins/routing'
+  import DataTableMixin from '@/mixins/dataTable'
+  import DateTimeFormatMixin from '@/mixins/dateTimeFormat'
+  import RoutingMixin from '@/mixins/routing'
 
   export default {
-    mixins: [Routing],
+    mixins: [DataTableMixin, DateTimeFormatMixin, RoutingMixin],
     data () {
       return {
         loading: false,
@@ -55,6 +69,13 @@
           { text: 'Дата создания', align: 'start', value: 'created_at' },
           { text: 'Действия', align: 'end', value: 'actions' },
         ],
+        tableKey: 'SettingTemplate',
+        tableSettings: {
+          pagination: {
+            sortBy: 'id',
+            descending: 'descending',
+          },
+        },
       }
     },
     computed: {
@@ -64,6 +85,18 @@
       templates () {
         return this.$store.getters['company/notifications/templates']
       },
+    },
+    watch: {
+      tableSettings: {
+        handler (v) {
+          this.setDataTableSetting(this.tableKey, v)
+        },
+        deep: true,
+      },
+    },
+    created () {
+      this.tableSettings = this.getDataTableSetting(this.tableKey, this.tableSettings)
+      console.log(this.tableSettings)
     },
     methods: {
       updateTemplate (item) {
