@@ -100,7 +100,7 @@
     },
     methods: {
       getCurrentWidth () {
-        return Math.round((100 * (this.value + 1)) / (this.items.length + 1))
+        return Math.round((100 * (this.value + 1)) / (this.items.length ))
       },
       onBackClick () {
         if (this.internalValue > 0) {

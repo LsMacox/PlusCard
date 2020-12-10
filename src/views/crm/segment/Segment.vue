@@ -32,8 +32,8 @@
       class-name="table-segment"
       :headers="tableHeaders"
       :data="segmentsData"
-      @click:row="editSidePanel"
       :word-operations="['сегмент', 'сегмента', 'сегментов']"
+      @click:row="(item) => $router.push({name: 'ProgramAccounts', query: {segmentId: item.id}})"
     >
       <template v-slot:[`item.id`]="{ item }">
         <p class="body-s-medium mb-0">
@@ -69,13 +69,18 @@
           {{ (item.client_cost) ? item.client_cost : 0 }} ₽
         </p>
       </template>
-      <template v-slot:[`item.data-table-expand`]>
-        <v-icon
-          color="neutral-500"
-          size="11"
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-btn
+          icon
+          @click.stop="editSidePanel(item)"
         >
-          fas fa-chevron-right
-        </v-icon>
+          <v-icon
+            color="neutral-500"
+            size="11"
+          >
+            fas fa-chevron-right
+          </v-icon>
+        </v-btn>
       </template>
     </base-table>
     <side-panel-new-segment
@@ -112,7 +117,7 @@
           { text: 'Доход', align: 'end', value: 'profit' },
           { text: 'Средний чек', align: 'end', value: 'average-check' },
           { text: 'Клиент стоит', align: 'end', value: 'client-cost' },
-          { text: '', align: 'end', value: 'data-table-expand' },
+          { text: '', align: 'end', value: 'actions' },
         ],
       }
     },

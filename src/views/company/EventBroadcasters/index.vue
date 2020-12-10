@@ -60,7 +60,7 @@
             :total-count="filtered_broadcasters.length"
             :word-operations="['активность', 'активности', 'активностей']"
             :pagination="{
-              sortBy: 'updated_at',
+              sortBy: 'id',
               descending: 'descending',
             }"
             :options="{
