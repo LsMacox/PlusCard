@@ -1,7 +1,7 @@
 <template>
   <div>
     <empty-client
-      v-if="!clientsStore.length"
+      v-if="!clientsStore.length && false"
     />
     <div
       v-else
@@ -200,7 +200,6 @@
     },
     async mounted () {
       await this.fetchData()
-      await this.getSegments()
     },
     methods: {
       createSidePanel (item) {
@@ -241,17 +240,7 @@
           this.loadingList = false
         }
       },
-      async getSegments () {
-        try {
-          this.loadingList = true
-          const payload = {
-            program_id: this.program.id,
-          }
-          await this.$store.dispatch('crm/segment/segments', payload)
-        } finally {
-          this.loadingList = false
-        }
-      },
+
     },
   }
 </script>
