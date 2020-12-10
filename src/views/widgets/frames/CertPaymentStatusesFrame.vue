@@ -89,6 +89,14 @@
                       style="transform: rotate(-90deg)"
                   />
                   <v-progress-linear
+                      v-else-if="percentageDifferences[i] == 0"
+                      :rounded="true"
+                      :value="0"
+                      :color="colors[i]"
+                      height="12"
+                      style="transform: rotate(-90deg)"
+                  />
+                  <v-progress-linear
                       v-else
                       :rounded="true"
                       :value="100"

@@ -26,6 +26,10 @@ const mutations = {
     SET_CLIENTS: (state, payload) => state.clients = payload,
     SET_FILTERED_CLIENTS: (state, payload) => state.filteredClients = payload,
     SET_FILTER: (state, payload) => state.filter = payload,
+    APPEND_FILTER: (state, payload) => {
+        console.log('APPEND_FILTER', payload)
+        state.filter = Object.assign({}, state.filter, payload)
+    },
     SET_ACCOUNTS_FOR_FILTER: (state, payload) => state.accountsForFilter = payload,
     SET_LIST: (state, payload) => state.list = payload,
     SET_TOTAL: (state, payload) => state.total = payload,

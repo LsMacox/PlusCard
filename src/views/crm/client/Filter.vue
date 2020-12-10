@@ -206,7 +206,7 @@
                     :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
                     @click="setFilter('segments', item)"
                   >
-                    {{ item.name }} 
+                    {{ item.name }}
                   </p>
                 </v-row>
               </v-col>
@@ -292,8 +292,33 @@
           this.close()
         }
       })
+
+      this.init()
     },
     methods: {
+      async init () {
+        await this.getSegments()
+        this.appendQueryFilter()
+      },
+      appendQueryFilter () {
+        const segmentId = +this.$route.query.segmentId
+        if (segmentId) {
+          console.log('segmentId', segmentId)
+          const segment = this.$_.findWhere(this.segmentsStore, { id: segmentId })
+          segment && this.setFilter('segments', segment)
+        }
+      },
+      async getSegments () {
+        try {
+          this.getSegmentsAction = true
+          const payload = {
+            program_id: this.program.id,
+          }
+          await this.$store.dispatch('crm/segment/segments', payload)
+        } finally {
+          this.getSegmentsAction = false
+        }
+      },
       async switchShow () {
         this.show = true
         // обнуление поиска и найденных клиентов
@@ -329,8 +354,7 @@
           }]
           // обновляем массив отфильтрованных клиентов
           this.$store.commit('crm/client/SET_FILTERED_CLIENTS', [item])
-        }
-        if (field === 'segments') {
+        } else if (field === 'segments') {
           this.filter[field] = [item.id]
           this.fastFilter[field] = [{
             id: item.id,
@@ -446,7 +470,7 @@
             await this.$store.dispatch('crm/client/querySearch', item)
             // this.$nextTick(()=>{
             //   this.replacer()
-            // })            
+            // })
           } finally {
             this.loading = false
           }
@@ -467,8 +491,8 @@
         this.setFastFilter(this.filter)
         this.show = false
       },
-      replacer () {        
-        const items = this.$refs['resultAccountDiv']
+      replacer () {
+        const items = this.$refs.resultAccountDiv
         console.log('replacer', items)
         items.forEach(element => {
           console.log(element)
@@ -478,10 +502,10 @@
       },
       searchMatcher (str) {
         const rollbackReg = new RegExp('<b>' + this.prevQuery + '</b>', 'ig')
-        const regexp = new RegExp(this.query , 'ig')
+        const regexp = new RegExp(this.query, 'ig')
 
         if (str) {
-          return str.replace(rollbackReg,  this.prevQuery).replace(regexp, '<b>' + this.query + '</b>')
+          return str.replace(rollbackReg, this.prevQuery).replace(regexp, '<b>' + this.query + '</b>')
         } else return ''
       },
     },

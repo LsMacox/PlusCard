@@ -36,8 +36,8 @@
                     :rules="nominalNameRules"
                     validation-placement="top"
                     placeholder="Введите название номинала"
-                    counter="20"
-                    maxlength="20"
+                    counter="40"
+                    maxlength="40"
                     outlined
                     @keydown.enter="$refs['sellPriceInput'+index] && $refs['sellPriceInput'+index][0].focus()"
                   />
@@ -188,7 +188,7 @@
         valid: false,
         nominalNameRules: [
           (v) => !!v || 'Введите название номинала',
-          (v) => (!!v && v.length <= 20) || 'Название не должно превышать 20 символов',
+          (v) => (!!v && v.length <= 40) || 'Название не должно превышать 40 символов',
         ],
         sellingPriceRules: [
           (v) => (!!v && v > 0) || 'Введите стоимость',

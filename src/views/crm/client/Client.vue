@@ -88,6 +88,9 @@
       SidePanelNewClient,
     },
     mixins: [routing],
+    props: {
+
+    },
     data () {
       return {
         importDialog: false,
@@ -175,10 +178,13 @@
       program () {
         return this.$store.getters['company/program/program']
       },
+      filterStore () {
+        return this.$store.getters['crm/client/filter']
+      },
     },
     watch: {},
     created () {},
-    mounted () {},
+    mounted () { },
     methods: {
       testCreateCategories (v) {
         console.log('create categories bitch!!!', v)
