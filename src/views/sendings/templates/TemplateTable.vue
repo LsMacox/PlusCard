@@ -1,12 +1,11 @@
 <template>
   <div class="pls--page-table">
-    {{ tableSettings }}
     <base-table
       class-name="table-segment"
       :headers="tableHeaders"
       :data="templates"
       :word-operations="['шаблон', 'шаблона', 'шаблонов']"
-      :pagination="tableSettings.pagination"
+      :pagination="tableSettings.sort"
       @click:row="updateTemplate"
     >
       <template v-slot:[`item.id`]="{ item }">
@@ -69,9 +68,9 @@
           { text: 'Дата создания', align: 'start', value: 'created_at' },
           { text: 'Действия', align: 'end', value: 'actions' },
         ],
-        tableKey: 'SettingTemplate',
+        tableKey: 'SendingTemplates',
         tableSettings: {
-          pagination: {
+          sort: {
             sortBy: 'id',
             descending: 'descending',
           },
@@ -96,7 +95,6 @@
     },
     created () {
       this.tableSettings = this.getDataTableSetting(this.tableKey, this.tableSettings)
-      console.log(this.tableSettings)
     },
     methods: {
       updateTemplate (item) {

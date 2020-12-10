@@ -1,12 +1,11 @@
 <template>
   <div class="pls--page-table">
-    {{ pagination }}
     <base-table
       class-name="table-segment"
       :headers="tableHeaders"
       :data="sendings"
       :word-operations="['рассылка', 'рассылки', 'рассылок']"
-      :pagination="pagination"
+      :pagination="tableSettings.sort"
     >
       <template v-slot:[`item.id`]="{ item }">
         <p class="body-s-medium mb-0">
@@ -81,12 +80,13 @@
 </template>
 
 <script>
-  import RoutingMixin from '@/mixins/routing'
+  import DataTableMixin from '@/mixins/dataTable'
   import DateTimeFormatMixin from '@/mixins/dateTimeFormat'
+  import RoutingMixin from '@/mixins/routing'
   import Vue from 'vue'
 
   export default {
-    mixins: [RoutingMixin, DateTimeFormatMixin],
+    mixins: [DataTableMixin, DateTimeFormatMixin, RoutingMixin],
     data () {
       return {
         loading: false,
@@ -98,9 +98,12 @@
           { text: 'Дата создания', align: 'start', value: 'created_at' },
           { text: 'Действия', align: 'end', value: 'actions' },
         ],
-        pagination: {
-          sortBy: 'id',
-          descending: 'descending',
+        tableKey: 'Sendings',
+        tableSettings: {
+          sort: {
+            sortBy: 'id',
+            descending: 'descending',
+          },
         },
       }
     },
@@ -114,6 +117,17 @@
           return x
         })
       },
+    },
+    watch: {
+      tableSettings: {
+        handler (v) {
+          this.setDataTableSetting(this.tableKey, v)
+        },
+        deep: true,
+      },
+    },
+    created () {
+      this.tableSettings = this.getDataTableSetting(this.tableKey, this.tableSettings)
     },
     methods: {
       async active (item, active) {

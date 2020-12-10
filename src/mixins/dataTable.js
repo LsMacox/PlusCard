@@ -2,7 +2,7 @@ export default {
     data () {
       return {
           tableSettings: {
-              pagination: {
+              sort: {
                   sortBy: 'id',
                   descending: 'ascending',
               },
@@ -30,18 +30,14 @@ export default {
             return sortable
         },
         getDataTableSetting (key, value = null) {
-            console.log(value)
             let v = JSON.parse(localStorage.getItem('tables'))
             if (!v) {
                 v = {}
             }
             if (!v[key]) {
                 if (!value) value = this.tableSettings
-                v[key] = value
-                this.setDataTableSetting(key, v)
+                this.setDataTableSetting(key, value)
             }
-            console.log("JSON.parse(localStorage.getItem('tables'))[key]")
-            console.log(JSON.parse(localStorage.getItem('tables'))[key])
             return JSON.parse(localStorage.getItem('tables'))[key]
         },
         setDataTableSetting (key, value) {
