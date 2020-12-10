@@ -1,7 +1,17 @@
 <template>
   <div class="loyalty-toolbar">
     <div class="loyalty-toolbar-name">
-      <div>{{ program.name }}</div>
+      <v-tooltip top>
+        <template v-slot:activator="{ on, attrs }">
+          <div
+              v-bind="attrs"
+              v-on="on"
+          >
+            {{ program.name }}
+          </div>
+        </template>
+        <span> {{ program.name }} </span>
+      </v-tooltip>
     </div>
     <div class="loyalty-toolbar-period">
       <date-range-select
@@ -174,8 +184,14 @@
     letter-spacing: -0.2px;
     color: #2A2A34;
     max-width: 35%;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    //overflow: hidden;
+    //text-overflow: ellipsis;
+
+    div {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .loyalty-toolbar-period {

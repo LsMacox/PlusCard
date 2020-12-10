@@ -29,6 +29,7 @@
             v-if="bonusResBlock.activeSwitchShow"
             v-model="bonusResBlock.active"
             :loading="bonusResBlock.action"
+            :disabled="bonusResBlock.hasChanges"
             inset
             class="custom-switch"
             @change="(v) => { activeChange(bonusResBlock, v) }"

@@ -3,16 +3,19 @@ const getDefaultState = () => {
         filter: {
             enable: false,
             certificates: [],
-            issueDate: {
-                startDate: null,
-                endDate: null,
-            },
             certPaymentStatus: [],
             certMerchantOrderStatus: [],
             certOrderStatus: [],
             buyers: [],
             archiveStatus: { id: 'work', text: 'в работе' },
         },
+        period: {
+            id: 1,
+            name: 'За сегодня',
+            start: new Date(Date.now()).toISOString().split('T')[0],
+            end: new Date(Date.now()).toISOString().split('T')[0],
+        },
+        archiveStatus: { id: 'work', text: 'в работе' },
     }
 }
 
@@ -21,16 +24,13 @@ const getDefaultFilter = () => {
         filter: {
             enable: false,
             certificates: [],
-            issueDate: {
-                startDate: null,
-                endDate: null,
-            },
             certPaymentStatus: [],
             certMerchantOrderStatus: [],
             certOrderStatus: [],
             buyers: [],
             archiveStatus: { id: 'work', text: 'в работе' },
         },
+        period: { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
     }
 }
 
@@ -44,11 +44,17 @@ const mutations = {
     },
     filter (state, payload) {
         state.filter = payload
+        state.filter.archiveStatus = state.archiveStatus
         localStorage.setItem('certificateTableFilter', JSON.stringify(state.filter))
     },
     archiveStatus (state, payload) {
+        state.archiveStatus = payload
+    },
+    period (state, payload) {
+        console.log('PERIOD...')
         console.log(payload)
-        state.filter.archiveStatus = payload
+        state.period = payload
+        localStorage.setItem('certFilterPeriod', JSON.stringify(payload))
     },
 }
 
@@ -77,7 +83,8 @@ const getters = {
         const defaultFilter = getDefaultFilter()
         return defaultFilter.filter
     },
-    archiveStatus: (state) => state.filter.archiveStatus,
+    period: (state) => state.period,
+    archiveStatus: (state) => state.archiveStatus,
 }
 
 export default {

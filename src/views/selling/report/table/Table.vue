@@ -8,13 +8,17 @@
         <v-data-table
           :headers="headers"
           :items="tableData"
-          :options="tableOptions"
+          :options.sync="tableOptions"
           :single-expand="true"
           :expanded.sync="expanded"
           item-key="id"
           show-expand
           class="plus-table"
           hide-default-footer
+          multi-sort
+          :server-items-length="totalCount"
+          @update:sort-by="fetchData()"
+          @update:sort-desc="fetchData()"
         >
           <template v-slot:expanded-item="{ Headers, item }">
             <td :colspan="headers.length">
@@ -32,7 +36,7 @@
             </v-icon>
           </template>
 
-          <template v-slot:item.date="{ item }">
+          <template v-slot:item.created_at="{ item }">
             <div class="body-s-medium">
               {{ getDate(item.created_at) }}
             </div>
@@ -107,7 +111,7 @@
             </div>
           </template>
 
-          <template v-slot:item.check="{ item }">
+          <template v-slot:item.value="{ item }">
             <div style="display: flex; align-items: center">
               <div class="body-s-medium">
                 {{ formatNumberString(item.value / 100) }} &#8381
@@ -186,6 +190,7 @@
 </template>
 
 <script>
+  import DataTable from '@/mixins/dataTable'
   import User from '@/mixins/user.js'
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
@@ -197,7 +202,7 @@
       SelectPageLimit,
       SidePanelEditClient,
     },
-    mixins: [FormatNumber, Routing, User],
+    mixins: [DataTable, FormatNumber, Routing, User],
     data () {
       return {
         loadingList: false,
@@ -223,27 +228,31 @@
           {
             text: 'Дата',
             align: 'start',
-            value: 'date',
+            value: 'created_at',
           },
           {
             text: 'Клиент',
             value: 'client',
+            sortable: false,
           },
           {
             text: 'Контакты',
             value: 'contacts',
+            sortable: false,
           },
           {
             text: 'Оператор',
             value: 'operator',
+            sortable: false,
           },
           {
             text: 'Чек',
-            value: 'check',
+            value: 'value',
           },
           {
             text: 'Бонусы',
             value: 'bonuses',
+            sortable: false,
           },
           {
             text: '',
@@ -356,8 +365,9 @@
           start_period: this.period.start,
           end_period: this.period.end,
           filter: this.filter,
-          offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
+          offset: this.getOffset(this.tableOptions.page, this.tableOptions.itemsPerPage),
           limit: this.tableOptions.itemsPerPage,
+          sortable: this.getSortable(this.tableOptions.sortBy, this.tableOptions.sortDesc),
         }
         // console.log('table/list')
         // console.log(list)

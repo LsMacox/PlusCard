@@ -6,6 +6,8 @@
     "dev": "vue-cli-service serve --open",
     "serve": "vue-cli-service serve",
     "build:prod": "vue-cli-service build",
+    "release": "git pull && vue-cli-service build && cp -rf ./dist/. ./app",
+    "deploy": "cp -rf ./dist/. ./app",
     "build:stage": "vue-cli-service build --mode staging",
     "lint": "vue-cli-service lint",
     "i18n:report": "vue-cli-service i18n:report --src './src/**/*.?(js|vue)' --locales './src/locales/**/*.json'",
@@ -14,6 +16,10 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@iconify-icons/bi": "^1.1.0",
+    "@iconify-icons/dashicons": "^1.1.0",
+    "@iconify-icons/emojione-monotone": "^1.1.0",
+    "@iconify-icons/fa-solid": "^1.1.0",
     "@riophae/vue-treeselect": "github:riophae/vue-treeselect",
     "@tinymce/tinymce-vue": "^3.2.2",
     "array-sort": "^1.0.0",
@@ -55,6 +61,7 @@
     "vue-yandex-maps": "^0.10.9",
     "vue2-datepicker": "^3.6.2",
     "vue2-daterange-picker": "^0.5.1",
+    "vuedraggable": "^2.24.3",
     "vuetify": "^2.3.9",
     "vuex": "^3.1.2",
     "xlsx": "^0.16.8"

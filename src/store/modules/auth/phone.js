@@ -3,6 +3,7 @@ import ApiService from '@/api/api-client'
 const getDefaultState = () => {
     return {
         loginId: null,
+        expiredAt: null,
     }
 }
 
@@ -12,6 +13,7 @@ const mutations = {
     RESET_STATE: (state) => Object.assign(state, getDefaultState()),
     // eslint-disable-next-line no-return-assign
     loginId: (state, payload) => state.loginId = payload.id,
+    expiredAt: (state, payload) => state.expiredAt = payload.expired_at,
 }
 
 const actions = {
@@ -25,6 +27,7 @@ const actions = {
             )
             console.log(result)
             commit('loginId', result)
+            commit('expiredAt', result)
         } catch (error) {
             // commit('auth/auth/SET_AUTH', null, { root: true })
             throw error
@@ -49,6 +52,7 @@ const actions = {
 
 const getters = {
     loginId: state => state.loginId,
+    expiredAt: state => state.expiredAt,
 }
 
 export default {

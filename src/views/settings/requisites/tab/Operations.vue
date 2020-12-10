@@ -5,7 +5,7 @@
     type="card-heading, image@3"
   >
     <v-container
-      v-if="operations.length>0"
+      v-if="operations.length>0 && true"
       fluid
       class=""
     >
@@ -41,6 +41,9 @@
               sortBy: 'created_at',
               descending: 'descending',
             }"
+            :options="{
+              itemsPerPage: 5
+            }"
             @click:row="onClickRow"
           >
             <!-- <v-data-table
@@ -68,7 +71,7 @@
               <operation-type-row :operation-type="item.operation_type" />
             </template>
             <template v-slot:[`item.value_rub`]="{ item }">
-              <span :class="BALANCE_OPERATION_TYPE_ENUM.find(item.operation_type).color + '--text'">{{ (item.operation_type == BALANCE_OPERATION_TYPE_ENUM.debit.id? '-':'+') + item.value_rub }} ₽</span>
+              <span :class="['body-s-semibold',BALANCE_OPERATION_TYPE_ENUM.find(item.operation_type).color + '--text']">{{ (item.operation_type == BALANCE_OPERATION_TYPE_ENUM.debit.id? '-':'+') + item.value_rub }} ₽</span>
             </template>
 
           <!-- </v-data-table> -->

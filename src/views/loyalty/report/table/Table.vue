@@ -8,13 +8,17 @@
         <v-data-table
           :headers="headers"
           :items="tableData"
-          :options="tableOptions"
+          :options.sync="tableOptions"
           :single-expand="true"
           :expanded.sync="expanded"
           item-key="uuid"
           :show-expand="false"
           class="plus-table"
           hide-default-footer
+          multi-sort
+          :server-items-length="totalCount"
+          @update:sort-by="fetchData()"
+          @update:sort-desc="fetchData()"
         >
           <template v-slot:expanded-item="{ headers, item }">
             <td :colspan="headers.length">
@@ -32,7 +36,7 @@
             </v-icon>
           </template>
 
-          <template v-slot:item.operation="{ item }">
+          <template v-slot:item.title="{ item }">
             <div class="cell-text">
               {{ item.title }}
             </div>
@@ -43,7 +47,7 @@
             </div>
           </template>
 
-          <template v-slot:item.date="{ item }">
+          <template v-slot:item.created_at="{ item }">
             <div class="cell-text">
               {{ getDate(item.created_at) }}
             </div>
@@ -85,7 +89,7 @@
             </div>
           </template>
 
-          <template v-slot:item.amount="{ item }">
+          <template v-slot:item.value="{ item }">
             <div
               class="cell-text-bold"
               style="text-align: right;"
@@ -161,6 +165,7 @@
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
+  import DataTable from '@/mixins/dataTable'
   import User from '@/mixins/user'
   import SidePanelEditClient from '@/views/crm/client/components/SidePanelEditClient.vue'
   import ApiService from '@/api/api-client'
@@ -170,7 +175,7 @@
       SelectPageLimit,
       SidePanelEditClient,
     },
-    mixins: [FormatNumber, Routing, User],
+    mixins: [FormatNumber, Routing, DataTable, User],
     data () {
       return {
         loadingList: false,
@@ -196,11 +201,11 @@
           {
             text: 'Операция',
             align: 'start',
-            value: 'operation',
+            value: 'title',
           },
           {
             text: 'Дата',
-            value: 'date',
+            value: 'created_at',
           },
           {
             text: 'Клиент',
@@ -212,7 +217,7 @@
           },
           {
             text: 'Сумма',
-            value: 'amount',
+            value: 'value',
           },
           {
             text: 'Оператор',
@@ -330,8 +335,9 @@
           start_period: this.period.start,
           end_period: this.period.end,
           filter: this.filter,
-          offset: (this.tableOptions.page * this.tableOptions.itemsPerPage) - this.tableOptions.itemsPerPage,
+          offset: this.getOffset(this.tableOptions.page, this.tableOptions.itemsPerPage),
           limit: this.tableOptions.itemsPerPage,
+          sortable: this.getSortable(this.tableOptions.sortBy, this.tableOptions.sortDesc),
         }
         // console.log('table/list')
         // console.log(list)

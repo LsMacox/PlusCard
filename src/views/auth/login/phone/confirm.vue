@@ -68,6 +68,9 @@
             @input="selectNumBox($event,'num4')"
           >
         </div>
+        <div style="margin-top: 25px; text-align: center;">
+          Код действителен еще {{ timerStr }}
+        </div>
         <div
           class="auth-form-action"
           style="margin-top: 34px;"
@@ -76,7 +79,7 @@
             color="primary"
             style="width: 100%;"
             :loading="loading"
-            :disabled="!valid"
+            :disabled="!valid || codeExpire"
             @click="confirm()"
           >
             <span
@@ -105,7 +108,6 @@
 </template>
 
 <script>
-
   import { mask } from 'vue-the-mask'
   import { mapGetters } from 'vuex'
 
@@ -135,6 +137,9 @@
         ],
         loading: false,
         selectMerchant: false,
+        codeExpire: false,
+        timerStr: '00:00',
+        timerId: null,
       }
     },
     computed: {
@@ -145,6 +150,7 @@
       ]),
       ...mapGetters('auth/phone', [
         'loginId',
+        'expiredAt',
       ]),
       valid () {
         if (this.form.num1 && this.form.num2 && this.form.num3 && this.form.num4) return true
@@ -154,6 +160,7 @@
     mounted () {
       this.$store.dispatch('auth/auth/InitDevice')
       this.clearCode()
+      if (this.expiredAt) this.setTimer(this.expiredAt)
       if (!this.phone || !this.loginId) {
         this.$router.push({
           path: '/login/phone',
@@ -161,9 +168,23 @@
       }
     },
     methods: {
+      setTimer (expiredAt) {
+        //
+        this.timerId = setInterval((expiredAt) => {
+          expiredAt = this.$moment.utc(expiredAt).local()
+          const diff = this.$moment().diff(expiredAt)
+          if (diff >= 0) {
+            clearInterval(this.timerId)
+            this.codeExpire = true
+            this.timerStr = '00:00'
+          } else {
+            this.timerStr = this.$moment.unix((-1 * diff) / 1000).format('mm:ss')
+            this.codeExpire = false
+          }
+        }, 1000, expiredAt)
+      },
       onKeyPress (e, refIndex) {
         const refId = 'num' + refIndex
-
         const enterChar = e.key
         console.log('onKeyPress', { refId, enterChar })
         if (enterChar === 'Enter' && refIndex === 4) {

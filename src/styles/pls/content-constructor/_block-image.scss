@@ -1,0 +1,41 @@
+.pls--pushcon-block-image {
+
+    .pls--pushcon-block-image-input {
+        width: 0;
+        height: 0;
+        display: none;
+    }
+
+    .pls--pushcon-block-image-img {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        border: 1px dashed #F2F2F7;
+        border-radius: 4px;
+        text-align: center;
+        cursor: pointer;
+        z-index: 1;
+
+        .pls--pushcon-block-image-preloader {
+            margin-top: 60px;
+        }
+
+        .pls--pushcon-block-image-img-delete {
+            position: absolute;
+            top: 1px;
+            right: 1px;
+            width: 20px;
+            height: 20px;
+            background-color: brown;
+            border: 1px solid #ffffff;
+            border-radius: 20px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .pls--pushcon-block-image-img-dummy {
+            margin: 65px 0;
+        }
+    }
+}

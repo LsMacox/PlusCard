@@ -91,8 +91,9 @@
         },
         {
           icon: '$iconify_ion-megaphone-outline',
-          title: 'Акции',
-          to: '/actions',
+          title: 'Активности',
+          to: '/program/broadcasters',
+          alias: ['EventBroadcastersList', 'EventBroadcasterMaster', 'EventBroadcasterForm'],
         },
         {
           icon: '$iconify_ion-mail-outline',

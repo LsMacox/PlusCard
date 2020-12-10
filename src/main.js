@@ -88,7 +88,7 @@ Vue.directive('base-click-outside', VueClickOutsideDirective)
 
 Object.copy = (obj) => {
   return JSON.parse(JSON.stringify(obj))
-} 
+}
 
 Vue.prototype.$IsDebugMode = function () {
   return IsDebugQuery(this.$route)

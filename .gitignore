@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 /dist
+/app
 package-lock.json
 
 /tests/e2e/videos/
@@ -9,6 +10,8 @@ package-lock.json
 # local env files
 .env
 .env.development.local
+.env.development
+.env.production
 .env.*.local
 .env.*
 
