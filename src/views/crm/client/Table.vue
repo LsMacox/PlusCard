@@ -140,10 +140,6 @@
           mode: 'create',
           data: null,
         },
-        tableOptions: {
-          page: 1,
-          itemsPerPage: 25,
-        },
         paginationOptions: [
           { text: '25 на странице', value: 25 },
           { text: '50 на странице', value: 50 },
