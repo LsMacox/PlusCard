@@ -18,8 +18,8 @@
           <v-col
             :cols="10"
             :sm="12"
-            :md="10"
-            :lg="8"
+            :md="11"
+            :lg="10"
           >
             <v-skeleton-loader
               :loading="GetBroadcasterAction"
@@ -214,6 +214,8 @@
         try {
           this.GetBroadcasterAction = true
           this.originalBroadcaster = await this.GetBroadcaster(this.broadcasterId)
+          this.originalBroadcaster.start_at = this.originalBroadcaster.start_at? this.$moment.utc(this.originalBroadcaster.start_at).local().format() : null
+          this.originalBroadcaster.finish_at = this.originalBroadcaster.finish_at? this.$moment.utc(this.originalBroadcaster.finish_at).local().format() : null
 
           this.broadcaster = Object.copy(this.originalBroadcaster)
         } finally {
