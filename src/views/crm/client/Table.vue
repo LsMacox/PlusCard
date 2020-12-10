@@ -14,9 +14,10 @@
         class-name="table-segment"
         :headers="tableHeaders"
         :data="clients"
-        :options="list"
+        :table-options="list"
         :total-count="totalClients"
         :word-operations="['клиент', 'клиента', 'клиентов']"
+        :pagination-options="paginationOptions"
         :pagination="{
           sortBy: 'created_at',
           descending: 'descending',
@@ -139,6 +140,18 @@
           mode: 'create',
           data: null,
         },
+        tableOptions: {
+          page: 1,
+          itemsPerPage: 25,
+        },
+        paginationOptions: [
+          { text: '25 на странице', value: 25 },
+          { text: '50 на странице', value: 50 },
+          { text: '100 на странице', value: 100 },
+          { text: '150 на странице', value: 150 },
+          { text: '250 на странице', value: 250 },
+          { text: '500 на странице', value: 500 },
+        ],
         tableHeaders: [
           { text: 'Карта клиента', align: 'start', value: 'id' },
           { text: 'Клиент', align: 'start', value: 'client' },
@@ -154,9 +167,6 @@
         return this.$store.getters['company/program/program']
       },
       clientsStore () {
-        console.log('CLIENTS...')
-        console.log(this.$store.getters['crm/client/clients'])
-        console.log('CLIENTS...')
         return this.$store.getters['crm/client/clients']
       },
       clients () {
