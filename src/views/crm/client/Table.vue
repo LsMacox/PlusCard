@@ -11,7 +11,7 @@
       </div>
       <base-table
         v-if="clients.length"
-        class-name="table-segment"
+        class-name="table-client"
         :headers="tableHeaders"
         :data="clients"
         :table-options="list"
@@ -57,17 +57,32 @@
         </template>
 
         <template v-slot:[`item.segments`]="{ item }">
-          <div v-if="item.segments && item.segments.length">
-            <div
-              v-for="(segment, i) in item.segments"
-              :key="`segment${i}`"
-              class="body-s-semibold mb-0"
-              style="display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
-              :style="segment.color != undefined ? `color: ${segment.color}; background: ${hexToRgbA(segment.color, '0.15')}` : ''"
-            >
-              {{ segment.name }}
-            </div>
-          </div>
+          <v-row
+              v-if="item.segments && item.segments.length"
+          >
+              <div
+                v-for="(segment, i) in item.segments"
+                :key="`segment${i}`"
+                class="segment__name body-s-semibold"
+                :style="segment.color != undefined ? `color: ${segment.color}; background: ${hexToRgbA(segment.color, '0.15')}` : ''"
+              >
+                <v-tooltip
+                    dark
+                    top
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <span
+                        v-bind="attrs"
+                        v-on="on"
+                        style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                    >
+                      {{ segment.name }}
+                    </span>
+                  </template>
+                  {{ segment.name }}
+                </v-tooltip>
+              </div>
+          </v-row>
           <div v-else>
             -
           </div>
@@ -150,7 +165,7 @@
         ],
         tableHeaders: [
           { text: 'Карта клиента', align: 'start', value: 'id' },
-          { text: 'Клиент', align: 'start', value: 'client' },
+          { text: 'Клиент', align: 'start', value: 'client', width: '20em' },
           { text: 'Сегмент', align: 'start', value: 'segments' },
           { text: 'Контакты', align: 'start', value: 'contacts' },
           { text: 'Создание', align: 'start', value: 'created_at' },
@@ -251,30 +266,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import "@/styles/vuetify-preset-plus/light_theme/crm/_crm.scss";
 
-.table-cell_avatar {
-  display: flex;
-  max-width: 400px;
-
-  .table-cell_avatar-img {
-    display: block;
-    margin-right: 8px;
-    width: 25px;
-    height: 25px;
-    border-radius: 25px;
-  }
-
-  .table-cell_avatar-text {
-    max-width: calc(400px - 33px);
-
-    .table-cell_avatar-text2 {
-      max-width: calc(400px - 33px);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-  }
-}
 </style>
