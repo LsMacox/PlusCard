@@ -1,94 +1,63 @@
 <template>
-  <v-navigation-drawer
+  <BaseDrawerDialog
     v-model="drawer"
-    style="z-index: 9999"
-    fixed
-    temporary
-    right
-    width="483px"
-    permanent
+    stateless
   >
-    <div class="navigation-drawers-wrap">
-      <div>
-        <v-btn
-          color="secondary"
-          :text="true"
-          :ripple="false"
-          class="btn-with-img"
-          @click="close"
-        >
-          <img src="@/icons/svg/arrowBack.svg">
-          Назад
-        </v-btn>
+    <template v-slot:title>
+      <div class="title-l-bold neutral-900--text">
+        {{ isNew ? 'Новая бонусная валюта': 'Редактирование бонусной валюты' }}
       </div>
-      <div class="navigation-title">
-        <h1>{{ isNew ? 'Новая бонусная валюта': 'Редактирование бонусной валюты' }} </h1>
-      </div>
-      <v-form
-        ref="form"
-        v-model="valid"
+    </template>
+    <v-form
+      ref="form"
+      v-model="valid"
+    >
+      <v-row>
+        <v-col class="title-m-bold neutral-900--text">
+          Общие параметры
+        </v-col>
+      </v-row>
+      <dialog-form-block-row
+        title="Название валюты"
+        desc="Это название будет видно всем пользователям приложения Plus Cards."
       >
-        <div class="name-currency">
-          <div class="title-currency">
-            <h3 class="title-h3">
-              Название валюты
-            </h3>
-            <p class="desc-15">
-              Это название будет видно всем пользователям приложения Plus Cards.
-            </p>
-          </div>
-          <div>
-            <base-text-field
-              v-model="bonusUnitInternal.name"
-              :rules="nameRules"
-              :validation-placement="'bottom'"
-              class="input-lg input-bonuses"
-              placeholder="Например, бонусы"
-              error-style="vuetify"
+        <base-text-field
+          v-model="bonusUnitInternal.name"
+          :rules="nameRules"
+          :validation-placement="'bottom'"
+          class="input-lg input-bonuses"
+          placeholder="Например, бонусы"
+          error-style="vuetify"
+          counter
+          minlength="1"
+          maxlength="45"
+          validate-on-blur
+        />
+      </dialog-form-block-row>
 
-              counter
-              minlength="1"
-              maxlength="45"
+      <dialog-form-block-row
+        title="Краткое описание валюты"
+        desc="Это описание будет видно под названием"
+      >
+        <base-text-field
+          v-model="bonusUnitInternal.description"
+          :rules="descriptionRules"
+          :validation-placement="'bottom'"
+          class="input-lg input-bonuses"
+          placeholder="Введите описание"
+          error-style="vuetify"
+          counter
+          maxlength="100"
+          validate-on-blur
+        />
+      </dialog-form-block-row>
 
-              validate-on-blur
-            />
-            <!-- :attach="'.navigation-drawers-wrap'" -->
-          </div>
-        </div>
-        <div class="name-currency">
-          <div class="title-currency">
-            <h3 class="title-h3">
-              Краткое описание валюты
-            </h3>
-            <p class="desc-15">
-              Это описание будет видно под названием
-            </p>
-          </div>
-          <div>
-            <base-text-field
-              v-model="bonusUnitInternal.description"
-              :rules="descriptionRules"
-              :validation-placement="'bottom'"
-              class="input-lg input-bonuses"
-              placeholder="Введите описание"
-              error-style="vuetify"
-              counter              
-              maxlength="100"
-              validate-on-blur
-            />
-            <!-- :attach="'.navigation-drawers-wrap'" -->
-          </div>
-        </div>
-        <div class="declines-currency">
-          <div class="title-currency">
-            <h3 class="title-h3">
-              Склонения валюты
-            </h3>
-            <p class="desc-15">
-              Введите название валюты в разных склонениях. Багодаря этому достигается корректное отображение баланса.
-            </p>
-          </div>
-          <div class="input-box">
+      <dialog-form-block-row
+        title="Склонения валюты"
+        desc="Введите название валюты в разных склонениях. Багодаря этому достигается корректное отображение баланса."
+      >
+        <v-row no-gutters>
+          <v-col cols="4">
             <base-text-field
               v-model="bonusUnitInternal.unit_name_ending_first"
               :rules="nameEndingRules"
@@ -98,6 +67,8 @@
               maxlength="45"
               validate-on-blur
             />
+          </v-col>
+          <v-col cols="4">
             <base-text-field
               v-model="bonusUnitInternal.unit_name_ending_second"
               :rules="nameEndingRules"
@@ -107,6 +78,8 @@
               maxlength="45"
               validate-on-blur
             />
+          </v-col>
+          <v-col cols="4">
             <base-text-field
               v-model="bonusUnitInternal.unit_name_ending_third"
               :rules="nameEndingRules"
@@ -116,58 +89,103 @@
               maxlength="45"
               validate-on-blur
             />
-            <!-- <input
-              v-model="bonusUnitInternal.unit_name_ending_first"
-              type="text"
-              placeholder="1 бонус"
-              class="input-sm-x input-bonuses"
-            > -->
+          </v-col>
+        </v-row>
+      </dialog-form-block-row>
 
-            <!-- <input
-              v-model="bonusUnitInternal.unit_name_ending_second"
-              type="text"
-              placeholder="2 бонуса"
-              class="input-sm-x input-bonuses"
-            >
-            <input
-              v-model="bonusUnitInternal.unit_name_ending_third"
-              type="text"
-              placeholder="5 бонусов"
-              class="input-sm-x input-bonuses"
-            > -->
-          </div>
-        </div>
-        <div class="transfer-currency">
-          <div class="title-currency">
-            <h3 class="title-h3">
-              Передача валюты
-            </h3>
-            <p class="desc-15">
-              Даете ли вы возможность делиться и передавать друг другу валюту?
-            </p>
-          </div>
-          <div class="allow-transfer-currency">
-            <base-ext-switch
-              v-model="bonusUnitInternal.can_transfer"
-              label="Разрешить передавать валюту"
+      <dialog-form-block-row
+        title="Передача валюты"
+        desc="Даете ли вы возможность делиться и передавать друг другу валюту?"
+      >
+        <base-ext-switch
+          v-model="bonusUnitInternal.can_transfer"
+          label="Разрешить передавать валюту"
+        />
+      </dialog-form-block-row>
+
+      <v-row>
+        <v-col class="title-m-bold neutral-900--text">
+          Опции валюты
+        </v-col>
+      </v-row>
+
+      <dialog-form-block-row
+        title="Выберите тип валюты"
+        desc="Выберите один из предложенных типов валюты и настройте её параметры."
+      >
+        <v-radio-group
+          v-model="bonusType"
+          class="mt-0"
+          hide-details
+          row
+          @change="onChangeBonusType"
+        >
+          <v-radio
+            v-for="item in bonusTypeList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </v-radio-group>
+      </dialog-form-block-row>
+
+      <select-icon-row
+        v-show="bonusType != 'digital'"
+        v-model="bonusUnitInternal.icon_set_id"
+        :with-goal="bonusUnitInternal.with_goal"
+      />
+      <v-row v-show="bonusType != 'digital' && !bonusUnitInternal.icon_set_id">
+        <v-col>
+          <span class="error--text body-m-regular">
+            Выберите иконку валюты
+          </span>
+        </v-col>
+      </v-row>
+
+      <dialog-form-block-row
+        v-if="bonusType != 'digital'"
+        title="Правила начисления"
+        desc="Выберите количество покупок, для начисления валюты. Укажите срок действия. Если клиент не совершил еще одну покупку в пределах срока, то валюта исчезает с его шкалы прогресса."
+      >
+        <v-row align="center">
+          <v-col>
+            <v-slider
+              v-model="bonusUnitInternal.max_value"
+              label=""
+              min="1"
+              max="100"
+              hide-details
             />
-          </div>
-        </div>
-        <div class="transfer-currency">
-          <div class="title-currency">
-            <h3 class="title-h3">
-              Основная валюта
-            </h3>
-            <p class="desc-15">
-              Основная валюта отображается на карте в приложении, используется для построения всех графиков и диаграмм.
-            </p>
-          </div>
-          <div class="allow-transfer-currency">
-            <base-ext-switch
-              v-model="bonusUnitInternal.is_main"
-              label="Использовать как основную"
+          </v-col>
+          <v-col cols="auto">
+            <base-text-field
+              v-model="bonusUnitInternal.max_value"
+              :rules="maxValueRules"
+              readonly
+              class="mt-0 pt-0"
+              hide-details
+              single-line
+              type="number"
+              style="width: 60px"
             />
-          </div>
+          </v-col>
+        </v-row>
+      </dialog-form-block-row>
+
+      <dialog-form-block-row
+        v-if="bonusType === 'digital'"
+        title="Основная валюта"
+        desc="Основная валюта отображается на карте в приложении, используется для построения всех графиков и диаграмм."
+      >
+        <template>
+          <v-row>
+            <v-col>
+              <base-ext-switch
+                v-model="bonusUnitInternal.is_main"
+                label="Использовать как основную"
+              />
+            </v-col>
+          </v-row>
           <v-row v-if="isMainUpdate">
             <v-col>
               <span class="error--text body-m-regular">
@@ -176,44 +194,44 @@
               </span>
             </v-col>
           </v-row>
-        </div>
-      </v-form>
-      <v-row
-        class="save-currency"
+        </template>
+      </dialog-form-block-row>
+    </v-form>
+    <v-row
+      class="save-currency"
+    >
+      <v-btn
+        small
+        :disabled="!allValid"
+        color="primary"
+        :loading="confirmAction"
+        @click="confirmClick"
       >
-        <v-btn
-          small
-          :disabled="!valid"
-          color="primary"
-          :loading="confirmAction"
-          @click="confirmClick"
-        >
-          <v-icon left>
-            $iconify_ion-checkmark-circle-outline
-          </v-icon>
+        <v-icon left>
+          $iconify_ion-checkmark-circle-outline
+        </v-icon>
 
-          <!-- <img
+        <!-- <img
             src="@/icons/svg/checkmark-circle-outline.svg"
             class="img-circle"
           > -->
-          {{ isNew ? 'Создать валюту' : 'Сохранить' }}
-        </v-btn>
-        <v-spacer />
-        <v-btn
-          v-if="!isNew"
-          text
-          color="error"
-          :loading="deleteAction"
-          @click="deleteClick"
-        >
-          <v-icon left>
-            $iconify_feather-trash
-          </v-icon>
-          <span>Удалить валюту</span>
-        </v-btn>
-      </v-row>
-    </div>
-  </v-navigation-drawer>
+        {{ isNew ? 'Создать валюту' : 'Сохранить' }}
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        v-if="!isNew"
+        text
+        color="error"
+        :loading="deleteAction"
+        @click="deleteClick"
+      >
+        <v-icon left>
+          $iconify_feather-trash
+        </v-icon>
+        <span>Удалить валюту</span>
+      </v-btn>
+    </v-row>
+  </BaseDrawerDialog>
 </template>
 
 <script>
@@ -222,6 +240,10 @@
 
   export default {
     name: 'BonusUnitDialog',
+    components: {
+      DialogFormBlockRow: () => import('./base/DialogFormBlockRow'),
+      SelectIconRow: () => import('./SelectIconRow'),
+    },
     model: {
       prop: 'value',
       event: 'change',
@@ -239,7 +261,6 @@
     },
     data () {
       return {
-
         nameBonuses: '',
         bonusesFirst: '',
         bonusesSecond: '',
@@ -255,6 +276,8 @@
           name: '',
           type_enum: 'INTEGER',
           max_value: null,
+          with_goal: false,
+          icon_set_id: false,
           unit_name_ending_first: '',
           unit_name_ending_second: '',
           unit_name_ending_third: '',
@@ -272,6 +295,16 @@
         descriptionRules: [
           (v) => maxLen(v, 100) || 'Не более 100 символов',
         ],
+        maxValueRules: [
+          (v) => isFilled(v) || 'Заполните ограничение',
+          (v) => v > 0 || 'Ограничение должно быть больше 0',
+        ],
+
+        bonusTypeList: [
+          { value: 'digital', label: 'Цифровая' },
+          { value: 'with_goal', label: 'С целью' },
+          { value: 'without_goal', label: 'Без цели' },
+        ],
 
       }
     },
@@ -286,6 +319,9 @@
         getUpdateBonusesItem: 'createBonusesCurrency/create_bonuses_currency/getUpdateBonusesItem',
       }),
 
+      allValid () {
+        return this.valid && (!this.bonusUnitInternal.max_value || !!this.bonusUnitInternal.icon_set_id)
+      },
       isNew () {
         return !this.bonusUnit
       },
@@ -306,6 +342,25 @@
       },
       isMainUpdate () {
         return this.bonusUnitInternal.is_main && this.mainBonusUnit && this.mainBonusUnit.id !== this.bonusUnitInternal.id
+      },
+
+      bonusType: {
+        get: function () {
+          if (this.bonusUnitInternal.max_value != null) {
+            return this.bonusUnitInternal.with_goal ? 'with_goal' : 'without_goal'
+          } else {
+            return 'digital'
+          }
+        },
+        set: function (v) {
+          if (v === 'digital') {
+            this.bonusUnitInternal.max_value = null
+          } else {
+            this.bonusUnitInternal.with_goal = v === 'with_goal'
+            this.bonusUnitInternal.max_value = this.bonusUnitInternal.max_value || 1
+            this.bonusUnitInternal.is_main = false
+          }
+        },
       },
 
     },
@@ -420,6 +475,10 @@
         }
       },
       // ---
+      onChangeBonusType (v) {
+        console.log('onChangeBonusType', v)
+      },
+
       async deleteClick () {
         try {
           this.deleteAction = true
@@ -439,6 +498,8 @@
           const postData = {
             program_id: this.programId,
             max_value: this.bonusUnitInternal.max_value,
+            icon_set_id: this.bonusUnitInternal.icon_set_id,
+            with_goal: this.bonusUnitInternal.with_goal,
             name: this.bonusUnitInternal.name,
             description: this.bonusUnitInternal.description,
             type_enum: this.bonusUnitInternal.type_enum,
