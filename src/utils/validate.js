@@ -186,7 +186,7 @@ function isEmpty (value) {
  * @returns {Boolean}
  */
 function maxLen (str, max) {
-    return str.length <= max
+    return !str || str.length <= max
 }
 
 export {

@@ -53,11 +53,12 @@ export default {
         },
     },
     actions: {
+        
         async getBonusUnitIcons ({ commit, dispatch }) {
-            const success = await ApiService.get(
+            const result = await ApiService.get(
                 '/api-cabinet/bonus_units/icons',
             )
-            commit('bonusUnitIcons', success.data.data)
+            commit('bonusUnitIcons', result)
         },
 
         async createBonusUnit ({ commit }, bonusUnit) {

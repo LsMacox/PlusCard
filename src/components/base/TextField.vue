@@ -370,7 +370,7 @@
     },
     computed: {
       hasDispayErrors () {
-        return this.errorMessagesToDisplay.length > 0
+        return this.errorMessagesToDisplay && this.errorMessagesToDisplay.length > 0
       },
       // computedCounterValue () {
       //   return this.$refs.vTextField ? this.$refs.vTextField.computedCounterValue : 0
