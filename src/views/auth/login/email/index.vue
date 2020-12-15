@@ -96,7 +96,6 @@
               color="primary"
               style="width: 100%;"
               :loading="loading"
-              :disabled="!valid"
               @click="submit()"
             >
               <span
