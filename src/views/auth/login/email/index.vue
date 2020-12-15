@@ -42,7 +42,6 @@
           outlined
           required
           :rules="emailRules"
-          validate-on-blur
           @blur="form.email = form.email ? form.email.trim() : null"
         >
           <template slot="prepend-inner">
