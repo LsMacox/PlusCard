@@ -35,27 +35,43 @@
         title="Пример отображения"
         desc="В таком виде клиенты будут видеть иконку в приложении."
       >
-        <v-row>
-          <v-col
-            cols="auto"
-            class="bonus-icon-preview"
-          >
-            <v-img
-              class="bonus-icon"
-              :src="selectedIconSet.icon_active"
-            />
-          </v-col>
-          <v-col
-            v-for="n in [1, 2, 3]"
-            :key="n"
-            cols="auto"
-            class="bonus-icon-preview"
-          >
-            <v-img
-              class="bonus-icon"
-              :src="selectedIconSet.icon_inactive"
-            />
-          </v-col>
+        <v-row align="center">
+          <template v-for="n in [1, 2, 3, 4]">
+            <v-col
+              :key="'icon' + n"
+              cols="auto"
+              class="bonus-icon-preview"
+              :class="{
+                'bonus-icon-preview': true,
+                'bonus-icon-preview--active': n === 1,
+              }"
+            >
+              <v-img
+                class="bonus-icon"
+                :class="{
+                  'bonus-icon': true,
+                }"
+                :src="
+                  n === 1
+                    ? selectedIconSet.icon_active
+                    : selectedIconSet.icon_inactive
+                "
+              />
+            </v-col>
+            <v-col
+              :key="'rect' + n"
+              class="icon-rect-block"
+              cols="auto"
+            >
+              <div
+                :class="{
+                  'icon-rect': true,
+                  'icon-rect--active': n === 1,
+                }"
+              />
+            </v-col>
+          </template>
+
           <v-col
             v-if="withGoal"
             cols="auto"
@@ -90,7 +106,7 @@
           </v-btn>
         </v-col>
       </v-row>
-      <v-row style="margin-top:28px">
+      <v-row style="margin-top: 28px">
         <v-col>
           <v-btn
             color="primary"
@@ -187,7 +203,21 @@
   }
 </script>
 <style  lang="scss" scoped>
-.bonus-icon-preview, .bonus-icon-preview-goal {
+.icon-rect-block {
+  padding: 2px;
+  .icon-rect {
+    width: 13px;
+    height: 1.5px;
+    background: #f2f2f7;
+    border-radius: 1px;
+  }
+  .icon-rect--active {
+    background: #4776e6;
+  }
+}
+
+.bonus-icon-preview,
+.bonus-icon-preview-goal {
   width: 44px;
   height: 44px;
   border: 1.5px solid #f2f2f7;
@@ -197,8 +227,11 @@
     height: 20px;
   }
 }
-.bonus-icon-preview-goal{
-background: linear-gradient(90deg, #4776E6 0%, #8E54E9 100%);
+.bonus-icon-preview--active {
+  border-color: #4776e6;
+}
+.bonus-icon-preview-goal {
+  background: linear-gradient(90deg, #4776e6 0%, #8e54e9 100%);
 }
 
 .bonus-icon {
