@@ -87,7 +87,7 @@
         return this.$store.getters['company/program/program']
       },
       period () {
-        return this.$store.getters['widget/filter/period']
+        return this.$store.getters['reference/date_selection/period']
       },
       programClients () {
         return this.$store.getters['dashboard/clients/widgetData']

@@ -100,8 +100,8 @@
         <!--        </template>-->
 
         <template
-          @input="picker"
           style="min-width: 350px;"
+          @input="picker"
         >
           <div class="custom" />
         </template>
@@ -169,7 +169,7 @@
     },
     computed: {
       period () {
-        return this.$store.getters['widget/filter/period']
+        return this.$store.getters['reference/date_selection/period']
       },
     },
     created () {
@@ -248,7 +248,7 @@
         this.show = false
         this.showDatePicker = false
         this.updateItem(date.id)
-        this.$store.commit('widget/filter/period', date)
+        this.$store.commit('reference/date_selection/period', date)
       },
       formatRange (range) {
         const start = range.split(' - ')[0]
