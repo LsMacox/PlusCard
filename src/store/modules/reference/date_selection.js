@@ -15,7 +15,7 @@ const getDefaultState = () => {
 
 const getDefaultPeriod = () => {
     return {
-        period: { id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
+        id: 1, name: 'За сегодня', start: new Date(Date.now()).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0],
     }
 }
 
@@ -23,7 +23,7 @@ const state = getDefaultState()
 
 const mutations = {
     RESET_STATE: (state) => {
-        Object.assign(state, getDefaultPeriod())
+        Object.assign(state.period, getDefaultPeriod())
         localStorage.setItem('dateSelection', JSON.stringify(getDefaultPeriod()))
     },
     periodId (state, payload) {
