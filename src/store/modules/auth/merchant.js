@@ -67,9 +67,12 @@ const actions = {
     },
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     async GetBalanceOperations ({ state, rootState, commit, rootGetters }) {
         // console.log('GetBalanceOperations', rootGetters.merchantId)
 =======
+=======
+>>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
     async GetBalanceOperations ({ commit, rootGetters }) {
         console.log('GetBalanceOperations', rootGetters.merchantId)
 >>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8

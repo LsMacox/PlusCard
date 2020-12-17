@@ -141,8 +141,11 @@
     watch: {
       dateText (v) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         const date = this.$moment(v, this.dateFormat).toString()
 =======
+=======
+>>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
         const date = this.$moment(v, this.dateFormat).toISOString()
         console.log('update:date', date)
 >>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
