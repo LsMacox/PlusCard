@@ -1,0 +1,18 @@
+.pls--pushcon-block-button {
+    text-align: center;
+
+    .pls--pushcon-block-button-btn {
+        display: inline-block;
+        max-width: 400px;
+        min-width: 200px;
+        margin: 15px auto;
+        padding: 15px 25px;
+        color: #ffffff;
+        border-radius: 5px;
+        text-align: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+}

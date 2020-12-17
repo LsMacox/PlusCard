@@ -19,6 +19,8 @@ export const ICONIFY_ICONS = {
     'question-circle-outlined': () => import('@iconify/icons-ant-design/question-circle-outlined'),
 
     // bi
+    'bi-arrow-down-up': () => import('@iconify-icons/bi/arrow-down-up'),
+    // icons-bi
     'arrow-left': () => import('@iconify/icons-bi/arrow-left'),
     'bi-phone': () => import('@iconify/icons-bi/phone'),
 
@@ -29,6 +31,10 @@ export const ICONIFY_ICONS = {
     'bx-bx-building-house': () => import('@iconify/icons-bx/bx-building-house'),
     'bx-bxs-error-alt': () => import('@iconify-icons/bx/bxs-error-alt'),
     'bx-bxs-error': () => import('@iconify-icons/bx/bxs-error'),
+    'bx-bx-text': () => import('@iconify-icons/bx/bx-text'),
+    'bx-bxs-image': () => import('@iconify-icons/bx/bxs-image'),
+    'bx-bx-play-circle': () => import('@iconify-icons/bx/bx-play-circle'),
+    'bx-bx-stop-circle': () => import('@iconify-icons/bx/bx-stop-circle'),
 
     // codicon
     'chrome-close': () => import('@iconify/icons-codicon/chrome-close'),
@@ -48,10 +54,18 @@ export const ICONIFY_ICONS = {
 
     // clarity
     'clarity-import-line': () => import('@iconify-icons/clarity/import-line'),
+    'clarity-image-line': () => import('@iconify-icons/clarity/image-line'),
+    'clarity-image-gallery-line': () => import('@iconify-icons/clarity/image-gallery-line'),
+    'clarity-image-gallery-solid': () => import('@iconify-icons/clarity/image-gallery-solid'),
+    'clarity-video-gallery-line': () => import('@iconify-icons/clarity/video-gallery-line'),
+    'clarity-video-gallery-solid': () => import('@iconify-icons/clarity/video-gallery-solid'),
 
     // entypo
     'chevron-right': () => import('@iconify/icons-entypo/chevron-right'),
     'chevron-left': () => import('@iconify/icons-entypo/chevron-left'),
+
+    // dashicons
+    'dashicons-video-alt3': () => import('@iconify-icons/dashicons/video-alt3'),
 
     // ion
     'ion-checkmark-done': () => import('@iconify/icons-ion/checkmark-done'),
@@ -115,8 +129,16 @@ export const ICONIFY_ICONS = {
     'feather-star': () => import('@iconify-icons/feather/star'),
     'feather-volume': () => import('@iconify/icons-feather/volume'),
     'feather-volume-1': () => import('@iconify/icons-feather/volume-1'),
+<<<<<<< HEAD
     'feather-check': () => import('@iconify-icons/feather/check'),
     'feather-circle': () => import('@iconify-icons/feather/circle'),
+=======
+    'feather-info': () => import('@iconify/icons-feather/info'),
+
+    // fa-solid
+    'fa-solid-user': () => import('@iconify-icons/fa-solid/user'),
+    'fa-solid-user-friends': () => import('@iconify-icons/fa-solid/user-friends'),
+>>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),
@@ -149,6 +171,9 @@ export const ICONIFY_ICONS = {
     'eva-checkmark-outline': () => import('@iconify/icons-eva/checkmark-outline'),
     'eva-square-minus': () => import('@iconify/icons-eva/minus-square-fill'),
     'eva-square-outline': () => import('@iconify/icons-eva/square-outline'),
+
+    // emojione-monotone
+    'emojione-monotone-b-button': () => import('@iconify-icons/emojione-monotone/b-button'),
 }
 
 for (const icon in ICONIFY_ICONS) {

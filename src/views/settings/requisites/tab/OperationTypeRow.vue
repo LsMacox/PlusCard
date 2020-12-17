@@ -1,27 +1,10 @@
 <template>
   <v-container class="pa-0">
-    <v-row
-      no-gutters
-      style="margin: 0px -4px"
-      align="center"
-    >
-      <v-col
-        cols="auto"
-        style="margin: 0px 4px"
-      >
-        <v-img
-          height="21px"
-          width="21px"
-          size="9"
-          :src="icon"
-        />
-      </v-col>
-      <v-col style="margin: 0px 4px">
-        <span :class="colorClass">
-          {{ name }}
-        </span>
-      </v-col>
-    </v-row>
+    <status-column
+      :icon="icon"
+      :text="name"
+      :color="operationEnum.color"
+    />
   </v-container>
 </template>
 
@@ -30,6 +13,9 @@
 
   export default {
     name: 'OperationTypeRow',
+    components: {
+      StatusColumn: () => import('@/components/colums/StatusColumn.vue'),
+    },
     props: {
       operationType: {
         type: String,

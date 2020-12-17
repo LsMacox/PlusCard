@@ -34,6 +34,25 @@
       </template>
     </BaseMasterFieldBlock>
 
+    <BaseMasterFieldBlock
+      title="Слоган"
+    >
+      <span slot="description">Напишите дополнительный текст, который позволит клиенту лучше понять чем ваша компания занимается, к чему стремится.</span>
+      <template v-slot:input>
+        <base-text-field
+          v-model="program.slogan"
+          :validate-on-blur="true"
+          placeholder="Слоган компании"
+          outlined
+          counter
+          maxlength="100"
+          :rules="[
+            v => !v || v.length <= 100 || 'Название компании не должно быть более 20 символов'
+          ]"
+        />
+      </template>
+    </BaseMasterFieldBlock>
+
     <v-row>
       <v-col>
         <BaseMasterFieldBlock

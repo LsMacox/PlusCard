@@ -32,6 +32,7 @@
           outlined
           required
           :rules="phoneRules"
+          @keyup.enter="submit()"
         >
           <template slot="prepend-inner">
             <v-img
@@ -52,7 +53,7 @@
               style="width: 100%;"
               :loading="loading"
               :disabled="!valid"
-              @click="login()"
+              @click="submit()"
             >
               <span
                 class="iconify"
@@ -83,15 +84,30 @@
         </div>
       </v-form>
     </div>
+
+    <vue-recaptcha
+      ref="recaptcha"
+      size="invisible"
+      :sitekey="$config.app.RECAPTCHA_SITE_KEY"
+      :load-recaptcha-script="true"
+      @verify="login"
+      @expired="onCaptchaExpired"
+    />
   </div>
 </template>
 
 <script>
   import { mask } from 'vue-the-mask'
   import { mapGetters } from 'vuex'
+  import Routing from '@/mixins/routing'
+  import VueRecaptcha from 'vue-recaptcha'
 
   export default {
+    components: {
+      VueRecaptcha,
+    },
     directives: { mask },
+    mixins: [Routing],
     data () {
       return {
         form: {
@@ -118,8 +134,8 @@
       this.$store.dispatch('auth/auth/InitDevice')
     },
     methods: {
-      toRoute (path) {
-        if (this.$route.path !== path) this.$router.push(path)
+      onCaptchaExpired () {
+        this.$refs.recaptcha.reset()
       },
       toConfirm (phone) {
         console.log('toConfirm', phone)
@@ -135,16 +151,21 @@
         }
         return p
       },
-      async login () {
+      submit () {
+        if (!this.$refs.form.validate()) return
+        this.$refs.recaptcha.execute()
+      },
+      async login (recaptchaToken) {
         console.log('<login>')
 
-        if (!this.$refs.form.validate()) return
+        if (!this.$refs.form.validate() || !recaptchaToken) return
 
         const user = {
           phone: this.clearPhoneMask(this.form.phone),
           device_id: this.device.id,
           device_token: this.device.token,
           device_type: this.device.type,
+          recaptcha_token: recaptchaToken,
         }
         console.log(user)
         try {

@@ -96,7 +96,7 @@
           v => this.getCountTemplate(v) === 1 || 'Ссылка {{link}} используется более одного раза',
         ],
         lockPeriod: false,
-        timerStr: null,
+        timerStr: '00:00',
         timerId: null,
       }
     },
@@ -114,7 +114,9 @@
     },
     async created () {
       await this.init()
-      this.setTimer(this.programModel.sms_test_send_at)
+      if (this.programModel.sms_test_send_at) {
+        this.setTimer(this.programModel.sms_test_send_at)
+      }
     },
     methods: {
       ...mapActions({
@@ -141,10 +143,15 @@
         this.timerId = setInterval((sendAt) => {
           sendAt = this.$moment.utc(sendAt).local()
           const diff = this.$moment().diff(sendAt)
+
+          console.log('TIMESTR')
+          console.log(diff)
+          console.log('TIMESTR')
+
           if (diff >= 300000) {
             clearInterval(this.timerId)
             this.lockPeriod = false
-            this.timerStr = null
+            this.timerStr = '00:00'
           } else {
             this.timerStr = this.$moment.unix((300000 - diff) / 1000).format('mm:ss')
             this.lockPeriod = true

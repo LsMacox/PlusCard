@@ -66,17 +66,28 @@ const actions = {
         }
     },
 
+<<<<<<< HEAD
     async GetBalanceOperations ({ state, rootState, commit, rootGetters }) {
         // console.log('GetBalanceOperations', rootGetters.merchantId)
+=======
+    async GetBalanceOperations ({ commit, rootGetters }) {
+        console.log('GetBalanceOperations', rootGetters.merchantId)
+>>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
         const result = await ApiService.get(`/api/merchant/balance/operations?merchant_id=${rootGetters.merchantId}`)
         commit('BALANCE_OPERATIONS', result)
         return result
       },
 
-      async GetOrders ({ state, rootState, commit }) {
-        const result = await ApiService.get(`/api/merchant/order/list?merchant_id=${rootState.merchant.id}`)
+      async GetOrders ({ rootGetters, commit }) {
+        const result = await ApiService.get(`/api/merchant/order/list?merchant_id=${rootGetters.merchantId}`)
         commit('SET_ORDERS', result)
         return result
+      },
+
+      async GetOrderPdf ({ rootGetters, commit }, order) {
+        await ApiService.downloadFile('/api/merchant/order/pdf', {
+          order_id: order.id,
+        }, `Счет №${order.number}.pdf`)
       },
 
       async CreateOrder ({ state, rootState, commit }, { value, method }) {

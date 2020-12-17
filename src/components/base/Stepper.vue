@@ -156,7 +156,7 @@
   padding-right: $page-content-padding-size;
  
   background: $material-light-backgroung-color;
-  z-index: 200;
+  z-index: 2;
 
 }
 

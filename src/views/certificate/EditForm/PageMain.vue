@@ -104,7 +104,7 @@
               auto-grow
               placeholder="Введите описание сертификата"
               outlined
-              maxlength="255"
+              maxlength="10000"
             />
           </template>
         </BaseMasterFieldBlock>
@@ -151,7 +151,7 @@
         ],
         descriptionRules: [
           (v) => !!v || 'Введите описание',
-          (v) => (!!v && v.length <= 1024) || 'Описание не превышает 1024',
+          (v) => (!!v && v.length <= 10000) || 'Описание не превышает 10000',
         ],
       }
     },

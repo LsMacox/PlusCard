@@ -36,7 +36,7 @@
         class="auth-form"
       >
         <v-text-field
-          v-model="form.email"
+          v-model.trim="form.email"
           placeholder="Введите еmail"
           class="auth-text-field"
           outlined
@@ -55,7 +55,7 @@
         </v-text-field>
 
         <v-text-field
-          v-model="form.password"
+          v-model.trim="form.password"
           :type="visible1 ? 'text' : 'password'"
           placeholder="Введите пароль"
           class="auth-text-field"
@@ -98,7 +98,7 @@
               style="width: 100%;"
               :loading="loading"
               :disabled="!valid"
-              @click="login()"
+              @click="submit()"
             >
               <span
                 class="iconify"
@@ -138,7 +138,15 @@
     <select-merchant
       v-else
       :merchants="merchants"
-      @select="login"
+      @select="submitMerchant"
+    />
+    <vue-recaptcha
+      ref="recaptcha"
+      size="invisible"
+      :sitekey="$config.app.RECAPTCHA_SITE_KEY"
+      :load-recaptcha-script="true"
+      @verify="login"
+      @expired="onCaptchaExpired"
     />
   </div>
 </template>
@@ -147,10 +155,12 @@
   import { mapGetters } from 'vuex'
   import BackButton from '@/views/auth/components/BackButton'
   import { validEmail } from '@/utils/validate.js'
+  import VueRecaptcha from 'vue-recaptcha'
 
   export default {
     components: {
       BackButton,
+      VueRecaptcha,
       SelectMerchant: () => import('@/views/auth/components/SelectMerchant'),
     },
     data () {
@@ -176,6 +186,7 @@
     computed: {
       ...mapGetters('auth/auth', [
         'merchants',
+        'merchant_id',
         'merchant',
         'device',
       ]),
@@ -183,33 +194,47 @@
     mounted () {
       this.$store.dispatch('auth/auth/InitDevice')
       window.addEventListener('keyup', this.onKeyUp)
+      if (this.$route.query.merch_id) this.$store.commit('auth/auth/SET_MERCHANT_ID', this.$route.query.merch_id)
     },
     beforeDestroy () {
       window.removeEventListener('keyup', this.onKeyUp)
     },
     methods: {
+      recaptchaExecute () {
+        this.$refs.recaptcha.execute()
+      },
+      submitMerchant (merchantId) {
+        this.$store.commit('auth/auth/SET_MERCHANT_ID', merchantId)
+        this.recaptchaExecute()
+      },
+      submit () {
+        if (!this.$refs.form.validate()) return
+        this.recaptchaExecute()
+      },
+      onCaptchaExpired () {
+        this.$refs.recaptcha.reset()
+      },
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
       },
       onKeyUp (e) {
-        console.log('onKeyUp', e)
         if (this.valid && e.key === 'Enter') {
           this.login()
         }
       },
-      async login (merchId = null) {
+      async login (recaptchaToken) {
         const user = {
           email: this.form.email,
           password: this.form.password,
           device_id: this.device.id,
           device_token: this.device.token,
           device_type: this.device.type,
-          merch_id: merchId,
+          recaptcha_token: recaptchaToken,
+          merch_id: this.merchant_id,
         }
         console.log(user)
         try {
           this.loading = true
-
           await this.$store.dispatch('auth/email/login', user)
           // выбор мерчанта для логина или сразу логин
           if (this.merchants.length > 1) {

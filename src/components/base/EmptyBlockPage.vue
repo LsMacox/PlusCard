@@ -44,7 +44,10 @@
               color="primary"
               @click="btnClick"
             >
-              <v-icon left>
+              <v-icon
+                v-if="actionIcon"
+                left
+              >
                 {{ actionIcon }}
               </v-icon>
               {{ actionText }}

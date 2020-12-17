@@ -17,7 +17,7 @@
         class="auth-form"
       >
         <v-text-field
-          v-model="form.password"
+          v-model.trim="form.password"
           :type="visible1 ? 'text' : 'password'"
           placeholder="Введите новый пароль"
           class="auth-text-field"
@@ -50,7 +50,7 @@
         </v-text-field>
 
         <v-text-field
-          v-model="form.passwordConfirm"
+          v-model.trim="form.passwordConfirm"
           :type="visible2 ? 'text' : 'password'"
           placeholder="Повторите новый пароль"
           class="auth-text-field"
