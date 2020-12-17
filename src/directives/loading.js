@@ -8,7 +8,7 @@ loadingDirective.install = Vue => {
 
   Vue.directive('loading', {
     bind: function(el, binding, vnode) {
-        console.log('loading bind', binding)
+        // console.log('loading bind', binding)
     //   const textExr = el.getAttribute('element-loading-text');
     //   const spinnerExr = el.getAttribute('element-loading-spinner');
     //   const backgroundExr = el.getAttribute('element-loading-background');
@@ -32,7 +32,7 @@ loadingDirective.install = Vue => {
     },
 
     update: function(el, binding) {
-        console.log('loading update', binding)
+        // console.log('loading update', binding)
     //   el.instance.setText(el.getAttribute('element-loading-text'));
     //   if (binding.oldValue !== binding.value) {
     //     toggleLoading(el, binding);
@@ -40,7 +40,7 @@ loadingDirective.install = Vue => {
     },
 
     unbind: function(el, binding) {
-        console.log('loading unbind', binding)
+        // console.log('loading unbind', binding)
     //   if (el.domInserted) {
     //     el.mask &&
     //     el.mask.parentNode &&

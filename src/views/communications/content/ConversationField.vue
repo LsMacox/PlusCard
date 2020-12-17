@@ -10,17 +10,6 @@
         :src="require('@/assets/png/empty-chat.png')"
       />
     </div>
-    <!-- overlayChat -->
-    <div
-      v-else-if="overlayChat"
-      class="overlayChat"
-      @click="closeReplyMessage()"
-    >
-      <div class="overlayChatText">
-        Выберите чат из списка справа
-        <br>для пересылки сообщения
-      </div>
-    </div>
     <v-skeleton-loader
       v-else-if="loadingConversations || loadingMessage"
       :loading="loadingConversations || loadingMessage"
@@ -37,6 +26,7 @@
       id="conversationWrap"
       class="app--conversationWrapper"
     >
+      <!-- status bar -->
       <conversation-status-bar
         :conversation-id="currentConversationId"
         :search-string.sync="searchString"
@@ -67,9 +57,12 @@
               :my-message="
                 chatUser.id == item.sender_id &&
                   (profile.id == item.real_sender_id || !realChatName)"
+              :is-choice-message.sync="isChoiceMessage"
               :is-close-action.sync="isMessageCloseActions"
+              :choice-message-ids.sync="choiceMessageIds"
               @reply="openReply"
               @edit="openEdit"
+              @forward="openForward"
             />
           </div>
         </div>
@@ -85,11 +78,26 @@
         :messages="messages"
         :is-reply-message.sync="isReplyMessage"
         :is-edit-message.sync="isEditMessage"
+        :is-forward-message.sync="isForwardMessage"
+        :is-topic-panel.sync="isTopicPanel"
+        :is-topic-message.sync="isTopicMessage"
+        :is-choice-message.sync="isChoiceMessage"
+        :choice-message-ids.sync="choiceMessageIds"
+        :selected-topic.sync="selectedTopic"
         :reply-message-id="replyMessageId"
         :edit-message-id="editMessageId"
         @send-message="toBottomFeed()"
       />
     </div>
+    <forward-panel
+      v-model="isForwardMessage"
+      :message-id="forwardMessageId"
+      :conversation-id="currentConversationId"
+    />
+    <topic-panel
+      v-model="isTopicPanel"
+      :conversation-id="currentConversationId"
+    />
   </div>
 </template>
 
@@ -97,14 +105,13 @@
   // components
   import ConversationStatusBar from './ConversationStatusBar'
   import ConversationSendBox from './ConversationSendBox'
+  import ForwardPanel from './components/chat/ForwardPanel'
+  import TopicPanel from './components/chat/TopicPanel'
   import Message from './message/Message'
 
   // mixins
-  import MixinAttachment from '../mixins/conversation-field/attachment.js'
   import MixinValidate from '../mixins/conversation-field/validate.js'
-  import MixinDragOver from '../mixins/conversation-field/drag-over.js'
   import MixinMessage from '../mixins/conversation-field/message.js'
-  import MixinTyping from '../mixins/conversation-field/typing.js'
   import MixinSearch from '../mixins/conversation-field/search.js'
   import MixinIndex from '../mixins/index.js'
   import MixinData from '../mixins/conversation-field/data.js'
@@ -113,21 +120,19 @@
     components: {
       ConversationStatusBar,
       ConversationSendBox,
+      TopicPanel,
+      ForwardPanel,
       Message,
     },
     mixins: [
-      MixinAttachment,
       MixinValidate,
-      MixinDragOver,
       MixinMessage,
-      MixinTyping,
       MixinSearch,
       MixinIndex,
       MixinData,
     ],
     data () {
       return {
-        activeWindow: true,
         // search
         searchString: '',
         searchChoose: 0,
@@ -136,33 +141,30 @@
         // scroll
         messageIdToScrollPage: null,
         feedScrollTop: null,
-        // Boolean
+        // Booleans
         loadingMessage: false,
         topicFilter: false,
-        overlayChat: false,
         sending: false,
         // message
-        newMessage: '',
         isMessageCloseActions: false,
+        // forward
+        isForwardMessage: false,
+        forwardMessageId: NaN,
+        // topic
+        isTopicPanel: false,
+        isTopicMessage: false,
+        selectedTopic: {},
+        // choice
+        isChoiceMessage: false,
+        choiceMessageIds: [],
         // message reply
         isReplyMessage: false,
         replyMessageId: NaN,
         // message edit
         isEditMessage: false,
         editMessageId: NaN,
-        // attach files
-        attachFileName: '',
-        attachFileType: '',
-        attachFilePreview: '',
-        attachFile: '',
-        attachLoading: false,
-        attachPreview: false,
-        files: [],
-        filesPreview: [],
         // types
         typingTime: null,
-        // drag
-        dragAndDropCapable: false,
       }
     },
     computed: {
@@ -174,13 +176,17 @@
       },
     },
     watch: {
-      async currentConversationId (newV, oldV) {
-        if (newV) {
+      async currentConversationId (v) {
+        this.isReplyMessage = false
+        this.isEditMessage = false
+        this.isChoiceMessage = false
+        this.isTopicMessage = false
+        if (v) {
           // при переходе в другой чат обнуляем
           this.messageIdToScrollPage = null
           this.feedScrollTop = null
-          //
-          await this.fetchData(newV)
+          // fetch
+          await this.fetchData(v)
           if (this.issetMessages) this.toBottomFeed()
         }
       },
@@ -224,18 +230,9 @@
         this.isEditMessage = true
         this.editMessageId = editMessageId
       },
-      clearForm () {
-        this.newMessage = ''
-        this.attachFileName = ''
-        this.attachFileType = ''
-        this.attachFilePreview = ''
-        this.attachFile = ''
-        this.files = []
-        this.filesPreview = []
-        this.$refs.attachFile.value = null
-        this.$store.commit('chat/topic/selectedTopicId', null)
-        this.$store.commit('chat/message/recipients', [])
-        this.sending = false
+      openForward (forwardMessageId) {
+        this.isForwardMessage = true
+        this.forwardMessageId = forwardMessageId
       },
     },
   }

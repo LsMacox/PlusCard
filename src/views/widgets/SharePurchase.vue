@@ -48,17 +48,17 @@
     },
     watch: {
       widgetData (v) {
-        console.log('watch data...')
-        console.log(v)
-        console.log('watch dadta...')
+        // console.log('watch data...')
+        // console.log(v)
+        // console.log('watch dadta...')
 
         this.chartData = v
       },
     },
     mounted () {
-      console.log('diget data...')
-      console.log(this.widgetData)
-      console.log('diget data...')
+      // console.log('diget data...')
+      // console.log(this.widgetData)
+      // console.log('diget data...')
 
       this.chartData = this.widgetData
     },

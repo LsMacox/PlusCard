@@ -1,0 +1,86 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.app--component--topic {
+  width: 100%;
+  border-top: 1px solid $primary-base;
+  z-index: 2;
+  p {
+    margin-bottom: 0;
+  }
+  .topic-box {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+    .topic-actions {
+      display: flex;
+      margin-top: 30px;
+      margin-left: 22px;
+      .icon-close {
+        margin-right: 6px;
+      }
+      .icon {
+        color: $neutral-500;
+        cursor: pointer
+      }
+    }
+    .topic-list {
+      display: flex;
+      margin-top: 20px;
+      margin-left: 22px;
+      list-style: none;
+      padding-left: 0;
+      overflow: hidden;
+      width: calc(100% - 240px);
+      .topic-item {
+        cursor: pointer;
+        background: $primary-100;
+        border-radius: 6px;
+        margin-right: 8px;
+        white-space: nowrap;
+        &.active {
+          background: $primary-base;
+          p {
+            color: $neutral-100;
+          }
+        }
+        &.hide {
+          display: none;
+        }
+        p {
+          padding: 10px 12px;
+          color: $primary-base;
+        }
+      }
+    }
+    .topic-controls {
+      display: flex;
+      margin-top: 30px;
+      margin-left: auto;
+      margin-right: 22px;
+      .icon-prev {
+        margin-right: 30px;
+      }
+      .icon {
+        color: $neutral-500;
+        cursor: pointer;
+        &.active {
+          color: $primary-base;
+        }
+      }
+    }
+  }
+  .topic-choices {
+    margin-bottom: -12px;
+    margin-left: 68px;  
+    .choice__list {
+      list-style: none;
+      padding-left: 0;
+      .choice__item {
+        p {
+          color: $primary-base;
+        }
+      }
+    }
+  }
+}

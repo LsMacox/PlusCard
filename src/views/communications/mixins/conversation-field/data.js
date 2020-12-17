@@ -20,6 +20,9 @@ export default {
     chatUser () {
       return this.$store.getters['chat/chatUser/chatUser']
     },
+    isAllMessagesLoaded () {
+      return this.$store.getters['chat/message/isAllMessagesLoaded']
+    },
     loadingConversations () {
       return this.$store.getters['chat/conversation/loadingConversations']
     },
@@ -30,11 +33,7 @@ export default {
       return this.$store.getters['chat/conversation/currentConversationType']
     },
     conversation () {
-      const conversation = this.$store.getters[
-        'chat/conversation/conversations'
-      ].filter((item) => item.id === this.currentConversationId)
-      if (conversation.length) return conversation[0]
-      return {}
+      this.$store.getters['chat/data/conversation'](this.currentConversationId)
     },
     messages () {
       let messages = {}
@@ -42,7 +41,6 @@ export default {
         messages = this.$store.getters['chat/message/messages'][
           this.currentConversationId
         ]
-        console.log('update messages', messages)
         if (this.topicFilter) {
           const newMessages = {}
           for (const item in messages) {

@@ -44,12 +44,7 @@
 
   export default {
     props: {
-      conversationId: {
-        required: true,
-        type: [String, Number],
-      },
       isRecording: Boolean,
-      isPlay: Boolean,
       isStop: Boolean,
       recordStripCount: {
         type: [Number, String],
@@ -103,9 +98,13 @@
     watch: {
       volume (v) {
         let newVolume = Math.round((v * 1000) / this.recordStripMaxHeight)
-        newVolume = (newVolume < this.recordStripMinHeight)
-          ? this.recordStripMinHeight
-          : newVolume
+
+        if (newVolume < this.recordStripMinHeight) {
+          newVolume = this.recordStripMinHeight
+        } else if (newVolume > this.recordStripMaxHeight) {
+          newVolume = this.recordStripMaxHeight
+        }
+
         this.recordVolumes.push(newVolume)
       },
     },
@@ -163,9 +162,9 @@
           const startPos = Math.floor(this.recordVolumes.length / 2)
           this.recordVolumes.splice(startPos, awayCount)
 
-          this.recordVolumes = this.recordVolumes.filter((volume, i) => {
-            return (i % takeCount) === 0
-          }, takeCount)
+          const recordVolumes = this.recordVolumes.filter((volume, i) => (i % takeCount) === 0, takeCount)
+
+          this.$emit('update:recordVolumes', recordVolumes)
         } else {
           this._addMinStripCountRecordVolumes()
         }
@@ -173,7 +172,7 @@
       _addMinStripCountRecordVolumes () {
         const addCount = (this.recordStripCount - this.recordVolumes.length)
         const fillArr = new Array(addCount).fill(this.recordStripMinHeight)
-        this.recordVolumes.unshift(...fillArr)
+        this.recordVolumes.push(...fillArr)
       },
     },
   }

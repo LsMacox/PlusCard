@@ -28,7 +28,7 @@
       </div>
       <div class="durations">
         <p class="body-m-regular neutral-600--text">
-          {{ this.$moment(recordPlayCurrentTime * 1000).format('mm:ss') }}/{{ recordList[0].duration }}
+          {{ formatTime(currentPlayTime) }}/{{ formatTime(recordList[0].millisecondsDuration * 1000) }}
         </p>
       </div>
     </div>
@@ -93,10 +93,18 @@
     data () {
       return {}
     },
+    computed: {
+      currentPlayTime () {
+        return (this.recordPlayCurrentTime * 1000) > (this.recordList[0].millisecondsDuration * 1000)
+          ? (this.recordList[0].millisecondsDuration * 1000)
+          : (this.recordPlayCurrentTime * 1000)
+      },
+    },
     watch: {},
     mounted () {
       this.eventRecordPlayEnded()
       this.eventRecordPlayTimeUpdate()
+      console.log(this.isPlay)
     },
     methods: {
       isRecordStripActive (idx) {
@@ -105,9 +113,9 @@
         return (part * idx) <= (this.recordPlayCurrentTime * 1000)
       },
       switchPlayBackRecording () {
-        const isPlay = !this.isPlay
-        this.$emit('update:isPlay', !this.isPlay)
-        if (!isPlay) {
+        const isPlay = this.isPlay
+        this.$emit('update:isPlay', !isPlay)
+        if (isPlay) {
           this.recordPlay.pause()
         } else {
           this.recordPlay.play()
@@ -122,28 +130,25 @@
         await this.$store.dispatch('chat/message/send', { type, message })
       },
       cancelRecorder () {
-        this.deleteRecord()
-        this.stopRecorder()
+        this.recordPlay.pause()
+        this.$emit('update:isPlay', false)
         this.$emit('update:isStop', false)
         this.$emit('update:recordPlay', {})
-        this.removeRecordStrip()
-      },
-      removeRecordStrip () {
+        this.$emit('update:recordList', [])
         this.$emit('update:recordVolumes', [])
       },
-      deleteRecord () {
-        this.$emit('update:recordList', [])
-      },
       stopRecorder () {
-        if (!this.isRecording) {
-          return
-        }
-        this.$emit('update:isStop', true)
+        if (!this.isRecording) return
         this.recorder.stop()
-        this.$emit('update:recordList', this.recorder.recordList())
         const recordPlay = new window.Audio()
-        recordPlay.src = this.recorder.recordList()[0].url
+        const recordList = this.recorder.recordList()
+        recordPlay.src = recordList[0].url
+        this.$emit('update:isStop', true)
+        this.$emit('update:recordList', recordList)
         this.$emit('update:recordPlay', recordPlay)
+      },
+      formatTime (time) {
+        return this.$moment(time).format('mm:ss')
       },
       eventRecordPlayEnded () {
         this.recordPlay.onended = () => {

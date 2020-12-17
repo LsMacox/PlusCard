@@ -22,7 +22,7 @@ const actions = {
     async buyers ({ commit }, programId) {
         // eslint-disable-next-line no-useless-catch
         try {
-            console.log('buyers...')
+            // console.log('buyers...')
             commit('loading', true)
             const success = await ApiService.get('/api-cabinet/client/certificate/clients', {
                 params: {

@@ -12,7 +12,10 @@
       </div>
       <div class="app--conversation--list--card--content--wrapper">
         <div class="app--conversation--list--card--content">
-          <div class="app--conversation--list--card--top--line">
+          <div
+            class="app--conversation--list--card--top--line"
+            :style="!authorName.length && isGroup ? 'margin-top: 29px' : ''"
+          >
             <div class="app--conversation--list--card-name">
               {{ (conversation.display_name ? conversation.display_name : name) }}
             </div>
@@ -31,7 +34,7 @@
             class="app--conversation--list--card--bottom--line"
             :class="[authorName == 'Вы' ? 'blueAuthor' : '']"
           >
-            {{ (authorName + ': ' + lastMessage) }}
+            {{ (authorName.length ? authorName + ': ' : '') + lastMessage }}
           </div>
         </div>
 

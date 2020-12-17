@@ -34,7 +34,7 @@ export default {
         afterRecording: this.afterRecording,
         pauseRecording: this.pauseRecording,
         micFailed: this.micFailed,
-        bitRate: 128,
+        bitRate: 192,
         sampleRate: 44100,
         format: 'mp3',
       })

@@ -1,0 +1,12 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+@import "./topics/user-topic";
+@import "./topics/group-topic";
+
+.side-panel__topics {
+  p {
+    margin-bottom: 0;
+  }
+  @include user-topic;
+  @include group-topic;
+}

@@ -105,7 +105,7 @@
         }
     }
     .side-panel__overlay {
-        left: -280px!important;
+        left: -100%!important;
         .v-overlay__content {
             position: unset!important;
         }

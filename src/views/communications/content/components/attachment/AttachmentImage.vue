@@ -6,7 +6,6 @@
     >
       <img
         :src="content.thumb"
-        alt=""
       >
     </div>
 
@@ -14,54 +13,14 @@
       v-if="show"
       v-model="show"
       max-width="80%"
-      content-class="preview-dialog"
+      content-class="dialog-attachment-image-preview"
     >
-      <v-card class="preview-dialog__card">
-        <v-container class="preview-dialog__container">
-          <v-row justify="end">
-            <v-btn
-              icon
-              :href="content.url"
-              color="white"
-              target="_blank"
-              download
-            >
-              <v-icon>fa-download</v-icon>
-            </v-btn>
-            <v-btn
-              icon
-              color="white"
-              @click="show = false"
-            >
-              <v-icon>fa-times</v-icon>
-            </v-btn>
-          </v-row>
-          <v-row
-            class="image-row"
-            justify="center"
-            align="center"
-          >
-            <v-col cols="auto">
-              <img
-                :src="content.url"
-                class="image-full"
-              >
-            </v-col>
-          </v-row>
-        </v-container>
-
-        <!-- <v-card-text>
-          <v-row class="image-row" justify="center" align="center">
-            <v-col cols="auto">
-              <img
-            :src="content.url"
-            class="image-full"
-          >
-            </v-col>
-          </v-row>
-
-        </v-card-text> -->
-      </v-card>
+      <div class="preview-img">
+        <img
+          :src="content.url"
+          alt="image"
+        >
+      </div>
     </v-dialog>
   </div>
 </template>

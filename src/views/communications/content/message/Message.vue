@@ -1,8 +1,13 @@
 <template>
   <div
     class="message-line"
-    :class="{select: showActions}"
+    :class="{select: showActions || (isChoiceMessage && isChoice), choice: isChoiceMessage}"
+    @click="choiceMessage"
   >
+    <div
+      v-if="isChoiceMessage"
+      class="choice__overlay"
+    />
     <div
       v-click-outside="hideActions"
       class="message-block"
@@ -69,7 +74,10 @@
             </a>
           </li>
           <li class="action-item">
-            <a href="#">
+            <a
+              href="#"
+              @click="openChoiceMessages"
+            >
               <iconify-icon
                 class="icon icon-checkmark"
                 icon="ion-checkmark-circle-outline"
@@ -155,7 +163,10 @@
           </div>
 
           <!-- блок сообщения -->
-          <div class="message-box-message">
+          <div
+            class="message-box-message"
+            :style="item.attachments.length ? 'margin-right: 0px' : ''"
+          >
             <!-- вложения -->
             <div
               v-if="item.attachments.length"
@@ -213,7 +224,7 @@
 
           <!-- кнопка редактирования -->
           <div
-            v-if="myMessage"
+            v-if="myMessage && !item.attachments.length"
             class="message-box-edit"
           >
             <iconify-icon
@@ -227,10 +238,48 @@
       </div>
     </div>
 
-    <div class="message-time">
-      <p class="body-s-regular neutral-500--text">
-        {{ getDate(item.created_at) }}
-      </p>
+    <div class="message__right-block">
+      <div
+        v-if="myMessage && isMessageSendNow"
+        class="message-shipment"
+      >
+        <iconify-icon
+          v-if="!item.read"
+          class="icon icon-check"
+          icon="feather-check"
+          width="21"
+        />
+        <iconify-icon
+          v-if="item.read"
+          class="icon icon-done"
+          icon="ion-checkmark-done"
+          width="21"
+        />
+      </div>
+
+      <div class="message-time">
+        <p class="body-s-regular neutral-500--text mb-0">
+          {{ getDate(item.created_at) }}
+        </p>
+      </div>
+
+      <div
+        v-if="isChoiceMessage"
+        class="message-choice"
+      >
+        <iconify-icon
+          v-if="isChoice"
+          class="icon-check"
+          icon="octicon-check-circle-fill-16"
+          width="21"
+        />
+        <iconify-icon
+          v-else
+          class="icon-not-check"
+          icon="feather-circle"
+          width="21"
+        />
+      </div>
     </div>
 
     <app-message-delete
@@ -245,7 +294,7 @@
 <script>
   // mixins
   import MixinIndex from '@/views/communications/mixins/index.js'
-  import MixinCalculation from '@/mixins/calculation.js'
+  import MixinCalculation from '@/mixins/calculation'
 
   // components
   import AppMessageDelete from './MessageDelete'
@@ -260,8 +309,8 @@
       AppAttachments,
     },
     mixins: [
-      MixinCalculation,
       MixinIndex,
+      MixinCalculation,
     ],
     props: {
       item: {
@@ -269,6 +318,13 @@
         required: true,
       },
       isCloseAction: Boolean,
+      isChoiceMessage: Boolean,
+      choiceMessageIds: {
+        type: Array,
+        default () {
+          return []
+        },
+      },
       conversationId: {
         type: [Number, String, null],
         default: null,
@@ -322,6 +378,22 @@
           return []
         }
       },
+      isMessageSendNow () {
+        const msgTime = new Date(this.item.created_at).getTime()
+        const currentDate = this.$moment()
+        const msgDate = this.$moment(msgTime).local()
+        if (
+          this.myMessage &&
+          (
+            currentDate.diff(msgDate, 'minutes') <= 3 ||
+            this.conversation.last_message.id === this.item.id
+          )
+        ) return true
+        return false
+      },
+      isChoice () {
+        return this.choiceMessageIds.findIndex(id => id === this.item.id) !== -1
+      },
     },
     watch: {
       async showActions (v) {
@@ -337,7 +409,7 @@
         const actionHeight = this.nodeOffsetWH(actionEl, false)
         const MsgOffsetTop = document.getElementById('message-' + this.item.id).parentNode.offsetTop
 
-        if (((MsgOffsetTop - actionHeight) + 60) > headerHeight) {
+        if (((MsgOffsetTop - actionHeight) + 60) > headerHeight + 60) {
           this.actionPlacement = 'top'
         } else {
           this.actionPlacement = 'bottom'
@@ -352,6 +424,15 @@
     methods: {
       hideActions () {
         this.showActions = false
+      },
+      choiceMessage () {
+        const choiceMessageIds = this.choiceMessageIds.findIndex(id => id === this.item.id)
+
+        if (choiceMessageIds === -1) {
+          this.choiceMessageIds.push(this.item.id)
+        } else {
+          this.choiceMessageIds.splice(choiceMessageIds, 1)
+        }
       },
       openDeleteMessage () {
         this.hideActions()
@@ -368,7 +449,12 @@
         this.$emit('reply', this.item.id)
       },
       openForwardMessage () {
-        //
+        this.hideActions()
+        this.$emit('forward', this.item.id)
+      },
+      openChoiceMessages () {
+        this.hideActions()
+        this.$emit('update:isChoiceMessage', true)
       },
       copyMessage () {
         navigator.clipboard.writeText(this.item.message)

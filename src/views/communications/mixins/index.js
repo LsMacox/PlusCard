@@ -92,7 +92,7 @@ export default {
       else if (msgItem.real_sender_id === this.chatUser.id) {
         return payload.chatUser.avatar
       }
-      return null
+      return this.img404
     },
     getAuthor (msgItem, payload) {
       if (!payload) return

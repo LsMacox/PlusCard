@@ -156,6 +156,21 @@
         position: absolute;
         padding-bottom: 80px;
       }
+      .item-archive {
+        .list-avatar {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: $neutral-250;
+          border-radius: 50%;
+          .icon-archive {
+            color: $neutral-500;
+          }
+        }
+        .app--conversation--list--card--bottom--line {
+          width: 235px;
+        }
+      }
     }
 
     .app--conversation--setting {
@@ -175,6 +190,30 @@
       .icon-setting {
         margin-right: 8px;
         color: $primary-base;
+      }
+    }
+
+    .app--coversation--archive {
+      p {
+        margin-bottom: 0;
+      }
+      .archive--header {
+        display: flex;
+        margin-top: 20px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        .archive--back {
+          min-width: 0;
+          padding: 15px 5px !important;
+          border-radius: 50%;
+          .icon-back {
+            color: $neutral-500;
+          }
+        }
+        .archive--title {
+          margin-top: 4px;
+          margin-left: 11px;
+        }
       }
     }
   }

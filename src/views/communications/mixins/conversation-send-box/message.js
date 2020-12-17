@@ -3,13 +3,8 @@ export default {
     clearForm () {
       this.message = ''
       // files
-      this.attachFileName = null
-      this.attachFileType = null
-      this.attachFilePreview = null
-      this.formDataFiles = []
-      this.attachFile = null
-      this.files = []
-
+      this.attachedFile = {}
+      this.requestFileData = {}
       // reply
       this.internalIsReplyMessage = false
       // edit
@@ -20,21 +15,12 @@ export default {
       this.$store.commit('chat/message/recipients', [])
       this.$store.commit('chat/conversation/setCurrentConversationMessage', '')
       this.$emit('send-message')
-      document.getElementById('messageTextArea').style.height = 60 + 'px'
     },
     // отправляем сообщение
     async send () {
       if (this.sending) return
 
-      console.log({
-        replyMessageId: this.replyMessageId,
-        selectedTopicId: this.selectedTopicId,
-        message: this.message,
-        recipients: this.recipients,
-        formDataFiles: this.formDataFiles,
-      })
-
-      if (this.validateSendMessage) {
+      if (this.validateSendMessage()) {
         try {
           if (this.internalIsEditMessage) {
             this._sendMessageEdit()
@@ -49,7 +35,7 @@ export default {
             }
 
             // attach reply
-            if (this.replyMessageId) {
+            if (this.internalIsReplyMessage && this.replyMessageId) {
               type = 'reply'
               message.set('message_id', this.replyMessageId)
             } else if (this.selectedTopicId) {
@@ -67,11 +53,8 @@ export default {
             }
 
             // attach files
-            if (Array.isArray(this.formDataFiles)) {
-              for (let i = 0; i < this.formDataFiles.length; i++) {
-                const file = this.formDataFiles[i]
-                message.append('files[' + i + ']', file)
-              }
+            if (this.attachedFile instanceof File) {
+              message.append('files[0]', this.attachedFile)
             }
 
             await this.$store.dispatch('chat/message/send', { type, message })
@@ -105,6 +88,18 @@ export default {
       setTimeout(() => {
         this.$refs.messageTextArea.$el.querySelector('textarea').focus()
       }, 0)
+    },
+    validateSendMessage () {
+      if (
+        this.isAttachedFile ||
+        (
+          this.message &&
+          this.message.replace(/\s+/, ' ').replace(/\s/, '').length
+        )
+      ) {
+        return true
+      }
+      return false
     },
     clearMessage () {
       this.message = ''

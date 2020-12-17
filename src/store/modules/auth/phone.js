@@ -23,7 +23,7 @@ const actions = {
                 '/api-cabinet/login/phone',
                 user,
             )
-            console.log(result)
+            // console.log(result)
             commit('loginId', result)
         } catch (error) {
             // commit('auth/auth/SET_AUTH', null, { root: true })
@@ -38,7 +38,7 @@ const actions = {
                 '/api-cabinet/login/phone/confirm',
                 user,
             )
-            console.log(result)
+            // console.log(result)
             commit('auth/auth/SET_AUTH', result, { root: true })
         } catch (error) {
             commit('auth/auth/SET_AUTH', null, { root: true })

@@ -106,7 +106,7 @@
       },
       async remove () {
         const message = {
-          conversation_id: this.msgItem.conversation_id,
+          conversation_id: +this.msgItem.conversation_id,
           message_id: this.msgItem.id,
         }
         this.messageDeleteLoading = true

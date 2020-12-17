@@ -4,104 +4,175 @@
     class="app--chat--list"
   >
     <div id="app--conversation--list--container">
-      <div class="app--conversation--list--header">
-        <v-row justify="space-between">
-          <v-col>
-            <base-text-field
-              v-model="search"
-              class="field-search"
-              placeholder="Поиск чатов"
-              prepend-inner-icon="$iconify_ion-search-outline"
-              clear-icon="$iconify_ion-close-circle-outline"
-              :prepend-inner-icon-color="this.$vuetify.theme.themes.light['neutral-500']"
-              clearable
-              hide-details
-            />
-          </v-col>
-          <v-col cols="auto d-flex align-center">
-            <v-tooltip
-              :open-delay="$config.tooltipButtonDelay"
-              top
-            >
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  class="btn-add-chat"
-                  color="primary"
-                  fab
-                  :loading="chatMemberListAction"
-                  v-on="on"
-                  @click="openCreate()"
-                >
-                  <v-icon
-                    color="neutral-100"
-                    size="15"
-                  >
-                    $iconify_eva-plus-outline
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>Начать переписку</span>
-            </v-tooltip>
-          </v-col>
-        </v-row>
-      </div>
-
-      <v-skeleton-loader
-        :loading="loadingConversations"
-        :style="{ height: '100%', width: '100%', position: 'relative' }"
-        type="list-item-avatar-two-line@8"
-      >
-        <div class="app--conversation--content">
-          <div
-            v-if="groupedConversation.length"
-            id="conversationList"
-            class="app--conversation--list"
-          >
-            <div
-              v-for="(item, i) in groupedConversation"
-              :key="i"
-              class="list-item"
-              :class="{'list-item-active': (item.id === currentConversationId)}"
-              @click="conversationChat(item.id)"
-            >
-              <conversation-list-view
-                :conversation-type="currentConversationType"
-                :conversation-id="item.id"
+      <v-scroll-x-transition :hide-on-leave="true">
+        <div
+          v-show="!isArchive"
+          class="app--conversation--list--header"
+        >
+          <v-row justify="space-between">
+            <v-col>
+              <base-text-field
+                v-model="search"
+                class="field-search"
+                placeholder="Поиск чатов"
+                prepend-inner-icon="$iconify_ion-search-outline"
+                clear-icon="$iconify_ion-close-circle-outline"
+                :prepend-inner-icon-color="this.$vuetify.theme.themes.light['neutral-500']"
+                clearable
+                hide-details
               />
-            </div>
-          </div>
-          <div
-            v-else
-            style="width: 100%"
-          >
+            </v-col>
+            <v-col cols="auto d-flex align-center">
+              <v-btn
+                class="btn-add-chat"
+                color="primary"
+                fab
+                :loading="chatMemberListAction"
+                @click="openCreate()"
+              >
+                <v-icon
+                  color="neutral-100"
+                  size="15"
+                >
+                  $iconify_eva-plus-outline
+                </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </div>
+      </v-scroll-x-transition>
+
+      <v-scroll-x-transition :hide-on-leave="true">
+        <v-skeleton-loader
+          v-show="!isArchive"
+          :loading="loadingConversations"
+          :style="{ height: '100%', width: '100%', position: 'relative' }"
+          type="list-item-avatar-two-line@8"
+        >
+          <div class="app--conversation--content">
             <div
-              class="list-empty"
+              v-if="groupedConversation.length"
+              id="conversationList"
+              class="app--conversation--list"
+            >
+              <div
+                v-if="archiveConversation.length && (!search || !String(search).replace(/\s+/g, ' ').replace(/^\s/g, '').length)"
+                class="list-item item-archive"
+                @click="isArchive = !isArchive"
+              >
+                <div style="display: flex; width: 100%;">
+                  <div class="app--conversation--list--card">
+                    <div class="app--conversationn--list--avatar--wrapper">
+                      <div class="list-avatar">
+                        <iconify-icon
+                          class="icon-archive"
+                          icon="ion-archive-outline"
+                          width="21"
+                        />
+                      </div>
+                    </div>
+                    <div class="app--conversation--list--card--content--wrapper">
+                      <div class="app--conversation--list--card--content">
+                        <div
+                          class="app--conversation--list--card--top--line"
+                        >
+                          <div class="app--conversation--list--card-name">
+                            Архив
+                          </div>
+                        </div>
+                        <div
+                          class="app--conversation--list--card--bottom--line"
+                        >
+                          {{ archiveNames }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                v-for="(item, i) in groupedConversation"
+                :key="i"
+                class="list-item"
+                :class="{'list-item-active': (item.id === currentConversationId)}"
+                @click="conversationChat(item.id)"
+              >
+                <conversation-list-view
+                  :conversation-type="currentConversationType"
+                  :conversation-id="item.id"
+                />
+              </div>
+            </div>
+            <div
+              v-else
               style="width: 100%"
             >
-              Чаты не найдены
+              <div
+                class="list-empty"
+                style="width: 100%"
+              >
+                Чаты не найдены
+              </div>
             </div>
           </div>
-        </div>
-        <div class="app--conversation--setting">
-          <v-btn
-            class="btn-setting"
-            color="primary-100"
-          >
-            <iconify-icon
-              class="icon-setting"
-              icon="feather-settings"
-              width="21"
-            />
-            <p class="body-m-semibold primary--text">
-              Настроить чаты
-            </p>
-          </v-btn>
-        </div>
-      </v-skeleton-loader>
+          <div class="app--conversation--setting">
+            <v-btn
+              class="btn-setting"
+              color="primary-100"
+            >
+              <iconify-icon
+                class="icon-setting"
+                icon="feather-settings"
+                width="21"
+              />
+              <p class="body-m-semibold primary--text">
+                Настроить чаты
+              </p>
+            </v-btn>
+          </div>
+        </v-skeleton-loader>
+      </v-scroll-x-transition>
 
-      <chat-create
-        v-if="dialogCreate"
-        :dialog.sync="dialogCreate"
+      <v-scroll-x-reverse-transition :hide-on-leave="true">
+        <div
+          v-show="isArchive"
+          class="app--coversation--archive"
+        >
+          <div class="archive--header">
+            <v-btn
+              class="archive--back"
+              text
+              @click="isArchive = !isArchive"
+            >
+              <iconify-icon
+                class="icon-back"
+                icon="arrow-back"
+                width="21"
+              />
+            </v-btn>
+            <div class="archive--title">
+              <p class="title-s-bold">
+                Архив
+              </p>
+            </div>
+          </div>
+          <div
+            v-for="(item, i) in archiveConversation"
+            :key="i"
+            class="list-item"
+            :class="{'list-item-active': (item.id === currentConversationId)}"
+            @click="conversationChat(item.id)"
+          >
+            <conversation-list-view
+              :conversation-type="currentConversationType"
+              :conversation-id="item.id"
+            />
+          </div>
+        </div>
+      </v-scroll-x-reverse-transition>
+
+      <chat-create-panel
+        v-model="isChatCreate"
       />
     </div>
   </div>
@@ -110,7 +181,7 @@
 <script>
   // components
   import ConversationListView from './ConversationListView'
-  import ChatCreate from './components/chat/ChatCreate'
+  import ChatCreatePanel from './components/chat/ChatCreatePanel'
 
   // mixins
   import MixinIndex from '../mixins/index.js'
@@ -121,7 +192,7 @@
 
   export default {
     components: {
-      ChatCreate,
+      ChatCreatePanel,
       ConversationListView,
     },
     mixins: [
@@ -133,9 +204,10 @@
     },
     data () {
       return {
-        dialogCreate: false,
+        isChatCreate: false,
         chatMemberListAction: false,
         search: null,
+        isArchive: false,
       }
     },
     computed: {
@@ -157,38 +229,30 @@
           },
         )
       },
-      conversationsFiltered () {
-        let arr = []
-
-        if (this.conversations && this.conversations.length) {
-          if (this.search) {
-            const searchName = this.search.toLowerCase().trim()
-
-            arr = this.conversationSearcher.search(searchName)
-          } else {
-            arr = this.conversations
-          }
-        }
-
-        return arr
-      },
       groupedConversation () {
-        let chosenChat = this.conversationsFiltered.filter((item) => item.chosen)
-        chosenChat = this.conversationsSorted(chosenChat)
+        const conversations = this.conversationsSorted(this.conversations.filter(item => !item.archived))
+        const chosenConversations = conversations.filter((item) => item.chosen)
+        let groupedConversation = Array.from(new Set(chosenConversations.concat(conversations)))
 
-        let simpleChat = this.conversationsFiltered.filter(
-          (item) => !item.chosen,
-        )
-        simpleChat = this.conversationsSorted(simpleChat)
-        const res = chosenChat.concat(simpleChat)
+        const search = String(this.search).replace(/\s+/g, ' ').replace(/^\s/g, '')
 
-        if (!res || !res.length) {
+        if (!groupedConversation.length) {
           this.$emit('toogleEmpty', true)
           return []
         }
 
+        if (this.search && search.length) {
+          groupedConversation = this.conversationSearcher.search(search.toLowerCase())
+        }
+
         this.$emit('toogleEmpty', false)
-        return chosenChat.concat(simpleChat)
+        return groupedConversation
+      },
+      archiveConversation () {
+        let archiveConversation = this.conversations
+        archiveConversation = this.conversationsSorted(archiveConversation)
+        archiveConversation = archiveConversation.filter(c => c.archived)
+        return archiveConversation
       },
       chatUser () {
         return this.$store.getters['chat/chatUser/chatUser']
@@ -198,8 +262,25 @@
           this.currentConversationId
         ] // id чата
       },
-      activeChatList () {
-        return this.$route.hash || '#business'
+      archiveNames () {
+        if (!this.archiveConversation.length) return 'Нету пользователей!'
+
+        const names = []
+        const limit = 6
+
+        for (let i = 0; i < this.archiveConversation.length; i++) {
+          if (i >= limit) break
+          if (
+            this.archiveConversation[i].display_name &&
+            this.archiveConversation[i].display_name.length
+          ) {
+            let name = this.archiveConversation[i].display_name.toLowerCase()
+            name = name.charAt(0).toUpperCase() + name.slice(1)
+            names.push(name)
+          }
+        }
+
+        return names.join(', ')
       },
     },
     watch: {
@@ -218,6 +299,7 @@
       },
     },
     async mounted () {
+      this.search = ''
       if (this.program) await this.conversationInit(this.program.id)
     },
     methods: {
@@ -255,7 +337,7 @@
         try {
           await this.$store.dispatch('chat/member/list', this.programId)
           if (this.clients && this.clients.length > 0) {
-            this.dialogCreate = true
+            this.isChatCreate = true
           } else {
             throw Error('Отсуствуют чаты с клиентами')
           }

@@ -41,7 +41,7 @@ const actions = {
                 '/api-cabinet/login/merchant',
                 user,
             )
-            console.log(result)
+            // console.log(result)
             commit('auth/auth/SET_AUTH', result, { root: true })
         } catch (error) {
             commit('auth/auth/SET_AUTH', null, { root: true })
@@ -67,7 +67,7 @@ const actions = {
     },
 
     async GetBalanceOperations ({ state, rootState, commit, rootGetters }) {
-        console.log('GetBalanceOperations', rootGetters.merchantId)
+        // console.log('GetBalanceOperations', rootGetters.merchantId)
         const result = await ApiService.get(`/api/merchant/balance/operations?merchant_id=${rootGetters.merchantId}`)
         commit('BALANCE_OPERATIONS', result)
         return result

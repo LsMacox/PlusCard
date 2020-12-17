@@ -7,6 +7,7 @@
           max-width="48"
           max-height="48"
           :src="avatar"
+          @error="errorLoadingAvatar = true"
         />
         <div class="header-info">
           <p
@@ -82,21 +83,21 @@
                 >
                   <a
                     href="#"
-                    @click="handler(moreItem.func)"
+                    @click="handler(moreItem.func, moreItem.mode)"
                   >
                     <iconify-icon
                       class="icon"
                       :icon="moreItem.icon"
                       width="21"
                     />
-                    <p class="body-s-medium neutral-500--text">{{ moreItem.title }}</p>
+                    <p class="body-s-medium neutral-500--text">{{ Array.isArray(moreItem.title) ? moreItem.mode ? moreItem.title[0] : moreItem.title[1] : moreItem.title }}</p>
                   </a>
                 </li>
               </ul>
             </div>
           </div>
         </div>
-        <div
+        <!-- <div
           v-if="chatUser.id == conversation.creator_id"
           class="app--conversation--header__burger"
         >
@@ -105,7 +106,7 @@
             style="cursor: pointer;"
             @click="openUpdate(conversation)"
           />
-        </div>
+        </div> -->
       </div>
     </div>
     <div
@@ -157,25 +158,14 @@
         />
       </v-btn>
     </div>
-    <chat-update
-      v-if="dialogUpdate"
-      :dialog.sync="dialogUpdate"
-      :item="editedItem"
-    />
   </div>
 </template>
 
 <script>
-  // components
-  import ChatUpdate from './components/chat/ChatUpdate'
-
   // mixins
   import MixinIndex from '../mixins/index.js'
 
   export default {
-    components: {
-      ChatUpdate,
-    },
     mixins: [
       MixinIndex,
     ],
@@ -199,20 +189,11 @@
     },
     data () {
       return {
-        dialogUpdate: false,
-        editedItem: {},
         searchShow: false,
         internalSearchString: this.searchString,
         internalSearchChoose: this.searchChoose,
         moreShow: false,
-        moreList: [
-          { icon: 'check-circle', title: 'Выбрать', func: 'moreChoose' },
-          { icon: 'feather-user', title: 'О клиенте', func: 'moreAbout' },
-          { icon: 'feather-star', title: 'В избранное', func: 'moreFavorites' },
-          { icon: 'ion-archive-outline', title: 'Архивировать', func: 'moreArchive' },
-          { icon: 'feather-hash', title: 'Редактировать', func: 'moreEdit' },
-          { icon: 'feather-trash', title: 'Удалить чат', func: 'moreDelete' },
-        ],
+        errorLoadingAvatar: false,
       }
     },
     computed: {
@@ -229,8 +210,17 @@
         return this.$store.getters['chat/data/activeMembers'](this.conversationId)
       },
       isOnline () {
-        console.log(this.conversation)
         return true
+      },
+      moreList () {
+        return [
+          { icon: 'check-circle', title: 'Выбрать', func: 'moreChoose' },
+          { icon: 'feather-user', title: 'О клиенте', func: 'moreAbout' },
+          { icon: 'feather-star', mode: !this.conversation.chosen, title: ['В избранное', 'Убрать из избраного'], func: 'moreFavorites' },
+          { icon: 'ion-archive-outline', mode: !this.conversation.archived, title: ['Архивировать', 'Вернуть из архива'], func: 'moreArchive' },
+          { icon: 'feather-hash', title: 'Редактировать', func: 'moreEdit' },
+          { icon: 'feather-trash', title: 'Удалить чат', func: 'moreDelete' },
+        ]
       },
       avatar () {
         let avatar = ''
@@ -242,6 +232,9 @@
         } else {
           avatar = this.img404
         }
+
+        if (this.errorLoadingAvatar) avatar = this.img404
+
         return avatar
       },
       name () {
@@ -286,16 +279,6 @@
       },
     },
     methods: {
-      setChosen (item) {
-        const conversation = {
-          conversation_id: item.id,
-        }
-        if (item.chosen) {
-          this.$store.dispatch('chat/conversation/chosenRemove', conversation)
-        } else {
-          this.$store.dispatch('chat/conversation/chosenSet', conversation)
-        }
-      },
       setMuted (item) {
         const conversation = {
           conversation_id: item.id,
@@ -307,8 +290,7 @@
         }
       },
       openUpdate (item) {
-        this.editedItem = item
-        this.dialogUpdate = true
+        //
       },
       nextEntry () {
         if (this.internalSearchChoose + 1 < (this.searchCount + 1)) this.internalSearchChoose++
@@ -318,8 +300,8 @@
         if (this.internalSearchChoose - 1 > 0) this.internalSearchChoose--
         this.$emit('update:searchChoose', this.internalSearchChoose)
       },
-      handler (func) {
-        this[func]()
+      handler (func, mode) {
+        this[func](mode)
       },
       // more menu
       hideMore () {
@@ -331,17 +313,30 @@
       moreAbout () {
         console.log('more about')
       },
-      moreFavorites () {
-        console.log('more favorites')
+      moreFavorites (isFavorite) {
+        this.hideMore()
+        if (isFavorite) {
+          this.$store.dispatch('chat/conversation/chosenSet', { conversation_id: this.conversationId })
+        } else {
+          this.$store.dispatch('chat/conversation/chosenRemove', { conversation_id: this.conversationId })
+        }
       },
-      moreArchive () {
-        console.log('more archive')
+      moreArchive (isArchive) {
+        this.hideMore()
+
+        const conversation = {
+          conversation_id: this.conversationId,
+          archived: isArchive,
+        }
+
+        this.$store.dispatch('chat/conversation/updateArchived', conversation)
       },
       moreEdit () {
         console.log('more edit')
       },
       moreDelete () {
-        console.log('more delete')
+        this.hideMore()
+        this.$store.dispatch('chat/conversation/delete', this.conversationId)
       },
     },
   }

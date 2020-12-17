@@ -71,9 +71,6 @@
       conversationId (v) {
         this.currentConversationId = v
       },
-      showEmpty (v) {
-        console.log('showEmpty', v)
-      },
     },
     created () {
       this.currentConversationType = this.conversationType

@@ -51,7 +51,7 @@ export const ICONIFY_ICONS = {
 
     // entypo
     'chevron-right': () => import('@iconify/icons-entypo/chevron-right'),
-    'chevron-left': () => import('@iconify/icons-entypo/chevron-right'),
+    'chevron-left': () => import('@iconify/icons-entypo/chevron-left'),
 
     // ion
     'ion-checkmark-done': () => import('@iconify/icons-ion/checkmark-done'),
@@ -80,6 +80,7 @@ export const ICONIFY_ICONS = {
     'ion-search-outline': () => import('@iconify/icons-ion/search-outline'),
     'ion-pause-outline': () => import('@iconify/icons-ion/pause-outline'),
     'ion-arrow-undo-outline': () => import('@iconify/icons-ion/arrow-undo-outline'),
+    'add-circle-outline': () => import('@iconify/icons-ion/add-circle-outline'),
 
     // feather
     'feather-refresh-ccw': () => import('@iconify/icons-feather/refresh-ccw'),
@@ -88,6 +89,8 @@ export const ICONIFY_ICONS = {
     'feather-download': () => import('@iconify/icons-feather/download'),
     'feather-chevron-down': () => import('@iconify/icons-feather/chevron-down'),
     'feather-chevron-up': () => import('@iconify/icons-feather/chevron-up'),
+    'feather-chevron-right': () => import('@iconify/icons-feather/chevron-right'),
+    'feather-chevron-left': () => import('@iconify/icons-feather/chevron-left'),
     'feather-phone': () => import('@iconify/icons-feather/phone'),
     'feather-mouse-pointer': () => import('@iconify/icons-feather/mouse-pointer'),
     'feather-more-vertical': () => import('@iconify/icons-feather/more-vertical'),
@@ -112,12 +115,17 @@ export const ICONIFY_ICONS = {
     'feather-star': () => import('@iconify-icons/feather/star'),
     'feather-volume': () => import('@iconify/icons-feather/volume'),
     'feather-volume-1': () => import('@iconify/icons-feather/volume-1'),
+    'feather-check': () => import('@iconify-icons/feather/check'),
+    'feather-circle': () => import('@iconify-icons/feather/circle'),
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),
 
      // ls
     'ls-sort': () => import('@iconify/icons-ls/sort'),
+    
+    // typcn
+    'typcn-forward-outline': () => import('@iconify-icons/typcn/arrow-forward-outline'),
 
     // mdi
     'mdi-square-rounded-outline': () => import('@iconify/icons-mdi/square-rounded-outline'),
@@ -128,6 +136,7 @@ export const ICONIFY_ICONS = {
     'octicon-triangle-up-24': () => import('@iconify/icons-octicon/triangle-up-24'),
     'octicon-triangle-down-24': () => import('@iconify/icons-octicon/triangle-down-24'),
     'octicon-check-16': () => import('@iconify/icons-octicon/check-16'),
+    'octicon-check-circle-fill-16': () => import('@iconify/icons-octicon/check-circle-fill-16'),
 
     // si-glyph
     'si-glyph-triangle-down': () => import('@iconify/icons-si-glyph/triangle-down'),

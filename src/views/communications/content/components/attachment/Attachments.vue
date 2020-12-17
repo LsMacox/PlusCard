@@ -87,8 +87,5 @@
         default: null,
       },
     },
-    mounted () {
-      console.log('attachment type:', this.attachments)
-    },
   }
 </script>

@@ -1,31 +1,10 @@
 export default {
   methods: {
-    getMessageIndexById (id) {
-      const msg = Object.values(this.messages)
-      const msgIndex = msg.findIndex(m => {
-        return String(m.id) === String(id)
-      })
-
-      return msgIndex
-    },
-    closeReplyMessage () {
-      this.quotedMessage = {}
-      this.quotedMessageSender = null
-      this.sendType = 'send'
-      this.dialogReplyMessage = false
-      if (this.overlayChat) {
-        const elem = this.$refs.conversationField
-        if (elem) elem.scrollTop = elem.scrollHeight
-        this.overlayChat = false
-      }
-    },
     toBottomFeed () {
       const elem = this.$refs.conversationField
       if (elem) elem.scrollTop = elem.scrollHeight
     },
     async updateMessages (messages) {
-      this.overlayChat = false
-
       this.toBottomFeed()
       // обновление поиска по строке
       // массовое прочтение сообщений
@@ -48,14 +27,13 @@ export default {
         }
       }
     },
-    async _loadData (convId) {
-      console.log('loadData', convId)
-      try {
-        await this.$store.dispatch('chat/topic/list', convId)
-        await this.$store.dispatch('chat/group/list', convId)
+    async _loadData (id) {
+       try {
+        await this.$store.dispatch('chat/topic/list', id)
+        await this.$store.dispatch('chat/group/list', id)
 
         const conversation = {
-          id: convId,
+          id: id,
           offset: 0,
           limit: 20,
         }
@@ -72,6 +50,8 @@ export default {
 
       // загрузка страницы сообщений
       if (this.feedScrollTop > 0 && h === 0) {
+        if (this.isAllMessagesLoaded) return
+
         this.loadingMessagePage = true
 
         const keys = Object.keys(this.messages)
@@ -93,10 +73,10 @@ export default {
           await this.$store.dispatch('chat/message/list', conversation)
         } finally {
           this.loadingMessagePage = false
+          // Обновление поиска по сообщений, обновление происходит если поиск включен
+          this.searchByFilterString()
         }
       }
-      // Обновление поиска по сообщений, обновление происходит если поиск включен
-      this.searchByFilterString()
       this.feedScrollTop = h
     },
     init () {

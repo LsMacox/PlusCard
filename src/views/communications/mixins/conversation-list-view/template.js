@@ -19,7 +19,14 @@ export default {
           if (message.attachments[0].type === 'media/video') return 'видео'
           if (message.attachments[0].type === 'media/file') return 'файл'
         }
-        return message.message
+        if (message.message) {
+          return message.message
+        }
+
+        if (this.authorName === 'Вы') {
+          return 'пересланное сообщение'
+        }
+        return ''
       }
       return ''
     },
@@ -117,7 +124,7 @@ export default {
         }
       }
 
-      return 'Пользователь'
+      return ''
     },
   },
 }

@@ -84,7 +84,7 @@ export default {
         item => item.id === state.currentConversationId,
       )
 
-      if (index >= 0) {
+      if (index >= 0 && payload) {
         Vue.set(state.conversations[index], 'currentTemplateMessage', payload)
       }
     },
@@ -118,6 +118,16 @@ export default {
     async update ({ commit, rootState }, item) {
       const result = await ApiService.post('/api/conversation/admin', item)
       commit('updateInConversations', result)
+    },
+
+    async updateArchived ({ commit, rootState }, item) {
+      const result = await ApiService.post('/api/conversation/archived/update', item)
+      commit('updateInConversations', result)
+    },
+
+    async delete ({ commit, rootState }, conversationId) {
+      await ApiService.post('/api/conversation/delete', {conversation_id: conversationId})
+      commit('deleteInConversations', conversationId)
     },
 
     async chosenSet ({ commit, rootState }, item) {

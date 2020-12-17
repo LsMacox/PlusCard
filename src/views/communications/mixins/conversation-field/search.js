@@ -23,7 +23,7 @@ export default {
           this.searchFound[v - 1] &&
           document.getElementById('message-' + this.searchFound[v - 1])
         ) {
-          this.$refs.conversationField.scrollTop = document.getElementById('message-' + this.searchFound[v - 1]).offsetTop - 60
+          this.$refs.conversationField.scrollTop = document.getElementById('message-' + this.searchFound[v - 1]).offsetTop - 185
         }
     },
   },
@@ -43,8 +43,13 @@ export default {
         const msg = this._getMessageTextNodeById(id)
         if (msg) {
           const msgText = msg.innerText
-          const searchIdx = msg.innerText.toLowerCase().indexOf(this.searchString.toLowerCase())
-          msg.innerHTML = msgText.substr(0, searchIdx) + '<mark>' + msgText.substr(searchIdx, this.searchString.length) + '</mark>' + msgText.substr((searchIdx + this.searchString.length), msgText.length)
+          const searchIdx =
+          msg.innerText.toLowerCase().indexOf(this.searchString.toLowerCase())
+          msg.innerHTML = msgText.substr(0, searchIdx) +
+            '<mark>' +
+            msgText.substr(searchIdx, this.searchString.length) +
+            '</mark>' +
+            msgText.substr((searchIdx + this.searchString.length), msgText.length)
         }
       })
     },
