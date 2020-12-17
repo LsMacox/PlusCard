@@ -230,6 +230,7 @@
 <script>
   import { mapGetters, mapMutations } from 'vuex'
   import { isFilled, maxLen } from '@/utils/validate'
+import { normalizeRules } from 'vee-validate'
 
   export default {
     name: 'BonusUnitDialog',
@@ -270,7 +271,7 @@
           type_enum: 'INTEGER',
           max_value: null,
           with_goal: false,
-          icon_set_id: false,
+          icon_set_id: null,
           unit_name_ending_first: '',
           unit_name_ending_second: '',
           unit_name_ending_third: '',
