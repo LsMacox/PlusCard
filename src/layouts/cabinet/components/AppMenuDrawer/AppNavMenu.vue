@@ -52,6 +52,7 @@
           icon: '$iconify_ion-wallet-outline',
           title: 'Программа лояльности',
           to: '/loyalty',
+          alias: ['/loyalty', 'ProgramBonusSetting'],
         },
         {
           icon: '$iconify_ant-design-gift-outlined',

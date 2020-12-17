@@ -42,7 +42,6 @@
           outlined
           required
           :rules="emailRules"
-          validate-on-blur
           @blur="form.email = form.email ? form.email.trim() : null"
         >
           <template slot="prepend-inner">
@@ -97,7 +96,6 @@
               color="primary"
               style="width: 100%;"
               :loading="loading"
-              :disabled="!valid"
               @click="submit()"
             >
               <span

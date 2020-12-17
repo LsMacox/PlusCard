@@ -182,7 +182,7 @@ export const ICONIFY_ICONS = {
     'eva-square-outline': () => import('@iconify/icons-eva/square-outline'),
 
     // emojione-monotone
-    'emojione-monotone-b-button': () => import('@iconify-icons/emojione-monotone/b-button'),
+    // 'emojione-monotone-b-button': () => import('@iconify-icons/emojione-monotone/b-button'),
 }
 
 for (const icon in ICONIFY_ICONS) {

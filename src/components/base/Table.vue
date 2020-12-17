@@ -196,7 +196,7 @@
         type: Number,
         default: 0,
       },
-      options: {
+      tableOptions: {
         type: Object,
         default: () => {
           return defaultOptions
@@ -241,7 +241,7 @@
     },
     data () {
       return {
-        tableOptions: Object.assign({}, defaultOptions, this.options ) ,
+        tableOptions: Object.assign({}, defaultOptions, this.options),
       }
     },
     computed: {
@@ -297,7 +297,6 @@
           this.pagination.descending = 'none'
         }
       },
-      
     },
   }
 </script>

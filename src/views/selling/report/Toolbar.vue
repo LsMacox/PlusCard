@@ -1,18 +1,18 @@
 <template>
-      <div class="toolbar-col toolbar-col-left">
-        <div class="toolbar-name">
-          Продажи
-        </div>
-        <div class="toolbar-period">
-          <date-range-select
-            min-width="250px"
-            :items="periods"
-            :model.sync="periodId"
-            item-value="id"
-            item-label="name"
-          />
-        </div>
-      </div>
+  <div class="toolbar-col toolbar-col-left">
+    <div class="toolbar-name">
+      Продажи
+    </div>
+    <div class="toolbar-period">
+      <date-range-select
+        min-width="250px"
+        :items="periods"
+        :model.sync="periodId"
+        item-value="id"
+        item-label="name"
+      />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -28,47 +28,29 @@
     data () {
       return {
         loading: false,
-        periodId: null,
-        periods: [
-          { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 2, name: 'за вчера', start: new Date(Date.now() - 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now() - 24 * 3600 * 1000).toISOString().split('T')[0] },
-          { id: 3, name: 'за последние 7 дней', start: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 4, name: 'за последние 30 дней', start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 5, name: 'за последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 6, name: 'за последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 7, name: 'за последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          // { id: 7, name: 'собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-        ],
       }
     },
     computed: {
       program () {
         return this.$store.getters['company/program/program']
       },
-      period: {
-        get () {
-          return this.$store.getters['selling/filter/period']
-        },
-        set (v) {
-          this.$store.commit('selling/filter/period', v)
-        },
-      },
       filter () {
         return this.$store.getters['selling/filter/filter']
       },
-    },
-    watch: {
-      periodId (v) {
-        if (v !== this.period.id) {
-          const period = this.periods.find(item => item.id === v)
-          if (period) {
-            this.period = period
-          }
-        }
+      periods () {
+        return this.$store.getters['reference/date_selection/periods']
       },
-    },
-    created () {
-      if (this.period) this.periodId = this.period.id
+      period () {
+        return this.$store.getters['reference/date_selection/period']
+      },
+      periodId: {
+        get () {
+          return this.$store.getters['reference/date_selection/periodId']
+        },
+        set (v) {
+          this.$store.commit('reference/date_selection/periodId', v)
+        },
+      },
     },
     methods: {
       async excelExport () {

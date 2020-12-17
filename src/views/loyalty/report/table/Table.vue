@@ -8,14 +8,13 @@
         <v-data-table
           :headers="headers"
           :items="tableData"
-          :options.sync="tableOptions"
+          :options.sync="tableSettings"
           :single-expand="true"
           :expanded.sync="expanded"
           item-key="uuid"
           :show-expand="false"
           class="plus-table"
           hide-default-footer
-          multi-sort
           :server-items-length="totalCount"
           @update:sort-by="fetchData()"
           @update:sort-desc="fetchData()"
@@ -131,7 +130,7 @@
           <select-page-limit
             min-width="200px"
             :items="paginationOptions"
-            :model.sync="tableOptions.itemsPerPage"
+            :model.sync="tableSettings.itemsPerPage"
             item-value="value"
             item-label="text"
           />
@@ -140,7 +139,7 @@
 
           <div class="text-center">
             <v-pagination
-              v-model="tableOptions.page"
+              v-model="tableSettings.page"
               next-icon="fas fa-chevron-right"
               prev-icon="fas fa-chevron-left"
               :length="pagesCount"
@@ -165,7 +164,7 @@
   import SelectPageLimit from '@/components/dialogs/SelectPageLimit'
   import FormatNumber from '@/mixins/formatNumber'
   import Routing from '@/mixins/routing'
-  import DataTable from '@/mixins/dataTable'
+  import DataTableMixin from '@/mixins/dataTable'
   import User from '@/mixins/user'
   import SidePanelEditClient from '@/views/crm/client/components/SidePanelEditClient.vue'
   import ApiService from '@/api/api-client'
@@ -175,27 +174,16 @@
       SelectPageLimit,
       SidePanelEditClient,
     },
-    mixins: [FormatNumber, Routing, DataTable, User],
+    mixins: [FormatNumber, Routing, DataTableMixin, User],
     data () {
       return {
         loadingList: false,
-        tableOptions: {
-          page: 1,
-          itemsPerPage: 25,
-        },
+        tableKey: 'LoyaltyReportTable',
         sidePanelStatus: {
           active: false,
           mode: 'edit',
           data: null,
         },
-        paginationOptions: [
-          { text: '25 на странице', value: 25 },
-          { text: '50 на странице', value: 50 },
-          { text: '100 на странице', value: 100 },
-          { text: '150 на странице', value: 150 },
-          { text: '250 на странице', value: 250 },
-          { text: '500 на странице', value: 500 },
-        ],
         expanded: [],
         headers: [
           {
@@ -237,21 +225,21 @@
         return this.$store.getters['widget/table/count']
       },
       pagesCount () {
-        const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
+        const count = Math.ceil(this.totalCount / this.tableSettings.itemsPerPage)
         if (count) {
-          if (this.tableOptions.page > count) {
-            this.tableOptions.page = count
+          if (this.tableSettings.page > count) {
+            this.tableSettings.page = count
           }
           return count
         }
-        this.tableOptions.page = 1
+        this.tableSettings.page = 1
         return 1
       },
       program () {
         return this.$store.getters['company/program/program']
       },
       period () {
-        return this.$store.getters['widget/filter/period']
+        return this.$store.getters['reference/date_selection/period']
       },
       filter () {
         return this.$store.getters['widget/filter/filter']
@@ -260,7 +248,6 @@
     watch: {
       'program.id' (v) {
         if (v) {
-          console.log('watch program.id')
           this.fetchData()
         }
       },
@@ -270,14 +257,22 @@
       period (v) {
         if (v) this.fetchData()
       },
-      'tableOptions.page' (v) {
+      'tableSettings.page' (v) {
         if (v) this.fetchData()
       },
-      'tableOptions.itemsPerPage' (v) {
+      'tableSettings.itemsPerPage' (v) {
         if (v) this.fetchData()
+      },
+      tableSettings: {
+        handler (v) {
+          this.setDataTableSetting(this.tableKey, v)
+        },
+        deep: true,
       },
     },
     created () {
+      this.tableSettings.multiSort = true
+      this.tableSettings = this.getDataTableSetting(this.tableKey, this.tableSettings)
       this.fetchData()
     },
     methods: {
@@ -335,9 +330,9 @@
           start_period: this.period.start,
           end_period: this.period.end,
           filter: this.filter,
-          offset: this.getOffset(this.tableOptions.page, this.tableOptions.itemsPerPage),
-          limit: this.tableOptions.itemsPerPage,
-          sortable: this.getSortable(this.tableOptions.sortBy, this.tableOptions.sortDesc),
+          offset: this.getOffset(this.tableSettings.page, this.tableSettings.itemsPerPage),
+          limit: this.tableSettings.itemsPerPage,
+          sortable: this.getSortable(this.tableSettings.sortBy, this.tableSettings.sortDesc),
         }
         // console.log('table/list')
         // console.log(list)

@@ -288,7 +288,7 @@
         return this.$store.getters['company/program/program']
       },
       period () {
-        return this.$store.getters['selling/filter/period']
+        return this.$store.getters['reference/date_selection/period']
       },
       filter () {
         return this.$store.getters['selling/filter/filter']

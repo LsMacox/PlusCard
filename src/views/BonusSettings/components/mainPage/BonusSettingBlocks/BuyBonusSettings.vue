@@ -310,7 +310,7 @@
     props: {
 
     },
-    mixins: [asMixin({isFilled}), BonusResBlockMixin],
+    mixins: [asMixin({ isFilled }), BonusResBlockMixin],
     data () {
       return {
         inputShow: '',
@@ -376,9 +376,11 @@
           return item
         })
       },
+
       buyBonusResSource () {
         return this.buyBonusRes.filter(this.isSourceFilter)
       },
+
       buyBonusResTarget () {
         return this.buyBonusRes.filter(this.isTargetFilter)
       },
@@ -448,6 +450,8 @@
               await this.$store.dispatch('company/bonus_resources/DeleteBonusRes', bonusRes.id)
             }
             this.buyBonusResInternal.splice(index, 1)
+            if (this.buyBonusResSource.length === 0) this.addNewBonusRes('TYPE_SOURCE')
+            if (this.buyBonusResTarget.length === 0) this.addNewBonusRes('TYPE_TARGET')
           }
         } catch (error) {
           console.error(error)
@@ -685,10 +689,12 @@
       init () {
         this.buyBonusResInternal = Object.copy(this.dbBuyBonusRes)
 
-        if (this.buyBonusRes.length === 0) {
-          this.addNewBonusRes('TYPE_SOURCE')
-          this.addNewBonusRes('TYPE_TARGET')
-        }
+        if (this.buyBonusResSource.length === 0) this.addNewBonusRes('TYPE_SOURCE')
+        if (this.buyBonusResTarget.length === 0) this.addNewBonusRes('TYPE_TARGET')
+        // if (this.buyBonusRes.length === 0) {
+        //   this.addNewBonusRes('TYPE_SOURCE')
+        //   this.addNewBonusRes('TYPE_TARGET')
+        // }
       },
     },
 

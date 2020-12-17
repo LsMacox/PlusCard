@@ -1,4 +1,3 @@
-
 import GuardEmptyPrograms from '@/router/guards/guard-empty-programs'
 
 export default {
@@ -8,6 +7,9 @@ export default {
             component: () => import('@/views/crm/client/Client'),
             beforeEnter: GuardEmptyPrograms,
             name: 'ProgramAccounts',
+            props: (route) => ({
+                routeSegmentId: +route.query.segmentId || null,
+            }),
             meta: { auth: true, title: 'Клиенты', icon: 'dashboard' },
         },
         {
