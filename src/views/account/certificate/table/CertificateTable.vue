@@ -443,6 +443,7 @@
       },
     },
     created () {
+      // переопределяем настройки таблицы по-умолчанию
       this.tableSettings.multiSort = true
       this.tableSettings = this.getDataTableSetting(this.tableKey, this.tableSettings)
       this.fetchData()
