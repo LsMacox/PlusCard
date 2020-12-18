@@ -120,10 +120,10 @@
               ref="tooltip"
               class="tooltip-content"
               :class="{show: showError}"
-              :style="validationPlacement == 'top' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.top}px` :
-                validationPlacement == 'bottom' ? `left: ${tooltipPos.left}px; top: ${tooltipPos.bottom}px` :
-                validationPlacement == 'left' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.bottom}px` :
-                validationPlacement == 'right' ? `left: ${tooltipPos.left}px; bottom: ${tooltipPos.bottom}px` : ''"
+              :style="validationPlacement == 'top' ? 'margin-left: -80px;margin-top: -70px;':
+                validationPlacement == 'bottom' ? 'margin-left: -80px;margin-top: 20px;' :
+                validationPlacement == 'left' ? 'margin-left: -167px;margin-top: -27px;' :
+                validationPlacement == 'right' ? 'margin-left: 10px;margin-top: -25px;' : ''"
               :placement="validationPlacement"
             >
               <div
@@ -421,9 +421,6 @@
       value (v) {
         // console.log('v.l', this.value.length, this.minlength)
       },
-      validationPlacement (v) {
-        this.setTooltipPosition()
-      },
       hasDispayErrors (v) {
         if (v) {
           this.showError = true
@@ -437,7 +434,6 @@
     },
     mounted () {
       // console.log('this.$refs.vTextField', this.$refs.vTextField)
-      this.setTooltipPosition()
     },
     methods: {
       focus () {
@@ -482,32 +478,6 @@
         // this.$refs.input.focus();
         e && this.$emit('click', e)
       },
-      setTooltipPosition () {
-        if (this.$refs.tooltip != undefined) {
-          const tooltipWidth = this.nodeOffsetWH(this.$refs.tooltip)
-          const tooltipHeight = this.nodeOffsetWH(this.$refs.tooltip, false)
-
-          switch (this.validationPlacement) {
-            case 'top':
-              this.tooltipPos.left = -tooltipWidth / 2 - 13
-              this.tooltipPos.top = 20
-              break
-            case 'bottom':
-              this.tooltipPos.left = -tooltipWidth / 2 - 13
-              this.tooltipPos.bottom = 20
-              break
-            case 'right':
-              this.tooltipPos.left = 10
-              this.tooltipPos.bottom = -(tooltipHeight / 2)
-              break
-            case 'left':
-              this.tooltipPos.left = -tooltipWidth - 33
-              console.log(this.$refs.tooltip.clientHeight)
-              this.tooltipPos.bottom = -(tooltipHeight / 2)
-              break
-          }
-        }
-      },
     },
   }
 </script>
@@ -531,7 +501,7 @@
 }
 
 .base-text-field__tooltip {
-  position: absolute;
+  position: relative;
   opacity: 0;
   .icon-warning {
     position: absolute;

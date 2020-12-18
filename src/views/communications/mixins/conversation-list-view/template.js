@@ -1,94 +1,60 @@
 export default {
-  methods: {
-    getAvatars (item) {
-      let avatars = []
-
-      // есть чат пользователь
-      if (this.chatUser && this.chatUser.id) {
-        const chatUserId = this.chatUser.id
-        let count = 0
-
-        // количество активных участников чата
-        item.members.forEach(item => {
-          if (item.active) count++
-        })
-
-        if (count === 1) {
-          avatars = [item.members[0].avatar]
-        }
-
-        if (count === 2) {
-          const member = item.members.filter(item => item.id !== chatUserId)
-          if (member.length) {
-            avatars = [member[0].avatar]
-          }
-        }
-
-        // Group Avatar
-        if (count > 2) avatars = [this.getGroupImgData(item)]
+  computed: {
+    lastTime () {
+      let time = ''
+      if (this.conversation.last_message) {
+        time = this.conversation.last_message.created_at
+        if (time) return this.getDate(time)
       }
-
-      return avatars
+      return time
     },
-    getGroupImgData (item) {
-      const
-        imgColor = '#D63DE5'
-      const imgWidth = 48
-      const imgHeight = 48
+    lastMessage () {
+      const message = this.conversation.last_message
+      if (message) {
+        if (message && message.attachments.length) {
+          if (message.attachments[0].type === 'message/text') { return message.attachments[0].content }
+          if (message.attachments[0].type === 'plus/account') return 'карта'
+          if (message.attachments[0].type === 'media/image') { return 'изображение' }
+          if (message.attachments[0].type === 'media/audio') { return 'аудиосообщение' }
+          if (message.attachments[0].type === 'media/video') return 'видео'
+          if (message.attachments[0].type === 'media/file') return 'файл'
+        }
+        if (message.message) {
+          return message.message
+        }
 
-      const
-        cvs = document.createElement('canvas')
-      const ctx = cvs.getContext('2d')
-
-      cvs.width = imgWidth
-      cvs.height = imgHeight
-      cvs.style.display = 'block'
-
-      // Fill background
-      ctx.moveTo(0, 0)
-      ctx.lineTo(imgWidth, 0)
-      ctx.lineTo(imgWidth, imgHeight)
-      ctx.lineTo(0, imgHeight)
-      ctx.fillStyle = imgColor
-      ctx.fill()
-
-      // Draw font
-      ctx.fillStyle = '#fff'
-      ctx.font = '700 28px Gilroy'
-      ctx.textAlign = 'center'
-      ctx.textBaseline = 'middle'
-      if (item.name) ctx.fillText(item.name.charAt(0).toUpperCase(), imgWidth / 2, imgHeight / 2 + 1)
-      if (item.display_name) ctx.fillText(item.display_name.charAt(0).toUpperCase(), imgWidth / 2, imgHeight / 2 + 1)
-
-      const imgData = cvs.toDataURL()
-      cvs.remove()
-      return imgData
+        if (this.authorName === 'Вы') {
+          return 'пересланное сообщение'
+        }
+        return ''
+      }
+      return ''
     },
-    getName (item) {
+    name () {
       let name = ''
       if (this.chatUser && !this.isEmptyObject(this.chatUser)) {
         const chatUserId = this.chatUser.id
 
         // чат пользователь - создатель чата
-        if (item.name && chatUserId === item.creator_id) return item.name
+        if (this.conversation.name && chatUserId === this.conversation.creator_id) return this.conversation.name
 
         // количество активных участников чата
         let count = 0
-        item.members.forEach(item => {
+        this.conversation.members.forEach(item => {
           if (item.active) count++
         })
         if (count === 1) {
-          name = item.members[0].name
+          name = this.conversation.members[0].name
         }
         if (count === 2) {
-          const member = item.members.filter(item => item.id !== chatUserId)
+          const member = this.conversation.members.filter(item => item.id !== chatUserId)
           if (member.length) {
             name = member[0].name
           }
         }
         if (count > 2) {
-          if (item.name) return item.name
-          item.members.forEach(item => {
+          if (this.conversation.name) return this.conversation.name
+          this.conversation.members.forEach(item => {
             if (item.id !== chatUserId && item.active) {
               if (!name) name = item.name
               else name = name + ', ' + item.name
@@ -98,17 +64,34 @@ export default {
       }
       return name
     },
-    getLastTime (item) {
-      let time = ''
-      if (item.last_message) {
-        time = item.last_message.created_at
-        if (time) return this.getDate(time)
+    avatar () {
+      let avatars
+
+      // есть чат пользователь
+      if (this.chatUser && this.chatUser.id) {
+        const chatUserId = this.chatUser.id
+        const activeMembers = this.activeMembers.length
+
+        if (activeMembers === 1) {
+          avatars = this.conversation.members[0].avatar
+        }
+
+        if (activeMembers === 2) {
+          const member = this.conversation.members.filter(item => item.id !== chatUserId)
+          if (member.length) {
+            avatars = member[0].avatar
+          }
+        }
+
+        // Group Avatar
+        if (activeMembers > 2) avatars = this.getGroupImgData(this.conversation)
       }
-      return time
+
+      return avatars
     },
-    getAuthorName (conversation) {
-      if (conversation && conversation.last_message) {
-        const item = conversation.last_message
+    authorName () {
+      if (this.conversation && this.conversation.last_message) {
+        const item = this.conversation.last_message
 
         let author = {}
         let isEmployee = false
@@ -117,7 +100,7 @@ export default {
 
         if (isEmployee) {
           if (this.realChatName) {
-            author = this.getAuthor(item)
+            author = this.getAuthor(item, this.payload)
             if (author.id) {
               if (author.id === this.profile.id) return 'Вы'
               else return `${author.name} (${this.conversationProgram.name})`
@@ -126,7 +109,7 @@ export default {
               return this.chatUser.name
             }
           } else {
-            author = this.getAuthor(item)
+            author = this.getAuthor(item, this.payload)
             if (author.id) {
               if (author.id === this.profile.id) return 'Вы'
               else return `${this.conversationProgram.name} (${author.name})`
@@ -136,46 +119,11 @@ export default {
             }
           }
         } else {
-          author = this.getAuthor(item)
+          author = this.getAuthor(item, this.payload)
           if (author.id) return `${author.name}`
         }
       }
 
-      return 'Пользователь'
-    },
-    getAuthor (item) {
-      let authorId = null
-      let author = []
-      let isEmployee = false
-
-      if (item.sender_id === this.chatUser.id) isEmployee = true
-
-      if (isEmployee) {
-        authorId = item.real_sender_id
-        author = this.employees.filter(item => item.id === authorId)
-        if (author.length) return author[0]
-      } else {
-        authorId = item.sender_id
-        author = this.members.filter(item => item.id === authorId)
-        if (author.length) return author[0]
-      }
-
-      return {}
-    },
-    getLastMessage (item) {
-      const message = item.last_message
-      if (message) {
-        // console.log(message)
-        if (message && message.attachments.length) {
-          if (message.attachments[0].type === 'message/text') { return message.attachments[0].content }
-          if (message.attachments[0].type === 'plus/account') return 'карта'
-          if (message.attachments[0].type === 'media/image') { return 'изображение' }
-          if (message.attachments[0].type === 'media/audio') { return 'аудиосообщение' }
-          if (message.attachments[0].type === 'media/video') return 'видео'
-          if (message.attachments[0].type === 'media/file') return 'файл'
-        }
-        return message.message
-      }
       return ''
     },
   },

@@ -91,7 +91,7 @@
   export default {
     props: {
       conversationId: {
-        type: Number,
+        type: [Number, String],
         required: true,
       },
       content: {

@@ -1,0 +1,50 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+@mixin user-topic {
+  .user-topic {
+    padding: 34px;
+    .user-topic__header {
+      margin-top: 16px;
+    }
+    .user-topic__content {
+      margin-top: 34px;
+      .topics__list {
+        list-style: none;
+        padding-left: 0;
+        .topic__item {
+          display: inline-block;
+          white-space: nowrap;
+          background: $primary-100;
+          border-radius: 6px;
+          margin-right: 12px;
+          margin-bottom: 12px;
+          p {
+            padding: 10px 12px;
+          }
+          .close {
+            margin-right: 11px;
+            min-width: 0;
+            cursor: pointer;
+            .icon-close {
+              color: $primary-base;
+            }
+          }
+        }
+      }
+    }
+    .topic__create {
+      margin-top: 22px;
+
+      .create__field {
+        border-radius: 10px;
+      }
+      .create__btn {
+        margin-top: 20px;
+        .icon-check {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}

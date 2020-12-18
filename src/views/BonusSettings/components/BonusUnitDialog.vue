@@ -134,14 +134,7 @@
         v-model="bonusUnitInternal.icon_set_id"
         :with-goal="bonusUnitInternal.with_goal"
       />
-      <v-row v-show="bonusType != 'digital' && !bonusUnitInternal.icon_set_id">
-        <v-col>
-          <span class="error--text body-m-regular">
-            Выберите иконку валюты
-          </span>
-        </v-col>
-      </v-row>
-
+      
       <dialog-form-block-row
         v-if="bonusType != 'digital'"
         title="Правила начисления"
@@ -237,6 +230,7 @@
 <script>
   import { mapGetters, mapMutations } from 'vuex'
   import { isFilled, maxLen } from '@/utils/validate'
+import { normalizeRules } from 'vee-validate'
 
   export default {
     name: 'BonusUnitDialog',
@@ -277,7 +271,7 @@
           type_enum: 'INTEGER',
           max_value: null,
           with_goal: false,
-          icon_set_id: false,
+          icon_set_id: null,
           unit_name_ending_first: '',
           unit_name_ending_second: '',
           unit_name_ending_third: '',
@@ -320,7 +314,7 @@
       }),
 
       allValid () {
-        return this.valid && (!this.bonusUnitInternal.max_value || !!this.bonusUnitInternal.icon_set_id)
+        return this.valid
       },
       isNew () {
         return !this.bonusUnit

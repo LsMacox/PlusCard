@@ -19,7 +19,7 @@ export default {
            // console.log(success)
         },
         async connect ({ rootState }) {
-            console.log('redis.connect')
+            // console.log('redis.connect')
             // const session = JSON.parse(localStorage.getItem('session'))
 
             if (VueSession.exists()) {
@@ -32,7 +32,7 @@ export default {
                 device_type: device.type,
 
                 }
-                console.log('socket.emit.system', event)
+                // console.log('socket.emit.system', event)
                 window.socket.emit('system', event)
             }
         },

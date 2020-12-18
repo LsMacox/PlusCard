@@ -1,28 +1,39 @@
 <template>
   <div class="app-conversation-send-box">
     <div
-      v-cloak
-      id="conversationDrop"
-      class="app--conversation--drop--wrap"
-      @drop.prevent="addFile"
-      @dragover.prevent
-      @dragleave="moveOut"
-    >
-      Перетащите сюда фотографии, чтобы отправить их
-    </div>
-    <div
       class="app--conversation--sendForm"
     >
-      <!-- <app-reply
-        :dialog.sync="dialogReplyMessage"
-        :name.sync="quotedMessageSender"
-        :message.sync="quotedMessage"
-      /> -->
+      <app-topic
+        v-if="internalIsTopicMessage"
+        :conversation-id="currentConversationId"
+        :is-topic-message.sync="internalIsTopicMessage"
+        :is-topic-panel.sync="internalIsTopicPanel"
+        :selected-topic.sync="internalSelectedTopic"
+      />
 
-      <!-- <app-topic-bar :conversation-id="conversationId" /> -->
+      <app-reply
+        v-if="internalIsReplyMessage"
+        :conversation-id="currentConversationId"
+        :is-reply-message.sync="internalIsReplyMessage"
+        :message="messages[replyMessageId]"
+      />
+
+      <app-edit
+        v-if="internalIsEditMessage"
+        :conversation-id="currentConversationId"
+        :is-edit-message.sync="internalIsEditMessage"
+        :message="messages[editMessageId]"
+      />
 
       <div
         class="app--conversation--sendField"
+        :class="[
+          internalIsReplyMessage ? 'reply' :
+          internalIsEditMessage ? 'edit' :
+          internalIsTopicMessage ? 'topic' :
+          (message && message.length) ? 'writes' :
+          isAttachedFile ? 'file' : ''
+        ]"
       >
         <div
           id="messageWrapper"
@@ -31,105 +42,49 @@
             no-gutters
             style="height: 100%"
           >
-            <!-- ==== record ==== -->
-            <div
+            <!-- ==== Choice ==== -->
+            <app-choice
+              v-if="isChoiceMessage"
+              :is-choice-message.sync="internalIsChoiceMessage"
+              :message-ids="internalChoiceMessageIds"
+            />
+            <!-- ==== Record ==== -->
+            <app-record-start
               v-if="isRecording"
-              class="app-conversation--sendForm__message__record"
-            >
-              <div class="record-time">
-                <p class="body-m-regular neutral-600--text">
-                  {{ recordedTime }}
-                </p>
-              </div>
-              <div class="left-block">
-                <v-btn
-                  class="record-cancel"
-                  color="primary-100"
-                  @click="cancelRecorder()"
-                >
-                  <iconify-icon
-                    class="icon-close"
-                    icon="jam-close"
-                    width="21"
-                  />
-                </v-btn>
-                <v-btn
-                  class="record-stop"
-                  color="error"
-                  @click="stopRecord()"
-                >
-                  <div
-                    class="stop-overlay"
-                    :style="`width: calc(130px + ${Math.round(volume * 60)}px);
-                               height: calc(130px + ${Math.round(volume * 60)}px);`"
-                  />
-                  <iconify-icon
-                    class="icon-stop"
-                    icon="carbon-stop"
-                    width="21"
-                  />
-                </v-btn>
-              </div>
-            </div>
-            <!-- ==== record stop ==== -->
+              :is-recording="isRecording"
+              :is-stop.sync="isStop"
+              :record-strip-count="recordStripCount"
+              :record-strip-max-height="recordStripMaxHeight"
+              :record-list.sync="recordList"
+              :record-volumes.sync="recordVolumes"
+              :record-play.sync="recordPlay"
+              :record-play-current-time.sync="recordPlayCurrentTime"
+              :recorder="recorder"
+            />
+            <!-- ==== Record stop ==== -->
+            <app-record-stop
+              v-if="!isRecording && isStop && recordList.length"
+              ref="recordStop"
+              :conversation-id="currentConversationId"
+              :is-recording="isRecording"
+              :is-play.sync="isPlay"
+              :is-stop.sync="isStop"
+              :record-strip-count="recordStripCount"
+              :record-list.sync="recordList"
+              :record-volumes.sync="recordVolumes"
+              :record-play.sync="recordPlay"
+              :record-play-current-time.sync="recordPlayCurrentTime"
+              :recorder="recorder"
+            />
+            <!-- ==== Text ==== -->
             <div
-              v-if="!isRecording && isStop"
-              class="app-conversation--sendForm__message__record-stop"
-            >
-              <div class="right-block">
-                <iconify-icon
-                  v-if="!isPlay"
-                  class="icon icon-play"
-                  icon="feather-play"
-                  width="21"
-                  @click="switchPlayBackRecording"
-                />
-                <iconify-icon
-                  v-else
-                  class="icon icon-play"
-                  icon="ion-pause-outline"
-                  width="21"
-                  @click="switchPlayBackRecording"
-                />
-                <div class="strips">
-                  <div
-                    v-for="(v, i) in recordVolumes"
-                    :key="i"
-                    class="strip"
-                    :class="[isRecordStripActive(i) ? 'active' : '']"
-                    :style="`height: ${v}px`"
-                  />
-                </div>
-                <div class="durations">
-                  <p class="body-m-regular neutral-600--text">
-                    {{ this.$moment(recordPlayCurrentTime * 1000).format('mm:ss') }}/{{ recordList[0].duration }}
-                  </p>
-                </div>
-              </div>
-              <div class="left-block">
-                <iconify-icon
-                  class="icon icon-trash"
-                  icon="feather-trash"
-                  width="21"
-                  @click="cancelRecorder"
-                />
-                <iconify-icon
-                  class="icon icon-send"
-                  icon="feather-send"
-                  width="21"
-                  @click="sendRecord"
-                />
-              </div>
-            </div>
-            <!-- ==== text ==== -->
-            <div
-              v-if="!isRecording && !isStop"
+              v-if="!isRecording && !isStop && !isChoiceMessage"
               class="app-conversation--sendForm__message__text"
-              :class="[message.length ? 'writes' : '']"
+              :class="[(message && message.length) ? 'writes' : '']"
             >
               <!-- Attach -->
               <div
-                v-if="!message.length"
+                v-if="!message || !message.length"
                 class="attach"
               >
                 <iconify-icon
@@ -139,13 +94,10 @@
                   @click="$refs.attachFile.click()"
                 />
                 <input
-                  id="file"
                   ref="attachFile"
                   type="file"
                   class="input-file"
-                  multiple
-                  :disabled="!validateAttachment"
-                  @change="validateFile()"
+                  @change="addFile"
                 >
               </div>
               <iconify-icon
@@ -155,27 +107,30 @@
                 width="21"
                 @click="clearMessage"
               />
-              <v-textarea
-                id="message"
-                ref="messageTextArea"
-                v-model="message"
-                class="message-text-area"
-                rows="1"
-                row-height="20"
-                auto-grow
-                hide-details
-                :disabled="sending"
-                placeholder="Напишите сообщение..."
-                @change="changeCurrent"
-                @keyup.ctrl.enter="addLine($event)"
-                @keypress.enter.exact.stop="send(sendType)"
-              />
+              <div class="message-block">
+                <label for="messageTextArea" />
+                <v-textarea
+                  id="messageTextArea"
+                  ref="messageTextArea"
+                  v-model="message"
+                  class="message-text-area"
+                  rows="1"
+                  row-height="20"
+                  auto-grow
+                  hide-details
+                  :disabled="sending"
+                  placeholder="Напишите сообщение..."
+                  @keyup.ctrl.enter="addLine"
+                  @keypress.enter.exact.stop="send"
+                />
+              </div>
               <div class="left-block">
                 <!-- Hash Icon -->
                 <iconify-icon
                   class="icon icon-hash"
                   icon="feather-hash"
                   width="21"
+                  @click="toogleTopic"
                 />
                 <!-- Smile Icon -->
                 <iconify-icon
@@ -185,20 +140,20 @@
                 />
                 <!-- Microphone Icon -->
                 <iconify-icon
-                  v-if="!message.length"
+                  v-if="(!message || !message.length) && !isAttachedFile"
                   id="record"
                   class="icon icon-mic"
                   icon="feather-mic"
                   width="21"
-                  @click="toggleRecorder($event)"
+                  @click="toggleRecorder"
                 />
                 <!-- Send Icon -->
                 <iconify-icon
-                  v-if="message.length"
+                  v-if="(message && message.length) || isAttachedFile"
                   class="icon icon-send"
                   icon="feather-send"
                   width="21"
-                  @click="send(sendType)"
+                  @click="send"
                 />
               </div>
             </div>
@@ -210,49 +165,77 @@
 </template>
 
 <script>
+  // components
+  import AppEdit from './components/sendbox/Edit'
+  import AppReply from './components/sendbox/Reply'
+  import AppTopic from './components/sendbox/Topic'
+  import AppChoice from './components/sendbox/Choice'
+  import AppRecordStop from './components/sendbox/RecordStop'
+  import AppRecordStart from './components/sendbox/RecordStart'
 
   // mixins
-  import MixinAttachment from '../mixins/conversation-send-box/attachment.js'
-  import MixinValidate from '../mixins/conversation-send-box/validate.js'
   import MixinRecorder from '../mixins/conversation-send-box/recorder.js'
   import MixinMessage from '../mixins/conversation-send-box/message.js'
   import MixinTyping from '../mixins/conversation-send-box/typing.js'
-  import MixixIndex from '../mixins/index.js'
+  import MixinFiles from '../mixins/conversation-send-box/files.js'
+  import MixinIndex from '../mixins/index.js'
   import MixinData from '../mixins/conversation-send-box/data.js'
 
   export default {
+    components: {
+      AppEdit,
+      AppReply,
+      AppTopic,
+      AppChoice,
+      AppRecordStop,
+      AppRecordStart,
+    },
     mixins: [
-      MixinAttachment,
-      MixinValidate,
       MixinRecorder,
       MixinMessage,
       MixinTyping,
-      MixixIndex,
+      MixinFiles,
+      MixinIndex,
       MixinData,
     ],
     props: {
-      conversationId: {
-        required: true,
-        type: [String, Number],
+      messages: {
+        type: [Array, Object],
+        default () {
+          return []
+        },
       },
-      dialogReplyMessage: Boolean,
-      quotedMessage: {
+
+      isTopicPanel: Boolean,
+      isReplyMessage: Boolean,
+      isEditMessage: Boolean,
+      isChoiceMessage: Boolean,
+      isForwardMessage: Boolean,
+      isTopicMessage: Boolean,
+
+      choiceMessageIds: {
+        type: Array,
+        default () {
+          return []
+        },
+      },
+      selectedTopic: {
         type: Object,
-        default: null,
+        default: () => {
+          return {}
+        },
       },
-      quotedMessageSender: {
-        type: String,
+      replyMessageId: {
+        type: [String, Number],
         default: '',
       },
-      sendType: {
-        type: String,
-        default: 'send',
+      editMessageId: {
+        type: [String, Number],
+        default: '',
       },
     },
     data () {
       return {
-        startTime: 0,
-        cursorIn: false,
         // recorder
         attempts: 5,
         recorder: this._initRecorder(),
@@ -267,140 +250,190 @@
         recordStripCount: 100,
         recordStripMaxHeight: 21,
         recordStripMinHeight: 4,
-        //
+        // other
         selected: {},
         topicFilter: false,
         messagesCount: 0,
-        //
-        dialogMessageUpdate: false,
-        dialogMessageDelete: false,
-        // reply
-        overlayChat: false,
-        //
-        updatedMessageId: null,
-        deletedMessageId: null,
         sending: false,
-        messageMenu: false,
-        posX: 0,
-        posY: 0,
-        //
-        typingTime: null,
         message: '',
-        attachFileName: null,
-        attachFileType: null,
-        attachFile: null,
-        attachLoading: false,
-        attachPreview: false,
-        files: [],
-        formDataFiles: [],
-        filesPreview: [],
+        // reply
+        internalIsReplyMessage: this.isReplyMessage,
+        // edit
+        internalIsEditMessage: this.isEditMessage,
+        editMessageTextOld: '',
+        // choice
+        internalIsChoiceMessage: this.isChoiceMessage,
+        internalChoiceMessageIds: this.choiceMessageIds,
+        // topic
+        internalIsTopicPanel: this.isTopicPanel,
+        internalIsTopicMessage: this.isTopicMessage,
+        internalSelectedTopic: this.selectedTopic,
+        // typing
+        typingTime: null,
+        // files
+        attachedFile: {},
       }
     },
+    computed: {
+      chatUser () {
+        return this.$store.getters['chat/chatUser/chatUser']
+      },
+      profile () {
+        return this.$store.getters.user
+      },
+      currentConversationId () {
+        return this.$store.getters['chat/conversation/currentConversationId']
+      },
+      employees () {
+        return this.$store.getters['chat/data/employees'](this.currentConversationId)
+      },
+      members () {
+        return this.$store.getters['chat/data/members'](this.currentConversationId)
+      },
+      conversation () {
+        return this.$store.getters['chat/data/conversation'](this.currentConversationId)
+      },
+      conversationProgram () {
+        return this.$store.getters['chat/data/conversationProgram'](this.currentConversationId)
+      },
+      realChatName () {
+        return this.$store.getters['chat/data/realChatName'](this.currentConversationId)
+      },
+    },
     watch: {
-      volume (v) {
-        let newVolume = Math.round(v * this.recordStripMaxHeight)
-        newVolume = (newVolume < this.recordStripMinHeight)
-          ? this.recordStripMinHeight
-          : newVolume
-        this.recordVolumes.push(newVolume)
-      },
-      isRecording (v) {
-      /// /console.log('records', this.recordList);
-      },
       async message (v) {
-        this.sendTypingEvent(this.conversationId)
-        await this.$nextTick()
-        this.handleResizeHeightTextArea()
-      },
-      selectedTopicId (v) {
-        if (!v) this.topicFilter = false
-      },
-      conversationId (v) {
-        // console.log('current', this.conversation);
-        this.message = this.conversation.currentTemplateMessage
-        if (this.dialogReplyMessage) {
-          this.closeReplyMessage()
-        }
-        if (this.overlayChat) {
-          const elem = this.$refs.conversationField
-          if (elem) elem.scrollTop = elem.scrollHeight
-          this.overlayChat = false
-          this.dialogReplyMessage = true
-          this.sendType = 'forward'
-        }
-      },
-      dialogReplyMessage (v) {
-        if (!v) this.closeReplyMessage()
-      },
-    },
-    mounted () {
-      document
-        .getElementById('conversationWrap')
-        .addEventListener('dragover', function () {
-          document.getElementById('conversationDrop').style.width =
-            document.getElementById('conversationWrap').offsetWidth + 'px'
-          document.getElementById('conversationDrop').style.display = 'block'
-        })
-
-      this.init()
-    },
-    methods: {
-      changeCurrent () {
+        this.limitTextArea()
         this.$store.commit(
           'chat/conversation/setCurrentConversationMessage',
           this.message,
         )
+        await this.sendTypingEvent(this.currentConversationId)
       },
-      methodsNotAvailable () {
-        this.$notify({
-          message:
-            'В данный момент ведутся технические работы связанные с этим функционалом',
-          type: 'warning',
-        })
+      isReplyMessage (v) {
+        this.internalIsReplyMessage = v
       },
-      moveOut () {
-        document.getElementById('conversationDrop').style.display = 'none'
+      isEditMessage (v) {
+        this.internalIsEditMessage = v
       },
-      addFile (e) {
-        const droppedFiles = e.dataTransfer.files
-        if (droppedFiles) {
-          this.moveOut()
-          this.$refs.attachFile.files = droppedFiles
-          this.validateFile()
+      isChoiceMessage (v) {
+        this.internalIsChoiceMessage = v
+      },
+      isTopicMessage (v) {
+        this.internalIsTopicMessage = v
+      },
+      isTopicPanel (v) {
+        this.internalIsTopicPanel = v
+      },
+      internalIsReplyMessage (v) {
+        if (v && this.isRecording) {
+          this.internalIsEditMessage = false
+          this.internalIsChoiceMessage = false
+          this.internalIsTopicMessage = false
+          this.$emit('update:isReplyMessage', false)
+          return
         }
+
+        if (v) {
+          this.internalIsEditMessage = false
+          this.internalIsChoiceMessage = false
+          this.internalIsTopicMessage = false
+        }
+        this.$emit('update:isReplyMessage', v)
       },
-      init () {
-        var observe
-        if (window.attachEvent) {
-          observe = function (element, event, handler) {
-            element.attachEvent('on' + event, handler)
+      async internalIsEditMessage (v) {
+        if (v && this.isRecording) {
+          this.internalIsReplyMessage = false
+          this.internalIsChoiceMessage = false
+          this.internalIsTopicMessage = false
+          this.$emit('update:isEditMessage', false)
+          return
+        }
+
+        this.$emit('update:isEditMessage', v)
+        if (v) {
+          this.internalIsReplyMessage = false
+          this.internalIsChoiceMessage = false
+          this.internalIsTopicMessage = false
+
+          if (this.$refs?.recordStop) {
+            this.$refs.recordStop.cancelRecorder()
+            await this.$nextTick()
+          }
+
+          if (
+            this.chatUser.id === this.messages[this.editMessageId].sender_id &&
+            (this.profile.id === this.messages[this.editMessageId].real_sender_id ||
+              !this.realChatName)
+          ) {
+            this.message = this.messages[this.editMessageId].message
+            this.editMessageTextOld = this.messages[this.editMessageId].message
+          } else {
+            this.message = ''
+            this.internalIsEditMessage = false
           }
         } else {
-          observe = function (element, event, handler) {
-            element.addEventListener(event, handler, false)
-          }
+          this.message = ''
         }
-        var text = document.getElementById('message')
-        if (!text) return
-
-        const resize = () => {
-          text.style.height = 'auto'
-          text.style.height = text.scrollHeight + 'px'
-          this.$emit('send-message')
-        }
-
-        /* 0-timeout to get the already changed text */
-        function delayedResize () {
-          window.setTimeout(resize, 0)
+      },
+      internalIsChoiceMessage (v) {
+        if (v && this.isRecording) {
+          this.internalIsEditMessage = false
+          this.internalIsReplyMessage = false
+          this.internalIsTopicMessage = false
+          this.$emit('update:isChoiceMessage', false)
+          return
         }
 
-        observe(text, 'cut', delayedResize)
-        observe(text, 'paste', delayedResize)
-        observe(text, 'drop', delayedResize)
+        if (v) {
+          this.internalIsEditMessage = false
+          this.internalIsReplyMessage = false
+          this.internalIsTopicMessage = false
+        }
 
-        text.focus()
-        text.select()
-        resize()
+        if (!v) {
+          this.internalChoiceMessageIds = []
+        }
+
+        this.$emit('update:isChoiceMessage', v)
+      },
+      internalIsTopicMessage (v) {
+        if (v && this.isRecording) {
+          this.internalIsEditMessage = false
+          this.internalIsReplyMessage = false
+          this.internalIsChoiceMessage = false
+          this.$emit('update:isTopicMessage', false)
+          return
+        }
+
+        if (v) {
+          this.internalIsEditMessage = false
+          this.internalIsReplyMessage = false
+          this.internalIsChoiceMessage = false
+        }
+
+        if (!v) {
+          this.internalSelectedTopic = {}
+        }
+
+        this.$emit('update:isTopicMessage', v)
+      },
+      internalChoiceMessageIds (v) {
+        this.$emit('update:choiceMessageIds', v)
+      },
+      internalSelectedTopic (v) {
+        this.$emit('update:selectedTopic', v)
+      },
+      internalIsTopicPanel (v) {
+        this.$emit('update:isTopicPanel', v)
+      },
+      currentConversationId (v) {
+        this.message = this.conversation.currentTemplateMessage
+      },
+    },
+    mounted () {},
+    methods: {
+      toogleTopic () {
+        this.internalIsTopicMessage = !this.internalIsTopicMessage
       },
     },
   }

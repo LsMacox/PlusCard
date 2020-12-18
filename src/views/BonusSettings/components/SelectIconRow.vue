@@ -3,18 +3,28 @@
     title="Иконка валюты"
     desc="Выберите иконку для вашей валюты. Она будет отображаться у клиентов в приложении. "
   >
-    <v-btn
+    <v-badge
       v-if="iconSetIdInternal"
-      class="bonus-icon-btn"
-      icon
-    >
-      <v-img
-        class="bonus-icon"
-        :src="selectedIconSet.icon_active"
-        @click="onSelectIcon"
-      />
-    </v-btn>
 
+      overlap
+      avatar
+    >
+      <template v-slot:badge>
+        <v-icon @click="clearIcon">
+          $iconify_ion-close
+        </v-icon>
+      </template>
+      <v-btn
+        class="bonus-icon-btn"
+        icon
+      >
+        <v-img
+          class="bonus-icon"
+          :src="selectedIconSet.icon_active"
+          @click="onSelectIcon"
+        />
+      </v-btn>
+    </v-badge>
     <v-btn
       v-else
       color="secondary"
@@ -40,7 +50,6 @@
             <v-col
               :key="'icon' + n"
               cols="auto"
-              class="bonus-icon-preview"
               :class="{
                 'bonus-icon-preview': true,
                 'bonus-icon-preview--active': n === 1,
@@ -73,13 +82,15 @@
           </template>
 
           <v-col
-            v-if="withGoal"
             cols="auto"
-            class="bonus-icon-preview-goal"
+            :class="{
+              'bonus-icon-preview-goal': withGoal,
+              'bonus-icon-preview': !withGoal
+            }"
           >
             <v-img
               class="bonus-icon"
-              :src="selectedIconSet.icon_goal"
+              :src="withGoal?selectedIconSet.icon_goal:selectedIconSet.icon_inactive"
             />
           </v-col>
         </v-row>
@@ -183,6 +194,10 @@
       },
       onClickIcon (iconSet) {
         this.iconSetIdInternal = iconSet.id
+      },
+      clearIcon () {
+        this.iconSetIdInternal = null
+        this.$emit('change', this.iconSetIdInternal)
       },
       onSubmitIcon () {
         this.$emit('change', this.iconSetIdInternal)

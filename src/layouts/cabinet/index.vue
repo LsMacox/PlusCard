@@ -24,7 +24,7 @@
     },
     methods: {
       async socketOn (data) {
-        console.log('socketOn', data)
+        // console.log('socketOn', data)
         // console.log(data)
 
         // токен чат-пользователя для операций с чатами

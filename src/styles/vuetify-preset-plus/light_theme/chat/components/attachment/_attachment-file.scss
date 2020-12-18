@@ -2,14 +2,8 @@
 @import "@/styles/_typography.sass";
 
 .attachment-file {
-  .file {
-    font-size: 13px;
-  }
-
   .url {
-    font-size: 13px;
-    color: #8C9499;
-    border-bottom: 1px dotted #8C9499;
+    color: $primary-base;
     cursor: pointer;
   }
 

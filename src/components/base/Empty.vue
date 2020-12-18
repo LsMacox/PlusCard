@@ -12,7 +12,7 @@
     </div>
     <div class="b-empty__text">
       <p class="b-empty__text-title title-s-bold">
-        Здесь пока ничего нет :’(
+        {{ text }}
       </p>
       <p
         v-if="subText"
@@ -28,6 +28,10 @@
   export default {
     name: 'Empty',
     props: {
+      text: {
+        type: String,
+        default: 'Здесь пока ничего нет :’(',
+      },
       subText: {
         type: String,
         default: '',

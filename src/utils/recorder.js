@@ -15,13 +15,14 @@ export default class {
       sampleRate: options.sampleRate,
     }
 
-    this.bufferSize = 4096
+    this.bufferSize = 512 
     this.records = []
 
     this.isPause = false
     this.isRecording = false
 
     this.duration = 0
+    this.millisecondsDuration = 0
     this.volume = 0
 
     this.wavSamples = []
@@ -34,6 +35,7 @@ export default class {
       video: false,
       audio: {
         channelCount: 1,
+        autoGainControl: true,
         echoCancellation: false,
       },
     }
@@ -74,6 +76,7 @@ export default class {
     }
 
     record.duration = convertTimeMMSS(this.duration)
+    record.millisecondsDuration = this.millisecondsDuration
     this.records.push(record)
 
     this._duration = 0
@@ -112,7 +115,7 @@ export default class {
     this.stream = stream
 
     this.processor.onaudioprocess = (ev) => {
-      const sample = ev.inputBuffer.getChannelData(0)
+      const sample = ev.inputBuffer.getChannelData(0) // getChannelData returns Float32Array
       let sum = 0.0
 
       if (this._isMp3()) {
@@ -126,6 +129,7 @@ export default class {
       }
 
       this.duration = parseFloat(this._duration) + parseFloat(this.context.currentTime.toFixed(2))
+      this.millisecondsDuration = this.context.currentTime.toFixed(2)
       this.volume = Math.sqrt(sum / sample.length).toFixed(4)
     }
 

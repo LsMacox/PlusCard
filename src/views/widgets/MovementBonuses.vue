@@ -41,21 +41,21 @@
         return this.$store.getters['dashboard/purchase/widgetData']
       },
       creditCurrent () {
-        console.log('current credit')
-        console.log(this.credit)
-        console.log('current credit')
+        // console.log('current credit')
+        // console.log(this.credit)
+        // console.log('current credit')
         return this.credit[this.credit.length - 1]
       },
       debitCurrent () {
-        console.log('current debit')
-        console.log(this.debit)
-        console.log('current debit')
+        // console.log('current debit')
+        // console.log(this.debit)
+        // console.log('current debit')
         return this.debit[this.debit.length - 1]
       },
       expiredCurrent () {
-        console.log('current expired')
-        console.log(this.expired)
-        console.log('current expired')
+        // console.log('current expired')
+        // console.log(this.expired)
+        // console.log('current expired')
         return this.expired[this.expired.length - 1]
       },
       percentageDiffs () {

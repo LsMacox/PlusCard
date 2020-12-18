@@ -1,6 +1,6 @@
 export default {
   methods: {
-    nodeOffsetWH(node, wh = true) {
+    nodeOffsetWH (node, wh = true) {
       const clone = node.cloneNode(true)
       clone.setAttribute('style', 'display:block !important');
       clone.style.visibility = 'hidden'
@@ -17,7 +17,19 @@ export default {
         return offsetH
       }
     },
-    findSidePanelComponent(vm) {
+    getFromHideNodeAttribute (node, attrName) {
+      const clone = node.cloneNode(true)
+      clone.setAttribute('style', 'display:block !important')
+      clone.style.visibility = 'hidden'
+      node.parentNode.append(clone)
+
+      const attr = clone[attrName]
+
+      clone.remove()
+
+      return attr
+    },
+    findSidePanelComponent (vm) {
       let _vm_ = vm
       while (true) {
         if (typeof _vm_.$refs !== 'undefined' &&

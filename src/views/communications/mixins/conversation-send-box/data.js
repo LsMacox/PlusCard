@@ -16,17 +16,13 @@ export default {
       return this.$store.getters['chat/chatUser/chatUser']
     },
     conversation () {
-      const conversation = this.$store.getters[
-        'chat/conversation/conversations'
-      ].filter((item) => item.id === this.conversationId)
-
-      return conversation[0] || null
+      return this.$store.getters['chat/data/conversation'](this.conversationId)
     },
     selectedTopicId () {
       return this.$store.getters['chat/topic/selectedTopicId']
     },
     recipients () {
-      return this.$store.getters['chat/`message/recipients']
+      return this.$store.getters['chat/message/recipients']
     },
   },
 }

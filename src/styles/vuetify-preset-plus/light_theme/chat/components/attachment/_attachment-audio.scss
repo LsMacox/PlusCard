@@ -2,9 +2,38 @@
 @import "@/styles/_typography.sass";
 
 .attachment-audio {
-  .image-thumb {
-    width: 168px;
-    height: 42px;
-    border-radius: 10px;
+  .audio {
+    display: flex;
+    margin-bottom: 2px;
+    .icon-play {
+      cursor: pointer;
+      color: $primary-base;
+      margin-right: 15px;
+      margin-left: 5px;
+    }
+    .strips {
+      display: flex;
+      align-items: center;
+
+      .strip {
+        background: $neutral-400;
+        width: 2px;
+        min-height: 4px;
+        margin-right: 2px;
+        border-radius: 50px;
+        transition: 0.1s ease-in-out;
+
+        &.active {
+          background: $primary-base;
+        }
+      }
+    }
+    .durations {
+      margin-left: 12px;
+
+      p {
+        margin-bottom: 0;
+      }
+    }
   }
 }

@@ -19,8 +19,8 @@
           </div>
           <div class="custom-actions__item-text">
             <p
-                class="body-s-semibold"
-                @click.stop="userSidePanel(item)"
+              class="body-s-semibold"
+              @click.stop="userSidePanel(item)"
             >
               {{ item.name }} {{ item.lastname }}
             </p>
@@ -29,10 +29,10 @@
         </li>
       </ul>
       <side-panel-edit-client
-          v-if="sidePanelStatus.active"
-          v-model="sidePanelStatus.active"
-          :mode="sidePanelStatus.mode"
-          :table-data="sidePanelStatus.data"
+        v-if="sidePanelStatus.active"
+        v-model="sidePanelStatus.active"
+        :mode="sidePanelStatus.mode"
+        :table-data="sidePanelStatus.data"
       />
     </template>
     <template v-slot:tab-2>
@@ -99,9 +99,9 @@
     },
     methods: {
       async userSidePanel (item) {
-        console.log('user.....')
-        console.log(item)
-        console.log('user.....')
+        // console.log('user.....')
+        // console.log(item)
+        // console.log('user.....')
 
         if (item.id) {
           const result = await ApiService.get('/api-cabinet/widget/client', {
@@ -110,10 +110,10 @@
               program_id: this.program.id,
             },
           })
-          console.log(result)
+          // console.log(result)
 
           if (result.client && result.client.accounts) {
-            console.log('OK>>>')
+            // console.log('OK>>>')
             item = result.client
             item.id = result.client.accounts[0].id
             this.sidePanelStatus.mode = 'edit'

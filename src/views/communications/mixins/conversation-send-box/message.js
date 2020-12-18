@@ -1,92 +1,64 @@
 export default {
   methods: {
-    closeReplyMessage () {
-      this.$emit('update:quotedMessage', Object.assign({}))
-      this.$emit('update:quotedMessageSender', null)
-      this.$emit('update:sendType', 'send')
-      this.$emit('update:dialogReplyMessage', false)
-      if (this.overlayChat) {
-        const elem = this.$refs.conversationField
-        if (elem) elem.scrollTop = elem.scrollHeight
-        this.overlayChat = false
-      }
-    },
     clearForm () {
       this.message = ''
-      this.attachFileName = null
-      this.attachFileType = null
-      this.attachFilePreview = null
-      this.formDataFiles = []
-      this.attachFile = null
-      this.files = []
-      // this.$refs.attachFile.type = 'text'
-      // this.$refs.attachFile.type = 'file'
-      this.$emit('update:quotedMessage', Object.assign({}))
-      this.$emit('update:quotedMessageSender', null)
-      this.$emit('update:sendType', 'send')
-      this.$emit('update:dialogReplyMessage', false)
+      // files
+      this.attachedFile = {}
+      this.requestFileData = {}
+      // reply
+      this.internalIsReplyMessage = false
+      // edit
+      this.internalIsEditMessage = false
+      // topics
       this.$store.commit('chat/topic/selectedTopicId', null)
+      // recipients
       this.$store.commit('chat/message/recipients', [])
-      this.$emit('send-message')
       this.$store.commit('chat/conversation/setCurrentConversationMessage', '')
-      document.getElementById('message').style.height = 60 + 'px'
+      this.$emit('send-message')
     },
     // отправляем сообщение
-    async send (type) {
+    async send () {
       if (this.sending) return
-      /// /console.log('quotedMessage', this.quotedMessage);
-      console.log({
-        quotedMessage: this.quotedMessage,
-        selectedTopicId: this.selectedTopicId,
-        message: this.message,
-        recipients: this.recipients,
-        formDataFiles: this.formDataFiles,
-      })
-      if (this.validateSendMessage) {
-        /// /console.log('topic', this.selectedTopicId);
+
+      if (this.validateSendMessage()) {
         try {
-          this.sending = true
-          const message = new FormData()
-          message.set('conversation_id', this.conversationId)
-          // message.append('conversation_id', +this.conversationId);
-          // message.append('conversation_id', parseInt(this.conversationId));
+          if (this.internalIsEditMessage) {
+            this._sendMessageEdit()
+          } else {
+            this.sending = true
+            let type = 'send'
+            const message = new FormData()
 
-          if (this.quotedMessage && this.quotedMessage.id) {
-            message.set('message_id', this.quotedMessage.id)
-          }
-          if (this.selectedTopicId) { message.append('topic_id', this.selectedTopicId) }
-          if (this.message) message.set('message', this.message)
-          let recipients = []
-          recipients = Array.from(new Set(this.recipients))
-
-          // отправка файлов
-
-          if (Array.isArray(this.formDataFiles)) {
-            for (let i = 0; i < this.formDataFiles.length; i++) {
-              const file = this.formDataFiles[i]
-              message.append('files[' + i + ']', file)
+            message.set('conversation_id', this.currentConversationId)
+            if (this.message) {
+              message.set('message', this.message)
             }
-          }
 
-          // получатели
-          for (let i = 0; i < recipients.length; i++) {
-            const recipient = recipients[i]
-            message.append('recipients[' + i + ']', recipient)
-          }
+            // attach reply
+            if (this.internalIsReplyMessage && this.replyMessageId) {
+              type = 'reply'
+              message.set('message_id', this.replyMessageId)
+            } else if (this.selectedTopicId) {
+              message.append('topic_id', this.selectedTopicId)
+            }
 
-          /*
-                      const message = {
-                          conversation_id: this.conversationId,
-                          type: type,
-                          message_id: this.quotedMessage ? this.quotedMessage.id : null,
-                          message: this.message,
-                          media: this.files,
-                          topic_id: this.selectedTopicId,
-                          recipients: Array.from(new Set(this.recipients)),
-                      };
-                      */
-          /// /console.log(message)
-          await this.$store.dispatch('chat/message/send', { type, message })
+            // attach topic
+            let recipients = []
+            recipients = Array.from(new Set(this.recipients))
+
+            // recipients
+            for (let i = 0; i < recipients.length; i++) {
+              const recipient = recipients[i]
+              message.append('recipients[' + i + ']', recipient)
+            }
+
+            // attach files
+            if (this.attachedFile instanceof File) {
+              message.append('files[0]', this.attachedFile)
+            }
+
+            await this.$store.dispatch('chat/message/send', { type, message })
+          }
         } catch (e) {
           console.error('send', e)
         } finally {
@@ -97,10 +69,37 @@ export default {
 
       this.textAreaFocus()
     },
+    _sendMessageEdit () {
+      if (this.editMessageTextOld === this.message) return
+
+      const message = {
+        conversation_id: this.currentConversationId,
+        message_id: this.editMessageId,
+        message: this.message,
+      }
+
+      this.$store
+        .dispatch('chat/message/update', message)
+        .then(() => {
+          this.internalIsEditMessage = false
+        })
+    },
     textAreaFocus () {
       setTimeout(() => {
         this.$refs.messageTextArea.$el.querySelector('textarea').focus()
       }, 0)
+    },
+    validateSendMessage () {
+      if (
+        this.isAttachedFile ||
+        (
+          this.message &&
+          this.message.replace(/\s+/, ' ').replace(/\s/, '').length
+        )
+      ) {
+        return true
+      }
+      return false
     },
     clearMessage () {
       this.message = ''

@@ -98,7 +98,7 @@ export default {
     },
 
     async GetCertList ({ commit }, programId) {
-      console.log('GetCertList this.programId', programId)
+      // console.log('GetCertList this.programId', programId)
       const result = await ApiService.get(
         '/api-cabinet/program/certificates/list', {
           params: {
@@ -143,7 +143,7 @@ export default {
     },
 
     async UpdateCertificate ({ commit }, certificate) {
-      console.log('UpdateCertificate', certificate)
+      // console.log('UpdateCertificate', certificate)
       const result = ApiService.post('/api-cabinet/program/certificates/update', certificate)
       commit('UPDATE_CERTIFICATE', result)
       return result
@@ -170,7 +170,7 @@ export default {
           },
         )
       } catch {
-        console.log('Cancel delete')
+        // console.log('Cancel delete')
         return
       }
 

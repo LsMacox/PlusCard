@@ -91,7 +91,7 @@
         set (val) {
           if (val === this.value) return
 
-          console.log('set, ', val)
+          // console.log('set, ', val)
           // this.value = val
 
           this.$emit('change', val)
@@ -107,7 +107,7 @@
           this.$nextTick(() => (this.internalValue = this.internalValue - 1))
         // this.internalValue--
         } else {
-          console.log('close')
+          // console.log('close')
           this.$emit('close')
         }
       },

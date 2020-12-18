@@ -4,6 +4,7 @@ export default {
       v = String(v).replace(/\s+/g, ' ').replace(/^\s/g, '')
       if (!v.length) {
         this.searchCount = 0
+        this.searchFound = []
       }
       this.searchByFilterString(v)
     },
@@ -20,32 +21,35 @@ export default {
       if (
           v &&
           this.searchFound[v - 1] &&
-          document.getElementById('message-' + this.searchFound[v - 1].id)
+          document.getElementById('message-' + this.searchFound[v - 1])
         ) {
-          this.$refs.conversationField.scrollTop = document.getElementById('message-' + this.searchFound[v - 1].id).offsetTop
+          this.$refs.conversationField.scrollTop = document.getElementById('message-' + this.searchFound[v - 1]).offsetTop - 185
         }
     },
   },
   methods: {
-    searchByFilterString (searchable) {
-      searchable = searchable.toLowerCase()
-      this.searchFound = this._searchMessagesByString(searchable)
+    searchByFilterString () {
+      this.searchFound = this._searchMessagesIdByString(this.searchString)
       this.searchCount = this.searchFound.length
-
       if (this.searchFound.length > 0) {
         this._removeHighlightMessage()
-        this._highlightMessageByIdAndText(this.searchFound)
+        this._highlightMessageByIds(this.searchFound)
       } else {
         this._removeHighlightMessage()
       }
     },
-    _highlightMessageByIdAndText (arr) {
-      arr.forEach((item) => {
-        const msg = this._getMessageTextNodeById(item.id)
+    _highlightMessageByIds (ids) {
+      ids.forEach((id) => {
+        const msg = this._getMessageTextNodeById(id)
         if (msg) {
           const msgText = msg.innerText
-          const searchIdx = msg.innerText.toLowerCase().indexOf(this.searchString.toLowerCase())
-          msg.innerHTML = msgText.substr(0, searchIdx) + '<mark>' + msgText.substr(searchIdx, this.searchString.length) + '</mark>' + msgText.substr((searchIdx + this.searchString.length), msgText.length)
+          const searchIdx =
+          msg.innerText.toLowerCase().indexOf(this.searchString.toLowerCase())
+          msg.innerHTML = msgText.substr(0, searchIdx) +
+            '<mark>' +
+            msgText.substr(searchIdx, this.searchString.length) +
+            '</mark>' +
+            msgText.substr((searchIdx + this.searchString.length), msgText.length)
         }
       })
     },
@@ -66,8 +70,9 @@ export default {
           messageBox.querySelector('.attachment-text p')
       }
     },
-    _searchMessagesByString (str) {
-      if (!str.length) return []
+    _searchMessagesIdByString (str) {
+      if (!str || !str.length) return []
+      str = str.toLowerCase()
       const found = []
       let id, text
 
@@ -98,10 +103,9 @@ export default {
         }
 
         if (id && text) {
-          text = text.toLowerCase()
-          const oldV = found.find(f => f.id === id)
+          const oldV = found.find(f => f === id)
           if (!oldV) {
-            found.push({ id: id, text: text })
+            found.push(id)
           }
         }
       }

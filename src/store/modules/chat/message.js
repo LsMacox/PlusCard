@@ -8,6 +8,7 @@ export default {
     unreadMessages: {},
     loading: false,
     loadingMessagePage: false,
+    isAllMessagesLoaded: false,
     typing: {},
     recipients: [],
     topics: [],
@@ -45,6 +46,9 @@ export default {
       // ключ = id чата
       // Vue.set(state.messages, conversationId, messages)
     },
+    isAllMessagesLoaded (state, payload) {
+      state.isAllMessagesLoaded = payload
+    },
     unreadMessages (state, payload) {
       const messages = {}
       payload.forEach(item => Vue.set(messages, item.id, item))
@@ -69,7 +73,6 @@ export default {
 
       if (state.messages && state.messages[conversationId]) {
         state.messages[conversationId][payload.id] = payload
-        // обновление реактивности
         state.messages = Object.assign({}, state.messages)
       }
     },
@@ -171,7 +174,7 @@ export default {
         }
     },
 
-    async list ({ dispatch, commit, state, rootState, rootGetters }, item) {
+    async list({ dispatch, commit, state, rootState, rootGetters }, item) {
       const id = item.id
       const offset = item.offset
       const limit = item.limit
@@ -180,21 +183,25 @@ export default {
         `/api/message/listWithAttachments?conversation_id=${id}&offset=${offset}&limit=${limit}`,
       )
 
-      // подставляем в ответ id чата
-      // result.conversation_id = id
+      if (!result.length) {
+        commit('isAllMessagesLoaded', true)
+      }
+
       commit('messages', result)
-
+      
       // добавляем в последнее сообщение в список чатов
-      const keys = Object.keys(state.messages[id])
-      const last = state.messages[id][keys[keys.length - 1]]
-      commit('chat/conversation/addInLast', last, { root: true })
-
+      if (id && state.messages[id]) {
+        const keys = Object.keys(state.messages[id])
+        const last = state.messages[id][keys[keys.length - 1]]
+        commit('chat/conversation/addInLast', last, { root: true })
+      }
+      
       // delivered
       dispatch('toDelivered', id)
     },
 
     async typing ({ commit, rootState }, typing) {
-       await ApiService.get('/api/message/typing?conversation_id=' + typing)
+      await ApiService.get('/api/message/typing?conversation_id=' + typing)
       // commit('loading', false)
     },
 
@@ -211,17 +218,17 @@ export default {
             },
           },
         )
-}
+      }
       if (type === 'reply') {
         result = await ApiService.post('/api/message/reply',
           message,
         )
-}
+      }
       if (type === 'forward') {
         result = await ApiService.post('/api/message/forward',
           message,
         )
-}
+      }    
       /// /console.log('/api/message/send')
       /// /console.log(success)
 
@@ -265,24 +272,25 @@ export default {
       commit('updateInMessages', result)
     },
 
-    async delete ({ commit, rootState }, message) {
+    async delete ({ commit }, message) {
       const result = await ApiService.post('/api/message/delete',
         message,
       )
+
+      console.log('delete', message, result)
       /// /console.log('/api/message/delete')
       /// /console.log(success)
       // удаляем сообщение из массива сообщений
       commit('deleteInMessages', result)
     },
 
-    async deleteAll ({ commit, rootState }, message) {
-      const result = await ApiService.post('/api/message/delete/all',
-        message,
-      )
+    async deleteAll ({ commit }, message) {
+      const result = await ApiService.post('/api/message/delete/all', message)
+      commit('deleteInMessages', result)
+      console.log('deleteAll', message, result)
       /// /console.log('/api/message/delete/all')
       /// /console.log(success)
       // удаляем сообщение из массива сообщений
-      commit('deleteInMessages', result)
     },
   },
   getters: {
@@ -300,6 +308,9 @@ export default {
     },
     recipients (state) {
       return state.recipients
+    },
+    isAllMessagesLoaded (state) {
+      return state.isAllMessagesLoaded
     },
   },
 }
