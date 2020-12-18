@@ -67,9 +67,6 @@ export const ICONIFY_ICONS = {
     // dashicons
     'dashicons-video-alt3': () => import('@iconify-icons/dashicons/video-alt3'),
 
-    // dashicons
-    'dashicons-video-alt3': () => import('@iconify-icons/dashicons/video-alt3'),
-
     // ion
     'ion-checkmark-done': () => import('@iconify/icons-ion/checkmark-done'),
     'ion-close': () => import('@iconify/icons-ion/close'),
@@ -132,29 +129,20 @@ export const ICONIFY_ICONS = {
     'feather-star': () => import('@iconify-icons/feather/star'),
     'feather-volume': () => import('@iconify/icons-feather/volume'),
     'feather-volume-1': () => import('@iconify/icons-feather/volume-1'),
-<<<<<<< HEAD
-<<<<<<< HEAD
     'feather-check': () => import('@iconify-icons/feather/check'),
     'feather-circle': () => import('@iconify-icons/feather/circle'),
-=======
-=======
->>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
     'feather-info': () => import('@iconify/icons-feather/info'),
 
     // fa-solid
     'fa-solid-user': () => import('@iconify-icons/fa-solid/user'),
     'fa-solid-user-friends': () => import('@iconify-icons/fa-solid/user-friends'),
-<<<<<<< HEAD
->>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
-=======
->>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),
 
      // ls
     'ls-sort': () => import('@iconify/icons-ls/sort'),
-    
+
     // typcn
     'typcn-forward-outline': () => import('@iconify-icons/typcn/arrow-forward-outline'),
 
