@@ -21,7 +21,6 @@
       <v-col
         cols="12"
       >
-        {{ tableData }}
         <v-data-table
           :headers="headers"
           :items="tableData"
@@ -30,10 +29,8 @@
           item-key="uuid"
           :show-expand="false"
           class="plus-table"
+          style="cursor: pointer;"
           hide-default-footer
-          :server-items-length="totalCount"
-          @update:sort-by="fetchData()"
-          @update:sort-desc="fetchData()"
           @click:row="openBonusUnitDialog($event)"
         >
           <template v-slot:item.id="{ item }">
@@ -60,7 +57,7 @@
               size="42"
             >
               <img
-                :src="item.icon"
+                :src="getIcon(item.icon_set_id) ? getIcon(item.icon_set_id) : item.icon"
                 style="padding: 2px;"
                 alt="иконка валюты"
               >
@@ -165,13 +162,24 @@
         return this.$store.getters['company/bonus_units/bonusUnits']
       },
       totalCount () {
-        return 1
+        return this.tableData.length
       },
       pagesCount () {
+        const count = Math.ceil(this.totalCount / this.tableSettings.itemsPerPage)
+        if (count) {
+          if (this.tableSettings.page > count) {
+            this.tableSettings.page = count
+          }
+          return count
+        }
+        this.tableSettings.page = 1
         return 1
       },
       programId () {
         return this.$store.getters.programId
+      },
+      bonusUnitIcons () {
+        return this.$store.getters['company/bonus_units/bonusUnitIcons']
       },
     },
     created () {
@@ -217,12 +225,14 @@
           this.saveAction = false
         }
       },
+      getIcon (id) {
+        const icon = this.bonusUnitIcons.find(item => item.id === id)
+        if (icon) return icon.icon_active
+        return ''
+      },
       getWord (number, words) {
         const cases = [2, 0, 1, 1, 1, 2]
         return words[(number % 100 > 4 && number % 100 < 20) ? 2 : cases[(number % 10 < 5) ? number % 10 : 5]]
-      },
-      fetchData () {
-        console.log('fetchData!!!')
       },
     },
   }

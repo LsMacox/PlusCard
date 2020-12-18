@@ -24,7 +24,9 @@
                 :value="0"
                 eager
               >
-                <bonus-operation />
+                <bonus-operation
+                  ref="BonusOperation"
+                />
               </v-tab-item>
               <v-tab-item
                 :value="1"
@@ -62,13 +64,19 @@
         bonusDialog: false,
         loadData: false,
         saveAction: false,
-        hasChangesMain: false,
-
       }
     },
     computed: {
       programId () {
         return this.$store.getters.programId
+      },
+      hasChangesMain: {
+        get () {
+          return this.$store.getters['company/program/hasChangesMain']
+        },
+        set (v) {
+          return this.$store.commit('company/program/SET_HAS_CHANGES_MAIN', v)
+        },
       },
     },
     watch: {
@@ -84,6 +92,7 @@
         this.loadData = true
         await this.$store.dispatch('company/bonus_units/loadBonusUnits', this.programId)
         await this.$store.dispatch('company/bonus_resources/GetList', this.programId)
+        await this.$store.dispatch('company/bonus_units/getBonusUnitIcons') // список иконок
         this.loadData = false
       },
       openBonusUnitDialog (bonusUnit) {
@@ -101,6 +110,7 @@
                 cancelButtonText: 'Отмена',
                 type: 'warning',
               })
+            this.hasChangesMain = false
           }
           this.$router.back()
         } catch (error) {
@@ -111,7 +121,7 @@
         console.log('globalSave')
         try {
           this.saveAction = true
-          await this.$refs.BonusSettingsMain.save()
+          await this.$refs.BonusOperation.globalSave()
         } catch (e) {
 
         } finally {

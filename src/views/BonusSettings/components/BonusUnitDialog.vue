@@ -134,7 +134,7 @@
         v-model="bonusUnitInternal.icon_set_id"
         :with-goal="bonusUnitInternal.with_goal"
       />
-      
+
       <dialog-form-block-row
         v-if="bonusType != 'digital'"
         title="Правила начисления"
@@ -230,7 +230,6 @@
 <script>
   import { mapGetters, mapMutations } from 'vuex'
   import { isFilled, maxLen } from '@/utils/validate'
-import { normalizeRules } from 'vee-validate'
 
   export default {
     name: 'BonusUnitDialog',

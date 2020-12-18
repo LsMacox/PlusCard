@@ -30,12 +30,19 @@
         editedBonusUnit: null,
         bonusDialog: false,
         saveAction: false,
-        hasChangesMain: false,
       }
     },
     computed: {
       programId () {
         return this.$store.getters.programId
+      },
+      hasChangesMain: {
+        get () {
+          return this.$store.getters['company/program/hasChangesMain']
+        },
+        set (v) {
+          return this.$store.commit('company/program/SET_HAS_CHANGES_MAIN', v)
+        },
       },
     },
     methods: {
