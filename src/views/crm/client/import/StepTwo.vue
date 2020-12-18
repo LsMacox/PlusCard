@@ -151,6 +151,7 @@
           { value: 'name', text: 'Имя', required: false },
           { value: 'lastname', text: 'Фамилия', required: false },
           { value: 'middlename', text: 'Отчество', required: false },
+          { value: 'birthday', text: 'День рождения', required: false },
         ],
         cols: [], // колонки excel по типам
         errors: [], // ошибки
@@ -301,6 +302,7 @@
           })
           toUpload.push(newRow)
         })
+        console.log('toUpload')
         console.log(toUpload)
         this.selectedExcel = Object.copy(toUpload)
       },
@@ -312,6 +314,7 @@
             program_id: this.program.id,
             excel: this.selectedExcel,
           }
+          console.log(item)
           await this.$store.dispatch('crm/client/createList', item)
           this.$emit('update:step', 3)
         } finally {
