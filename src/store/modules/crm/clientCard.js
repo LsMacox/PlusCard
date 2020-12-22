@@ -55,9 +55,10 @@ const actions = {
     },
 
     async transactionsList ({ commit }, item) {
-        const result = await ApiService.get(`/api/account/bonus/transactions/list?account_id=${item.id}`)
+        const result = await ApiService.get(`/api/account/bonus/transactions/view/list?account_id=${item.id}`)
+        // const result = await ApiService.get(`/api/account/bonus/transactions/list?account_id=${item.id}`)
 
-        console.log('/api/account/bonus/transactions/list')
+        console.log('/api/account/bonus/transactions/view/list')
         console.log(result)
 
         commit('SET_TRANSACTIONS', result)
