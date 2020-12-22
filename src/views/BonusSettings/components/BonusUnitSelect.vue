@@ -25,16 +25,15 @@
           }"
           :disabled="disabled"
           v-on="on"
-        >
-          <span>{{ selectedItem ? selectedItem.name : 'Выберите валюту' }}</span>
-
-          <v-icon
+        >      
+         <span style="max-width: 10em;overflow: hidden;text-overflow: ellipsis;">{{ selectedItem ? selectedItem.name : 'Выберите валюту' }}</span>
+         <v-icon
             right
             :color="!disabled ? 'primary' : null"
             style="height: 21px; width: 21px;"
           >
             {{ attrs['aria-expanded'] === 'false' ? '$iconify_octicon-triangle-down-24' : '$iconify_octicon-triangle-up-24' }}
-          </v-icon>
+          </v-icon>       
         </v-btn>
       </template>
       <v-list class="list-own-padding">
