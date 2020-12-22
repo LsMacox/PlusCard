@@ -16,8 +16,11 @@ export default {
                     fio = user.email
                 }
             }
-            if (!fio) {
+            if (user && !fio) {
                 fio = 'Пользователь ' + user.id
+            }
+            if (!fio) {
+                fio = 'Пользователь'
             }
             return fio
         },
