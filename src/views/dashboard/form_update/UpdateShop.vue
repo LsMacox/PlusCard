@@ -320,7 +320,7 @@
     created () {
       // центрируемся на первой торговой точке
       if (this.shops.length) this.coords = [this.shops[0].lat, this.shops[0].lng]
-    },    
+    },
     methods: {
       getMarkerName (str) {
         if (!str) return ''
@@ -413,6 +413,40 @@
         }
       },
       getWorkTime (workObj) {
+        const days = {
+          mondey: 0,
+          tuesday: 1,
+          wednesday: 2,
+          thursday: 3,
+          friday: 4,
+          saturday: 5,
+          sunday: 6,
+        }
+
+        const wtNew = []
+
+        for (const key in workObj) {
+          if (!workObj[key].isWorkDay) continue
+          
+          const item = {
+            startTime: workObj[key].start,
+            endTime: workObj[key].finish,
+            breakStart: workObj[key].pause_start,
+            breakEnd: workObj[key].pause_finish,
+          }
+
+          const itemExist = this.$_.findWhere(wtNew, item)
+          if (itemExist) {
+            itemExist.days.push(days[key])
+          } else {
+            item.days = [days[key]]
+            wtNew.push(item)
+          }
+        }
+
+        return wtNew
+      },
+      getWorkTimeOld (workObj) {
         const days = {
           mondey: 0,
           tuesday: 1,
