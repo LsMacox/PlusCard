@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <v-row no-gutters>
     <v-col>
       <base-top-menu
@@ -229,7 +229,7 @@
 
           if (certData.LastVersion) {
             console.log('certData', certData)
-            this.cert = Object.assign({}, certData, certData.LastVersion ) 
+            this.cert = Object.assign({}, certData, certData.LastVersion)
             console.log('certData2', certData)
             this.cert.nominals = certData.nominals.map(x => x.LastVersion || x)
           } else {

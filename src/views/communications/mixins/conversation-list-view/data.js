@@ -1,43 +1,43 @@
 export default {
   computed: {
-    activeMembers () {
-      return this.conversation.members.filter((item) => item.active)
-    },
-    program () {
-      return this.$store.getters.program
+    isGroup () {
+      return this.activeMembers.length > 2
     },
     profile () {
       return this.$store.getters.user
     },
-    chatUser () {
-      return this.$store.getters['chat/chatUser/chatUser']
-    },
-    conversation () {
-      const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
-      if (conversation.length) return conversation[0]
-      return {}
-    },
-    members () {
-      if (!this.isEmptyObject(this.conversation)) return this.conversation.members
-      return []
-    },
-    conversationProgram () {
-      if (!this.isEmptyObject(this.conversation)) return this.conversation.program
-      return {}
-    },
-    employees () {
-      if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.chat_members
-      return []
-    },
-    realChatName () {
-      if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.real_chat_name
-      return false
-    },
-    messages () {
-      return this.$store.getters['chat/message/messages'][this.conversationId] // id чата
+    program () {
+      return this.$store.getters.program
     },
     typing () {
       return this.$store.getters['chat/message/typing']
+    },
+    payload () {
+      return this.$store.getters['chat/data/payload'](this.conversationId)
+    },
+    chatUser () {
+      return this.$store.getters['chat/chatUser/chatUser']
+    },
+    activeMembers () {
+      return this.$store.getters['chat/data/activeMembers'](this.conversationId)
+    },
+    conversation () {
+      return this.$store.getters['chat/data/conversation'](this.conversationId)
+    },
+    members () {
+      return this.$store.getters['chat/data/members'](this.conversationId)
+    },
+    conversationProgram () {
+      return this.$store.getters['chat/data/conversationProgram'](this.conversationId)
+    },
+    employees () {
+      return this.$store.getters['chat/data/employees'](this.conversationId)
+    },
+    realChatName () {
+      return this.$store.getters['chat/data/realChatName'](this.conversationId)
+    },
+    messages () {
+      return this.$store.getters['chat/message/messages'][this.conversationId]
     },
   },
 }

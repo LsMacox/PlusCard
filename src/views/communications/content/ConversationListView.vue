@@ -4,8 +4,6 @@
       <div class="app--conversationn--list--avatar--wrapper">
         <div class="list-avatar">
           <img
-            v-for="(avatar, i) in getAvatars(conversation)"
-            :key="i"
             :src="avatar"
             class="list-avatar-img"
             @error="e => e.target.src = img404"
@@ -14,9 +12,12 @@
       </div>
       <div class="app--conversation--list--card--content--wrapper">
         <div class="app--conversation--list--card--content">
-          <div class="app--conversation--list--card--top--line">
+          <div
+            class="app--conversation--list--card--top--line"
+            :style="!authorName.length && isGroup ? 'margin-top: 29px' : ''"
+          >
             <div class="app--conversation--list--card-name">
-              {{ (conversation.display_name ? conversation.display_name : getName(conversation)) }}
+              {{ (conversation.display_name ? conversation.display_name : name) }}
             </div>
           </div>
 
@@ -31,15 +32,15 @@
           <div
             v-else
             class="app--conversation--list--card--bottom--line"
-            :class="[getAuthorName(conversation) == 'Вы' ? 'blueAuthor' : '']"
+            :class="[authorName == 'Вы' ? 'blueAuthor' : '']"
           >
-            {{ (getAuthorName(conversation) + ': ' + getLastMessage(conversation)) }}
+            {{ (authorName.length ? authorName + ': ' : '') + lastMessage }}
           </div>
         </div>
 
         <div class="app--conversation--list--card--info">
           <div class="app--conversation--list--card--date">
-            {{ getLastTime(conversation) }}
+            {{ lastTime }}
           </div>
           <div
             v-if="conversation && conversation.unread_count"
@@ -91,30 +92,11 @@
       },
     },
     data () {
-      return {
-        img404: 'https://storage.yandexcloud.net/plusstorage/users/avatars/default.png',
-      }
+      return {}
     },
     methods: {
       isMemberClient (memberId) {
         return memberId !== this.chatUser.id
-      },
-      formatMessage (message) {
-        let str = JSON.parse(message)
-        let pos = 0
-        while (true) {
-          const foundPos = str.indexOf('\n', pos)
-          if (foundPos !== -1) str = str.replace('\n', '<br>')
-          if (foundPos === -1) break
-          pos = foundPos
-        }
-        return str
-      },
-      formatStatus (status) {
-        if (status === 'sending') return 'Отправлено'
-        if (status === 'delivered') return 'Доставлено'
-        if (status === 'seen') return 'Просмотрено'
-        return status
       },
       async toAccount (id) {
         if (!this.isMemberClient(id)) return

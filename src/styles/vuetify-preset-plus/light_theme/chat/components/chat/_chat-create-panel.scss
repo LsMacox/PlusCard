@@ -1,0 +1,122 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.side-panel__chat-create {
+  p {
+    margin-bottom: 0;
+  }
+  .chat-create__header {
+    margin: 50px 34px 0 34px;
+    padding-bottom: 34px;
+    p {
+      margin-bottom: 20px;
+    }
+    .field-search {
+      input {
+        @include body-m-medium;
+        &::placeholder {
+          @include body-m-medium;
+           color: $neutral-600;
+        }
+      }
+      .v-input__icon--clear {
+        color: $neutral-500;
+      }
+      .v-input__append-inner:nth-child(1) {
+        width: 25px !important;
+      }
+      .v-input__append-inner:nth-child(2) {
+        width: 0 !important;
+      }
+    }
+  }
+  .chat-create__content {
+    height: calc(100% - 317px);
+    .clients {
+      height: 100%;
+      .clients__list {
+        list-style: none;
+        padding: 0 34px 0 34px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        margin-right: 4px;
+        max-height: 100%;
+        .client__item {
+          position: relative;
+          display: flex;
+          justify-content: space-between;
+          cursor: pointer;
+          &.active {
+            .item-name {
+              p {
+                color: $primary-base !important;
+              }
+            }
+          }
+          &:not(:nth-last-child(1)) {
+            margin-bottom: 12px;
+          }
+          .item-img {
+            position: relative;
+            margin-right: 12px;
+            .avatar {
+              border-radius: 50%;
+              width: 48px;
+              height: 48px;
+            }
+            .online {
+              position: absolute;
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              background: #00D15D;
+              border: 2px solid $neutral-100;
+              top: 38px;
+              left: 38px;
+            }
+          }
+          .item-name {
+            p {
+              line-height: 48px;
+            }
+          }
+          .right-block {
+            display: flex;
+          }
+          .left-block {
+            display: flex;
+            margin: auto 0;
+            .icon-check {
+              color: $primary-base;
+            }
+          }
+        }
+        &::-webkit-scrollbar {
+          width: 4px;
+          background: $neutral-250;
+          border-radius: 2px;
+        }
+        &::-webkit-scrollbar-thumb {
+          background: $neutral-400;
+          border-radius: 2px;
+          width: 4px;
+        }
+      }
+    }
+    .empty {
+      margin-top: 80px;
+      padding: 0 34px 0 34px;
+    }
+  }
+  .chat-create__footer {
+    display: flex;
+    padding: 20px 34px;
+    .group-name {
+      margin-right: 12px;
+    }
+
+    .btn-create {
+      .icon {}
+    }
+  }
+}

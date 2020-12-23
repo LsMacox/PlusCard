@@ -41,7 +41,7 @@ const actions = {
                 '/api-cabinet/login/merchant',
                 user,
             )
-            console.log(result)
+            // console.log(result)
             commit('auth/auth/SET_AUTH', result, { root: true })
         } catch (error) {
             commit('auth/auth/SET_AUTH', null, { root: true })

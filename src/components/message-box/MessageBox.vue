@@ -100,7 +100,7 @@
         type: Boolean,
         default: false,
       },
-      $type: {
+      typeMode: {
         type: String,
         default: 'alert',
       },
@@ -125,14 +125,14 @@
     },
     watch: {
       value (v) {
-        console.log('update:pDialog', v)
+        // console.log('update:pDialog', v)
         this.dialog = v
       },
       dialog (val) {
-        console.log('update:dialog', val)
+        // console.log('update:dialog', val)
         if (val) {
           this.uid++
-          if (this.$type === 'alert' || this.$type === 'confirm') {
+          if (this.typeMode === 'alert' || this.typeMode === 'confirm') {
             this.$nextTick(() => {
               this.$refs.confirm.$el.focus()
             })
@@ -142,7 +142,7 @@
         }
 
         // prompt
-        // if (this.$type !== 'prompt') return
+        // if (this.typeMode !== 'prompt') return
         // if (val) {
         //   setTimeout(() => {
         //     if (this.$refs.input && this.$refs.input.$el) {
@@ -157,7 +157,7 @@
       },
     },
     mounted () {
-      console.log('msgbox mounted')
+      // console.log('msgbox mounted')
       this.$nextTick(() => {
         if (this.closeOnHashChange) {
           window.addEventListener('hashchange', this.close)
@@ -186,7 +186,7 @@
         }
       },
       doClose () {
-        console.log('doClose')
+        // console.log('doClose')
         if (!this.dialog) return
         this.dialog = false
 
@@ -209,8 +209,8 @@
         }
       },
       handleAction (action) {
-        console.log('handleAction', action)
-        if (this.$type === 'prompt' && action === 'confirm' && !this.validate()) {
+        // console.log('handleAction', action)
+        if (this.typeMode === 'prompt' && action === 'confirm' && !this.validate()) {
           return
         }
         this.action = action

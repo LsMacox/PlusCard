@@ -63,6 +63,7 @@ const actions = {
     await commit('crm/clientCard/RESET_STATE', null, { root: true })
     await commit('crm/clientDocument/RESET_STATE', null, { root: true })
     await commit('crm/segment/RESET_STATE', null, { root: true })
+    localStorage.removeItem('tables')
   },
 
   async InitDevice ({ commit }) {

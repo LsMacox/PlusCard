@@ -180,7 +180,6 @@
         console.log('hasChangesGlobalOutput', v)
         this.$emit('update:hasChangesGlobalOutput', v)
       },
-
     },
     methods: {
 
@@ -276,7 +275,7 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-    
+
     &:hover {
       .bonus-block-title{
          color: $primary-base;

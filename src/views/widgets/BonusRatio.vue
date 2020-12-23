@@ -42,9 +42,9 @@
       },
     },
     mounted () {
-      console.log('bonus ratio')
-      console.log(this.widgetData)
-      console.log('bonus ratio')
+      // console.log('bonus ratio')
+      // console.log(this.widgetData)
+      // console.log('bonus ratio')
       if (this.widgetData && this.widgetData.bonusRatio) {
         this.creditRatio = this.widgetData.bonusRatio[0]
         this.debitRatio = this.widgetData.bonusRatio[1]

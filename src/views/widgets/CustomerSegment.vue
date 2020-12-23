@@ -36,9 +36,9 @@
     methods: {
       fetchData () {
         this.$store.dispatch('widget/segment/segments', { program_id: this.program.id })
-        console.log('SEGM ENTS_')
-        console.log(this.segments)
-        console.log('SEGMENTS_')
+        // console.log('SEGM ENTS_')
+        // console.log(this.segments)
+        // console.log('SEGMENTS_')
       },
     },
   }

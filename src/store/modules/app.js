@@ -190,33 +190,33 @@ const actions = {
     },
     async SocketConnect ({ dispatch }) {
       // слушаем канал system
-      console.log('window.socket', window.socket)
+    //   console.log('window.socket', window.socket)
       window.socket.on('system', (data) => {
-        console.log('socket.on.system', data)
+        // console.log('socket.on.system', data)
         dispatch('SocketOn', data)
       })
       // redis reconnect
       window.socket.on('reconnect', (attemptNumber) => {
-          console.log(
-              'Socket reconnect after attempt = ' + attemptNumber,
-          )
+        //   console.log(
+        //       'Socket reconnect after attempt = ' + attemptNumber,
+        //   )
           dispatch('auth/redis/connect', null, { root: true })
       })
     },
     async LoadingApp ({ state, commit, dispatch }) {
         try {
-            console.log('<LoadingApp>')
+            // console.log('<LoadingApp>')
             commit('LOADING_APP', true)
 
             await dispatch('auth/auth/loadingApp', null, { root: true })
             await dispatch('SocketConnect', null)
             
-            console.log('status=ok')
+            // console.log('status=ok')
         } catch (error) {
             console.log('loading error', error)
         } finally {
             commit('LOADING_APP', false)
-            console.log('</LoadingApp>')
+            // console.log('</LoadingApp>')
         }
     },
 }

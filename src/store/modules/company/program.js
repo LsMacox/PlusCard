@@ -24,6 +24,7 @@ const defaultShop = {
 
 const getDefaultState = () => {
     return {
+        hasChangesMain: false,
         programs: [], // компании продавца
         program: VueSession.get('program'), // сокращенная модель программы
         programModel: {
@@ -63,6 +64,7 @@ const state = Object.assign({}, getDefaultState(), getDefaultShopState())
 const mutations = {
     RESET_STATE: (state) => Object.assign(state, getDefaultState()),
     // RESET_SHOP_STATE: (state) => Object.assign(state, getDefaultShopState()),
+    SET_HAS_CHANGES_MAIN: (state, payload) => (state.hasChangesMain = payload),
     SET_PROGRAMS: (state, payload) => (state.programs = payload),
     SET_SHOP_INDEX: (state, payload) => (state.shopIndex = payload),
     SET_EDITED_SHOP: (state, payload) => (state.editedShop = payload),
@@ -408,6 +410,7 @@ const actions = {
 }
 
 const getters = {
+    hasChangesMain: (state) => state.hasChangesMain,
     programs: (state) => state.programs,
     program: (state) => state.program,
     programId: (state) => (state.program ? state.program.id : null),

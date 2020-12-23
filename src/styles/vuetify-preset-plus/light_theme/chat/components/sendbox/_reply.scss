@@ -1,0 +1,55 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.app--component-reply {
+  width: 100%;
+  border-top: 1px solid $neutral-400;
+  .reply-box {
+    display: flex;
+    height: 62px;
+    width: 100%;
+  }
+
+  .reply-box-close {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+    margin-left: 20px;
+    .icon {
+      color: $neutral-500;
+      cursor: pointer;
+    }
+  }
+
+  .reply-box-message {
+    width: 100%;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    &:before {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 38px;
+      background: $primary-base;
+      border-radius: 60px;
+      left: -10px;
+    }
+    .reply-box-message-author {
+    }
+
+    .reply-box-message-text {
+      width: 100%;
+      p {
+        width: 600px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+  p {
+    margin-bottom: 0;
+  }
+}

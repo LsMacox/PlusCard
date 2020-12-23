@@ -4,28 +4,21 @@
       v-if="!currentConversationId"
       class="empty-field"
     >
-      Выберите чат из списка слева
-    </div>
-
-    <div
-      v-else-if="overlayChat"
-      class="overlayChat"
-      @click="closeReplyMessage()"
-    >
-      <div class="overlayChatText">
-        Выберите чат из списка справа
-        <br>для пересылки сообщения
-      </div>
+      <v-img
+        max-width="186"
+        max-height="156"
+        :src="require('@/assets/png/empty-chat.png')"
+      />
     </div>
     <v-skeleton-loader
       v-else-if="loadingConversations || loadingMessage"
       :loading="loadingConversations || loadingMessage"
       :style="{ height: '100%', width: '100%' }"
-      type="header, body, actions"
+      type="header, body, table-tfoot"
       :types="{
         test: 'avatar, text',
         header: 'list-item-avatar-two-line',
-        body: 'image@3',
+        body: 'image@4',
       }"
     />
     <div
@@ -33,6 +26,7 @@
       id="conversationWrap"
       class="app--conversationWrapper"
     >
+      <!-- status bar -->
       <conversation-status-bar
         :conversation-id="currentConversationId"
         :search-string.sync="searchString"
@@ -51,32 +45,27 @@
         @scroll="scrollFeed"
       >
         <!-- прелоадер старых сообщений  -->
-        <v-skeleton-loader
-          :loading="loadingMessagePage"
-          height="100%"
-          type="list-item-avatar-three-line@5"
+        <div
+          v-for="item in messages"
+          :key="item.id"
+          class="app--conversation--message-box"
         >
-          <div
-            v-for="(item, i) in messages"
-            :key="i + item.id"
-            class="app--conversation--message-box"
-          >
-            <div :id="`message-${item.id}`">
-              <message
-                :item="item"
-                :conversation-id="currentConversationId"
-                :my-message="
-                  chatUser.id == item.sender_id &&
-                    (profile.id == item.real_sender_id || !realChatName)"
-                :dialog-reply-message.sync="dialogReplyMessage"
-                :quoted-message.sync="quotedMessage"
-                :quoted-message-sender.sync="quotedMessageSender"
-                :send-type.sync="sendType"
-                :overlay-chat.sync="overlayChat"
-              />
-            </div>
+          <div :id="`message-${item.id}`">
+            <message
+              :item="item"
+              :conversation-id="currentConversationId"
+              :my-message="
+                chatUser.id == item.sender_id &&
+                  (profile.id == item.real_sender_id || !realChatName)"
+              :is-choice-message.sync="isChoiceMessage"
+              :is-close-action.sync="isMessageCloseActions"
+              :choice-message-ids.sync="choiceMessageIds"
+              @reply="openReply"
+              @edit="openEdit"
+              @forward="openForward"
+            />
           </div>
-        </v-skeleton-loader>
+        </div>
       </div>
 
       <!-- строка typing -->
@@ -86,14 +75,29 @@
 
       <!-- форма отправки -->
       <conversation-send-box
-        :conversation-id="currentConversationId"
-        :dialog-reply-message.sync="dialogReplyMessage"
-        :quoted-message.sync="quotedMessage"
-        :quoted-message-sender.sync="quotedMessageSender"
-        :send-type.sync="sendType"
+        :messages="messages"
+        :is-reply-message.sync="isReplyMessage"
+        :is-edit-message.sync="isEditMessage"
+        :is-forward-message.sync="isForwardMessage"
+        :is-topic-panel.sync="isTopicPanel"
+        :is-topic-message.sync="isTopicMessage"
+        :is-choice-message.sync="isChoiceMessage"
+        :choice-message-ids.sync="choiceMessageIds"
+        :selected-topic.sync="selectedTopic"
+        :reply-message-id="replyMessageId"
+        :edit-message-id="editMessageId"
         @send-message="toBottomFeed()"
       />
     </div>
+    <forward-panel
+      v-model="isForwardMessage"
+      :message-id="forwardMessageId"
+      :conversation-id="currentConversationId"
+    />
+    <topic-panel
+      v-model="isTopicPanel"
+      :conversation-id="currentConversationId"
+    />
   </div>
 </template>
 
@@ -101,14 +105,13 @@
   // components
   import ConversationStatusBar from './ConversationStatusBar'
   import ConversationSendBox from './ConversationSendBox'
+  import ForwardPanel from './components/chat/ForwardPanel'
+  import TopicPanel from './components/chat/TopicPanel'
   import Message from './message/Message'
 
   // mixins
-  import MixinAttachment from '../mixins/conversation-field/attachment.js'
   import MixinValidate from '../mixins/conversation-field/validate.js'
-  import MixinDragOver from '../mixins/conversation-field/drag-over.js'
   import MixinMessage from '../mixins/conversation-field/message.js'
-  import MixinTyping from '../mixins/conversation-field/typing.js'
   import MixinSearch from '../mixins/conversation-field/search.js'
   import MixinIndex from '../mixins/index.js'
   import MixinData from '../mixins/conversation-field/data.js'
@@ -117,21 +120,19 @@
     components: {
       ConversationStatusBar,
       ConversationSendBox,
+      TopicPanel,
+      ForwardPanel,
       Message,
     },
     mixins: [
-      MixinAttachment,
       MixinValidate,
-      MixinDragOver,
       MixinMessage,
-      MixinTyping,
       MixinSearch,
       MixinIndex,
       MixinData,
     ],
     data () {
       return {
-        activeWindow: true,
         // search
         searchString: '',
         searchChoose: 0,
@@ -140,67 +141,52 @@
         // scroll
         messageIdToScrollPage: null,
         feedScrollTop: null,
+        // Booleans
         loadingMessage: false,
-        //
-        previewDialog: false,
         topicFilter: false,
-        //
-        messagesCount: 0,
-        //
-        dialogMessageUpdate: false,
-        dialogMessageDelete: false,
-        // reply
-        dialogReplyMessage: false,
-        quotedMessage: {},
-        quotedMessageSender: null,
-        overlayChat: false,
-        // edit,update
-        updatedMessageId: null,
-        deletedMessageId: null,
         sending: false,
-        messageMenu: false,
-        posX: 0,
-        posY: 0,
         // message
-        newMessage: '',
-        // attach files
-        attachFileName: '',
-        attachFileType: '',
-        attachFilePreview: '',
-        attachFile: '',
-        attachLoading: false,
-        attachPreview: false,
-        files: [],
-        filesPreview: [],
+        isMessageCloseActions: false,
+        // forward
+        isForwardMessage: false,
+        forwardMessageId: NaN,
+        // topic
+        isTopicPanel: false,
+        isTopicMessage: false,
+        selectedTopic: {},
+        // choice
+        isChoiceMessage: false,
+        choiceMessageIds: [],
+        // message reply
+        isReplyMessage: false,
+        replyMessageId: NaN,
+        // message edit
+        isEditMessage: false,
+        editMessageId: NaN,
         // types
-        sendType: 'send',
         typingTime: null,
-        // drag
-        dragAndDropCapable: false,
       }
     },
     computed: {
       conversationProgram () {
-        if (!this.isEmptyObject(this.conversation)) {
-          return this.conversation.program
-        }
-        return {}
+        return this.$store.getters['chat/data/conversationProgram'](this.currentConversationId)
       },
       realChatName () {
-        if (!this.isEmptyObject(this.conversationProgram)) {
-          return this.conversationProgram.real_chat_name
-        }
-        return false
+        return this.$store.getters['chat/data/realChatName'](this.currentConversationId)
       },
     },
     watch: {
-      async currentConversationId (newV, oldV) {
-        if (newV) {
+      async currentConversationId (v) {
+        this.isReplyMessage = false
+        this.isEditMessage = false
+        this.isChoiceMessage = false
+        this.isTopicMessage = false
+        if (v) {
           // при переходе в другой чат обнуляем
           this.messageIdToScrollPage = null
           this.feedScrollTop = null
-          //
-          await this.fetchData(newV)
+          // fetch
+          await this.fetchData(v)
           if (this.issetMessages) this.toBottomFeed()
         }
       },
@@ -210,14 +196,14 @@
         }
         // Перемещение ленты чата на сообщение с которого началась загрузка страницы сообщений
         await this.$nextTick()
-        if (this.$refs[this.messageIdToScrollPage]) {
-          const msg = this.$refs[this.messageIdToScrollPage][0]
+        if (document.getElementById(this.messageIdToScrollPage)) {
+          const msg = document.getElementById(this.messageIdToScrollPage)
 
           if (msg) {
             const conversationField = this.$refs.conversationField
             if (conversationField) {
-              conversationField.scrollTop = msg.offsetTop - 150
-            } // 150 px поправка скрола
+              conversationField.scrollTop = msg.offsetTop - 115
+            } // 115 px поправка скрола
           }
         }
       },
@@ -236,21 +222,17 @@
       }
     },
     methods: {
-      clearForm () {
-        this.newMessage = ''
-        this.attachFileName = ''
-        this.attachFileType = ''
-        this.attachFilePreview = ''
-        this.attachFile = ''
-        this.files = []
-        this.filesPreview = []
-        this.$refs.attachFile.value = null
-        this.quotedMessage = {}
-        this.dialogReplyMessage = false
-        this.sendType = 'send'
-        this.$store.commit('chat/topic/selectedTopicId', null)
-        this.$store.commit('chat/message/recipients', [])
-        this.sending = false
+      openReply (replyMessageId) {
+        this.isReplyMessage = true
+        this.replyMessageId = replyMessageId
+      },
+      openEdit (editMessageId) {
+        this.isEditMessage = true
+        this.editMessageId = editMessageId
+      },
+      openForward (forwardMessageId) {
+        this.isForwardMessage = true
+        this.forwardMessageId = forwardMessageId
       },
     },
   }

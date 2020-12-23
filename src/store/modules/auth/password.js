@@ -17,7 +17,7 @@ const actions = {
                 '/api-cabinet/login/email/password/recovery',
                 item,
             )
-            console.log(result)
+            // console.log(result)
         } catch (error) {
             throw error
         }
@@ -30,7 +30,7 @@ const actions = {
                 '/api-cabinet/login/email/password/change',
                 item,
             )
-            console.log(result)
+            // console.log(result)
         } catch (error) {
             throw error
         }

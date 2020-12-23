@@ -2,7 +2,6 @@ import Vue from 'vue'
 
 import MessageBoxComponent from './MessageBox.vue'
 
-
 function isVNode () {
     return false
 }
@@ -69,7 +68,7 @@ const merge = Object.assign
   }
 
   const initInstance = () => {
-      console.log('initInstance')
+      // console.log('initInstance')
 
       instance = new MessageBoxConstructor({
         el: document.createElement('div'),
@@ -79,13 +78,13 @@ const merge = Object.assign
   }
 
   const showNextMsg = () => {
-    console.log('showNextMsg')
+    // console.log('showNextMsg')
     if (!instance) {
       initInstance()
     }
     instance.action = ''
 
-    console.log('instance.dialog', instance.dialog, msgQueue)
+    // console.log('instance.dialog', instance.dialog, msgQueue)
     if (!instance.dialog) {
       if (msgQueue.length > 0) {
         currentMsg = msgQueue.shift()
@@ -116,11 +115,11 @@ const merge = Object.assign
             instance[prop] = true
           }
         })
-        console.log('appendChild, vAppId=', options.vAppId)
+        // console.log('appendChild, vAppId=', options.vAppId)
 
         const vApp = document.getElementById(options.vAppId)
         if (vApp) {
-            console.log('appendChild.vApp')
+            // console.log('appendChild.vApp')
             // vApp.appendChild(instance.$el)
             instance.$mount(vApp)
         } else {
@@ -202,7 +201,7 @@ const merge = Object.assign
         $type: 'confirm',
         showCancelButton: true,
       }, options)
-      console.log('confirm config', config)
+      // console.log('confirm config', config)
     return MessageBox(config)
   }
 
@@ -230,8 +229,8 @@ const merge = Object.assign
   }
 
   MessageBox.install = (Vue, settings) => {
-    console.log(' MessageBox.install', settings)
-    // const inBrowser = typeof window !== 'undefined'    
+    // console.log(' MessageBox.install', settings)
+    // const inBrowser = typeof window !== 'undefined'
 
     if (settings) {
         MessageBox.setDefaults(settings)
