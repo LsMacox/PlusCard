@@ -1,5 +1,6 @@
 <template v-if="data && data.length > 0">
   <widget-template :class-name="widgetClasses">
+    {{data}}
     <template v-slot:header-left>
       <p class="body-m-semibold">
         {{ title }}
@@ -54,15 +55,15 @@
                   :class="a == 0 ? 'text-left': 'text-right'"
                 >
                   <v-tooltip
-                      v-if="a == 0"
-                      top
+                    v-if="a == 0"
+                    top
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <p
-                          v-bind="attrs"
-                          v-on="on"
-                          class="body-s-medium"
-                          :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
+                        v-bind="attrs"
+                        class="body-s-medium"
+                        :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
+                        v-on="on"
                       >
                         {{ typeof item == 'object' ? item.text : item }}
                       </p>
@@ -70,9 +71,9 @@
                     <span>{{ typeof item == 'object' ? item.text : item }}</span>
                   </v-tooltip>
                   <p
-                      v-else
-                      class="body-s-medium"
-                      :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
+                    v-else
+                    class="body-s-medium"
+                    :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
                   >
                     {{ typeof item == 'object' ? item.text : item }}
                   </p>
@@ -94,15 +95,15 @@
                     :class="b == 0 ? 'text-left': 'text-right'"
                   >
                     <v-tooltip
-                        v-if="b == 0"
-                        top
+                      v-if="b == 0"
+                      top
                     >
                       <template v-slot:activator="{ on, attrs }">
                         <p
-                            v-bind="attrs"
-                            v-on="on"
-                            class="body-s-medium"
-                            :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
+                          v-bind="attrs"
+                          class="body-s-medium"
+                          :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
+                          v-on="on"
                         >
                           {{ typeof item == 'object' ? item.text : item }}
                         </p>
@@ -110,9 +111,9 @@
                       <span>{{ typeof item == 'object' ? item.text : item }}</span>
                     </v-tooltip>
                     <p
-                        v-else
-                        class="body-s-medium"
-                        :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
+                      v-else
+                      class="body-s-medium"
+                      :style="typeof item == 'object' ? `background-color: ${hexToRgbA(item.color, 0.15)}; color: ${item.color}` : ''"
                     >
                       {{ typeof item == 'object' ? item.text : item }}
                     </p>
