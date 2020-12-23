@@ -85,11 +85,13 @@ const actions = {
         }, `Счет №${order.number}.pdf`)
       },
 
-      async CreateOrder ({ state, rootState, commit }, { value, method }) {
+      async CreateOrder ({ rootGetters, commit }, { value, method, description }) {
         const result = await ApiService.post('/api/merchant/order/create', {
-          merchant_id: state.merchant.id,
+          merchant_id: rootGetters.merchantId,
           method: method,
           value: value,
+          description: description,
+
         })
         commit('ADD_ORDER', result)
         return result

@@ -25,7 +25,8 @@ export default {
         },
     },
     methods: {
-        close () {
+        close (submit = false) {
+            this.$emit('close', submit)
             this.dialog = false
         },
     },

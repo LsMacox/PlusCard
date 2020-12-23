@@ -7,13 +7,14 @@
         </h2>
         <div class="block-cash-btn">
           <span class="cash color-green-text font-weight-bold title-h2">{{ balance + ' ₽' }}</span>
-          <v-btn class="custom-gradient-bg">
-            <img
-              src="@/icons/svg/card-white.svg"
-              alt=""
-              class="card-outline"
-            >
-            Пополнить
+          <v-btn
+            color="primary"
+            @click="onAddBalanceClick"
+          >
+            <v-icon left>
+              $iconify_feather-credit-card
+            </v-icon>
+            <span>Пополнить</span>
           </v-btn>
         </div>
       </div>
@@ -114,14 +115,25 @@
         </div>
       </div>
     </div>
+    <create-order-dialog
+      v-if="createDialog"
+      v-model="createDialog"
+      @close="onCreateDialogClose"
+    />
   </div>
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
+
   export default {
     name: 'Balance',
+    components: {
+      CreateOrderDialog: () => import('../dialogs/CreateOrderDialog.vue'),
+    },
     data () {
       return {
+        createDialog: false,
         tariffContent: [
           {
             title: 'Тарифный план',
@@ -162,6 +174,30 @@
       },
       balance () {
         return this.merchant ? this.merchant.balance_rub : '0'
+      },
+    },
+    methods: {
+      ...mapActions({
+        GetOrderPdf: 'auth/merchant/GetOrderPdf',
+      }),
+      onAddBalanceClick () {
+        this.createDialog = true
+      },
+      onCreateDialogClose (newOrder) {
+        if (newOrder) {
+          this.downloadOrderClick(newOrder)
+        }
+        this.$router.push({ name: 'SettingsRequisites', hash: '#orders' })
+      },
+      async downloadOrderClick (order) {
+        try {
+          order.GetOrderPdfAction = true
+          await this.GetOrderPdf(order)
+        } catch (e) {
+          console.error(e)
+        } finally {
+          order.GetOrderPdfAction = false
+        }
       },
     },
   }

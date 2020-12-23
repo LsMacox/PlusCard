@@ -19,6 +19,7 @@
 
       <v-list-item-action-text
         class="body-s-semibold profile-item-action color-success"
+        @click="$router.push({name: 'SettingsRequisites', hash: '#balance'})"
       >
         <span class="success--text">{{ balance + ' ₽' }}</span>
       </v-list-item-action-text>
@@ -105,6 +106,10 @@
 
 <style lang="scss" scoped>
 @import "@/styles/_typography";
+
+.profile-item-action {
+  cursor: pointer;
+}
 
 #program-logo-btn {
   @include body-l-semibold;
