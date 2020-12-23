@@ -114,7 +114,7 @@
           <template v-slot:item.value="{ item }">
             <div style="display: flex; align-items: center">
               <div class="body-s-medium">
-                {{ formatNumberString(item.value / 100) }} &#8381
+                {{ formatNumberString(item.value / 100) }} &#8381;
               </div>
             </div>
           </template>
