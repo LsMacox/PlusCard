@@ -195,6 +195,13 @@
       }
     },
     methods: {
+      conversationChat (id) {
+        // обнуляем непрочитанные
+        this.$store.commit('chat/conversation/clearUnreadCount', id)
+        // переходим на чат
+        const path = `/communications/chat/${this.currentConversationType}/${id}`
+        this.toRoute(path)
+      },
       async forwardMessage (clientAndGroup) {
         if (this.sending) return
 
