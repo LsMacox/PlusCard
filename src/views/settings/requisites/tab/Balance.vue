@@ -187,7 +187,7 @@
         if (newOrder) {
           this.downloadOrderClick(newOrder)
         }
-        this.$router.push({ name: 'SettingsRequisites', hash: '#orders' })
+        this.$router.replace({ name: 'SettingsRequisites', hash: '#orders' })
       },
       async downloadOrderClick (order) {
         try {
