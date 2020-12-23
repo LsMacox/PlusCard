@@ -303,6 +303,13 @@
       if (this.program) await this.conversationInit(this.program.id)
     },
     methods: {
+      conversationChat (id) {
+        // обнуляем непрочитанные
+        this.$store.commit('chat/conversation/clearUnreadCount', id)
+        // переходим на чат
+        const path = `/communications/chat/${this.currentConversationType}/${id}`
+        this.toRoute(path)
+      },
       conversationsSorted (arr) {
         let sorted = arr
 
@@ -356,13 +363,6 @@
         this.$store.commit('chat/chatUser/clearState')
         this.$store.commit('chat/conversation/clearState')
         this.$store.commit('chat/message/clearState')
-      },
-      conversationChat (id) {
-        // обнуляем непрочитанные
-        this.$store.commit('chat/conversation/clearUnreadCount', id)
-        // переходим на чат
-        const path = `/communications/chat/${this.currentConversationType}/${id}`
-        this.toRoute(path)
       },
       toRoute (path) {
         if (

@@ -109,7 +109,7 @@
         }
       },
       isAudioLoading (v) {
-        if (v) {
+        if (v && !this.audioStripInterval) {
           const _vm = this
           this.audioStripInterval = setInterval(() => {
             const bandCount = 5
@@ -197,15 +197,22 @@
 
         this.recordVolumes = volumes
       },
-      async initAudioData () {
+      initAudioData () {
         this.audioSource = this.audioCtx.createBufferSource()
-        const proxyUrl = 'https://cors-anywhere.herokuapp.com/'
         this.isAudioLoading = true
-        fetch(proxyUrl + this.content.url)
-          .then(response => response.arrayBuffer())
-          .then(res => this.audioCtx.decodeAudioData(res))
+        console.log('audio: fetch')
+        fetch(this.content.url)
+          .then(response => {
+            console.log('audio: get response', response)
+            return response.arrayBuffer()
+          })
+          .then(res => {
+            console.log('audio: get res', res)
+            return this.audioCtx.decodeAudioData(res)
+          })
           .then(buffer => {
             this.isAudioLoaded = true
+            console.log('audio: loaded', buffer)
             this.audioSource.buffer = buffer
             this.audioSource.connect(this.audioCtx.destination)
           })

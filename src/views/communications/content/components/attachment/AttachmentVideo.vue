@@ -1,65 +1,34 @@
 <template>
   <div class="attachment-video">
     <div
-      :style="'background: url(' + content.thumb + ');'"
       class="video-thumb"
-      @click="show = true"
     >
-      <!--        <div-->
-      <!--                style="background: url(img/videoplay.png);"-->
-      <!--                class="video-thumb-mask"-->
-      <!--        ></div>-->
-      <i
-        class="fa fa-play-circle"
-        aria-hidden="true"
-        style="font-size: 48px; margin-top: 35px; color: #E0E0E0;"
+      <img
+        :src="content.thumb"
+        alt="img"
+      >
+      <iconify-icon
+        class="icon-play"
+        icon="feather-play"
+        width="21"
+        @click="show = true"
       />
     </div>
 
     <v-dialog
-
       v-if="show"
       v-model="show"
-
       max-width="80%"
-      content-class="preview-dialog"
+      content-class="dialog-attachment-video dialog-attachment-preview"
     >
-      <v-card class="preview-dialog__card">
-        <v-container class="preview-dialog__container">
-          <v-row justify="end">
-            <v-btn
-              icon
-              :href="content.url"
-              color="white"
-              target="_blank"
-              download
-            >
-              <v-icon>fa-download</v-icon>
-            </v-btn>
-            <v-btn
-              icon
-              color="white"
-              @click="show = false"
-            >
-              <v-icon>fa-times</v-icon>
-            </v-btn>
-          </v-row>
-          <v-row
-            class="image-row"
-            justify="center"
-            align="center"
-          >
-            <v-col cols="auto">
-              <video-player
-                ref="videoPlayer"
-                class="video-player"
-                :options="playerOptions"
-                :playsinline="true"
-              />
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card>
+      <div class="preview-img">
+        <video-player
+          ref="videoPlayer"
+          class="video-player"
+          :options="playerOptions"
+          :playsinline="true"
+        />
+      </div>
     </v-dialog>
   </div>
 </template>

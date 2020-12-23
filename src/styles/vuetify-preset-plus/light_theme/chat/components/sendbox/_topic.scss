@@ -31,25 +31,50 @@
       list-style: none;
       padding-left: 0;
       overflow: hidden;
-      width: calc(100% - 240px);
-      .topic-item {
+      width: 100%;
+      .v-slide-group {
+        width: 100%;
+        align-items: center;
+        .v-slide-group__wrapper {
+          width: calc(100% - 148px);
+          flex: none;
+        }
+      }
+      .v-slide-group__next {
+        right: 23px;
+      }
+      .v-slide-group__prev {
+        right: 64px;
+      }
+      .v-slide-group__next,
+      .v-slide-group__prev {
+        position: absolute;
+        min-width: 0;
         cursor: pointer;
+        .icon-prev,
+        .icon-next {
+          color: $primary-base;
+        }
+      }
+      .v-slide-group__next.v-slide-group__next--disabled,
+      .v-slide-group__prev.v-slide-group__next--disabled {
+        .icon-prev,
+        .icon-next {
+          color: $neutral-500;
+        }
+      }
+      .item-btn {
         background: $primary-100;
+        border: none !important;
         border-radius: 6px;
         margin-right: 8px;
-        white-space: nowrap;
-        &.active {
-          background: $primary-base;
-          p {
-            color: $neutral-100;
-          }
-        }
-        &.hide {
-          display: none;
-        }
-        p {
-          padding: 10px 12px;
-          color: $primary-base;
+        color: $primary-base;
+        padding: 10px 12px;
+        min-width: 0;
+        height: inherit;
+        text-transform: none;
+        &::before {
+          opacity: 0!important;
         }
       }
     }

@@ -132,22 +132,13 @@ export const ICONIFY_ICONS = {
     'feather-star': () => import('@iconify-icons/feather/star'),
     'feather-volume': () => import('@iconify/icons-feather/volume'),
     'feather-volume-1': () => import('@iconify/icons-feather/volume-1'),
-<<<<<<< HEAD
-<<<<<<< HEAD
     'feather-check': () => import('@iconify-icons/feather/check'),
     'feather-circle': () => import('@iconify-icons/feather/circle'),
-=======
-=======
->>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
     'feather-info': () => import('@iconify/icons-feather/info'),
 
     // fa-solid
     'fa-solid-user': () => import('@iconify-icons/fa-solid/user'),
     'fa-solid-user-friends': () => import('@iconify-icons/fa-solid/user-friends'),
-<<<<<<< HEAD
->>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
-=======
->>>>>>> 5b0e153e516035d1864efd52f6f985ffb52e08b8
 
     // la
     'la-facebook-f': () => import('@iconify/icons-la/facebook-f'),

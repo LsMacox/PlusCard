@@ -41,24 +41,13 @@ export default {
         messages = this.$store.getters['chat/message/messages'][
           this.currentConversationId
         ]
-        if (this.topicFilter) {
-          const newMessages = {}
-          for (const item in messages) {
-            if (messages[item].topic_id === this.selectedTopicId) {
-              newMessages[item] = messages[item]
-            }
-          }
-          return newMessages
+        console.log('messages', messages)
+        if (messages) {
+          messages = this.connectingMessages(messages)
         }
       }
 
       return messages || {}
-    },
-    selectedTopicId () {
-      return this.$store.getters['chat/topic/selectedTopicId']
-    },
-    recipients () {
-      return this.$store.getters['chat/message/recipients']
     },
   },
 }

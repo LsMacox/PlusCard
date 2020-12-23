@@ -8,6 +8,7 @@ export default {
     conversations: [],
     currentConversationType: 'business',
     currentConversationId: '',
+    nowCreateConversation: {},
     editedConversation: {},
   },
   mutations: {
@@ -33,6 +34,9 @@ export default {
     },
     currentConversationId (state, payload) {
       state.currentConversationId = payload
+    },
+    nowCreateConversation (state, payload) {
+      state.nowCreateConversation = payload
     },
     currentConversationType (state, payload) {
       state.currentConversationType = payload
@@ -84,7 +88,7 @@ export default {
         item => item.id === state.currentConversationId,
       )
 
-      if (index >= 0 && payload) {
+      if (index >= 0) {
         Vue.set(state.conversations[index], 'currentTemplateMessage', payload)
       }
     },
@@ -92,6 +96,8 @@ export default {
   actions: {
     async create ({ commit, rootState }, item) {
       const result = await ApiService.post('/api/conversation', item)
+      console.log('create conversation', result)
+      commit('nowCreateConversation', result)
       commit('addInConversations', result)
     },
     async list ({ commit, rootState }) {
@@ -186,6 +192,9 @@ export default {
     },
     editedConversation (state) {
       return state.editedConversation
+    },
+    nowCreateConversation (state) {
+      return state.nowCreateConversation
     },
   },
 }

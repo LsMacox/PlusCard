@@ -20,7 +20,7 @@ export default {
           if (message.attachments[0].type === 'media/file') return 'файл'
         }
         if (message.message) {
-          return message.message
+          return this.formatMessage(message.message)
         }
 
         if (this.authorName === 'Вы') {

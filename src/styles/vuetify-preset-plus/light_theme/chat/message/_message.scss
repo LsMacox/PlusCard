@@ -5,7 +5,8 @@
   display: flex;
   position: relative;
   width: 100%;
-  padding: 12px 0;
+  padding: 0;
+  padding-bottom: 24px;
 
   &.select {
     background: linear-gradient(270deg, $neutral-250 0%, rgba(242, 242, 247, 0) 100%);
@@ -14,6 +15,11 @@
   &.choice {
     cursor: pointer;
   } 
+
+  &.connectNexMessage {
+    padding-bottom: 8px;
+    padding-top: 0;
+  }
 
   .choice__overlay {
     position: absolute;
@@ -29,6 +35,8 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
+    position: absolute;
+    bottom: -5px;
     background-repeat: no-repeat !important;
     background-size: cover !important;
     background-position: center !important;
@@ -65,7 +73,6 @@
       }
 
       &.bottom {
-        bottom: -198px;
         &:after {
           top: -25px;
         }
@@ -90,7 +97,7 @@
         height: 12px;
         background: $neutral-100;
         transform: rotate(45deg);
-        bottom: -5px;
+        bottom: -3px;
         right: 16px;
       }
 
@@ -153,7 +160,7 @@
       border: 1px solid $neutral-250;
       box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1);
       border-radius: 10px 10px 10px 0px;
-      
+      margin-left: 80px;
       &:hover {
         .message-box-edit {
           display: block;
@@ -163,6 +170,13 @@
       &.message-my {
         background-color: $neutral-250;
         border: 1px solid $neutral-300;
+        box-shadow: none;  
+      }
+
+      .message-topic {
+        p {
+          margin-bottom: 16px;
+        }
       }
 
       /* меню сообщения мое */
@@ -271,6 +285,12 @@
         margin-bottom: 10px;
       }
 
+      /* блок с текстом о пересланном сообщении */
+      .message-box-forward-text {
+        margin-top: -9px;
+        margin-bottom: 10px;
+      }
+
       /* блок сообщения */
       .message-box-message {
         margin-right: 23px;
@@ -283,7 +303,7 @@
       .message-box-edit {
         display: none;
         float: right;
-        margin-top: -16px;
+        margin-top: -13px;
         .icon-edit {
           cursor: pointer;
           color: $neutral-400;
@@ -298,10 +318,7 @@
     position: absolute;
     margin-top: 15px;
     right: 20px;
-    .message-time {
 
-    }
-    
     .message-choice {
       margin-top: -2px;
       margin-left: 10px;

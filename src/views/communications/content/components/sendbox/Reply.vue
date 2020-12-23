@@ -18,9 +18,10 @@
           </p>
         </div>
         <div class="reply-box-message-text">
-          <p class="body-s-regular neutral-900--text">
-            {{ getMessage(message) }}
-          </p>
+          <p
+            class="body-s-regular neutral-900--text"
+            v-html="getMessage(msgItem)"
+          />
         </div>
       </div>
     </div>
@@ -41,7 +42,7 @@
         default: '',
       },
       isReplyMessage: Boolean,
-      message: {
+      msgItem: {
         type: [Object, Array],
         required: true,
       },
@@ -56,9 +57,7 @@
       },
       // template
       name () {
-        console.log('msgItem:', this.message)
-        console.log('payload:', this.payload)
-        return this.getAuthorName(this.message, this.payload)
+        return this.getAuthorName(this.msgItem, this.payload)
       },
     },
     watch: {},

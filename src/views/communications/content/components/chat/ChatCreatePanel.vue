@@ -151,7 +151,7 @@
         let clients = this.clients
         const search = String(this.search).replace(/\s+/g, ' ').replace(/^\s/g, '')
 
-        if (search && search.length) {
+        if (this.search && search.length) {
           clients = this.clientsSearcher.search(search.toLowerCase())
 
           this.setChoosenClients(
@@ -171,16 +171,36 @@
         })
         return avatars
       },
+      currentConversationType () {
+        return this.$store.getters['chat/conversation/currentConversationType']
+      },
     },
     watch: {
       innerActiveSidePanel (v) {
         this.$emit('changeSidePanel', v)
+        if (!v) {
+          this.search = ''
+          this.groupName = ''
+          this.choosenClients = []
+        }
       },
       activeSidePanel (v) {
         this.innerActiveSidePanel = v
       },
     },
+    mounted () {
+      this.search = ''
+      this.groupName = ''
+      this.choosenClients = []
+    },
     methods: {
+      conversationChat (id) {
+        // обнуляем непрочитанные
+        this.$store.commit('chat/conversation/clearUnreadCount', id)
+        // переходим на чат
+        const path = `/communications/chat/${this.currentConversationType}/${id}`
+        this.toRoute(path)
+      },
       isChooseClient (client) {
         return this.choosenClients.findIndex(c => c.id === client.id) !== -1
       },
@@ -206,7 +226,8 @@
         }
 
         this.conversationCreateRequest = true
-        this.$store.dispatch('chat/conversation/create', conversation).then(() => {
+        this.$store.dispatch('chat/conversation/create', conversation).then((res) => {
+          this.conversationChat(this.$store.getters['chat/conversation/nowCreateConversation'].id)
           this.innerActiveSidePanel = false
         }).finally(() => {
           this.conversationCreateRequest = false

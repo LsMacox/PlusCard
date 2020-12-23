@@ -4,7 +4,9 @@
       v-if="typingShow"
       class="typing-message"
     >
-      {{ typingMessage }}
+      <p class="body-s-semibold neutral-500--text">
+        {{ typingMessage }}
+      </p>
     </div>
   </div>
 </template>
@@ -31,25 +33,19 @@
         return this.$store.getters['chat/chatUser/chatUser']
       },
       conversation () {
-        const conversation = this.$store.getters['chat/conversation/conversations'].filter(item => item.id === this.conversationId)
-        if (conversation.length) return conversation[0]
-        return {}
+        return this.$store.getters['chat/data/conversation'](this.conversationId)
       },
       members () {
-        if (!this.isEmptyObject(this.conversation)) return this.conversation.members
-        return []
+        return this.$store.getters['chat/data/members'](this.conversationId)
       },
       conversationProgram () {
-        if (!this.isEmptyObject(this.conversation)) return this.conversation.program
-        return {}
+        return this.$store.getters['chat/data/conversationProgram'](this.conversationId)
       },
       employees () {
-        if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.chat_members
-        return []
+        return this.$store.getters['chat/data/employees'](this.conversationId)
       },
       realChatName () {
-        if (!this.isEmptyObject(this.conversationProgram)) return this.conversationProgram.real_chat_name
-        return false
+        return this.$store.getters['chat/data/realChatName'](this.conversationId)
       },
       typing: {
         get () {
@@ -105,7 +101,7 @@
         }, 3000)
 
         this.typingShow = true
-        this.typingMessage = name + ' печатает сообщение...'
+        this.typingMessage = name + ' печатает...'
       },
     },
   }

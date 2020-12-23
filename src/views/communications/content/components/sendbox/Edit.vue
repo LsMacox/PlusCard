@@ -12,13 +12,14 @@
       <div class="edit-box-message">
         <p
           class="body-s-semibold neutral-900--text mb-0"
-          :style="!getMessage(message) || !getMessage(message).length ? 'margin-top: 8px;' : ''"
+          :style="!getMessage(msgItem) || !getMessage(msgItem).length ? 'margin-top: 8px;' : ''"
         >
           Редактирования сообщения
         </p>
-        <p class="body-s-regular neutral-neutral-900--text mb-0">
-          {{ getMessage(message) }}
-        </p>
+        <p
+          class="body-s-regular neutral-neutral-900--text mb-0"
+          v-html="formatMessage(getMessage(msgItem))"
+        />
       </div>
     </div>
   </div>
@@ -38,7 +39,7 @@
         default: '',
       },
       isEditMessage: Boolean,
-      message: {
+      msgItem: {
         type: [Object, Array],
         required: true,
       },

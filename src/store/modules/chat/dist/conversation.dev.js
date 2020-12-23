@@ -18,6 +18,7 @@ var _default = {
     conversations: [],
     currentConversationType: 'business',
     currentConversationId: '',
+    nowCreateConversation: {},
     editedConversation: {}
   },
   mutations: {
@@ -46,6 +47,9 @@ var _default = {
     },
     currentConversationId: function currentConversationId(state, payload) {
       state.currentConversationId = payload;
+    },
+    nowCreateConversation: function nowCreateConversation(state, payload) {
+      state.nowCreateConversation = payload;
     },
     currentConversationType: function currentConversationType(state, payload) {
       state.currentConversationType = payload;
@@ -98,7 +102,7 @@ var _default = {
         return item.id === state.currentConversationId;
       });
 
-      if (index >= 0 && payload) {
+      if (index >= 0) {
         _vue["default"].set(state.conversations[index], 'currentTemplateMessage', payload);
       }
     }
@@ -116,9 +120,11 @@ var _default = {
 
             case 3:
               result = _context.sent;
+              console.log('create conversation', result);
+              commit('nowCreateConversation', result);
               commit('addInConversations', result);
 
-            case 5:
+            case 7:
             case "end":
               return _context.stop();
           }
@@ -398,6 +404,9 @@ var _default = {
     },
     editedConversation: function editedConversation(state) {
       return state.editedConversation;
+    },
+    nowCreateConversation: function nowCreateConversation(state) {
+      return state.nowCreateConversation;
     }
   }
 };

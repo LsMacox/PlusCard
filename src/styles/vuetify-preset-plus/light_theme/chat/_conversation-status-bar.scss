@@ -111,14 +111,31 @@
         color: $primary-base;
       }
     }
-    .field-search {
+    .search-field {
+      border-radius: 10px!important;
       p {
         margin-bottom: 0;
+      }
+      input {
+        @include body-m-medium;
+        color: $neutral-900;
+        &::placeholder {
+          @include body-m-medium;
+        }
+      }
+      .v-input__prepend-inner {
+        padding-right: 8px!important;
+      }
+      fieldset {
+        border: 1px solid $neutral-400;
       }
       .v-input__slot {
         padding: 0 6px 0 16px !important;
       }
       &.v-input--is-focused {
+        fieldset {
+          border: 1px solid $primary-base;
+        }
         .v-input__prepend-inner {
           svg { 
             color: $primary-base !important;
@@ -126,6 +143,7 @@
         }
       }
       .v-input__append-inner {
+        margin-top: 10px !important;
         .v-input__icon--clear {
           margin-right: 8px !important;
           svg {

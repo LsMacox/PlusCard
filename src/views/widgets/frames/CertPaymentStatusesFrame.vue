@@ -1,6 +1,6 @@
 <template>
   <cert-widget-template
-      :class-name="widgetClasses"
+    :class-name="widgetClasses"
   >
     <template v-slot:header-left>
       <p class="body-m-semibold">
@@ -9,112 +9,108 @@
     </template>
 
     <template v-slot:body>
-<!--      <div-->
-<!--        :class="generateClassesByPrefix(widgetClasses, '__box')"-->
-<!--        class="d-flex flex-column"-->
-<!--      >-->
-<!--        <div-->
-<!--          v-for="(percent, i) in percentageDifferences"-->
-<!--          :key="i"-->
-<!--          :class="generateClassesByPrefix(widgetClasses, '__box-container')"-->
-<!--          class="d-flex"-->
-<!--        >-->
-<!--          <div :class="generateClassesByPrefix(widgetClasses, '__box-info')">-->
-<!--            <div :class="generateClassesByPrefix(widgetClasses, '__info-title')">-->
-<!--              <p class="body-s-semibold">-->
-<!--                {{ subTitles[i] }}-->
-<!--              </p>-->
-<!--            </div>-->
-<!--            <div-->
-<!--              :class="generateClassesByPrefix(widgetClasses, '__info-statistics')"-->
-<!--            >-->
-<!--              <span-->
-<!--                class="statistics__percent title-m-bold"-->
-<!--              >{{ percent }}%</span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--      <div-->
-<!--        :class="generateClassesByPrefix(widgetClasses, '__diagram')"-->
-<!--      >-->
-<!--        <div :class="generateClassesByPrefix(widgetClasses, '__diagram-progress')">-->
-<!--          <div-->
-<!--              v-for="(subTitle, i) in subTitles"-->
-<!--              :key="i"-->
-<!--              class="v-progress-linear-wrapper"-->
-<!--          >-->
-<!--            <v-progress-linear-->
-<!--              v-if="i > 0"-->
-<!--              :rounded="true"-->
-<!--              :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"-->
-<!--              :color="colors[i]"-->
-<!--            />-->
-<!--            <v-progress-linear-->
-<!--                v-else-->
-<!--                :rounded="true"-->
-<!--                :value="100"-->
-<!--                :color="colors[i]"-->
-<!--            />-->
-<!--            <div class="v-progress-linear-info">-->
-<!--              <div class="body-s-semibold">-->
-<!--                {{ percentageDifferences[i] }}-->
-<!--              </div>-->
-<!--              <div class="body-s-semibold wc-neutral">-->
-<!--                {{ subTitle }}-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div-->
+      <!--        :class="generateClassesByPrefix(widgetClasses, '__box')"-->
+      <!--        class="d-flex flex-column"-->
+      <!--      >-->
+      <!--        <div-->
+      <!--          v-for="(percent, i) in percentageDifferences"-->
+      <!--          :key="i"-->
+      <!--          :class="generateClassesByPrefix(widgetClasses, '__box-container')"-->
+      <!--          class="d-flex"-->
+      <!--        >-->
+      <!--          <div :class="generateClassesByPrefix(widgetClasses, '__box-info')">-->
+      <!--            <div :class="generateClassesByPrefix(widgetClasses, '__info-title')">-->
+      <!--              <p class="body-s-semibold">-->
+      <!--                {{ subTitles[i] }}-->
+      <!--              </p>-->
+      <!--            </div>-->
+      <!--            <div-->
+      <!--              :class="generateClassesByPrefix(widgetClasses, '__info-statistics')"-->
+      <!--            >-->
+      <!--              <span-->
+      <!--                class="statistics__percent title-m-bold"-->
+      <!--              >{{ percent }}%</span>-->
+      <!--            </div>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <div-->
+      <!--        :class="generateClassesByPrefix(widgetClasses, '__diagram')"-->
+      <!--      >-->
+      <!--        <div :class="generateClassesByPrefix(widgetClasses, '__diagram-progress')">-->
+      <!--          <div-->
+      <!--              v-for="(subTitle, i) in subTitles"-->
+      <!--              :key="i"-->
+      <!--              class="v-progress-linear-wrapper"-->
+      <!--          >-->
+      <!--            <v-progress-linear-->
+      <!--              v-if="i > 0"-->
+      <!--              :rounded="true"-->
+      <!--              :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"-->
+      <!--              :color="colors[i]"-->
+      <!--            />-->
+      <!--            <v-progress-linear-->
+      <!--                v-else-->
+      <!--                :rounded="true"-->
+      <!--                :value="100"-->
+      <!--                :color="colors[i]"-->
+      <!--            />-->
+      <!--            <div class="v-progress-linear-info">-->
+      <!--              <div class="body-s-semibold">-->
+      <!--                {{ percentageDifferences[i] }}-->
+      <!--              </div>-->
+      <!--              <div class="body-s-semibold wc-neutral">-->
+      <!--                {{ subTitle }}-->
+      <!--              </div>-->
+      <!--            </div>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
+      <div
+        class="row"
+        style="margin-top: 12px;"
+      >
         <div
-            class="row"
-            style="margin-top: 12px;"
+          v-for="(subTitle, i) in subTitles"
+          :key="i"
+          class="col-2 v-progress-linear-wrapper"
         >
-
-            <div
-                v-for="(subTitle, i) in subTitles"
-                :key="i"
-                class="col-2 v-progress-linear-wrapper"
-            >
-              <div class="row">
-                <div class="col-1">
-                  <v-progress-linear
-                      v-if="i > 0"
-                      :rounded="true"
-                      :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"
-                      :color="colors[i]"
-                      height="12"
-                      style="transform: rotate(-90deg)"
-                  />
-                  <v-progress-linear
-                      v-else
-                      :rounded="true"
-                      :value="100"
-                      :color="colors[i]"
-                      height="12"
-                      style="transform: rotate(-90deg)"
-                  />
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-12">
-                  <div class="v-progress-linear-info">
-                    <div class="body-s-semibold">
-                      {{ percentageDifferences[i] }}
-                    </div>
-                    <div class="body-s-semibold wc-neutral">
-                      {{ subTitle }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+          <div class="row">
+            <div class="col-1">
+              <v-progress-linear
+                v-if="i > 0"
+                :rounded="true"
+                :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"
+                :color="colors[i]"
+                height="12"
+                style="transform: rotate(-90deg)"
+              />
+              <v-progress-linear
+                v-else
+                :rounded="true"
+                :value="100"
+                :color="colors[i]"
+                height="12"
+                style="transform: rotate(-90deg)"
+              />
             </div>
-
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="v-progress-linear-info">
+                <div class="body-s-semibold">
+                  {{ percentageDifferences[i] }}
+                </div>
+                <div class="body-s-semibold wc-neutral">
+                  {{ subTitle }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-
+      </div>
     </template>
   </cert-widget-template>
 </template>

@@ -25,7 +25,7 @@
               :class="generateClassesByPrefix(widgetClasses, '__info-statistics')"
             >
               <p class="statistics__number title-m-bold">
-                {{ formatNumberString(sum) }} &#8381
+                {{ formatNumberString(sum) }} &#8381;
               </p>
             </div>
           </div>
