@@ -43,7 +43,7 @@
           >
             <!-- ==== Choice ==== -->
             <app-choice
-              v-if="isChoiceMessage"
+              v-if="isChoiceMessage && internalChoiceMessageIds.length > 0"
               :is-choice-message.sync="internalIsChoiceMessage"
               :message-ids="internalChoiceMessageIds"
             />
@@ -77,7 +77,7 @@
             />
             <!-- ==== Text ==== -->
             <div
-              v-if="!isRecording && !isStop && !isChoiceMessage"
+              v-if="!isRecording && !isStop && !(isChoiceMessage && internalChoiceMessageIds.length)"
               class="app-conversation--sendForm__message__text"
               :class="[(message && message.length) ? 'writes' : '']"
             >
