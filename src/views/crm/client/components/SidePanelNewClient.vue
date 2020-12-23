@@ -67,7 +67,7 @@
                 v-model="form.phone"
                 v-mask="mask"
                 :rules="[
-                  v => !!v || 'Номер телефона обязателен',
+                  v => !!v || 'Номер телефона обязателен',                 
                 ]"
                 :error-messages="phoneErrors"
                 class="panel-crm__form-input panel-crm_new_client__form-input"
@@ -199,7 +199,7 @@
       async addClient () {
         const phone = this.clearPhoneMask(this.form.phone)
         if (phone && phone.length !== 11) {
-          this.phoneErrors = ['Номер телефона должен быть 11 символов']
+          this.phoneErrors = ['Введите номер телефона']
           return false
         }
         try {
