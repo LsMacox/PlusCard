@@ -85,6 +85,7 @@
                 class="panel-crm__form-input panel-crm_new_client__form-input"
                 type="text"
                 placeholder="Дата рождения"
+                :max-date="$moment.now()"
                 date-format="DD.MM.YYYY"
                 outlined
               />

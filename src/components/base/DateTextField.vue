@@ -41,6 +41,8 @@
       :show-dropdowns="true"
       :linked-calendars="false"
       :single-date-picker="true"
+      :max-date="maxDate"
+      :min-date="minDate"
       :locale-data="{
         firstDay: 1,
         applyLabel: 'Применить',
@@ -109,6 +111,14 @@
       dateFormat: {
         type: String,
         default: config.date.DATE_FORMAT,
+      },
+      maxDate: {
+        type: [String, Number],
+        default: undefined,
+      },
+      minDate: {
+        type: [String, Number],
+        default: undefined,
       },
       left: {
         type: Boolean,
