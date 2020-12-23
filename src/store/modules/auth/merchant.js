@@ -66,7 +66,7 @@ const actions = {
         }
     },
 
-      async GetBalanceOperations ({ commit, rootGetters }) {
+    async GetBalanceOperations ({ commit, rootGetters }) {
         console.log('GetBalanceOperations', rootGetters.merchantId)
         const result = await ApiService.get(`/api/merchant/balance/operations?merchant_id=${rootGetters.merchantId}`)
         commit('BALANCE_OPERATIONS', result)

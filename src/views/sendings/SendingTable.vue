@@ -5,6 +5,7 @@
       :headers="tableHeaders"
       :data="sendings"
       :word-operations="['рассылка', 'рассылки', 'рассылок']"
+      :pagination="tableSettings.sort"
     >
       <template v-slot:[`item.id`]="{ item }">
         <p class="body-s-medium mb-0">
@@ -23,28 +24,54 @@
       </template>
       <template v-slot:[`item.created_at`]="{ item }">
         <p class="body-s-medium mb-0">
-          {{ item.created_at }}
+          {{ getDateTimeMin(item.created_at) }}
         </p>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
         <div style="display: flex; align-items: center;">
-          <v-switch
-            v-model="item.active"
-            :loading="item.changeActiveAction"
-            :disabled="item.changeActiveAction"
-            inset
-            hide-details
-            class="custom-switch"
-            @change="active(item, $event)"
-          />
+          <div class="body-s-medium mb-0">
+            <v-tooltip
+              open-delay="1000"
+              top
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <div
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-switch
+                    v-model="item.active"
+                    :loading="item.changeActiveAction"
+                    :disabled="item.changeActiveAction"
+                    inset
+                    hide-details
+                    class="custom-switch"
+                    @change="active(item, $event)"
+                  />
+                </div>
+              </template>
+              <span v-if="item.active">Остановить рассылку</span>
+              <span v-else>Запустить рассылку</span>
+            </v-tooltip>
+          </div>
 
           <div class="body-s-medium mb-0 ml-1">
-            <v-icon
-              style="position: relative; top: 4px;"
-              @click.stop="remove(item)"
+            <v-tooltip
+              open-delay="1000"
+              top
             >
-              $iconify_feather-trash
-            </v-icon>
+              <template v-slot:activator="{ on, attrs }">
+                <v-icon
+                  v-bind="attrs"
+                  style="position: relative; top: 4px;"
+                  v-on="on"
+                  @click.stop="remove(item)"
+                >
+                  $iconify_feather-trash
+                </v-icon>
+              </template>
+              <span>Удалить рассылку</span>
+            </v-tooltip>
           </div>
         </div>
       </template>
@@ -53,11 +80,13 @@
 </template>
 
 <script>
-  import Routing from '@/mixins/routing'
+  import DataTableMixin from '@/mixins/dataTable'
+  import DateTimeFormatMixin from '@/mixins/dateTimeFormat'
+  import RoutingMixin from '@/mixins/routing'
   import Vue from 'vue'
 
   export default {
-    mixins: [Routing],
+    mixins: [DataTableMixin, DateTimeFormatMixin, RoutingMixin],
     data () {
       return {
         loading: false,
@@ -69,6 +98,13 @@
           { text: 'Дата создания', align: 'start', value: 'created_at' },
           { text: 'Действия', align: 'end', value: 'actions' },
         ],
+        tableKey: 'Sendings',
+        tableSettings: {
+          sort: {
+            sortBy: 'id',
+            descending: 'descending',
+          },
+        },
       }
     },
     computed: {
@@ -81,6 +117,17 @@
           return x
         })
       },
+    },
+    watch: {
+      tableSettings: {
+        handler (v) {
+          this.setDataTableSetting(this.tableKey, v)
+        },
+        deep: true,
+      },
+    },
+    created () {
+      this.tableSettings = this.getDataTableSetting(this.tableKey, this.tableSettings)
     },
     methods: {
       async active (item, active) {

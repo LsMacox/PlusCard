@@ -23,12 +23,12 @@
 </template>
 
 <script>
-  import AppFilter from './Filter'
+  // import AppFilter from './Filter'
   import AppTable from './Table'
 
   export default {
     components: {
-      AppFilter,
+      // AppFilter,
       AppTable,
     },
     props: {

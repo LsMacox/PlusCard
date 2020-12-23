@@ -141,7 +141,6 @@
     watch: {
       dateText (v) {
         const date = this.$moment(v, this.dateFormat).toISOString()
-        console.log('update:date', date)
         this.$emit('update:date', date)
       },
     },

@@ -1,109 +1,10 @@
 <template>
-<!--  <div class="loyalty-toolbar">-->
-<!--    <div class="loyalty-toolbar-name">-->
-<!--      {{ program.name }}-->
-<!--    </div>-->
-<!--    <div class="toolbar-period">-->
-<!--      <date-range-select-->
-<!--          min-width="250px"-->
-<!--          :items="periods"-->
-<!--          :model.sync="periodId"-->
-<!--          item-value="id"-->
-<!--          item-label="name"-->
-<!--      />-->
-<!--    </div>-->
-<!--    <v-menu-->
-<!--      v-model="chevronUp"-->
-<!--      class="certificate-toolbar-select"-->
-<!--      :rounded="false"-->
-<!--      offset-y-->
-<!--    >-->
-<!--      <template v-slot:activator="{ on, attrs }">-->
-<!--        <v-btn-->
-<!--          text-->
-<!--          color="primary"-->
-<!--          dark-->
-<!--          v-bind="attrs"-->
-<!--          class="archive-status-btn"-->
-<!--          v-on="on"-->
-<!--        >-->
-<!--          {{ archiveStatus.text }}-->
-<!--          <v-icon class="archive-status-chevron">-->
-<!--            {{ !chevronUp ? 'fas fa-chevron-down' : 'fas fa-chevron-up' }}-->
-<!--          </v-icon>-->
-<!--        </v-btn>-->
-<!--      </template>-->
-<!--      <v-list>-->
-<!--        <v-list-item-->
-<!--          v-for="(item, index) in archiveStatuses"-->
-<!--          :key="index"-->
-<!--          class="archive-status-menu-item"-->
-<!--          @click="archiveStatusHandler(item)"-->
-<!--        >-->
-<!--          <v-list-item-title>-->
-<!--            {{ item.text }}-->
-<!--            <div-->
-<!--              v-if="archiveStatus.id === item.id"-->
-<!--              class="archive-status-check-icon"-->
-<!--            >-->
-<!--              <span-->
-<!--                class="iconify"-->
-<!--                data-icon="bx:bx-check"-->
-<!--                data-inline="false"-->
-<!--              />-->
-<!--            </div>-->
-<!--          </v-list-item-title>-->
-<!--        </v-list-item>-->
-<!--      </v-list>-->
-<!--    </v-menu>-->
-<!--    <div class="app__spacer" />-->
-    <!--      <div-->
-    <!--        style="display: flex;"-->
-    <!--      >-->
-    <!--        <div-->
-    <!--          class="loyalty-toolbar-text-btn"-->
-    <!--          @click=""-->
-    <!--        >-->
-    <!--          <span-->
-    <!--            class="iconify loyalty-toolbar-text-btn-icon"-->
-    <!--            style="margin-right: 2px;"-->
-    <!--            data-icon="ion:document-outline"-->
-    <!--            data-inline="false"-->
-    <!--          />-->
-    <!--          Экспорт в XLS-->
-    <!--        </div>-->
-    <!--      </div>-->
-<!--    <div-->
-<!--      style="display: flex; margin-left: 16px;"-->
-<!--    >-->
-<!--      <v-btn-->
-<!--        color="secondary"-->
-<!--        :to="{name:'ProgramCertificateList'}"-->
-<!--      >-->
-<!--        <v-icon left>-->
-<!--          $iconify_feather-settings-->
-<!--        </v-icon> Настроить сертификаты-->
-<!--      </v-btn>-->
-<!--    </div>-->
-<!--    <div-->
-<!--      style="display: flex; margin-left: 16px;"-->
-<!--    >-->
-<!--      <v-btn-->
-<!--        color="primary"-->
-<!--        :to="{name: 'ProgramCertificateMaster' }"-->
-<!--      >-->
-<!--        <v-icon left>-->
-<!--          $iconify_plus-circle-outlined-->
-<!--        </v-icon> Создать новый сертификат-->
-<!--      </v-btn>-->
-<!--    </div>-->
-<!--  </div>-->
   <v-row no-gutters>
     <v-col
-        :cols="12"
-        :sm="12"
-        :md="12"
-        :lg="8"
+      :cols="12"
+      :sm="12"
+      :md="12"
+      :lg="8"
     >
       <div class="toolbar-col toolbar-col-left">
         <div class="toolbar-name">
@@ -111,39 +12,39 @@
         </div>
         <div class="toolbar-period">
           <date-range-select
-              min-width="250px"
-              :items="periods"
-              :model.sync="periodId"
-              item-value="id"
-              item-label="name"
+            min-width="250px"
+            :items="periods"
+            :model.sync="periodId"
+            item-value="id"
+            item-label="name"
           />
         </div>
       </div>
     </v-col>
     <v-col
-        :cols="12"
-        :sm="12"
-        :md="12"
-        :lg="4"
+      :cols="12"
+      :sm="12"
+      :md="12"
+      :lg="4"
     >
       <div class="toolbar-col toolbar-col-right">
-            <v-btn
-              color="secondary"
-              :to="{name:'ProgramCertificateList'}"
-              style="margin-right: 16px;"
-            >
-              <v-icon left>
-                $iconify_feather-settings
-              </v-icon> Настроить сертификаты
-            </v-btn>
-            <v-btn
-              color="primary"
-              :to="{name: 'ProgramCertificateMaster' }"
-            >
-              <v-icon left>
-                $iconify_plus-circle-outlined
-              </v-icon> Создать новый сертификат
-            </v-btn>
+        <v-btn
+          color="secondary"
+          :to="{name:'ProgramCertificateList'}"
+          style="margin-right: 16px;"
+        >
+          <v-icon left>
+            $iconify_feather-settings
+          </v-icon> Настроить сертификаты
+        </v-btn>
+        <v-btn
+          color="primary"
+          :to="{name: 'ProgramCertificateMaster' }"
+        >
+          <v-icon left>
+            $iconify_plus-circle-outlined
+          </v-icon> Создать новый сертификат
+        </v-btn>
       </div>
     </v-col>
   </v-row>
@@ -166,17 +67,6 @@
           { id: 'work', text: 'в работе' },
           { id: 'archive', text: 'в архиве' },
         ],
-        periodId: null,
-        periods: [
-          { id: 1, name: 'за сегодня', start: new Date(Date.now()).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 2, name: 'за вчера', start: new Date(Date.now() - 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now() - 24 * 3600 * 1000).toISOString().split('T')[0] },
-          { id: 3, name: 'за последние 7 дней', start: new Date(Date.now() - 7 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 4, name: 'за последние 30 дней', start: new Date(Date.now() - 30 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 5, name: 'за последние 90 дней', start: new Date(Date.now() - 90 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 6, name: 'за последние 180 дней', start: new Date(Date.now() - 180 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          { id: 7, name: 'за последние 365 дней', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString().split('T')[0], end: new Date(Date.now()).toISOString().split('T')[0] },
-          // { id: 7, name: 'собственный диапазон', start: new Date(Date.now() - 365 * 24 * 3600 * 1000).toISOString(), end: new Date(Date.now()).toISOString() },
-        ],
       }
     },
     computed: {
@@ -194,33 +84,22 @@
           this.$store.commit('account/certificate/filter/archiveStatus', v)
         },
       },
-      period: {
+      periods () {
+        return this.$store.getters['reference/date_selection/periods']
+      },
+      period () {
+        return this.$store.getters['reference/date_selection/period']
+      },
+      periodId: {
         get () {
-          return this.$store.getters['widget/filter/period']
+          return this.$store.getters['reference/date_selection/periodId']
         },
         set (v) {
-          this.$store.commit('widget/filter/period', v)
+          this.$store.commit('reference/date_selection/periodId', v)
         },
       },
     },
-    watch: {
-      periodId (v) {
-        if (v !== this.period.id) {
-          const period = this.periods.find(item => item.id === v)
-          if (period) {
-            this.period = period
-          }
-        }
-      },
-    },
-    created () {
-      if (this.period) this.periodId = this.period.id
-    },
     methods: {
-      // archiveStatusHandler (item) {
-      //   this.chevronUp = !this.chevronUp
-      //   this.$store.commit('account/certificate/filter/archiveStatus', item)
-      // },
       statusSelectIcon () {
         if (this.chevronUp) {
           return 'fas fa-chevron-down'

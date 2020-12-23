@@ -5,7 +5,7 @@
     fixed
     right
     temporary
-    :stateless="stateless"    
+    :stateless="stateless"
     :width="width"
   >
     <template v-slot:prepend>

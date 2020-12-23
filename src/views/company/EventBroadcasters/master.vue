@@ -18,8 +18,8 @@
             <v-col
               :cols="12"
               :sm="12"
-              :md="10"
-              :lg="8"
+              :md="11"
+              :lg="10"
             >
               <v-tabs-items
                 v-if="broadcaster"

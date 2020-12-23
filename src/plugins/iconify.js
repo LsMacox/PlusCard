@@ -67,9 +67,6 @@ export const ICONIFY_ICONS = {
     // dashicons
     'dashicons-video-alt3': () => import('@iconify-icons/dashicons/video-alt3'),
 
-    // dashicons
-    'dashicons-video-alt3': () => import('@iconify-icons/dashicons/video-alt3'),
-
     // ion
     'ion-checkmark-done': () => import('@iconify/icons-ion/checkmark-done'),
     'ion-close': () => import('@iconify/icons-ion/close'),
@@ -145,7 +142,7 @@ export const ICONIFY_ICONS = {
 
      // ls
     'ls-sort': () => import('@iconify/icons-ls/sort'),
-    
+
     // typcn
     'typcn-forward-outline': () => import('@iconify-icons/typcn/arrow-forward-outline'),
 
@@ -173,7 +170,7 @@ export const ICONIFY_ICONS = {
     'eva-square-outline': () => import('@iconify/icons-eva/square-outline'),
 
     // emojione-monotone
-    'emojione-monotone-b-button': () => import('@iconify-icons/emojione-monotone/b-button'),
+    // 'emojione-monotone-b-button': () => import('@iconify-icons/emojione-monotone/b-button'),
 }
 
 for (const icon in ICONIFY_ICONS) {

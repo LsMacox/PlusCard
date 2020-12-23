@@ -6,14 +6,13 @@
           :headers="headers"
           :items="filtered_certificates"
           :single-expand="true"
-          :options.sync="tableOptions"
+          :options.sync="tableSettings"
           :expanded.sync="expanded"
           :item-class="() => 'clickable-row'"
           item-key="id"
           :show-expand="false"
           class="plus-table"
           hide-default-footer
-          multi-sort
           :server-items-length="totalCount"
           @click:row="details"
           @update:sort-by="fetchData()"
@@ -226,7 +225,7 @@
           <select-page-limit
             min-width="200px"
             :items="paginationOptions"
-            :model.sync="tableOptions.itemsPerPage"
+            :model.sync="tableSettings.itemsPerPage"
             item-value="value"
             item-label="text"
           />
@@ -235,7 +234,7 @@
 
           <div class="text-center">
             <v-pagination
-              v-model="tableOptions.page"
+              v-model="tableSettings.page"
               next-icon="fas fa-chevron-right"
               prev-icon="fas fa-chevron-left"
               :length="pagesCount"
@@ -276,7 +275,7 @@
   import CertificateUsedDialog from '../CertificateUsedDialog'
   import CertificateContinueDialog from '../CertificateContinueDialog'
   import CertMethodsMixin from '../CertMethodsMixin'
-  import DataTable from '@/mixins/dataTable'
+  import DataTableMixin from '@/mixins/dataTable'
   import Permission from '@/mixins/permission'
   import Vue from 'vue'
 
@@ -285,7 +284,7 @@
     components: {
       SelectPageLimit, CertificateForm, CertificatePaidDialog, CertificateUsedDialog, CertificateContinueDialog,
     },
-    mixins: [CertMethodsMixin, Permission, DataTable],
+    mixins: [CertMethodsMixin, Permission, DataTableMixin],
     data () {
       return {
         showDetails: false,
@@ -294,18 +293,7 @@
         usedDialog: false,
         continueDialog: false,
         filterDrawer: false,
-        tableOptions: {
-          page: 1,
-          itemsPerPage: 25,
-        },
-        paginationOptions: [
-          { text: '25 на странице', value: 25 },
-          { text: '50 на странице', value: 50 },
-          { text: '100 на странице', value: 100 },
-          { text: '150 на странице', value: 150 },
-          { text: '250 на странице', value: 250 },
-          { text: '500 на странице', value: 500 },
-        ],
+        tableKey: 'UserCertificatesTable',
         wordPages: ['странице', 'страницах', 'страницах'],
         wordOperations: ['сертификат', 'сертификаты', 'сертификатов'],
         expanded: [],
@@ -381,7 +369,7 @@
     },
     computed: {
       pagesCount () {
-        const count = Math.ceil(this.totalCount / this.tableOptions.itemsPerPage)
+        const count = Math.ceil(this.totalCount / this.tableSettings.itemsPerPage)
         if (count) {
           return count
         }
@@ -418,12 +406,18 @@
       },
     },
     watch: {
-      'tableOptions.page' (v) {
-        console.log(this.tableOptions)
+      tableSettings: {
+        handler (v) {
+          this.setDataTableSetting(this.tableKey, v)
+        },
+        deep: true,
+      },
+      'tableSettings.page' (v) {
+        console.log(this.tableSettings)
         if (v) this.fetchData()
       },
-      'tableOptions.itemsPerPage' (v) {
-        console.log(this.tableOptions)
+      'tableSettings.itemsPerPage' (v) {
+        console.log(this.tableSettings)
         if (v) this.fetchData()
       },
       filter (v) {
@@ -449,6 +443,8 @@
       },
     },
     created () {
+      this.tableSettings.multiSort = true
+      this.tableSettings = this.getDataTableSetting(this.tableKey, this.tableSettings)
       this.fetchData()
     },
     methods: {
@@ -581,9 +577,9 @@
             start_period: this.period.start,
             end_period: this.period.end,
             filter: this.filter,
-            offset: this.getOffset(this.tableOptions.page, this.tableOptions.itemsPerPage),
-            limit: this.tableOptions.itemsPerPage,
-            sortable: this.getSortable(this.tableOptions.sortBy, this.tableOptions.sortDesc),
+            offset: this.getOffset(this.tableSettings.page, this.tableSettings.itemsPerPage),
+            limit: this.tableSettings.itemsPerPage,
+            sortable: this.getSortable(this.tableSettings.sortBy, this.tableSettings.sortDesc),
           })
           .finally(() => {
             this.loadingList = false

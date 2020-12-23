@@ -69,7 +69,7 @@
                 <v-btn
                   color="secondary"
                   :text="true"
-                    :ripple="false"
+                  :ripple="false"
                   @click="createHandlerClick"
                 >
                   <v-icon left>
