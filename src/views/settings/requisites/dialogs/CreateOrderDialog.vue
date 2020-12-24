@@ -11,7 +11,7 @@
         <v-col>
           <BaseDialogFieldBlock
             title="Сумма счета"
-            description="Минимальный платеж при выставлении счета - 5 000 ₽. Если вам нужно оплатить меньшую сумму - используйте моментальные способы оплаты."
+            description="Укажите сумму, на которую вы хотите пополнить баланс личного кабинете."
           >
             <base-text-field
               v-model.number="valueRub"
@@ -24,7 +24,7 @@
           </BaseDialogFieldBlock>
         </v-col>
       </v-row>
-      <v-row>
+      <!-- <v-row>
         <v-col>
           <BaseDialogFieldBlock
             title="Описание"
@@ -41,18 +41,21 @@
             />
           </BaseDialogFieldBlock>
         </v-col>
-      </v-row>
+      </v-row> -->
 
-      <v-row v-show="valid">
+      <v-row><v-col /></v-row>
+
+      <v-row>
         <v-col>
           <v-btn
             color="primary"
+            :disabled="!valid || CreateOrderAction"
             :loading="CreateOrderAction"
             @click="onSubmit()"
           >
             <v-icon left>
               $iconify_ion-checkmark-circle-outline
-            </v-icon><span>Создать счет</span>
+            </v-icon><span>Создать счет на оплату</span>
           </v-btn>
         </v-col>
       </v-row>
