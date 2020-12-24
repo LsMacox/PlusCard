@@ -7,4 +7,6 @@ export const CUSTOM_ICONS = {
     'status-error': require('@/assets/icons/status-error.svg'),
     'status-cancel': require('@/assets/icons/status-cancel.svg'),
 
+    'file-invoice': require('@/assets/icons/file-invoice.svg'),
+
 }
