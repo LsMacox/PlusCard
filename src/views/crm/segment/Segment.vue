@@ -43,7 +43,7 @@
       <template v-slot:[`item.segment-name`]="{ item }">
         <p
           class="body-s-semibold mb-0"
-          style="display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
+          style="display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;max-width: 50rem;word-break: break-word;"
           :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
         >
           {{ item.name }}
@@ -112,7 +112,7 @@
         },
         tableHeaders: [
           { text: 'ID', align: 'start', value: 'id' },
-          { text: 'Название сегмента', align: 'start', value: 'segment-name' },
+          { text: 'Название сегмента', align: 'start', value: 'segment-name'  },
           { text: 'Клиенты', align: 'end', value: 'client' },
           { text: 'Доход', align: 'end', value: 'profit' },
           { text: 'Средний чек', align: 'end', value: 'average-check' },

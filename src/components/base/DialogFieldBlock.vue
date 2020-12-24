@@ -23,7 +23,7 @@
   export default {
     name: 'DialogFieldBlock',
     components: { },
-    props: {      
+    props: {
       title: {
         type: String,
         default: '',

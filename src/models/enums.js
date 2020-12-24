@@ -51,7 +51,7 @@ const CERT_PAYMENT_TYPE_ENUM = Object.freeze({
 
 const BALANCE_OPERATION_TYPE_ENUM = Object.freeze({
     default: { id: '', text: '-', color: 'error-500', icon: null },
-    debit: { id: 'debit', text: 'Списание за услуги', color: 'error-500', icon: '$icons_status-error'  },
+    debit: { id: 'debit', text: 'Списание за услуги', color: 'error-500', icon: '$icons_status-error' },
     credit: { id: 'credit', text: 'Пополнение баланса', color: 'success-500', icon: '$icons_status-success' },
     find (id) { return this[id] || this.default },
 })
@@ -65,6 +65,11 @@ const MERCHANT_ORDER_STATUS_ENUM = Object.freeze({
     find (id) { return this[id] || this.default },
 })
 
+const MERCHANT_ORDER_METHOD = Object.freeze({
+    METHOD_SBERBANK: 'sberbank',
+    METHOD_ORDER_ORG: 'org',
+})
+
 export {
     EVENTS_ENUM,
     RESOURCE_TYPE_ENUM,
@@ -72,4 +77,5 @@ export {
     CERT_PAYMENT_TYPE_ENUM,
     BALANCE_OPERATION_TYPE_ENUM,
     MERCHANT_ORDER_STATUS_ENUM,
+    MERCHANT_ORDER_METHOD,
 }

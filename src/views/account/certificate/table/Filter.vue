@@ -166,19 +166,19 @@
                 <div class="app__filter-content-header">
                   Сертификаты
                   <v-menu
-                      v-model="chevronUp"
-                      class="certificate-toolbar-select"
-                      :rounded="false"
-                      offset-y
+                    v-model="chevronUp"
+                    class="certificate-toolbar-select"
+                    :rounded="false"
+                    offset-y
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                          text
-                          color="primary"
-                          dark
-                          v-bind="attrs"
-                          class="archive-status-btn"
-                          v-on="on"
+                        text
+                        color="primary"
+                        dark
+                        v-bind="attrs"
+                        class="archive-status-btn"
+                        v-on="on"
                       >
                         {{ archiveStatus.text }}
                         <v-icon class="archive-status-chevron">
@@ -188,22 +188,22 @@
                     </template>
                     <v-list>
                       <v-list-item
-                          v-for="(item, index) in archiveStatuses"
-                          :key="index"
-                          class="archive-status-menu-item"
-                          @click="archiveStatusHandler(item)"
+                        v-for="(item, index) in archiveStatuses"
+                        :key="index"
+                        class="archive-status-menu-item"
+                        @click="archiveStatusHandler(item)"
                       >
                         <v-list-item-title>
                           {{ item.text }}
                           <div
-                              v-if="archiveStatus.id === item.id"
-                              class="archive-status-check-icon"
+                            v-if="archiveStatus.id === item.id"
+                            class="archive-status-check-icon"
                           >
-                                          <span
-                                              class="iconify"
-                                              data-icon="bx:bx-check"
-                                              data-inline="false"
-                                          />
+                            <span
+                              class="iconify"
+                              data-icon="bx:bx-check"
+                              data-inline="false"
+                            />
                           </div>
                         </v-list-item-title>
                       </v-list-item>
@@ -453,14 +453,23 @@
         this.setFastFilter(this.filter)
       },
     },
+    destroyed () {
+      document.removeEventListener('click', this.clickOutside)
+    },
     created () {
       this.filter = JSON.parse(JSON.stringify(this.filterStore))
       this.fastFilter = JSON.parse(JSON.stringify(this.filterDefault))
+      document.addEventListener('click', this.clickOutside)
 
       this.$store.dispatch('account/certificate/certificate/programCertificates', this.program.id)
       this.$store.dispatch('account/certificate/buyers/buyers', this.program.id)
     },
     methods: {
+      clickOutside () {
+        // if (this.show) {
+        //   this.close()
+        // }
+      },
       archiveStatusHandler (item) {
         this.chevronUp = !this.chevronUp
         this.$store.commit('account/certificate/filter/archiveStatus', item)
@@ -675,7 +684,7 @@
     box-sizing: border-box;
     box-shadow: 0px 12px 24px rgba(88, 93, 106, 0.1);
     border-radius: 10px;
-    z-index: 100;
+    z-index: 2;
 
     .app__filter-content {
       padding: 8px 20px;

@@ -28,6 +28,7 @@
                 :key="item.id"
                 class="tabs-items-own"
                 :to="item.route"
+                replace
               >
                 {{ item.name }}
               </v-tab>

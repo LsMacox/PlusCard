@@ -1,6 +1,7 @@
 export default {
     data () {
         return {
+            // настройки таблицы по-умолчанию
             tableSettings: {
                 // vuetify
                 page: 1,
@@ -31,6 +32,7 @@ export default {
         getOffset (page, limit) {
             return (page * limit) - limit
         },
+        // подготовка массива сортировки
         getSortable (sortBy, sortDesc) {
             let sortable = null
             if (sortBy && sortDesc &&
@@ -47,6 +49,7 @@ export default {
             }
             return sortable
         },
+        // получаем настройки таблицы из localStorage или применяем по-умолчанию
         getDataTableSetting (key, value = null) {
             let v = JSON.parse(localStorage.getItem('tables'))
             if (!v) v = {}
@@ -56,6 +59,7 @@ export default {
             }
             return JSON.parse(localStorage.getItem('tables'))[key]
         },
+        // сохранение настроек таблицы в localStorage
         setDataTableSetting (key, value) {
             let v = JSON.parse(localStorage.getItem('tables'))
             if (!v) v = {}

@@ -1,5 +1,6 @@
 <template v-if="data && data.length > 0">
   <widget-template :class-name="widgetClasses">
+    {{data}}
     <template v-slot:header-left>
       <p class="body-m-semibold">
         {{ title }}

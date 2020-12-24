@@ -205,6 +205,7 @@
       },
       async init () {
         this.iconSetIdInternal = this.value
+        /* получение списка иконок
         try {
           // this.deleteAction = true
           await this.getBonusUnitIcons()
@@ -213,6 +214,7 @@
         } finally {
         // this.deleteAction = false
         }
+         */
       },
     },
   }

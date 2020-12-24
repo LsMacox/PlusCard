@@ -24,6 +24,7 @@
           <v-col
             v-else
             class="neutral-700--text"
+            style="word-break: break-word;"
           >
             {{ field[feildKey] || '-' }}
           </v-col>

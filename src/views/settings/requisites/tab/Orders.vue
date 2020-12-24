@@ -96,6 +96,10 @@
       v-else
       title="Счета отсутсвуют"
       description="Здесь будут отображаться все выставленные нами счета."
+      action-icon="$iconify_plus-circle-outlined"
+      action-text="Создать счет на оплату"
+      action
+      @action="onCreateOrderClick"
     >
       <template v-slot:image>
         <v-img
@@ -105,6 +109,11 @@
         />
       </template>
     </base-empty-block-page>
+    <create-order-dialog
+      v-if="createDialog"
+      v-model="createDialog"
+      @close="onCreateDialogClose"
+    />
   </v-skeleton-loader>
 </template>
 
@@ -119,6 +128,7 @@
     components: {
       DateColumn: () => import('@/components/colums/DateColumn.vue'),
       StatusColumn: () => import('@/components/colums/StatusColumn.vue'),
+      CreateOrderDialog: () => import('../dialogs/CreateOrderDialog.vue'),
     },
     mixins: [dateTimeFormat],
     constants: {
@@ -128,6 +138,7 @@
       return {
         search: '',
         GetOrdersActions: false,
+        createDialog: false,
         headers: [
           { text: 'ID', align: 'start', value: 'id', width: '7em' },
           { text: 'Дата', value: 'created_at', width: '6em' },
@@ -192,8 +203,14 @@
           })
       },
       onClickRow () {},
-      onCreateOrderClick () {},
-
+      onCreateOrderClick () {
+        this.createDialog = true
+      },
+      onCreateDialogClose (newOrder) {
+        if (newOrder) {
+          this.downloadOrderClick(newOrder)
+        }
+      },
       async downloadOrderClick (order) {
         try {
           order.GetOrderPdfAction = true

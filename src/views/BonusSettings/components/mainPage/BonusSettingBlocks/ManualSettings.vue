@@ -651,11 +651,9 @@
       init () {
         this.buyBonusResInternal = Object.copy(this.dbBuyBonusRes)
         console.log('init', this.$options.name, this.buyBonusResInternal)
-
-        if (this.buyBonusRes.length === 0) {
-          this.addNewBonusRes('TYPE_SOURCE')
-          this.addNewBonusRes('TYPE_TARGET')
-        }
+        
+        if (this.buyBonusResSource.length === 0) this.addNewBonusRes('TYPE_SOURCE')
+        if (this.buyBonusResTarget.length === 0) this.addNewBonusRes('TYPE_TARGET')
       },
     },
 

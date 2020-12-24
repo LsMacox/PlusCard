@@ -24,7 +24,7 @@
             </td>
           </template>
 
-          <template v-slot:item.data-table-expand="{ expand, isExpanded }">
+          <template v-slot:[`item.data-table-expand`]="{ expand, isExpanded }">
             <span
               class="iconify"
               data-icon="bi:chevron-right"
@@ -33,7 +33,7 @@
             />
           </template>
 
-          <template v-slot:item.certificate.name="{ item }">
+          <template v-slot:[`item.certificate.name`]="{ item }">
             <div class="td-padding-wrapper">
               <div class="td-content-main">
                 {{ item.certificate.name }}, {{ item.nominal_name || '-' }}
@@ -48,7 +48,7 @@
             </div>
           </template>
 
-          <template v-slot:item.user.UserName="{ item }">
+          <template v-slot:[`item.user.UserName`]="{ item }">
             <div class="avatar">
               <img :src="item.user.avatar">
             </div>
@@ -61,18 +61,18 @@
                 class="hint"
                 style="color: #9191A1"
               >
-                Был(а) в сети {{ $moment(item.user.last_activity).format('DD.MM.YYYY\u00A0HH:mm') }}
+                Был(а) в сети {{ $moment.utc(item.user.last_activity).local().format('DD.MM.YYYY\u00A0HH:mm') }}
               </div>
             </div>
           </template>
 
-          <template v-slot:item.nominal.selling_price="{ item }">
+          <template v-slot:[`item.nominal.selling_price`]="{ item }">
             <span style="float: right">
-              {{ formatNum(item.nominal.selling_price) }} &#8381
+              {{ formatNum(item.nominal.selling_price) }} &#8381;
             </span>
           </template>
 
-          <template v-slot:item.payment_status="{ item }">
+          <template v-slot:[`item.payment_status`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-img
@@ -89,7 +89,7 @@
             </v-tooltip>
           </template>
 
-          <template v-slot:item.status="{ item }">
+          <template v-slot:[`item.status`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-img
@@ -106,7 +106,7 @@
             </v-tooltip>
           </template>
 
-          <template v-slot:item.merchant_order_status="{ item }">
+          <template v-slot:[`item.merchant_order_status`]="{ item }">
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-img
@@ -123,54 +123,18 @@
             </v-tooltip>
           </template>
 
-          <template v-slot:item.date_issued="{ item }">
-            <div
-              v-if="item.date_issued"
-              class="td-content-wrapper"
-            >
-              <div class="td-content-main">
-                {{ $moment(item.date_issued).format('DD.MM.YYYY') }}
-              </div>
-              <div
-                v-if="item.expires_at"
-                class="hint"
-              >
-                {{ $moment(item.expires_at).format('DD.MM.YYYY') }}
-              </div>
-            </div>
+          <template v-slot:[`item.date_issued`]="{ item }">
+            <date-column :value="item.date_issued" />
           </template>
 
-          <template v-slot:item.created_at="{ item }">
-            <div
-              v-if="item.created_at"
-              class="td-content-wrapper"
-            >
-              <div class="td-content-main">
-                {{ $moment(item.created_at).format('DD.MM.YYYY') }}
-              </div>
-              <div
-                v-if="item.created_at"
-                class="hint"
-              >
-                в {{ $moment(item.created_at).format('HH:MM:SS') }}
-              </div>
-            </div>
+          <template v-slot:[`item.created_at`]="{ item }">
+            <date-column :value="item.created_at" />
           </template>
 
-          <template v-slot:item.used_at="{ item }">
-            <div
-              v-if="item.used_at"
-              class="td-content-wrapper"
-            >
-              <div class="td-content-main">
-                {{ $moment(item.used_at).format('DD.MM.YYYY') }}
-              </div>
-              <div class="hint">
-                в {{ $moment(item.used_at).format('HH:mm') }}
-              </div>
-            </div>
+          <template v-slot:[`item.used_at`]="{ item }">
+            <date-column :value="item.used_at" />
           </template>
-          <template v-slot:item.actions="{ item }">
+          <template v-slot:[`item.actions`]="{ item }">
             <v-menu
               offset-y
             >
@@ -282,7 +246,12 @@
   export default {
     name: 'Certificates',
     components: {
-      SelectPageLimit, CertificateForm, CertificatePaidDialog, CertificateUsedDialog, CertificateContinueDialog,
+      DateColumn: () => import('@/components/colums/DateColumn.vue'),
+      SelectPageLimit,
+      CertificateForm,
+      CertificatePaidDialog,
+      CertificateUsedDialog,
+      CertificateContinueDialog,
     },
     mixins: [CertMethodsMixin, Permission, DataTableMixin],
     data () {
@@ -443,6 +412,7 @@
       },
     },
     created () {
+      // переопределяем настройки таблицы по-умолчанию
       this.tableSettings.multiSort = true
       this.tableSettings = this.getDataTableSetting(this.tableKey, this.tableSettings)
       this.fetchData()

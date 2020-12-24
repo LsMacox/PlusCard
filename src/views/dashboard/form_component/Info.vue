@@ -3,7 +3,7 @@
     <v-row v-if="program.current_moderations && program.current_moderations.length">
       <v-col>
         <base-banner
-          text="Ваша компания находится на модерации. Вы можете менять данные сколько угодно раз. Модерацию будут проходить самые свежие изменения. "
+          text="Ваша компания находится на модерации. Модерацию будут проходить самые свежие изменения."
           type="warn"
           closeable
         />

@@ -4,7 +4,7 @@
     fixed
     temporary
     right
-    width="100%"
+    width="483px"
   >
     <template v-slot:prepend>
       <v-container class="dialog-header">

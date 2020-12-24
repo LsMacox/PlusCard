@@ -106,7 +106,7 @@
           title: 'Чаты',
           to: '/communications/chat',
           alias: ['ChatType', 'ChatConversation'],
-          badge: 12,
+          badge: null,
         },
         {
           icon: '$iconify_feather-settings',
