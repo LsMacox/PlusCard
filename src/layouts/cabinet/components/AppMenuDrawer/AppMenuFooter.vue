@@ -140,12 +140,12 @@
   padding-left: 20px;
   padding-right: 20px;
   margin-bottom: 26px;
+
   .profile-item-avatar {
-    margin-top: 12px;
-    margin-bottom: 12px;
-    margin-right: 0px;
-    margin-left: -1px;
+    margin: 12px 0 12px -1px;
+    border-radius: 100px;
   }
+
   .profile-item-content {
     margin-left: 19px;
   }
