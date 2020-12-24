@@ -202,7 +202,7 @@
                 >
                   <p
                     class="body-s-semibold mb-0"
-                    style="cursor: pointer; display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
+                    style="word-break: break-word; cursor: pointer; display: inline-block; padding: 4px 8px 4px 8px; border-radius: 4px;"
                     :style="item.color != undefined ? `color: ${item.color}; background: ${hexToRgbA(item.color, '0.15')}` : ''"
                     @click="setFilter('segments', item)"
                   >
