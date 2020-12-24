@@ -4,17 +4,31 @@
       <h2 class="title-h2 font-weight-bold">
         Настройка интеграций
       </h2>
-      <v-btn
-        color="primary"
-        max-width="230"
-        width="100%"
-        @click="updateConfiguringIntegrations(null)"
-      >
-        <v-icon left>
-          mdi-plus-circle-outline
-        </v-icon>
-        Добавить интеграцию
-      </v-btn>
+      <div style="flex-basis: 470px">
+        <v-btn
+          color="primary"
+          max-width="230"
+          width="100%"
+          style="margin-right: 10px"
+          @click="updateConfiguringIntegrations(null)"
+        >
+          <v-icon left>
+            mdi-plus-circle-outline
+          </v-icon>
+          Добавить интеграцию
+        </v-btn>
+        <v-btn
+            color="primary"
+            max-width="230"
+            width="100%"
+            @click="updateConfiguringWebhooks(null)"
+        >
+          <v-icon left>
+            mdi-plus-circle-outline
+          </v-icon>
+          Добавить вебхук
+        </v-btn>
+      </div>
     </div>
     <div class="table-wrap">
       <v-data-table
@@ -66,7 +80,7 @@
         <template v-slot:item.change="{ item }">
           <div
             class="img-change"
-            @click="updateConfiguringIntegrations(item)"
+            @click="item.type == 'integration' ? updateConfiguringIntegrations(item) : updateConfiguringWebhooks(item)"
           >
             <v-img src="@/icons/svg/chevron-right.svg" />
             {{ item.change }}
@@ -98,7 +112,7 @@
           },
           { text: 'Название', value: 'name' },
           { text: 'Ключ', value: 'secret', width: 1 },
-          { text: '', value: 'copy',  align: 'start', sortable: false },
+          { text: '', value: 'copy', align: 'start', sortable: false },
           { text: 'Создано', value: 'created_at', width: '9em' },
           { text: 'Обновлено', value: 'updated_at', width: '9em' },
           { text: '', value: 'active', sortable: false, width: 1 },
@@ -110,13 +124,31 @@
     computed: {
       ...mapGetters({
         getCreateConfiguringIntegrations: 'configuringIntegrations/configuring_integrations/getCreateConfiguringIntegrations',
+        getCreateConfiguringWebhooks: 'configuringIntegrations/configuring_integrations/getCreateConfiguringWebhooks',
       }),
       integrationsDisplay () {
-        return this.getCreateConfiguringIntegrations.map(x => {
+        const result = []
+
+        const integrations = this.getCreateConfiguringIntegrations.map(x => {
           Vue.set(x, 'active', !x.revoked)
           Vue.set(x, 'changeActiveAction', false)
+          Vue.set(x, 'type', 'integration')
           return x
         })
+
+        const webhooks = this.getCreateConfiguringWebhooks.map(x => {
+          Vue.set(x, 'changeActiveAction', false)
+          Vue.set(x, 'secret', x.url)
+          Vue.set(x, 'type', 'webhook')
+          return x
+        })
+
+        Array.prototype.push.apply(result, integrations)
+        Array.prototype.push.apply(result, webhooks)
+        console.log('RESULT')
+        console.log(result)
+
+        return result
       },
     },
     watch: {
@@ -126,27 +158,43 @@
       ...mapMutations({
         setUpdateIntegration: 'configuringIntegrations/configuring_integrations/setUpdateIntegration',
         openNavigationRight: 'configuringIntegrations/configuring_integrations/openNavigationConfiguring',
+
+        setUpdateWebhook: 'configuringIntegrations/configuring_integrations/setUpdateWebhook',
+        openWebhookForm: 'configuringIntegrations/configuring_integrations/openWebhookConfiguring',
       }),
 
       updateConfiguringIntegrations (val) {
         this.setUpdateIntegration(val)
         this.openNavigationRight(true)
       },
+      updateConfiguringWebhooks (val) {
+        this.setUpdateWebhook(val)
+        this.openWebhookForm(true)
+      },
       async activeChange (item, active) {
         try {
           console.log('activeChange', item, active)
           item.changeActiveAction = true
           // await this.$sleep()
-          await this.$store.dispatch('configuringIntegrations/configuring_integrations/SetRevokedClient', {
-            id: item.id,
-            revoked: !active,
-          })
+          if (item.type !== 'webhook') {
+            await this.$store.dispatch('configuringIntegrations/configuring_integrations/SetRevokedClient', {
+              id: item.id,
+              revoked: !active,
+            })
+          } else {
+            console.log('item.id')
+            console.log(item.active)
+            await this.$store.dispatch('configuringIntegrations/configuring_integrations/ToggleWebhookStatus', {
+              webhook_id: item.id,
+              status: item.active,
+            })
+          }
         } catch (error) {
           item.revoked = !item.revoked
         } finally {
           item.changeActiveAction = false
         }
-      },      
+      },
     },
   }
 </script>

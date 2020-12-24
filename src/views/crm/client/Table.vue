@@ -7,7 +7,9 @@
       v-else
     >
       <div style="margin: 20px 0 15px 0;">
-        <client-filter />
+        <client-filter
+          @apply-filter="applyFilter"
+        />
       </div>
       <base-table
         v-if="clients.length"
@@ -203,6 +205,9 @@
           this.$store.commit('crm/client/SET_LIST', v)
         },
       },
+      queryValue () {
+        return this.$store.getters['crm/client/queryValue']
+      },
     },
     watch: {
       program (v) {
@@ -225,6 +230,10 @@
       await this.fetchData()
     },
     methods: {
+      applyFilter () {
+        console.log('FILTER APPLIED')
+        this.fetchData()
+      },
       createSidePanel (item) {
         this.sidePanelStatus.mode = 'create'
         this.sidePanelStatus.data = null
@@ -252,7 +261,7 @@
           this.loadingList = true
           const payload = {
             program_id: this.program.id,
-            filter: { segments: this.filter.segments },
+            filter: this.queryValue,
             list: {
               page: this.list.page,
               limit: this.list.itemsPerPage,
