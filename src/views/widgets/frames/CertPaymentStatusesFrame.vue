@@ -1,6 +1,6 @@
 <template>
   <cert-widget-template
-    :class-name="widgetClasses"
+      :class-name="widgetClasses"
   >
     <template v-slot:header-left>
       <p class="body-m-semibold">
@@ -69,164 +69,166 @@
       <!--      </div>-->
 
       <div
-        class="row"
-        style="margin-top: 12px;"
+          class="row"
+          style="margin-top: 12px;"
       >
         <div
-          v-for="(subTitle, i) in subTitles"
-          :key="i"
-          class="col-2 v-progress-linear-wrapper"
-        >
-          <div
             v-for="(subTitle, i) in subTitles"
             :key="i"
             class="col-2 v-progress-linear-wrapper"
-          >
-            <div class="row">
-              <div class="col-1">
-                <v-progress-linear
+        >
+          <div class="row">
+            <div class="col-1">
+              <v-progress-linear
                   v-if="i > 0"
                   :rounded="true"
                   :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"
                   :color="colors[i]"
                   height="12"
                   style="transform: rotate(-90deg)"
-                />
-                <v-progress-linear
+              />
+              <v-progress-linear
                   v-else-if="percentageDifferences[i] == 0"
                   :rounded="true"
                   :value="0"
                   :color="colors[i]"
                   height="12"
                   style="transform: rotate(-90deg)"
-                />
-                <v-progress-linear
+              />
+              <v-progress-linear
                   v-else
                   :rounded="true"
                   :value="100"
                   :color="colors[i]"
                   height="12"
                   style="transform: rotate(-90deg)"
-                />
-              </div>
-              <div class="body-s-semibold wc-neutral">
-                {{ subTitle }}
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="v-progress-linear-info">
+                <div class="body-s-semibold">
+                  {{ percentageDifferences[i] }}
+                </div>
+                <div class="body-s-semibold wc-neutral">
+                  {{ subTitle }}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </template>
   </cert-widget-template>
 </template>
 
 <script>
-  import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
-  import CertWidgetTemplate from '@/views/widgets/components/CertWidgetTemplate'
+import WidgetFunctions from '@/views/widgets/mixins/WidgetFunctions.js'
+import CertWidgetTemplate from '@/views/widgets/components/CertWidgetTemplate'
 
-  export default {
-    name: 'DoubleDiagramFrame',
-    components: {
-      CertWidgetTemplate,
+export default {
+  name: 'DoubleDiagramFrame',
+  components: {
+    CertWidgetTemplate,
+  },
+  mixins: [WidgetFunctions],
+  inheritAttrs: false,
+  props: {
+    title: {
+      type: String,
+      default: '',
     },
-    mixins: [WidgetFunctions],
-    inheritAttrs: false,
-    props: {
-      title: {
-        type: String,
-        default: '',
-      },
-      subTitles: {
-        type: Array,
-        default () {
-          return ['title', 'title', 'title']
-        },
-      },
-      percentageDifferences: {
-        type: Array,
-        default () {
-          return [0, 0, 0, 0, 0]
-        },
-      },
-      textHelp: {
-        type: String,
-        default: null,
-      },
-      colors: {
-        type: Array,
-        default () {
-          return ['primary', 'primary', 'primary', 'primary', 'primary']
-        },
+    subTitles: {
+      type: Array,
+      default () {
+        return ['title', 'title', 'title']
       },
     },
-    data () {
-      return {
-        dialogHelp: false,
-        transitionDuration: 100,
-        percent1: 0,
-        percent2: 0,
-        percent3: 0,
+    percentageDifferences: {
+      type: Array,
+      default () {
+        return [0, 0, 0, 0, 0]
+      },
+    },
+    textHelp: {
+      type: String,
+      default: null,
+    },
+    colors: {
+      type: Array,
+      default () {
+        return ['primary', 'primary', 'primary', 'primary', 'primary']
+      },
+    },
+  },
+  data () {
+    return {
+      dialogHelp: false,
+      transitionDuration: 100,
+      percent1: 0,
+      percent2: 0,
+      percent3: 0,
+    }
+  },
+  computed: {
+    widgetClasses () {
+      return this.parentClass !== undefined ? this.parentClass + ' f-vertical-progress' : 'f-vertical-progress'
+    },
+  },
+  watch: {
+    percentageDifferences: {
+      handler: function (v) {
+        this.clearHandlers()
+        for (let i = 0; i < v.length; i++) {
+          const n = Number(v[i])
+          if (Number.isNaN(n) || n === 0) {
+            return
+          }
+          this.countNumber(v[i], i + 1)
+        }
+      },
+      immediate: true,
+    },
+  },
+  mounted () {},
+  methods: {
+    countNumber (number, ind) {
+      let counter = 0
+      const innerNum = parseInt(
+          this.findClosestNumber(this.transitionDuration / 10, number),
+      )
+      const interval = this.transitionDuration / innerNum
+      const handlerName = `percent${ind}Interval`
+
+      this[handlerName] = setInterval(() => {
+        if (counter === innerNum) {
+          // back to origin precision
+          this[`percent${ind - 1}`] = number
+          window.clearInterval(this[handlerName])
+        }
+        counter++
+      }, interval)
+    },
+    findClosestNumber (bound, value) {
+      if (value <= bound) {
+        return value
+      }
+      return this.findClosestNumber(bound, value / 10)
+    },
+    clearHandlers () {
+      if (this.percent1Interval) {
+        clearTimeout(this.percent1Interval)
+      }
+      if (this.percent2Interval) {
+        clearInterval(this.percent2Interval)
+      }
+      if (this.percent3Interval) {
+        clearInterval(this.percent3Interval)
       }
     },
-    computed: {
-      widgetClasses () {
-        return this.parentClass !== undefined ? this.parentClass + ' f-vertical-progress' : 'f-vertical-progress'
-      },
-    },
-    watch: {
-      percentageDifferences: {
-        handler: function (v) {
-          this.clearHandlers()
-          for (let i = 0; i < v.length; i++) {
-            const n = Number(v[i])
-            if (Number.isNaN(n) || n === 0) {
-              return
-            }
-            this.countNumber(v[i], i + 1)
-          }
-        },
-        immediate: true,
-      },
-    },
-    mounted () {},
-    methods: {
-      countNumber (number, ind) {
-        let counter = 0
-        const innerNum = parseInt(
-          this.findClosestNumber(this.transitionDuration / 10, number),
-        )
-        const interval = this.transitionDuration / innerNum
-        const handlerName = `percent${ind}Interval`
-
-        this[handlerName] = setInterval(() => {
-          if (counter === innerNum) {
-            // back to origin precision
-            this[`percent${ind - 1}`] = number
-            window.clearInterval(this[handlerName])
-          }
-          counter++
-        }, interval)
-      },
-      findClosestNumber (bound, value) {
-        if (value <= bound) {
-          return value
-        }
-        return this.findClosestNumber(bound, value / 10)
-      },
-      clearHandlers () {
-        if (this.percent1Interval) {
-          clearTimeout(this.percent1Interval)
-        }
-        if (this.percent2Interval) {
-          clearInterval(this.percent2Interval)
-        }
-        if (this.percent3Interval) {
-          clearInterval(this.percent3Interval)
-        }
-      },
-    },
-  }
+  },
+}
 </script>
 
 <style lang="scss" scoped>
