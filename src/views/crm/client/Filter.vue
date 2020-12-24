@@ -128,13 +128,13 @@
 
             <div class="app__spacer" />
 
-            <v-icon
-              class="app__filter-block-input-icon-append app__filter-block-icon-adv-filter"
-              :color="advancedFilter ? '#4776e6!important' : '#B5B5C4!important'"
-              @click="openAdvFilter"
-            >
-              $iconify_bx-filter-alt
-            </v-icon>
+<!--            <v-icon-->
+<!--              class="app__filter-block-input-icon-append app__filter-block-icon-adv-filter"-->
+<!--              :color="advancedFilter ? '#4776e6!important' : '#B5B5C4!important'"-->
+<!--              @click="openAdvFilter"-->
+<!--            >-->
+<!--              $iconify_bx-filter-alt-->
+<!--            </v-icon>-->
 
             <v-icon
               class="app__filter-block-input-icon-append app__filter-block-icon-close"
@@ -160,14 +160,14 @@
             >
               Пока ничего не найдено
             </div>
-            <div>
-              <query-builder
-                v-if="advancedFilter"
-                :rules="queryRules"
-                :value="queryValue"
-                @apply-query-value="applyQuery"
-              />
-            </div>
+<!--            <div>-->
+<!--              <query-builder-->
+<!--                v-if="advancedFilter"-->
+<!--                :rules="queryRules"-->
+<!--                :value="queryValue"-->
+<!--                @apply-query-value="applyQuery"-->
+<!--              />-->
+<!--            </div>-->
 
             <!-- Клиенты -->
             <div
@@ -247,34 +247,34 @@
     },
     data () {
       return {
-        advancedFilter: false,
-        queryRules: [
-          {
-            id: 'created',
-            label: 'Создание',
-            field: 'date',
-            type: 'date',
-            input: 'date',
-            operator: 'equal',
-            value: '2020-12-10',
-          },
-          {
-            id: 'client',
-            label: 'Имя клиента',
-            field: 'text',
-            type: 'text',
-            input: 'text',
-            operator: 'equal',
-          },
-          {
-            id: 'account',
-            label: 'Карта клиента',
-            field: 'numeric',
-            type: 'numeric',
-            input: 'numeric',
-            operator: 'equal',
-          },
-        ],
+        // advancedFilter: false,
+        // queryRules: [
+        //   {
+        //     id: 'created',
+        //     label: 'Создание',
+        //     field: 'date',
+        //     type: 'date',
+        //     input: 'date',
+        //     operator: 'equal',
+        //     value: '2020-12-10',
+        //   },
+        //   {
+        //     id: 'client',
+        //     label: 'Имя клиента',
+        //     field: 'text',
+        //     type: 'text',
+        //     input: 'text',
+        //     operator: 'equal',
+        //   },
+        //   {
+        //     id: 'account',
+        //     label: 'Карта клиента',
+        //     field: 'numeric',
+        //     type: 'numeric',
+        //     input: 'numeric',
+        //     operator: 'equal',
+        //   },
+        // ],
         query: null,
         prevQuery: null,
         filter: {
@@ -307,28 +307,28 @@
       segmentsStore () {
         return this.$store.getters['crm/segment/segments']
       },
-      segmentsRule () {
-        const segments = []
-        let segmentsRule = {}
-
-        this.segmentsStore.forEach(item => {
-          segments.push({
-            id: item.id,
-            label: item.name,
-          })
-        })
-
-        segmentsRule = {
-          id: 'segment',
-          label: 'Сегмент',
-          field: 'checkbox',
-          type: 'checkbox',
-          input: 'checkbox',
-          operator: 'equal',
-          choices: segments,
-        }
-        return segmentsRule
-      },
+      // segmentsRule () {
+      //   const segments = []
+      //   let segmentsRule = {}
+      //
+      //   this.segmentsStore.forEach(item => {
+      //     segments.push({
+      //       id: item.id,
+      //       label: item.name,
+      //     })
+      //   })
+      //
+      //   segmentsRule = {
+      //     id: 'segment',
+      //     label: 'Сегмент',
+      //     field: 'checkbox',
+      //     type: 'checkbox',
+      //     input: 'checkbox',
+      //     operator: 'equal',
+      //     choices: segments,
+      //   }
+      //   return segmentsRule
+      // },
       filterStore () {
         return this.$store.getters['crm/client/filter']
       },
@@ -340,19 +340,19 @@
           this.fastFilter.segments.length) return false
         return true
       },
-      queryValue () {
-        return this.$store.getters['crm/client/queryValue']
-      },
+      // queryValue () {
+      //   return this.$store.getters['crm/client/queryValue']
+      // },
     },
     watch: {
-      show (v) {
-        if (v === true) {
-          if (this.queryValue) {
-            this.queryRules.push(this.segmentsRule)
-            this.advancedFilter = true
-          }
-        }
-      },
+      // show (v) {
+      //   if (v === true) {
+      //     if (this.queryValue) {
+      //       this.queryRules.push(this.segmentsRule)
+      //       this.advancedFilter = true
+      //     }
+      //   }
+      // },
       program (v) {
         // обнуление при смене программы
         if (v) {
@@ -379,17 +379,17 @@
         await this.getSegments()
         this.appendQueryFilter()
       },
-      openAdvFilter () {
-        console.log('SEGMENTS')
-        console.log(this.segmentsRule)
-        console.log('SEGMENTS')
-        this.queryRules.push(this.segmentsRule)
-        this.advancedFilter = !this.advancedFilter
-      },
-      async applyQuery (query) {
-        this.$store.commit('crm/client/SET_QUERY_VALUE', query)
-        this.$emit('apply-filter')
-      },
+      // openAdvFilter () {
+      //   console.log('SEGMENTS')
+      //   console.log(this.segmentsRule)
+      //   console.log('SEGMENTS')
+      //   this.queryRules.push(this.segmentsRule)
+      //   this.advancedFilter = !this.advancedFilter
+      // },
+      // async applyQuery (query) {
+      //   this.$store.commit('crm/client/SET_QUERY_VALUE', query)
+      //   this.$emit('apply-filter')
+      // },
       appendQueryFilter () {
         const segmentId = +this.$route.query.segmentId
         if (segmentId) {
@@ -400,7 +400,7 @@
       },
       async getSegments () {
         try {
-          console.log('GET_SEGMENTS')
+          // console.log('GET_SEGMENTS')
           this.getSegmentsAction = true
           const payload = {
             program_id: this.program.id,

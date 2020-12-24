@@ -7,9 +7,10 @@
       v-else
     >
       <div style="margin: 20px 0 15px 0;">
-        <client-filter
-          @apply-filter="applyFilter"
-        />
+        <client-filter />
+<!--        <client-filter-->
+<!--            @apply-filter="applyFilter"-->
+<!--        />-->
       </div>
       <base-table
         v-if="clients.length"
@@ -261,7 +262,8 @@
           this.loadingList = true
           const payload = {
             program_id: this.program.id,
-            filter: this.queryValue,
+            // filter: this.queryValue,
+            filter: { segments: this.filter.segments },
             list: {
               page: this.list.page,
               limit: this.list.itemsPerPage,
