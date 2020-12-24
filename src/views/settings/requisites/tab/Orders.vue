@@ -96,6 +96,10 @@
       v-else
       title="Счета отсутсвуют"
       description="Здесь будут отображаться все выставленные нами счета."
+      action-icon="$iconify_plus-circle-outlined"
+      action-text="Создать счет на оплату"
+      action
+      @action="onCreateOrderClick"
     >
       <template v-slot:image>
         <v-img
