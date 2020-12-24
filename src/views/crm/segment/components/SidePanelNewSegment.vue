@@ -35,6 +35,7 @@
             :rules="rules.name"
             class="panel-crm__form-input panel-crm_segment__form-input"
             type="text"
+            maxlength="255"
             placeholder="Введите название сегмента"
             outlined
           />
@@ -44,6 +45,7 @@
             :rules="rules.name"
             class="panel-crm__form-input panel-crm_segment__form-input"
             type="text"
+            maxlength="255"
             placeholder="Введите название сегмента"
             outlined
           />

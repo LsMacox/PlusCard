@@ -17,6 +17,7 @@
           />
         </router-link>
         <v-badge
+        v-if="false"        
           v-show="mini"
           dot
           color="error"
@@ -41,6 +42,7 @@
         cols="auto"
       >
         <v-badge
+        v-if="false"
           dot
           color="error"
           overlap

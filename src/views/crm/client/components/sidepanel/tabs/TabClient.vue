@@ -108,8 +108,9 @@
       </div>
       <div class="tab-client__content birthday__content">
         <base-date-text-field
-          :date.sync="accountClient.birthday"
+          :date.sync="accountClient.birthday"          
           date-format="DD.MM.YYYY"
+          :max-date="$moment.now()"
           placeholder="Дата рождения клиента (дд.мм.гггг)"
         />
       </div>

@@ -34,7 +34,7 @@
         class="cert-details-property d-flex"
       >
         <div class="cert-details-used body-s-semibold">
-          Использован {{ $moment(detailedCert.used_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
+          Использован {{ $moment.utc(detailedCert.used_at).local().format('DD.MM.YYYY,\u00A0HH:mm') }}
         </div>
       </div>
 
@@ -107,7 +107,7 @@
           v-if="detailedCert.issued"
           class="cert-details-prop-value body-m-medium"
         >
-          {{ $moment(detailedCert.date_issued).format('DD.MM.YYYY,\u00A0HH:mm') }}
+          {{ $moment.utc(detailedCert.date_issued).local().format('DD.MM.YYYY,\u00A0HH:mm') }}
         </div>
         <div
           v-else
@@ -304,7 +304,7 @@
               <span>Выполнена</span>
             </div>
             <div class="cert-details-status-date body-m-medium">
-              {{ $moment(detailedCert.order.last_paid_payment.paid_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
+              {{ $moment.utc(detailedCert.order.last_paid_payment.paid_at).local().format('DD.MM.YYYY,\u00A0HH:mm') }}
             </div>
           </div>
 
@@ -340,7 +340,7 @@
               v-if="detailedCert.order.last_paid_payment"
               class="cert-details-status-date body-m-medium"
             >
-              {{ $moment(detailedCert.order.last_paid_payment.created_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
+              {{ $moment.utc(detailedCert.order.last_paid_payment.created_at).local().format('DD.MM.YYYY,\u00A0HH:mm') }}
             </div>
             <div
               v-else
@@ -361,7 +361,7 @@
               v-if="detailedCert.order.last_paid_payment && detailedCert.order.last_paid_payment.IsExpired"
               class="cert-details-status-date body-m-medium"
             >
-              {{ $moment(detailedCert.order.last_paid_payment.expired_at).format('DD.MM.YYYY,\u00A0HH:mm') }}
+              {{ $moment.utc(detailedCert.order.last_paid_payment.expired_at).local().format('DD.MM.YYYY,\u00A0HH:mm') }}
             </div>
             <div
               v-else

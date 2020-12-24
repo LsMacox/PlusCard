@@ -28,7 +28,7 @@
             class="base-combobox__select-item"
           >
             <p
-              class="body-s-semibold"
+              class="combobox-item-text body-s-semibold"
               :style="`color: ${item.color}`"
             >
               {{ item.name }}
@@ -68,7 +68,7 @@
             >
               <div class="item-select">
                 <p
-                  class="body-m-medium mb-0"
+                  class="combobox-item-text body-m-medium mb-0"
                   :style="`color: ${item.color}`"
                 >
                   {{ item.name }}
@@ -196,6 +196,23 @@
     },
   }
 </script>
+<style lang="scss" scoped>
+.combobox-item-text {
+  max-width: 25rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+    // &:hover {
+    //    max-width: 25rem;
+    //   text-overflow: clip;
+    // white-space: normal;
+    // word-break: break-all;
+    // }
+
+}
+
+</style>
 
 <style lang="scss">
 @import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";

@@ -58,30 +58,32 @@
 
         <template v-slot:[`item.segments`]="{ item }">
           <v-row
-              v-if="item.segments && item.segments.length"
+            v-if="item.segments && item.segments.length"
           >
-              <div
-                v-for="(segment, i) in item.segments"
-                :key="`segment${i}`"
-                class="segment__name body-s-semibold"
-                :style="segment.color != undefined ? `color: ${segment.color}; background: ${hexToRgbA(segment.color, '0.15')}` : ''"
+            <div
+              v-for="(segment, i) in item.segments"
+              :key="`segment${i}`"
+              class="segment__name body-s-semibold "
+              :style="segment.color != undefined ? `color: ${segment.color}; background: ${hexToRgbA(segment.color, '0.15')}` : ''"
+            >
+              <v-tooltip
+                dark
+                top
               >
-                <v-tooltip
-                    dark
-                    top
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <span
-                        v-bind="attrs"
-                        v-on="on"
-                        style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
-                    >
-                      {{ segment.name }}
-                    </span>
-                  </template>
+                <template v-slot:activator="{ on, attrs }">
+                  <span
+                    v-bind="attrs"
+                    style="max-width:20rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
+                    v-on="on"
+                  >
+                    {{ segment.name }}
+                  </span>
+                </template>
+                <div style="max-width:40rem; word-break: break-word;">
                   {{ segment.name }}
-                </v-tooltip>
-              </div>
+                </div>
+              </v-tooltip>
+            </div>
           </v-row>
           <div v-else>
             -

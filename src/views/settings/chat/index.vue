@@ -98,7 +98,7 @@
                     <div class="setting-chat__checkbox representative-name__checkbox">
                       <base-ext-switch
                         v-model="programModelEditing.real_chat_name"
-                        label="Использовать реальное имя соотрудника"
+                        label="Использовать реальное имя сотрудника"
                       />
                     </div>
                   </div>
@@ -106,7 +106,7 @@
                 <div class="setting-chat__block welcome-message">
                   <div class="setting-chat__header welcome-message__header">
                     <p class="title-m-bold neutral-900--text">
-                      Приветсвенное сообщение
+                      Приветственное сообщение
                     </p>
                     <p class="body-m-regular neutral-700--text">
                       Введите имя, которое будут видеть ваши клиенты при общении с вами в чате. Например, менеджер Михахил, директор Алексей Игоревич, компания Вектор.
