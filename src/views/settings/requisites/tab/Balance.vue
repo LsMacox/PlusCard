@@ -199,7 +199,7 @@
           this.downloadOrderClick(newOrder)
           this.$router.replace({ name: 'SettingsRequisites', hash: '#orders' })
         } else if (newOrder.method === MERCHANT_ORDER_METHOD.METHOD_SBERBANK) {
-          if (newOrder.sber_order) {            
+          if (newOrder.sber_order) {
             window.open(newOrder.sber_order.form_url, '_blank')
           }
         }
