@@ -73,17 +73,45 @@
             <template v-slot:[`item.value_rub`]="{ item }">
               <span class="body-s-semibold">{{ item.value_rub }} ₽</span>
             </template>
+            <template v-slot:[`item.method`]="{ item }">
+              <span>{{ MERCHANT_ORDER_METHOD_ENUM.find(item.method).text  }}</span>
+            </template>
             <template v-slot:[`item.actions`]="{ item }">
-              <v-btn
-                icon
-                color="primary"
-                :loading="item.GetOrderPdfAction"
-                :disabled="item.GetOrderPdfAction"
-                x-small
-                @click="downloadOrderClick(item)"
+              <v-menu
+                offset-y
               >
-                <v-icon>$iconify_feather-download</v-icon>
-              </v-btn>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    small
+                    :loading="item.loading"
+                    v-on="on"
+                  >
+                    <v-icon>$iconify_feather-more-vertical</v-icon>
+                  </v-btn>
+                </template>
+                <v-list dense>
+                  <v-list-item
+                    v-for="(menuItem, index) in getActions(item)"
+                    :key="index"
+                    @click="menuItem.action(item)"
+                  >
+                    <v-list-item-icon>
+                      <v-icon color="neutral-500">
+                        {{ menuItem.icon }}
+                      </v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title
+                      :class=" {
+                        'body-s-medium' : true,
+                        'neutral-500--text':true,
+                      }"
+                    >
+                      {{ menuItem.title }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </v-menu>
             </template>
 
           <!-- </v-data-table> -->
@@ -121,7 +149,7 @@
   import { mapGetters, mapActions } from 'vuex'
   import Vue from 'vue'
   import dateTimeFormat from '@/mixins/dateTimeFormat.js'
-  import { MERCHANT_ORDER_STATUS_ENUM } from '@/models/enums'
+  import { MERCHANT_ORDER_STATUS_ENUM, MERCHANT_ORDER_METHOD, MERCHANT_ORDER_METHOD_ENUM } from '@/models/enums'
 
   export default {
     name: 'Operations',
@@ -133,6 +161,7 @@
     mixins: [dateTimeFormat],
     constants: {
       MERCHANT_ORDER_STATUS_ENUM: MERCHANT_ORDER_STATUS_ENUM,
+      MERCHANT_ORDER_METHOD_ENUM,
     },
     data () {
       return {
@@ -144,6 +173,7 @@
           { text: 'Дата', value: 'created_at', width: '6em' },
           { text: 'Статус', value: 'status' },
           { text: 'Сумма', value: 'value_rub' },
+          { text: 'Оплата', value: 'method' },
           { text: 'Описание', value: 'description' },
           { text: '', value: 'actions', width: '1em' },
         ],
@@ -211,6 +241,11 @@
           this.downloadOrderClick(newOrder)
         }
       },
+      paidClick (order) {
+        if (order.sber_order) {
+          window.open(order.sber_order.form_url, '_blank')
+        }
+      },
       async downloadOrderClick (order) {
         try {
           order.GetOrderPdfAction = true
@@ -220,6 +255,23 @@
         } finally {
           order.GetOrderPdfAction = false
         }
+      },
+      getActions (order) {
+        return [
+          {
+            icon: '$iconify_feather-download',
+            title: 'Скачать',
+            action: this.downloadOrderClick,
+            show: true,
+          },
+          {
+            icon: '$iconify_bx-bx-ruble',
+            title: 'Оплатить',
+            action: this.paidClick,
+            show: !order.paid && order.method === MERCHANT_ORDER_METHOD.METHOD_SBERBANK && !!order.sber_order,
+          },
+
+        ].filter(x => x.show)
       },
     },
   }

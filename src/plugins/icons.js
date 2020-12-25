@@ -9,4 +9,9 @@ export const CUSTOM_ICONS = {
 
     'file-invoice': require('@/assets/icons/file-invoice.svg'),
 
+    // payments
+    'payment-mastercard': require('@/assets/icons/payment-mastercard.svg'),
+    'payment-visa': require('@/assets/icons/payment-visa.svg'),
+    'payment-mir': require('@/assets/icons/payment-mir.svg'),
+
 }
