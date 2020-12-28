@@ -7,6 +7,7 @@
     <v-form
       ref="form"
       v-model="valid"
+      @submit.prevent="onSubmit"
     >
       <v-row>
         <v-col>
@@ -140,6 +141,7 @@
       }),
       async onSubmit () {
         if (!this.$refs.form.validate()) return
+        if (this.CreateOrderAction) return
         try {
           this.CreateOrderAction = true
           const newOrder = await this.CreateOrder({
