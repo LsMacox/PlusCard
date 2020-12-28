@@ -74,7 +74,7 @@
               <span class="body-s-semibold">{{ item.value_rub }} ₽</span>
             </template>
             <template v-slot:[`item.method`]="{ item }">
-              <span>{{ MERCHANT_ORDER_METHOD_ENUM.find(item.method).text  }}</span>
+              <span>{{ MERCHANT_ORDER_METHOD_ENUM.find(item.method).text }}</span>
             </template>
             <template v-slot:[`item.actions`]="{ item }">
               <v-menu
@@ -213,6 +213,10 @@
         return this.search ? this.search.trim().toLowerCase() : ''
       },
 
+      queryId () {
+        return +this.$route.query?.orderId
+      },
+
     },
     watch: {
 
@@ -225,12 +229,44 @@
         GetOrders: 'auth/merchant/GetOrders',
         GetOrderPdf: 'auth/merchant/GetOrderPdf',
       }),
-      loadData () {
-        this.GetOrdersActions = true
-        this.GetOrders()
-          .finally(() => {
-            this.GetOrdersActions = false
-          })
+      getOrderAlertMessage (order) {
+        if (order.paid) {
+          return `Счет на ${order.value_rub} руб. оплачен`
+        } else if (order.sber_order) {
+          if (order.sber_order.error_message) {
+            return `Ошибка оплаты: ${order.sber_order.error_message}`
+          }
+        }
+        return null
+      },
+      async loadData () {
+        try {
+          this.GetOrdersActions = true
+          await this.GetOrders()
+          if (this.queryId) {
+            console.log(this.ordersMaped, this.queryId)
+            const order = this.$_.findWhere(this.ordersMaped, {
+              id: this.queryId,
+            })
+            if (order) {
+              const message = this.getOrderAlertMessage(order)
+              if (message) {
+                await this.$alert(message,
+                                  `Cчет №${order.number}`,
+                                  {
+                                    type: 'warning',
+                                  },
+
+                )
+                this.$router.replace({ query: {}, hash: this.$route.hash })
+              }
+            }
+          }
+        } catch (e) {
+          console.error(e)
+        } finally {
+          this.GetOrdersActions = false
+        }
       },
       onClickRow () {},
       onCreateOrderClick () {
