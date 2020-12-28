@@ -17,6 +17,14 @@ $shopIconRed: #EA4C2A;
     color: $shopIconRed;
 }
 
+.info-card-text {
+    margin: 15px 0;
+
+    .info-card-text-icon {
+        margin: -5px 10px;
+    }
+}
+
 .shop-card {
     margin-top: 34px;
     padding: 24px;

@@ -47,6 +47,8 @@ import VueClipboard from 'vue-clipboard2'
 import YmapPlugin from 'vue-yandex-maps'
 import VueSimpleSVG from 'vue-simple-svg'
 import VueExtend from './plugins/vue-extend'
+import {InlineSvgPlugin} from 'vue-inline-svg'
+
 
 Vue.use(VueTelInput)
 Vue.use(Notifications)
@@ -57,6 +59,7 @@ Vue.use(MessageBox)
 Vue.use(VueClipboard)
 Vue.use(YmapPlugin, AppConfig.config.yandexMap)
 Vue.use(VueSimpleSVG)
+Vue.use(InlineSvgPlugin)
 Vue.use(VueExtend)
 
 const options = {

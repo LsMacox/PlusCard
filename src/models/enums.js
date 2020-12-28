@@ -70,6 +70,13 @@ const MERCHANT_ORDER_METHOD = Object.freeze({
     METHOD_ORDER_ORG: 'org',
 })
 
+const MERCHANT_ORDER_METHOD_ENUM = Object.freeze({
+    default: { value: '', text: '-', },
+    sberbank: { value: 'sberbank', text: 'Онлайн' },
+    org: { value: 'org', text: 'Счет' },    
+    find (id) { return this[id] || this.default },
+})
+
 export {
     EVENTS_ENUM,
     RESOURCE_TYPE_ENUM,
@@ -78,4 +85,5 @@ export {
     BALANCE_OPERATION_TYPE_ENUM,
     MERCHANT_ORDER_STATUS_ENUM,
     MERCHANT_ORDER_METHOD,
+    MERCHANT_ORDER_METHOD_ENUM,
 }

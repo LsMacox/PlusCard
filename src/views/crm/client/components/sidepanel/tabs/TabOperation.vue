@@ -48,7 +48,10 @@
                 {{ item.subject.name }}
                 <span class="body-m-regular neutral-500--text">в {{ getTime(item.created_at) }}</span>
               </div>
-              <div class="body-m-semibold success-500--text">
+              <div
+                class="body-m-semibold"
+                :class="{ 'success-500--text': item.trans_type === 'CREDIT', 'error-500--text': item.trans_type === 'DEBIT' }"
+              >
                 {{ getTransactionValue(item.trans_type, item.value) }} {{ getUnitName(item.bonus_unit_id, item.value) }}
               </div>
             </div>
@@ -187,7 +190,7 @@
 
 .pls--transaction-card {
   display: flex;
-  margin: 10px 0;
+  margin: 15px 0;
 
   .pls--transaction-card-avatar {
     margin-right: 15px;

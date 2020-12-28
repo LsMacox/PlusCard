@@ -196,7 +196,7 @@
         type: Number,
         default: 0,
       },
-      tableOptions: {
+      options: {
         type: Object,
         default: () => {
           return defaultOptions

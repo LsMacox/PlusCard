@@ -122,8 +122,24 @@
                   class="left-block__content body-m-regular"
                   style="color: #70707D;"
                 >
-                  Вот так будет выглядеть ваша карта в <br> приложении. Измените цвет карты кликнув на <br> ней и
-                  загрузите логотип, кликнув по иконке.
+                  <div>Вот так будет выглядеть ваша карта в приложении.</div>
+                  <div class="info-card-text">
+                    <span>1. Измените цвет карты, кликнув на иконку</span>
+                    <iconify-icon
+                      class="info-card-text-icon"
+                      icon="ion-color-fill-outline"
+                      height="21"
+                    />
+                    <span>в шаблоне справа</span>
+                  </div>
+                  <div class="info-card-text">
+                    <span>2. Загрузите логотип, кликнув на иконку</span>
+                    <iconify-icon
+                      class="info-card-text-icon"
+                      icon="feather-download"
+                      height="21"
+                    />
+                  </div>
                 </div>
               </div>
               <div class="right-block">
@@ -1743,6 +1759,11 @@ line-height: 17px;"
   }
 </script>
 <style lang="sass">
+.info-card-text
+  margin: 15px 0
+  .info-card-text-icon
+    margin: -5px 10px
+
 .sticky
   top: 0
   z-index: 200
