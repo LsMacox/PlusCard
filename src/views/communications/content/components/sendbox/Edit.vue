@@ -12,13 +12,13 @@
       <div class="edit-box-message">
         <p
           class="body-s-semibold neutral-900--text mb-0"
-          :style="!getMessage(msgItem) || !getMessage(msgItem).length ? 'margin-top: 8px;' : ''"
+          :style="!getShortMessage(msgItem) || !getShortMessage(msgItem).length ? 'margin-top: 8px;' : ''"
         >
           Редактирования сообщения
         </p>
         <p
           class="body-s-regular neutral-neutral-900--text mb-0"
-          v-html="formatMessage(getMessage(msgItem))"
+          v-html="removeCarry(formatMessage(getShortMessage(msgItem)))"
         />
       </div>
     </div>
@@ -38,7 +38,6 @@
         type: [Number, String],
         default: '',
       },
-      isEditMessage: Boolean,
       msgItem: {
         type: [Object, Array],
         required: true,
@@ -46,7 +45,7 @@
     },
     methods: {
       close () {
-        this.$emit('update:isEditMessage', false)
+        this.$store.commit('chat/sendbox/isEdit', false)
       },
     },
   }

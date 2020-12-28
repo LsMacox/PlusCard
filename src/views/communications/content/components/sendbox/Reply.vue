@@ -20,7 +20,7 @@
         <div class="reply-box-message-text">
           <p
             class="body-s-regular neutral-900--text"
-            v-html="getMessage(msgItem)"
+            v-html="removeCarry(formatMessage(getShortMessage(msgItem)))"
           />
         </div>
       </div>
@@ -41,7 +41,6 @@
         type: [Number, String],
         default: '',
       },
-      isReplyMessage: Boolean,
       msgItem: {
         type: [Object, Array],
         required: true,
@@ -55,15 +54,13 @@
       payload () {
         return this.$store.getters['chat/data/payload'](this.conversationId)
       },
-      // template
       name () {
         return this.getAuthorName(this.msgItem, this.payload)
       },
     },
-    watch: {},
     methods: {
       close () {
-        this.$emit('update:isReplyMessage', false)
+        this.$store.commit('chat/sendbox/isReply', false)
       },
     },
   }

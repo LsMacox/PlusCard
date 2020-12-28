@@ -52,10 +52,6 @@
 <script>
   export default {
     props: {
-      conversationId: {
-        required: true,
-        type: [String, Number],
-      },
       isRecording: Boolean,
       isPlay: Boolean,
       isStop: Boolean,
@@ -122,12 +118,11 @@
         }
       },
       async sendRecord () {
-        const type = 'send'
-        const message = new FormData()
-        message.append('files[0]', this.recordList[0].blob)
-        message.set('conversation_id', this.conversationId)
-        this.cancelRecorder()
-        await this.$store.dispatch('chat/message/send', { type, message })
+        await this.$store.dispatch('chat/sendbox/sendRecord', this.recordList[0].blob)
+          .finally(() => {
+            this.cancelRecorder()
+            this.$store.dispatch('chat/sendbox/clearForm')
+          })
       },
       cancelRecorder () {
         this.recordPlay.pause()

@@ -24,12 +24,12 @@
               v-if="typing && typing.conversation_id == conversationId"
               :conversation-id="conversationId"
             />
-            <p
+            <!-- <p
               class="body-s-semibold"
-              :class="[isOnline ? 'success--text' : 'error--text']"
+              :class="[isOnline(client.lastActivity) ? 'success--text' : 'error--text']"
             >
-              {{ isOnline ? 'В сети' : 'Не в сети' }}
-            </p>
+              {{ isOnline(client.lastActivity) ? 'В сети' : 'Не в сети' }}
+            </p> -->
           </div>
         </div>
       </div>
@@ -94,23 +94,21 @@
                       :icon="moreItem.icon"
                       width="21"
                     />
-                    <p class="body-s-medium neutral-500--text">{{ Array.isArray(moreItem.title) ? moreItem.mode ? moreItem.title[0] : moreItem.title[1] : moreItem.title }}</p>
+                    <p class="body-s-medium neutral-500--text">
+                      {{
+                        Array.isArray(moreItem.title) ?
+                          moreItem.mode ?
+                            moreItem.title[0] :
+                            moreItem.title[1] :
+                          moreItem.title
+                      }}
+                    </p>
                   </a>
                 </li>
               </ul>
             </div>
           </div>
         </div>
-        <!-- <div
-          v-if="chatUser.id == conversation.creator_id"
-          class="app--conversation--header__burger"
-        >
-          <i
-            class="fas fa-ellipsis-v"
-            style="cursor: pointer;"
-            @click="openUpdate(conversation)"
-          />
-        </div> -->
       </div>
     </div>
     <div
@@ -219,12 +217,9 @@
       activeMembers () {
         return this.$store.getters['chat/data/activeMembers'](this.conversationId)
       },
-      isOnline () {
-        return true
-      },
       moreList () {
         return [
-          { icon: 'check-circle', title: 'Выбрать', func: 'moreChoose' },
+          // { icon: 'check-circle', title: 'Выбрать', func: 'moreChoose' },
           { icon: 'feather-user', title: 'О клиенте', func: 'moreAbout' },
           { icon: 'feather-star', mode: !this.conversation.chosen, title: ['В избранное', 'Убрать из избраного'], func: 'moreFavorites' },
           { icon: 'ion-archive-outline', mode: !this.conversation.archived, title: ['Архивировать', 'Вернуть из архива'], func: 'moreArchive' },

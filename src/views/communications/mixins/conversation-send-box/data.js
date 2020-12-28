@@ -15,14 +15,48 @@ export default {
     chatUser () {
       return this.$store.getters['chat/chatUser/chatUser']
     },
-    conversation () {
-      return this.$store.getters['chat/data/conversation'](this.conversationId)
-    },
-    selectedTopicId () {
-      return this.$store.getters['chat/topic/selectedTopicId']
-    },
     recipients () {
       return this.$store.getters['chat/message/recipients']
+    },
+    currentConversationId () {
+      return this.$store.getters['chat/conversation/currentConversationId']
+    },
+    realChatName () {
+      return this.$store.getters['chat/data/realChatName'](this.currentConversationId)
+    },
+    // sendbox
+    isReply () {
+      return this.$store.getters['chat/sendbox/isReply']
+    },
+    isEdit () {
+      return this.$store.getters['chat/sendbox/isEdit']
+    },
+    isChoice () {
+      return this.$store.getters['chat/sendbox/isChoice']
+    },
+    isEmoji () {
+      return this.$store.getters['chat/sendbox/isEmoji']
+    },
+    isTopic () {
+      return this.$store.getters['chat/sendbox/isTopic']
+    },
+    replyMessageId () {
+      return this.$store.getters['chat/sendbox/replyMessageId']
+    },
+    editMessageId () {
+      return this.$store.getters['chat/sendbox/editMessageId']
+    },
+    selectedTopicId () {
+      return this.$store.getters['chat/sendbox/topicId']
+    },
+    choiceMessageIds () {
+      return this.$store.getters['chat/sendbox/choiceMessageIds']
+    },
+    messageText () {
+      return this.$store.getters['chat/sendbox/messageText']
+    },
+    editMessageTextOld () {
+      return this.$store.getters['chat/sendbox/editMessageTextOld']
     },
   },
 }

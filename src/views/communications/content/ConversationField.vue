@@ -44,56 +44,42 @@
         class="app--conversation--content"
         @scroll="scrollFeed"
       >
-        <!-- прелоадер старых сообщений  -->
         <div
-          v-for="(item, idx) in messages"
-          :key="item.id"
-          class="app--conversation--message-box"
+          ref="conversationFieldWrapper"
+          class="content__wrapper"
         >
+          <!-- прелоадер старых сообщений  -->
           <div
-            :id="`message-${item.id}`"
-            :style="Object.keys(messages).indexOf(idx) === 0 ? 'margin-top: 24px;' : ''"
+            v-for="(item, idx) in messages"
+            :key="item.id"
+            class="app--conversation--message-box"
           >
-            <message
-              :item="item"
-              :conversation-id="currentConversationId"
-              :my-message="
-                chatUser.id == item.sender_id &&
-                  (profile.id == item.real_sender_id || !realChatName)"
-              :is-choice-message.sync="isChoiceMessage"
-              :is-close-action.sync="isMessageCloseActions"
-              :choice-message-ids.sync="choiceMessageIds"
-              @reply="openReply"
-              @edit="openEdit"
-              @forward="openForward"
-            />
+            <div
+              :id="`message-${item.id}`"
+              :style="Object.keys(messages).indexOf(idx) === 0 ? 'margin-top: 24px;' : ''"
+            >
+              <message
+                :messages="messages"
+                :item="item"
+                :conversation-id="currentConversationId"
+                :my-message="
+                  chatUser.id == item.sender_id &&
+                    (profile.id == item.real_sender_id || !realChatName)"
+                :is-close-action.sync="isMessageCloseActions"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- строка typing -->
-      <!-- <div style="padding: 2px 3px 2px 4px">
-        <app-typing :conversation-id="currentConversationId" />
-      </div> -->
-
       <!-- форма отправки -->
       <conversation-send-box
         :messages="messages"
-        :is-reply-message.sync="isReplyMessage"
-        :is-edit-message.sync="isEditMessage"
-        :is-forward-message.sync="isForwardMessage"
         :is-topic-panel.sync="isTopicPanel"
-        :is-topic-message.sync="isTopicMessage"
-        :is-choice-message.sync="isChoiceMessage"
-        :choice-message-ids.sync="choiceMessageIds"
-        :reply-message-id="replyMessageId"
-        :edit-message-id="editMessageId"
         @send-message="toBottomFeed()"
       />
     </div>
     <forward-panel
-      v-model="isForwardMessage"
-      :message-id="forwardMessageId"
       :conversation-id="currentConversationId"
     />
     <topic-panel
@@ -149,39 +135,15 @@
         sending: false,
         // message
         isMessageCloseActions: false,
-        // forward
-        isForwardMessage: false,
-        forwardMessageId: NaN,
         // topic
         isTopicPanel: false,
-        isTopicMessage: false,
-        // choice
-        isChoiceMessage: false,
-        choiceMessageIds: [],
-        // message reply
-        isReplyMessage: false,
-        replyMessageId: NaN,
-        // message edit
-        isEditMessage: false,
-        editMessageId: NaN,
         // types
         typingTime: null,
       }
     },
-    computed: {
-      conversationProgram () {
-        return this.$store.getters['chat/data/conversationProgram'](this.currentConversationId)
-      },
-      realChatName () {
-        return this.$store.getters['chat/data/realChatName'](this.currentConversationId)
-      },
-    },
     watch: {
       async currentConversationId (v) {
-        this.isReplyMessage = false
-        this.isEditMessage = false
-        this.isChoiceMessage = false
-        this.isTopicMessage = false
+        this.$store.commit('chat/sendbox/clearAllModes')
         if (v) {
           // при переходе в другой чат обнуляем
           this.messageIdToScrollPage = null
@@ -201,40 +163,23 @@
           const msg = document.getElementById(this.messageIdToScrollPage)
 
           if (msg) {
-            const conversationField = this.$refs.conversationField
-            if (conversationField) {
-              conversationField.scrollTop = msg.offsetTop - 115
+            const conversationFieldWrapper = this.$refs.conversationFieldWrapper
+            if (conversationFieldWrapper) {
+              conversationFieldWrapper.scrollTop = msg.offsetTop - 115
             } // 115 px поправка скрола
           }
         }
-      },
-      async filteredMessages (v) {
-        await this.$nextTick()
-        this.toBottomFeed()
       },
     },
     async mounted () {
       if (this.currentConversationId) {
         await this.fetchData(this.currentConversationId)
+        await this.$nextTick()
+        this.toBottomFeed()
       }
       if (this.issetMessages) {
-        this.init()
         this.updateMessages()
       }
-    },
-    methods: {
-      openReply (replyMessageId) {
-        this.isReplyMessage = true
-        this.replyMessageId = replyMessageId
-      },
-      openEdit (editMessageId) {
-        this.isEditMessage = true
-        this.editMessageId = editMessageId
-      },
-      openForward (forwardMessageId) {
-        this.isForwardMessage = true
-        this.forwardMessageId = forwardMessageId
-      },
     },
   }
 </script>

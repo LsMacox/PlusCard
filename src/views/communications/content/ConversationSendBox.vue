@@ -4,33 +4,30 @@
       class="app--conversation--sendForm"
     >
       <app-topic
-        v-if="internalIsTopicMessage"
+        v-if="isTopic"
         :conversation-id="currentConversationId"
-        :is-topic-message.sync="internalIsTopicMessage"
         :is-topic-panel.sync="internalIsTopicPanel"
       />
 
       <app-reply
-        v-if="internalIsReplyMessage"
+        v-if="isReply"
         :conversation-id="currentConversationId"
-        :is-reply-message.sync="internalIsReplyMessage"
         :msg-item="messages[replyMessageId]"
       />
 
       <app-edit
-        v-if="internalIsEditMessage"
+        v-if="isEdit"
         :conversation-id="currentConversationId"
-        :is-edit-message.sync="internalIsEditMessage"
         :msg-item="messages[editMessageId]"
       />
 
       <div
         class="app--conversation--sendField"
         :class="[
-          internalIsReplyMessage ? 'reply' :
-          internalIsEditMessage ? 'edit' :
-          internalIsTopicMessage ? 'topic' :
-          (message && message.length) ? 'writes' :
+          isReply ? 'reply' :
+          isEdit ? 'edit' :
+          isTopic ? 'topic' :
+          (messageText && messageText.length) ? 'writes' :
           isAttachedFile ? 'file' : ''
         ]"
       >
@@ -43,9 +40,7 @@
           >
             <!-- ==== Choice ==== -->
             <app-choice
-              v-if="isChoiceMessage && internalChoiceMessageIds.length > 0"
-              :is-choice-message.sync="internalIsChoiceMessage"
-              :message-ids="internalChoiceMessageIds"
+              v-if="isChoice && choiceMessageIds.length > 0"
             />
             <!-- ==== Record ==== -->
             <app-record-start
@@ -64,7 +59,6 @@
             <app-record-stop
               v-if="!isRecording && isStop && recordList.length"
               ref="recordStop"
-              :conversation-id="currentConversationId"
               :is-recording="isRecording"
               :is-play.sync="isPlay"
               :is-stop.sync="isStop"
@@ -77,13 +71,13 @@
             />
             <!-- ==== Text ==== -->
             <div
-              v-if="!isRecording && !isStop && !(isChoiceMessage && internalChoiceMessageIds.length)"
+              v-if="!isRecording && !isStop && !(isChoice && choiceMessageIds.length)"
               class="app-conversation--sendForm__message__text"
-              :class="[(message && message.length) ? 'writes' : '']"
+              :class="[(messageText && messageText.length) ? 'writes' : '']"
             >
               <!-- Attach -->
               <div
-                v-if="!message || !message.length"
+                v-if="!messageText || !messageText.length"
                 class="attach"
               >
                 <iconify-icon
@@ -121,7 +115,7 @@
                   placeholder="Напишите сообщение..."
                   @keyup.ctrl.enter="addLine"
                   @keypress.enter.exact.stop="send"
-                  @change="setTemplateMessage(message)"
+                  @change="setTemplateMessage(messageText)"
                 />
               </div>
               <div class="left-block">
@@ -140,7 +134,7 @@
                 />
                 <!-- Microphone Icon -->
                 <iconify-icon
-                  v-if="(!message || !message.length) && !isAttachedFile"
+                  v-if="(!messageText || !messageText.length) && !isAttachedFile"
                   id="record"
                   class="icon icon-mic"
                   icon="feather-mic"
@@ -149,7 +143,7 @@
                 />
                 <!-- Send Icon -->
                 <iconify-icon
-                  v-if="(message && message.length) || isAttachedFile"
+                  v-if="(messageText && messageText.length) || isAttachedFile"
                   class="icon icon-send"
                   icon="feather-send"
                   width="21"
@@ -205,28 +199,7 @@
           return []
         },
       },
-
       isTopicPanel: Boolean,
-      isReplyMessage: Boolean,
-      isEditMessage: Boolean,
-      isChoiceMessage: Boolean,
-      isForwardMessage: Boolean,
-      isTopicMessage: Boolean,
-
-      choiceMessageIds: {
-        type: Array,
-        default () {
-          return []
-        },
-      },
-      replyMessageId: {
-        type: [String, Number],
-        default: '',
-      },
-      editMessageId: {
-        type: [String, Number],
-        default: '',
-      },
     },
     data () {
       return {
@@ -245,53 +218,14 @@
         recordStripMaxHeight: 21,
         recordStripMinHeight: 4,
         // other
-        selected: {},
-        topicFilter: false,
+        message: '',
         messagesCount: 0,
         sending: false,
-        message: '',
-        // reply
-        internalIsReplyMessage: this.isReplyMessage,
-        // edit
-        internalIsEditMessage: this.isEditMessage,
-        editMessageTextOld: '',
-        // choice
-        internalIsChoiceMessage: this.isChoiceMessage,
-        internalChoiceMessageIds: this.choiceMessageIds,
-        // topic
-        internalIsTopicPanel: this.isTopicPanel,
-        internalIsTopicMessage: this.isTopicMessage,
         // typing
         typingTime: null,
-        // files
-        attachedFile: {},
+        // topic
+        internalIsTopicPanel: this.isTopicPanel,
       }
-    },
-    computed: {
-      chatUser () {
-        return this.$store.getters['chat/chatUser/chatUser']
-      },
-      profile () {
-        return this.$store.getters.user
-      },
-      currentConversationId () {
-        return this.$store.getters['chat/conversation/currentConversationId']
-      },
-      employees () {
-        return this.$store.getters['chat/data/employees'](this.currentConversationId)
-      },
-      members () {
-        return this.$store.getters['chat/data/members'](this.currentConversationId)
-      },
-      conversation () {
-        return this.$store.getters['chat/data/conversation'](this.currentConversationId)
-      },
-      conversationProgram () {
-        return this.$store.getters['chat/data/conversationProgram'](this.currentConversationId)
-      },
-      realChatName () {
-        return this.$store.getters['chat/data/realChatName'](this.currentConversationId)
-      },
     },
     watch: {
       async message (v) {
@@ -299,135 +233,62 @@
         if (!v || !v.length) {
           this.setTemplateMessage('')
         }
+        this.$store.commit('chat/sendbox/messageText', v)
         await this.sendTypingEvent(this.currentConversationId)
       },
-      isReplyMessage (v) {
-        this.internalIsReplyMessage = v
-      },
-      isEditMessage (v) {
-        this.internalIsEditMessage = v
-      },
-      isChoiceMessage (v) {
-        this.internalIsChoiceMessage = v
-      },
-      isTopicMessage (v) {
-        this.internalIsTopicMessage = v
-      },
-      isTopicPanel (v) {
-        this.internalIsTopicPanel = v
-      },
-      internalIsReplyMessage (v) {
-        if (v && this.isRecording) {
-          this.internalIsEditMessage = false
-          this.internalIsChoiceMessage = false
-          this.internalIsTopicMessage = false
-          this.$emit('update:isReplyMessage', false)
-          return
-        }
-
+      isRecording (v) {
         if (v) {
-          this.internalIsEditMessage = false
-          this.internalIsChoiceMessage = false
-          this.internalIsTopicMessage = false
+          this.$store.commit('chat/sendbox/clearAllModesBoolExceptCurrent', ['isReply'])
         }
-        this.$emit('update:isReplyMessage', v)
       },
-      async internalIsEditMessage (v) {
-        if (v && this.isRecording) {
-          this.internalIsReplyMessage = false
-          this.internalIsChoiceMessage = false
-          this.internalIsTopicMessage = false
-          this.$emit('update:isEditMessage', false)
-          return
-        }
-
-        this.$emit('update:isEditMessage', v)
+      async isEdit (v) {
         if (v) {
-          this.internalIsReplyMessage = false
-          this.internalIsChoiceMessage = false
-          this.internalIsTopicMessage = false
-
-          if (this.$refs?.recordStop) {
-            this.$refs.recordStop.cancelRecorder()
-            await this.$nextTick()
-          }
-
-          if (
-            this.chatUser.id === this.messages[this.editMessageId].sender_id &&
-            (this.profile.id === this.messages[this.editMessageId].real_sender_id ||
-              !this.realChatName)
-          ) {
-            this.message = this.messages[this.editMessageId].message
-            this.editMessageTextOld = this.messages[this.editMessageId].message
-          } else {
-            this.message = ''
-            this.internalIsEditMessage = false
-          }
+          this.$store.commit('chat/sendbox/clearAllModesBoolExceptCurrent', 'isEdit')
         } else {
           this.message = ''
         }
       },
-      internalIsChoiceMessage (v) {
-        if (v && this.isRecording) {
-          this.internalIsEditMessage = false
-          this.internalIsReplyMessage = false
-          this.internalIsTopicMessage = false
-          this.$emit('update:isChoiceMessage', false)
-          return
+      editMessageId (v) {
+        if (v && !isNaN(v)) {
+          this.$store.commit('chat/sendbox/editMessageTextOld', this.messages[this.editMessageId].message)
+          this.message = this.messages[this.editMessageId].message
         }
-
-        if (v) {
-          this.internalIsEditMessage = false
-          this.internalIsReplyMessage = false
-          this.internalIsTopicMessage = false
-        }
-
-        if (!v) {
-          this.internalChoiceMessageIds = []
-        }
-
-        this.$emit('update:isChoiceMessage', v)
       },
-      internalIsTopicMessage (v) {
-        if (v && this.isRecording) {
-          this.internalIsEditMessage = false
-          this.internalIsReplyMessage = false
-          this.internalIsChoiceMessage = false
-          this.$emit('update:isTopicMessage', false)
-          return
-        }
-
+      isReply (v) {
         if (v) {
-          this.internalIsEditMessage = false
-          this.internalIsReplyMessage = false
-          this.internalIsChoiceMessage = false
+          this.$store.commit('chat/sendbox/clearAllModesBoolExceptCurrent', 'isReply')
         }
-
-        if (!v) {
-          this.internalSelectedTopic = {}
-        }
-
-        this.$emit('update:isTopicMessage', v)
       },
-      internalChoiceMessageIds (v) {
-        this.$emit('update:choiceMessageIds', v)
+      isChoice (v) {
+        if (v) {
+          this.$store.commit('chat/sendbox/clearAllModesBoolExceptCurrent', 'isChoice')
+        }
+      },
+      isTopic (v) {
+        if (v) {
+          this.$store.commit('chat/sendbox/clearAllModesBoolExceptCurrent', 'isTopic')
+        }
+      },
+      isTopicPanel (v) {
+        this.internalIsTopicPanel = v
       },
       internalIsTopicPanel (v) {
         this.$emit('update:isTopicPanel', v)
       },
       currentConversationId (v) {
-        this.message = this.conversation.currentTemplateMessage
+        if (this.conversation && Object.keys(this.conversation).includes('currentTemplateMessage')) {
+          this.message = this.conversation.currentTemplateMessage
+        }
       },
     },
-    mounted () {},
     methods: {
       toogleTopic () {
-        this.internalIsTopicMessage = !this.internalIsTopicMessage
+        this.$store.commit('chat/sendbox/isTopic', !this.isTopic)
       },
-      setTemplateMessage (message) {
+      setTemplateMessage (messageText) {
         this.$store.commit(
           'chat/conversation/setCurrentConversationMessage',
-          message,
+          messageText,
         )
       },
     },

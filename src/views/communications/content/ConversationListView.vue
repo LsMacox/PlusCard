@@ -35,7 +35,7 @@
             :class="[authorName == 'Вы' ? 'blueAuthor' : '']"
           >
             {{ (authorName.length ? authorName + ': ' : '') }}
-            <span v-html="lastMessage" />
+            <span v-html="removeCarry(lastMessage)" />
           </div>
         </div>
 
@@ -52,10 +52,25 @@
             </p>
           </div>
           <div
-            v-else-if="conversation.chosen"
-            class="app--conversation--list--card--favorite"
+            v-else
+            class="bottom-block"
           >
-            <i class="fas fa-star" />
+            <div
+              v-if="conversation.muted"
+              class="app--conversation--list--card--muted"
+            >
+              <iconify-icon
+                class="icon-muted"
+                icon="feather-volume"
+                width="21"
+              />
+            </div>
+            <div
+              v-if="conversation.chosen"
+              class="app--conversation--list--card--favorite"
+            >
+              <i class="fas fa-star" />
+            </div>
           </div>
         </div>
       </div>

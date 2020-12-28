@@ -1,5 +1,6 @@
 import ApiService from '@/api/api-client'
 import Vue from 'vue'
+import { v4 as uuidv4 } from 'uuid'
 
 export default {
   namespaced: true,
@@ -8,6 +9,7 @@ export default {
     unreadMessages: {},
     loading: false,
     loadingMessagePage: false,
+    connectMessageCount: 1,
     isAllMessagesLoaded: false,
     typing: {},
     recipients: [],
@@ -225,6 +227,7 @@ export default {
         )
       }
       if (type === 'forward') {
+        message.set('uid', uuidv4())
         result = await ApiService.post('/api/message/forward',
           message,
         )
@@ -287,7 +290,6 @@ export default {
     async deleteAll ({ commit }, message) {
       const result = await ApiService.post('/api/message/delete/all', message)
       commit('deleteInMessages', result)
-      console.log('deleteAll', message, result)
       /// /console.log('/api/message/delete/all')
       /// /console.log(success)
       // удаляем сообщение из массива сообщений
@@ -311,6 +313,9 @@ export default {
     },
     isAllMessagesLoaded (state) {
       return state.isAllMessagesLoaded
+    },
+    connectMessageCount (state) {
+      return state.connectMessageCount
     },
   },
 }

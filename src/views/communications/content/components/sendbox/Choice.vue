@@ -19,7 +19,7 @@
       </div>
       <div class="choice-box-message">
         <p class="body-s-semibold neutral-900--text mb-0">
-          Выбрано {{ messageIds.length }} {{ declOfNum(messageIds.length, choiceText) }} <a
+          Выбрано {{ choiceMessageIds.length }} {{ declOfNum(choiceMessageIds.length, choiceText) }} <a
             href="#reset"
             @click="close"
           >Сбросить</a>
@@ -51,24 +51,19 @@
     mixins: [
       MixinIndex,
     ],
-    props: {
-      isChoiceMessage: Boolean,
-      messageIds: {
-        type: [Array],
-        required: true,
-      },
-    },
     data () {
       return {
         choiceText: ['сообщение', 'сообщения', 'сообщений'],
       }
     },
     computed: {
+      choiceMessageIds () {
+        return this.$store.getters['chat/sendbox/choiceMessageIds']
+      },
     },
-    watch: {},
     methods: {
       close () {
-        this.$emit('update:isChoiceMessage', false)
+        this.$store.commit('chat/sendbox/isChoice', false)
       },
     },
   }

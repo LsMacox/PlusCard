@@ -32,8 +32,14 @@ export default {
     currentConversationType () {
       return this.$store.getters['chat/conversation/currentConversationType']
     },
+    conversationProgram () {
+      return this.$store.getters['chat/data/conversationProgram'](this.currentConversationId)
+    },
+    realChatName () {
+      return this.$store.getters['chat/data/realChatName'](this.currentConversationId)
+    },
     conversation () {
-      this.$store.getters['chat/data/conversation'](this.currentConversationId)
+      return this.$store.getters['chat/data/conversation'](this.currentConversationId)
     },
     messages () {
       let messages = {}
@@ -41,7 +47,6 @@ export default {
         messages = this.$store.getters['chat/message/messages'][
           this.currentConversationId
         ]
-        console.log('messages', messages)
         if (messages) {
           messages = this.connectingMessages(messages)
         }

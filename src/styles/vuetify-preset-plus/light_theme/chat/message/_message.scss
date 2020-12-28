@@ -19,6 +19,9 @@
   &.connectNexMessage {
     padding-bottom: 8px;
     padding-top: 0;
+    .message-box {
+      margin-left: 81px;
+    }
   }
 
   .choice__overlay {
@@ -161,6 +164,7 @@
       box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1);
       border-radius: 10px 10px 10px 0px;
       margin-left: 80px;
+      min-width: 100px;
       &:hover {
         .message-box-edit {
           display: block;
@@ -260,7 +264,6 @@
 
       /* блок цитаты */
       .message-box-quote {
-        margin-bottom: 12px;
         .quote {
           position: relative;
           margin-left: 10px;
@@ -282,21 +285,18 @@
 
       /* блок автора имени */
       .message-box-author-name {
-        margin-bottom: 10px;
+        margin-bottom: 6px;
       }
 
       /* блок с текстом о пересланном сообщении */
       .message-box-forward-text {
-        margin-top: -9px;
-        margin-bottom: 10px;
+        margin-top: -4px;
+        margin-bottom: 12px;
       }
 
       /* блок сообщения */
       .message-box-message {
         margin-right: 23px;
-        .message-box-text {
-          margin-top: 5px;
-        }
       }
 
       /* кнопка редактирования */

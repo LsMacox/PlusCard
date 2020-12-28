@@ -4,7 +4,15 @@ export default {
       img404: 'https://storage.yandexcloud.net/plusstorage/users/avatars/default.png',
     }
   },
+  computed: {
+  },
   methods: {
+    isOnline (lastActivityDate) {
+      const time = new Date(lastActivityDate).getTime()
+      const currentDate = this.$moment()
+      const activityDate = this.$moment(time).local()
+      return currentDate.diff(activityDate, 'minutes') < 5
+    },
     getDate (date) {
       if (!date) return '-'
       const time = new Date(date).getTime()
@@ -64,20 +72,18 @@ export default {
     getAuthorName (msgItem, payload) {
       if (!payload) return
 
-      let author = {}
+      const author = this.getAuthor(msgItem, payload)
       let isEmployee = false
 
       if (msgItem.sender_id === payload.chatUser.id) isEmployee = true
 
       if (isEmployee) {
-        author = this.getAuthor(msgItem, payload)
         if (author.id) {
           return `${payload.conversationProgram.name} (${author.name})`
         } else if (msgItem.real_sender_id === payload.chatUser.id) { // реальный отправитель чат-бот
           return payload.chatUser.name
         }
       } else {
-        author = this.getAuthor(msgItem, payload)
         if (author.id) return `${author.name}`
       }
 
@@ -141,7 +147,7 @@ export default {
       }
       return null
     },
-    getMessage (msgItem) {
+    getShortMessage (msgItem) {
       const message = msgItem
       if (message) {
         if (message && message.attachments.length) {
@@ -167,6 +173,12 @@ export default {
       if (status === 'delivered') return 'Доставлено'
       if (status === 'seen') return 'Просмотрено'
       return status
+    },
+    removeCarry (text) {
+      if (!text || !text.length) return text
+      text = text.replace(/<\s*br\s*>/, ' ')
+      text = text.replace(/\s*(?=(\n|\r|\r\n))/, '')
+      return text
     },
     isEmptyObject (obj) {
       return JSON.stringify(obj) === '{}'

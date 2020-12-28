@@ -2,16 +2,7 @@ export default {
   methods: {
     clearForm () {
       this.message = ''
-      // files
-      this.attachedFile = {}
-      // reply
-      this.internalIsReplyMessage = false
-      // edit
-      this.internalIsEditMessage = false
-      // topics
-      this.internalIsTopicMessage = false
-      this.$store.commit('chat/topic/selectedTopicId', null)
-      // recipients
+      this.$store.dispatch('chat/sendbox/clearForm')
       this.$store.commit('chat/message/recipients', [])
       this.$store.commit('chat/conversation/setCurrentConversationMessage', '')
       this.$emit('send-message')
@@ -22,42 +13,11 @@ export default {
 
       if (this.validateSendMessage()) {
         try {
-          if (this.internalIsEditMessage) {
-            this._sendMessageEdit()
+          this.sending = true
+          if (this.isEdit) {
+            await this.$store.dispatch('chat/sendbox/sendUpdateMessage')
           } else {
-            this.sending = true
-            let type = 'send'
-            const message = new FormData()
-
-            message.set('conversation_id', this.currentConversationId)
-            if (this.message) {
-              message.set('message', this.message)
-            }
-
-            // attach reply
-            if (this.internalIsReplyMessage && this.replyMessageId) {
-              type = 'reply'
-              message.set('message_id', this.replyMessageId)
-            } else if (this.selectedTopicId) {
-              message.append('topic_id', this.selectedTopicId)
-            }
-
-            // attach topic
-            let recipients = []
-            recipients = Array.from(new Set(this.recipients))
-
-            // recipients
-            for (let i = 0; i < recipients.length; i++) {
-              const recipient = recipients[i]
-              message.append('recipients[' + i + ']', recipient)
-            }
-
-            // attach files
-            if (this.attachedFile instanceof File) {
-              message.append('files[0]', this.attachedFile)
-            }
-
-            await this.$store.dispatch('chat/message/send', { type, message })
+            await this.$store.dispatch('chat/sendbox/sendForm')
           }
         } catch (e) {
           console.error('send', e)
@@ -69,21 +29,6 @@ export default {
 
       this.textAreaFocus()
     },
-    _sendMessageEdit () {
-      if (this.editMessageTextOld === this.message) return
-
-      const message = {
-        conversation_id: this.currentConversationId,
-        message_id: this.editMessageId,
-        message: this.message,
-      }
-
-      this.$store
-        .dispatch('chat/message/update', message)
-        .then(() => {
-          this.internalIsEditMessage = false
-        })
-    },
     textAreaFocus () {
       setTimeout(() => {
         this.$refs.messageTextArea.$el.querySelector('textarea').focus()
@@ -93,8 +38,8 @@ export default {
       if (
         this.isAttachedFile ||
         (
-          this.message &&
-          this.formatMessage(this.message).replace(/\s+/, ' ').replace(/\s/, '').length
+          this.messageText &&
+          this.formatMessage(this.messageText).replace(/\s+/, ' ').replace(/\s/, '').length
         )
       ) {
         return true

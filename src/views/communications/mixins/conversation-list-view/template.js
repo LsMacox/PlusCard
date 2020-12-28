@@ -9,21 +9,19 @@ export default {
       return time
     },
     lastMessage () {
-      const message = this.conversation.last_message
-      if (message) {
-        if (message && message.attachments.length) {
-          if (message.attachments[0].type === 'message/text') { return message.attachments[0].content }
-          if (message.attachments[0].type === 'plus/account') return 'карта'
-          if (message.attachments[0].type === 'media/image') { return 'изображение' }
-          if (message.attachments[0].type === 'media/audio') { return 'аудиосообщение' }
-          if (message.attachments[0].type === 'media/video') return 'видео'
-          if (message.attachments[0].type === 'media/file') return 'файл'
-        }
-        if (message.message) {
-          return this.formatMessage(message.message)
+      const msgItem = this.conversation.last_message
+      if (msgItem) {
+        if (msgItem.attachments.length) {
+          return this.getShortMessage(msgItem)
         }
 
-        if (this.authorName === 'Вы') {
+        if (msgItem.message) {
+          return this.formatMessage(msgItem.message)
+        }
+
+        if (
+          this.authorName === 'Вы'
+        ) {
           return 'пересланное сообщение'
         }
         return ''
@@ -65,66 +63,57 @@ export default {
       return name
     },
     avatar () {
-      let avatars
+      let avatar
 
       // есть чат пользователь
       if (this.chatUser && this.chatUser.id) {
-        const chatUserId = this.chatUser.id
-        const activeMembers = this.activeMembers.length
-
-        if (activeMembers === 1) {
-          avatars = this.conversation.members[0].avatar
+        if (this.activeMembers.length === 1) {
+          avatar = this.conversation.members[0].avatar
         }
 
-        if (activeMembers === 2) {
-          const member = this.conversation.members.filter(item => item.id !== chatUserId)
+        if (this.activeMembers.length === 2) {
+          const member = this.conversation.members.filter(item => item.id !== this.chatUser.id)
           if (member.length) {
-            avatars = member[0].avatar
+            avatar = member[0].avatar
           }
         }
 
         // Group Avatar
-        if (activeMembers > 2) avatars = this.getGroupImgData(this.conversation)
+        if (this.activeMembers.length > 2) avatar = this.getGroupImgData(this.conversation)
       }
 
-      return avatars
+      return avatar
     },
     authorName () {
       if (this.conversation && this.conversation.last_message) {
-        const item = this.conversation.last_message
+          const item = this.conversation.last_message
 
-        let author = {}
-        let isEmployee = false
+          const author = this.getAuthor(item, this.payload)
+          let isEmployee = false
 
-        if (item.sender_id === this.chatUser.id) isEmployee = true
+          if (item.sender_id === this.chatUser.id) isEmployee = true
 
-        if (isEmployee) {
-          if (this.realChatName) {
-            author = this.getAuthor(item, this.payload)
-            if (author.id) {
-              if (author.id === this.profile.id) return 'Вы'
-              else return `${author.name} (${this.conversationProgram.name})`
-            } else if (item.real_sender_id === this.chatUser.id) {
-              // реальный отправитель чат-бот
-              return this.chatUser.name
+          if (!author.id && item.real_sender_id === this.chatUser.id) {
+            return this.chatUser.name
+          }
+
+          if (isEmployee) {
+            if (author.id === this.profile.id) {
+              return 'Вы'
+            } else if (this.realChatName) {
+              return `${author.name} (${this.conversationProgram.name})`
+            } else {
+              if (author.name) {
+                return `${this.conversationProgram.name} (${author.name})`
+              }
+              return `${this.conversationProgram.name}`
             }
           } else {
-            author = this.getAuthor(item, this.payload)
-            if (author.id) {
-              if (author.id === this.profile.id) return 'Вы'
-              else return `${this.conversationProgram.name} (${author.name})`
-            } else if (item.real_sender_id === this.chatUser.id) {
-              // реальный отправитель чат-бот
-              return this.chatUser.name
-            }
+            if (author.id) return `${author.name}`
           }
-        } else {
-          author = this.getAuthor(item, this.payload)
-          if (author.id) return `${author.name}`
         }
-      }
 
-      return ''
+        return ''
     },
   },
 }

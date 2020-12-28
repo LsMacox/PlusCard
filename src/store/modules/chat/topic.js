@@ -4,19 +4,14 @@ export default {
   namespaced: true,
   state: {
     topics: [],
-    selectedTopicId: null,
     nameExist: false,
   },
   mutations: {
     clearState (state) {
       state.topics = []
-      state.selectedTopicId = null
     },
     topics (state, payload) {
       state.topics = payload
-    },
-    selectedTopicId (state, payload) {
-      state.selectedTopicId = payload
     },
     addInTopics (state, payload) {
       state.topics.push(payload)
@@ -97,9 +92,6 @@ export default {
         if (a.name === b.name) return 0 // если равны
         if (a.name < b.name) return -1 // если первое значение меньше второго
       })
-    },
-    selectedTopicId (state) {
-      return state.selectedTopicId
     },
     nameExist (state) {
       return state.nameExist

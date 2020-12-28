@@ -161,6 +161,18 @@ export default {
       )
       commit('updateInConversations', result)
     },
+
+    async lastActivity ({ state }) {
+      const clientIds = state.conversations.map(c => c.creator_id)
+      const result = await ApiService.post(
+        '/api/profile/activity/last',
+        { users: clientIds }
+      )
+      
+      state.conversations.forEach((c, idx) => {
+        // c.creator_last_activity = result[idx].last_activity
+      })
+    },
   },
   getters: {
     loadingConversations (state) {

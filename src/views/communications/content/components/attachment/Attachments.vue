@@ -16,6 +16,7 @@
 
       <app-attachment-audio
         v-if="attachment.type === 'media/audio'"
+        :msg-item="msgItem"
         :content="attachment.content"
         :sender="msgItem.sender_id"
       />

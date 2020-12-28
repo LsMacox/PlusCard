@@ -69,16 +69,23 @@
       margin-top: 23px;
       text-align: right;
     }
-
-    .app--conversation--list--card--favorite {
-      float: right;
-      margin-top: 2px;
-
-      &>i {
-        color: $neutral-400;
-        width: 21px;
-        height: 21px;
-        font-size: 17px;
+    .bottom-block {
+      display: inline-flex;
+      width: 100%;
+      .app--conversation--list--card--muted {
+        margin-left: auto;
+        margin-top: 2px;
+        margin-right: -3px;
+        .icon-muted {
+          color: $neutral-400;
+        }
+      }
+      .app--conversation--list--card--favorite {
+        margin-left: auto;
+        margin-top: 2px;
+        &>i {
+          color: $neutral-400;
+        }
       }
     }
 
@@ -96,7 +103,7 @@
         padding: 2px 6.5px 0 6.5px;
       }
     }
-  }
+    }
 
   .list-avatar {
     position: relative;

@@ -68,7 +68,8 @@
             </a>
           </li>
           <li
-            v-if="myMessage"
+            v-if="myMessage &&
+              (item.message && item.message.length)"
             class="action-item"
           >
             <a
@@ -83,7 +84,7 @@
               <p class="body-s-medium neutral-500--text">Редактировать</p>
             </a>
           </li>
-          <li class="action-item">
+          <!-- <li class="action-item">
             <a
               href="#"
               @click="openChoiceMessages"
@@ -95,7 +96,7 @@
               />
               <p class="body-s-medium neutral-500--text">Выбрать</p>
             </a>
-          </li>
+          </li> -->
           <li
             v-if="myMessage"
             class="action-item"
@@ -130,7 +131,6 @@
             'message-box': true,
             'message-my': myMessage,
           }"
-          :style="item.connectNexMessage ? 'margin-left: 81px;' : ''"
         >
           <!-- блок тема -->
           <div
@@ -143,15 +143,19 @@
           </div>
 
           <!-- блок с именени автора -->
-          <div class="message-box-author-name">
+          <div
+            v-if="showAuthorName"
+            class="message-box-author-name"
+          >
             <p class="body-s-semibold neutral-900--text mb-0">
               {{ getAuthorName(item, payload) }}
             </p>
           </div>
 
-          <!-- блок с текстом о пересланном сообщении -->
+          <!-- блок с текстом "пересланном сообщении" -->
           <div
-            v-if="item.parent_id && authorName === 'Вы'"
+            v-if="item.parent_id &&
+              item.parent_message.conversation_id !== conversation.id"
             class="message-box-forward-text"
           >
             <p class="body-s-medium neutral-500--text mb-0">
@@ -163,6 +167,7 @@
           <div
             v-if="item.parent_id"
             class="message-box-quote"
+            :style="item.message && item.message.length ? 'margin-bottom: 12px;' : ''"
           >
             <!-- вложения -->
             <app-attachments
@@ -221,33 +226,10 @@
             </div>
           </div>
 
-          <!-- блок получатель -->
-          <!-- <div
-            v-if="item.recipients"
-            class="message-box-recipients"
-          >
-            <div
-              v-for="(member, i) in recipients"
-              :key="i"
-            >
-              <v-tooltip
-                :open-delay="$config.tooltipButtonDelay"
-                v-html="member.name"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-img
-                    :src="member.avatar"
-                    class="message-box-recipients-avatars"
-                    v-on="on"
-                  />
-                </template>
-              </v-tooltip>
-            </div>
-          </div> -->
-
           <!-- кнопка редактирования -->
           <div
-            v-if="myMessage && !item.attachments.length"
+            v-if="myMessage &&
+              (item.message && item.message.length)"
             class="message-box-edit"
           >
             <iconify-icon
@@ -336,18 +318,17 @@
       MixinCalculation,
     ],
     props: {
+      messages: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
       item: {
         type: Object,
         required: true,
       },
       isCloseAction: Boolean,
-      isChoiceMessage: Boolean,
-      choiceMessageIds: {
-        type: Array,
-        default () {
-          return []
-        },
-      },
       conversationId: {
         type: [Number, String, null],
         default: null,
@@ -379,6 +360,9 @@
       },
       conversationProgram () {
         return this.$store.getters['chat/data/conversationProgram'](this.conversationId)
+      },
+      connectMessageCount () {
+        return this.$store.getters['chat/message/connectMessageCount']
       },
       members () {
         return this.$store.getters['chat/data/members'](this.conversationId)
@@ -417,45 +401,41 @@
         ) return true
         return false
       },
+      showAuthorName () {
+        const msgKeys = Object.keys(this.messages)
+        const currMsgIdx = msgKeys.indexOf(String(this.item.id))
+
+        return (
+          this.item.connectNexMessage &&
+          this.item.connectNexMessageCount &&
+          this.item.connectNexMessageCount === this.connectMessageCount
+        ) ||
+          (
+            !this.item.connectNexMessage &&
+            !this.item.parent_id &&
+            this.item.attachments.length &&
+            this.item.attachments[0].type === 'media/audio'
+          ) ||
+          (
+            !this.item.connectNexMessage &&
+            !this.item.attachments.length &&
+            (
+              !msgKeys[currMsgIdx - 1] ||
+              (
+                msgKeys[currMsgIdx - 1] &&
+                msgKeys[currMsgIdx - 1].connectNexMessage === false
+              )
+            )
+          )
+      },
+      isChoiceMessage () {
+        return this.$store.getters['chat/sendbox/isChoice']
+      },
       isChoice () {
         return this.choiceMessageIds.findIndex(id => id === this.item.id) !== -1
       },
-      authorName () {
-        if (this.conversation && this.conversation.last_message) {
-          const item = this.conversation.last_message
-
-          let author = {}
-          let isEmployee = false
-
-          if (item.sender_id === this.chatUser.id) isEmployee = true
-
-          if (isEmployee) {
-            if (this.realChatName) {
-              author = this.getAuthor(item, this.payload)
-              if (author.id) {
-                if (author.id === this.profile.id) return 'Вы'
-                else return `${author.name} (${this.conversationProgram.name})`
-              } else if (item.real_sender_id === this.chatUser.id) {
-                // реальный отправитель чат-бот
-                return this.chatUser.name
-              }
-            } else {
-              author = this.getAuthor(item, this.payload)
-              if (author.id) {
-                if (author.id === this.profile.id) return 'Вы'
-                else return `${this.conversationProgram.name} (${author.name})`
-              } else if (item.real_sender_id === this.chatUser.id) {
-                // реальный отправитель чат-бот
-                return this.chatUser.name
-              }
-            }
-          } else {
-            author = this.getAuthor(item, this.payload)
-            if (author.id) return `${author.name}`
-          }
-        }
-
-        return ''
+      choiceMessageIds () {
+        return this.$store.getters['chat/sendbox/choiceMessageIds']
       },
     },
     watch: {
@@ -471,7 +451,7 @@
         const actionEl = this.$refs['messageAction' + this.item.id]
         const actionHeight = this.nodeOffsetWH(actionEl, false)
         const MsgOffsetTop = document.getElementById('message-' + this.item.id).parentNode.offsetTop
-        if (((MsgOffsetTop - actionHeight) + 60) > headerHeight + 60) {
+        if (((MsgOffsetTop - actionHeight) + 40) > headerHeight + 60) {
           this.actionPlacement = 'top'
           actionEl.style.top = (-actionHeight - 13) + 'px'
         } else {
@@ -486,7 +466,7 @@
       },
       isChoiceMessage (v) {
         if (v) {
-          this.choiceMessageIds.splice(0, this.choiceMessageIds.length)
+          this.$store.commit('chat/sendbox/choiceMessageIds', [])
         }
       },
     },
@@ -495,12 +475,12 @@
         this.showActions = false
       },
       choiceMessage () {
-        const choiceMessageIds = this.choiceMessageIds.findIndex(id => id === this.item.id)
+        const choiceIdx = this.choiceMessageIds.findIndex(id => id === this.item.id)
 
-        if (choiceMessageIds === -1) {
-          this.choiceMessageIds.push(this.item.id)
+        if (choiceIdx === -1) {
+          this.$store.commit('chat/sendbox/addInChoiceMessageIds', this.item.id)
         } else {
-          this.choiceMessageIds.splice(choiceMessageIds, 1)
+          this.$store.commit('chat/sendbox/removeInChoiceMessageIdsByIdx', choiceIdx)
         }
       },
       openDeleteMessage () {
@@ -511,19 +491,22 @@
       },
       openEditMessage () {
         this.hideActions()
-        this.$emit('edit', this.item.id)
+        this.$store.commit('chat/sendbox/isEdit', true)
+        this.$store.commit('chat/sendbox/editMessageId', this.item.id)
       },
       openReplyMessage () {
         this.hideActions()
-        this.$emit('reply', this.item.id)
+        this.$store.commit('chat/sendbox/isReply', true)
+        this.$store.commit('chat/sendbox/replyMessageId', this.item.id)
       },
       openForwardMessage () {
         this.hideActions()
-        this.$emit('forward', this.item.id)
+        this.$store.commit('chat/sendbox/isForward', true)
+        this.$store.commit('chat/sendbox/forwardMessageId', this.item.id)
       },
       openChoiceMessages () {
         this.hideActions()
-        this.$emit('update:isChoiceMessage', true)
+        this.$store.commit('chat/sendbox/isChoice', true)
       },
       copyMessage () {
         navigator.clipboard.writeText(this.item.message)

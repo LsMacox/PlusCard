@@ -100,7 +100,6 @@
         default: '',
       },
       isTopicPanel: Boolean,
-      isTopicMessage: Boolean,
     },
     data () {
       return {
@@ -116,8 +115,11 @@
         }
         return undefined
       },
+      isTopic () {
+        return this.$store.getters['chat/sendbox/isTopic']
+      },
       selectedTopicId () {
-        return this.$store.getters['chat/topic/selectedTopicId']
+        return this.$store.getters['chat/sendbox/topicId']
       },
     },
     watch: {
@@ -129,16 +131,16 @@
     methods: {
       choiceTopic (idx) {
         if (typeof idx === 'undefined') {
-          this.$store.commit('chat/topic/selectedTopicId', null)
+          this.$store.commit('chat/sendbox/topicId', NaN)
           return
         }
-        this.$store.commit('chat/topic/selectedTopicId', this.topics[idx].id)
+        this.$store.commit('chat/sendbox/topicId', this.topics[idx].id)
       },
       openTopicPanel () {
         this.$emit('update:isTopicPanel', true)
       },
       close () {
-        this.$emit('update:isTopicMessage', false)
+        this.$store.commit('chat/sendbox/isTopic', false)
       },
     },
   }

@@ -415,17 +415,27 @@
       overflow-y: scroll;
       overflow-x: hidden;
       margin-top: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      .content__wrapper {
+        flex-direction: column;
+        justify-content: flex-end;
+        overflow-x: hidden;
+        &::-webkit-scrollbar {
+          width: 4px;
+          background: $neutral-250;
+          border-radius: 2px;
+        }
 
-      &::-webkit-scrollbar {
-        width: 4px;
-        background: $neutral-250;
-        border-radius: 2px;
+        &::-webkit-scrollbar-thumb {
+          background: $neutral-400;
+          border-radius: 2px;
+          width: 4px;
+        }
       }
-
-      &::-webkit-scrollbar-thumb {
-        background: $neutral-400;
-        border-radius: 2px;
-        width: 4px;
+      &::-webkit-scrollbar {
+        width: 0;
       }
     }
 

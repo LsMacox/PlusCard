@@ -9,7 +9,7 @@ export default {
       const file = event.target.files[0]
 
       if (this.validateFile(file)) {
-        this.attachedFile = file
+        this.$store.commit('chat/sendbox/attachFile', file)
       }
     },
     validateFile (file) {

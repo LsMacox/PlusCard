@@ -1,6 +1,6 @@
 <template>
   <base-side-panel
-    v-model="innerActiveSidePanel"
+    v-model="internalIsForward"
     class="side-panel__chat-create forward"
     :width="483"
   >
@@ -21,7 +21,11 @@
     </div>
     <div
       class="chat-create__content"
-      :style="clients && clients.length ? choosenClients.length ? 'height: calc(100% - 317px)' : 'height: calc(100% - 232px)' : ''"
+      :style="clients && clients.length
+        ? choosenClients.length
+          ? 'height: calc(100% - 317px)'
+          : 'height: calc(100% - 232px)'
+        : ''"
     >
       <div
         v-if="clients && clients.length"
@@ -83,16 +87,7 @@
 
   export default {
     mixins: [MixinIndex],
-    model: {
-      prop: 'activeSidePanel',
-      event: 'changeSidePanel',
-    },
     props: {
-      activeSidePanel: Boolean,
-      messageId: {
-        type: [Number, String],
-        default: '',
-      },
       conversationId: {
         type: [Number, String, null],
         default: null,
@@ -103,7 +98,7 @@
         search: '',
         sending: false,
         choosenClients: [],
-        innerActiveSidePanel: this.activeSidePanel,
+        internalIsForward: false,
       }
     },
     computed: {
@@ -112,6 +107,9 @@
         return this.$store.getters['chat/message/messages'][
           this.conversationId
         ] || {}
+      },
+      isForward () {
+        return this.$store.getters['chat/sendbox/isForward']
       },
       clients () {
         return this.$store.getters['chat/member/clients']
@@ -138,7 +136,7 @@
         return this.clients.concat(this.conversationGroups)
       },
       selectedTopicId () {
-        return this.$store.getters['chat/topic/selectedTopicId']
+        return this.$store.getters['chat/sendbox/topicId']
       },
       conversationGroups () {
         return this.conversations.filter(c => {
@@ -154,6 +152,9 @@
           return []
         }
       },
+      forwardMessageId () {
+        return this.$store.getters['chat/sendbox/forwardMessageId']
+      },
       currentConversationType () {
         return this.$store.getters['chat/conversation/currentConversationType']
       },
@@ -162,9 +163,6 @@
       },
       conversations_merchant () {
         return this.$store.getters['chat/conversation/conversations_merchant']
-      },
-      recipients () {
-        return this.$store.getters['chat/message/recipients']
       },
       avatars () {
         const avatars = {}
@@ -175,11 +173,11 @@
       },
     },
     watch: {
-      innerActiveSidePanel (v) {
-        this.$emit('changeSidePanel', v)
+      isForward (v) {
+        this.internalIsForward = v
       },
-      activeSidePanel (v) {
-        this.innerActiveSidePanel = v
+      internalIsForward (v) {
+        this.$store.commit('chat/sendbox/isForward', v)
       },
     },
     async created () {
@@ -220,10 +218,9 @@
           this.sending = true
           const message = new FormData()
 
-          message.set('uid', this.$uuid())
           message.set('conversation_id', conversationId)
-          if (this.messageId) {
-            message.set('message_id', this.messageId)
+          if (this.forwardMessageId) {
+            message.set('message_id', this.forwardMessageId)
             message.set('message', '')
           }
 
@@ -231,30 +228,12 @@
             message.append('topic_id', this.selectedTopicId)
           }
 
-          // recipients
-          let recipients = []
-          recipients = Array.from(new Set(this.recipients))
-
-          // recipients
-          for (let i = 0; i < recipients.length; i++) {
-            const recipient = recipients[i]
-            message.append('recipients[' + i + ']', recipient)
-          }
-
-          // attach files
-          if (Array.isArray(this.formDataFiles)) {
-            for (let i = 0; i < this.formDataFiles.length; i++) {
-              const file = this.formDataFiles[i]
-              message.append('files[' + i + ']', file)
-            }
-          }
-
           await this.$store.dispatch('chat/message/send', { type: 'forward', message })
         } catch (e) {
           console.error('send', e)
         } finally {
           this.sending = false
-          this.innerActiveSidePanel = false
+          this.$store.commit('chat/sendbox/isForward', false)
           this.conversationChat(conversationId)
         }
       },

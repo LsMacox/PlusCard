@@ -208,6 +208,7 @@
         chatMemberListAction: false,
         search: null,
         isArchive: false,
+        intervalClientsActivity: {},
       }
     },
     computed: {
@@ -301,6 +302,10 @@
     async mounted () {
       this.search = ''
       if (this.program) await this.conversationInit(this.program.id)
+      // this.setIntervalConversationsActivity()
+    },
+    beforeDestroy () {
+      // clearInterval(this.intervalClientsActivity)
     },
     methods: {
       conversationChat (id) {
@@ -309,6 +314,13 @@
         // переходим на чат
         const path = `/communications/chat/${this.currentConversationType}/${id}`
         this.toRoute(path)
+      },
+      setIntervalConversationsActivity () {
+        this.intervalClientsActivity = setInterval(async () => {
+          console.log('interval clientActivity')
+          await this.$store.dispatch('chat/conversation/lastActivity')
+        }, 1000)
+        console.log('conversations:', this.conversations)
       },
       conversationsSorted (arr) {
         let sorted = arr

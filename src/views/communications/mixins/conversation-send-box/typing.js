@@ -3,7 +3,7 @@ export default {
     addLine (e) {
       e.preventDefault()
       e.stopPropagation()
-      if (!this.message.replace(/^\s+/, '').length) return
+      if (!this.messageText.replace(/^\s+/, '').length) return
       this.message = this.message + '\n'
       this.$emit('send-message')
     },

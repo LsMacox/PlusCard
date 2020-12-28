@@ -1,5 +1,8 @@
 <template>
-  <div class="attachment-audio">
+  <div
+    class="attachment-audio"
+    :style="msgItem.parent_id ? 'margin-top: 12px; margin-left: -7px;' : ''"
+  >
     <div
       class="audio"
     >
@@ -55,6 +58,12 @@
 
   export default {
     props: {
+      msgItem: {
+        type: Object,
+        default: () => {
+          return {}
+        },
+      },
       content: {
         type: Object,
         required: true,
@@ -200,7 +209,6 @@
       initAudioData () {
         this.audioSource = this.audioCtx.createBufferSource()
         this.isAudioLoading = true
-        console.log('audio: fetch')
         fetch(this.content.url)
           .then(response => {
             console.log('audio: get response', response)
