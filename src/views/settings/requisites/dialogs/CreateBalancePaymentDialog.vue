@@ -42,15 +42,15 @@
             "
             @click="setPayMethod(MERCHANT_ORDER_METHOD.METHOD_SBERBANK)"
           >
-            <v-icon class="">
+            <v-icon class="payment-system-icon">
               $icons_payment-mastercard
             </v-icon>
             <span class="body-m-semibold neutral-600--text">/</span>
-            <v-icon class="">
+            <v-icon class="payment-system-icon">
               $icons_payment-visa
             </v-icon>
             <span class="body-m-semibold neutral-600--text">/</span>
-            <v-icon class="">
+            <v-icon class="payment-system-icon">
               $icons_payment-mir
             </v-icon>
           </v-btn>
@@ -69,9 +69,7 @@
             "
             @click="setPayMethod(MERCHANT_ORDER_METHOD.METHOD_ORDER_ORG)"
           >
-            <div style="margin-left: -4px; margin-right: 8px">
-              <v-icon> $icons_file-invoice </v-icon>
-            </div>
+            <v-icon left> $icons_file-invoice </v-icon>
 
             <span style="color: #2a2a34">Счет на оплату</span>
           </v-btn>
@@ -171,6 +169,11 @@
     background-color: $neutral-100;
     color: $neutral-900 !important;
     border: 1px solid $neutral-100 !important;
+
+    .payment-system-icon {
+      height: 29px;
+      width: 29px;
+    }
 
     &.payment-method-btn--selected {
       background-color: $primary-100;

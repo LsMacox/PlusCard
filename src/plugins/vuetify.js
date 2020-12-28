@@ -36,10 +36,10 @@ function LoadSvgIcons (iconList) {
       const name = `icons_${icon}`
       // console.log('LoadIconifyIcons',name)
       icons[name] = {
-        component: 'simple-svg',        
+        component: 'inline-svg',
         props: {
           src: iconList[icon],
-          customClassName: 'simple-svg v-icon--is-component theme--light',
+          // customClassName: 'simple-svg v-icon--is-component theme--light',
         },
       }
   }
