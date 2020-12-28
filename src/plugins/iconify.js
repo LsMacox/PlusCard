@@ -12,6 +12,7 @@ export const ICONIFY_ICONS = {
     'plus-circle': () => import('@iconify/icons-uil/plus-circle'),
 
     // ant-design
+    'plus-outlined': () => import('@iconify/icons-ant-design/plus-outlined'),
     'plus-circle-outlined': () => import('@iconify/icons-ant-design/plus-circle-outlined'),
     'search-outlined': () => import('@iconify/icons-ant-design/search-outlined'),
     'ant-design-gift-outlined': () => import('@iconify/icons-ant-design/gift-outlined'),
@@ -35,6 +36,8 @@ export const ICONIFY_ICONS = {
     'bx-bxs-image': () => import('@iconify-icons/bx/bxs-image'),
     'bx-bx-play-circle': () => import('@iconify-icons/bx/bx-play-circle'),
     'bx-bx-stop-circle': () => import('@iconify-icons/bx/bx-stop-circle'),
+    // advanced filter icon
+    'bx-filter-alt': () => import('@iconify/icons-bx/bx-filter-alt'),
 
     // codicon
     'chrome-close': () => import('@iconify/icons-codicon/chrome-close'),
@@ -144,7 +147,7 @@ export const ICONIFY_ICONS = {
     'ls-sort': () => import('@iconify/icons-ls/sort'),
 
     // typcn
-    'typcn-forward-outline': () => import('@iconify-icons/typcn/arrow-forward-outline'),
+    // 'typcn-forward-outline': () => import('@iconify-icons/typcn/arrow-forward-outline'),
 
     // mdi
     'mdi-square-rounded-outline': () => import('@iconify/icons-mdi/square-rounded-outline'),

@@ -20,6 +20,10 @@
             v-if="!isGroup"
             class="online"
           >
+            <app-typing
+              v-if="typing && typing.conversation_id == conversationId"
+              :conversation-id="conversationId"
+            />
             <p
               class="body-s-semibold"
               :class="[isOnline ? 'success--text' : 'error--text']"
@@ -115,7 +119,7 @@
     >
       <base-text-field
         v-model="internalSearchString"
-        class="field-search"
+        class="search-field"
         placeholder="Поиск чатов"
         prepend-inner-icon="$iconify_ion-search-outline"
         clear-icon="$iconify_ion-close-circle-outline"
@@ -162,10 +166,16 @@
 </template>
 
 <script>
+  // components
+  import AppTyping from './components/chat/Typing'
+
   // mixins
   import MixinIndex from '../mixins/index.js'
 
   export default {
+    components: {
+      AppTyping,
+    },
     mixins: [
       MixinIndex,
     ],
@@ -253,6 +263,9 @@
       },
       isGroup () {
         return this.activeMembers.length > 2
+      },
+      typing () {
+        return this.$store.getters['chat/message/typing']
       },
     },
     watch: {

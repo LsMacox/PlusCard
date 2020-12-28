@@ -61,7 +61,7 @@
             <div style="display: flex;">
               <img
                 class="table-cell_avatar"
-                style="position: relative; top: -5px;"
+                style="position: relative; top: -5px; cursor: pointer;"
                 :src="`https://storage.yandexcloud.net/plusstorage/${item.client_avatar}`"
                 @click.stop="userSidePanel(item)"
               >
@@ -380,7 +380,6 @@
   width: 25px;
   height: 25px;
   border-radius: 25px;
-  cursor: pointer;
 }
 
 .table-pagination-block {

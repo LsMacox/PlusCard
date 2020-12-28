@@ -5,11 +5,11 @@
     :width="483"
   >
     <group-topic
-      v-if="isGroup"
+      v-if="isGroup && innerActiveSidePanel"
       :conversation-id="conversationId"
     />
     <user-topic
-      v-else
+      v-else-if="innerActiveSidePanel"
       :conversation-id="conversationId"
     />
   </base-side-panel>

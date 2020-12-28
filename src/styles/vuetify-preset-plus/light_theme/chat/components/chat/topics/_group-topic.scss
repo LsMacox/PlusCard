@@ -2,5 +2,165 @@
 @import "@/styles/_typography.sass";
 
 @mixin group-topic {
+  .group-topic {
+    height: calc(100% - 57px);
+    padding: 34px;
+    position: relative;
+    .group-topic__header {
+      margin-top: 16px;
+      .field-search {
+        margin-top: 20px !important;
+        input {
+          @include body-m-medium;
+          &::placeholder {
+            @include body-m-medium;
+          }
+        }
+      }
+    }
 
+    .group-topic__content {
+      margin-top: 34px;
+
+      .topics__list {
+        padding-left: 0;
+        list-style: none;
+        .topic__item {
+          display: flex;
+          justify-content: space-between;
+          &:not(:last-child) {
+            margin-bottom: 25px;
+          }
+          .left-block {
+            .members-names {
+              margin-top: 16px;
+            }
+          }
+          .right-block {
+            .btn-edit {
+              min-width: 0;
+              padding: 0!important;
+              border-radius: 50%;
+              height: 31px;
+              width: 31px;
+            }
+          }
+        }
+      }
+      .topic__create {
+        margin-top: 34px;
+        .create__btn {
+          .icon-plus {
+            margin-right: 10px;
+          }
+        }
+      }
+      .topic__fields {
+        .topic-field {
+          &:not(:last-child) {
+            margin-bottom: 34px;
+          }
+          .topic-name {
+            margin-bottom: 6px;
+          }
+          .topic-description {
+            margin-bottom: 20px;
+          }
+          .topic-field {
+            border-radius: 10px;
+            input {
+              @include body-m-medium;
+
+              &::placeholder {
+                @include body-m-medium;
+              }
+            }
+            fieldset {
+              border: 1px solid $neutral-400 !important;
+            }
+          }
+          .members__list {
+            margin-top: 20px;
+            padding-left: 0;
+            list-style: none;
+            max-height: 100%;
+            overflow-x: hidden;
+            .member__item {
+              display: flex;
+              justify-content: space-between;
+              &:not(:last-child) {
+                margin-bottom: 12px;
+              }
+              .left-block {
+                display: flex;
+                align-items: center;
+                .avatar {
+                  width: 48px;
+                  height: 48px;
+                  border-radius: 50%;
+                  overflow: hidden;
+                  img {
+                    width: 48px;
+                    height: 48px;
+                  }
+                }
+                .name {
+                  margin-left: 12px;
+                }
+              }
+              .right-block {
+                .status {
+                  .v-input__slot {
+                    display: flex;
+                    .v-input--selection-controls__input {
+                      order: 1;
+                    }
+                    label {
+                      margin-right: 8px;
+                    }
+                  }
+                }
+              }
+            }
+            &::-webkit-scrollbar {
+              width: 4px;
+              background: $neutral-250;
+              border-radius: 2px;
+            }
+            &::-webkit-scrollbar-thumb {
+              background: $neutral-400;
+              border-radius: 2px;
+              width: 4px;
+            }
+          }
+        }
+      }
+    }
+    .group-topic__footer {
+      position: absolute;
+      bottom: 34px;
+      width: 100%;
+      right: 0;
+      padding-right: 34px;
+      padding-left: 34px;
+      .topic__controls {
+        justify-content: space-between;
+        display: flex;
+        align-items: center;
+
+        .create__btn,
+        .save__btn,
+        .delete__btn {
+          .icon {
+            margin-right: 8px;
+          }
+        }
+
+        .delete__btn {
+          height: 28px;
+          padding: 5px !important;
+        }
+      }
+    }
+  }
 }

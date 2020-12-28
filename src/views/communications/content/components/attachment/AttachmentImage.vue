@@ -13,7 +13,7 @@
       v-if="show"
       v-model="show"
       max-width="80%"
-      content-class="dialog-attachment-image-preview"
+      content-class="dialog-attachment-image dialog-attachment-preview"
     >
       <div class="preview-img">
         <img

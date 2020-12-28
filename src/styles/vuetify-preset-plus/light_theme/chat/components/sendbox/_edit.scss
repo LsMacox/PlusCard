@@ -20,10 +20,11 @@
     .edit-box-message {
       margin-left: 16px;
       margin-top: 2px;
-      p::nth-child(2) {
+      p:nth-child(2) {
         text-overflow: ellipsis;
         white-space: nowrap;
-        max-width: 500px;
+        max-width: 100%;
+        width: 500px;
         overflow: hidden;
       }
     }

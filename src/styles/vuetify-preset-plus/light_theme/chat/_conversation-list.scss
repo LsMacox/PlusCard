@@ -239,6 +239,9 @@
 
           .app--conversation--list--card--bottom--line {
             color: $neutral-100;
+            a {
+              color: $neutral-100;
+            }
           }
         }
 

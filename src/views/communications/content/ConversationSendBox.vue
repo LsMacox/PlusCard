@@ -8,21 +8,20 @@
         :conversation-id="currentConversationId"
         :is-topic-message.sync="internalIsTopicMessage"
         :is-topic-panel.sync="internalIsTopicPanel"
-        :selected-topic.sync="internalSelectedTopic"
       />
 
       <app-reply
         v-if="internalIsReplyMessage"
         :conversation-id="currentConversationId"
         :is-reply-message.sync="internalIsReplyMessage"
-        :message="messages[replyMessageId]"
+        :msg-item="messages[replyMessageId]"
       />
 
       <app-edit
         v-if="internalIsEditMessage"
         :conversation-id="currentConversationId"
         :is-edit-message.sync="internalIsEditMessage"
-        :message="messages[editMessageId]"
+        :msg-item="messages[editMessageId]"
       />
 
       <div
@@ -44,7 +43,7 @@
           >
             <!-- ==== Choice ==== -->
             <app-choice
-              v-if="isChoiceMessage"
+              v-if="isChoiceMessage && internalChoiceMessageIds.length > 0"
               :is-choice-message.sync="internalIsChoiceMessage"
               :message-ids="internalChoiceMessageIds"
             />
@@ -78,7 +77,7 @@
             />
             <!-- ==== Text ==== -->
             <div
-              v-if="!isRecording && !isStop && !isChoiceMessage"
+              v-if="!isRecording && !isStop && !(isChoiceMessage && internalChoiceMessageIds.length)"
               class="app-conversation--sendForm__message__text"
               :class="[(message && message.length) ? 'writes' : '']"
             >
@@ -122,6 +121,7 @@
                   placeholder="Напишите сообщение..."
                   @keyup.ctrl.enter="addLine"
                   @keypress.enter.exact.stop="send"
+                  @change="setTemplateMessage(message)"
                 />
               </div>
               <div class="left-block">
@@ -219,12 +219,6 @@
           return []
         },
       },
-      selectedTopic: {
-        type: Object,
-        default: () => {
-          return {}
-        },
-      },
       replyMessageId: {
         type: [String, Number],
         default: '',
@@ -267,7 +261,6 @@
         // topic
         internalIsTopicPanel: this.isTopicPanel,
         internalIsTopicMessage: this.isTopicMessage,
-        internalSelectedTopic: this.selectedTopic,
         // typing
         typingTime: null,
         // files
@@ -303,10 +296,9 @@
     watch: {
       async message (v) {
         this.limitTextArea()
-        this.$store.commit(
-          'chat/conversation/setCurrentConversationMessage',
-          this.message,
-        )
+        if (!v || !v.length) {
+          this.setTemplateMessage('')
+        }
         await this.sendTypingEvent(this.currentConversationId)
       },
       isReplyMessage (v) {
@@ -420,9 +412,6 @@
       internalChoiceMessageIds (v) {
         this.$emit('update:choiceMessageIds', v)
       },
-      internalSelectedTopic (v) {
-        this.$emit('update:selectedTopic', v)
-      },
       internalIsTopicPanel (v) {
         this.$emit('update:isTopicPanel', v)
       },
@@ -434,6 +423,12 @@
     methods: {
       toogleTopic () {
         this.internalIsTopicMessage = !this.internalIsTopicMessage
+      },
+      setTemplateMessage (message) {
+        this.$store.commit(
+          'chat/conversation/setCurrentConversationMessage',
+          message,
+        )
       },
     },
   }

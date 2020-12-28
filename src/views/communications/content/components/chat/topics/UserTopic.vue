@@ -22,7 +22,7 @@
             <v-btn
               text
               :ripple="false"
-              :loading="isRequestDeleteLoading"
+              :loading="getDeleteLoading(topic.id)"
               class="close d-flex"
               @click="deleteTopic(topic.id)"
             >
@@ -41,10 +41,7 @@
         v-model="createTopicName"
         class="create__field"
         placeholder="Введите название темы"
-        error-style="custom"
-        validation-placement="left"
-        :rules="createTopicNameRules"
-        @keypress.enter.exact.stop="createTopic"
+        @keypress.enter.exact="createTopic"
       />
       <v-btn
         v-if="createTopicName.replace(/\s+/, ' ').replace(/^\s/, '').length"
@@ -77,11 +74,7 @@
     data () {
       return {
         createTopicName: '',
-        createTopicNameRules: [
-          v => !!v || 'Введите название темы',
-          v => !this.nameExist || 'Тема с таким названием уже существует',
-        ],
-        isRequestDeleteLoading: false,
+        isRequestDeleteLoadings: [],
         isRequestCreateLoading: false,
       }
     },
@@ -104,14 +97,28 @@
     },
     methods: {
       async deleteTopic (topicId) {
-        this.isRequestDeleteLoading = true
+        let loadingIdx = this.isRequestDeleteLoadings.findIndex(l => l.id === topicId)
+
+        if (loadingIdx === -1) {
+          loadingIdx = this.isRequestDeleteLoadings.push({ id: topicId, loading: true }) - 1
+        } else {
+          return
+        }
         await this.$store.dispatch('chat/topic/delete', topicId)
           .finally(() => {
-            this.isRequestDeleteLoading = false
+            console.log('loadingIdx', this.isRequestDeleteLoadings, loadingIdx)
+            this.isRequestDeleteLoadings[loadingIdx].loading = false
           })
       },
+      getDeleteLoading (topicId) {
+        const dl = this.isRequestDeleteLoadings.find(l => l.id === topicId)
+        if (dl) {
+          return dl.loading
+        }
+        return false
+      },
       async createTopic () {
-        console.log(this.members)
+        if (!String(this.createTopicName).replace(/\s+/, ' ').replace(/^\s/, '').length) return
 
         const members = []
 
@@ -133,6 +140,7 @@
         await this.$store.dispatch('chat/topic/create', topic)
           .finally(() => {
             this.isRequestCreateLoading = false
+            this.createTopicName = ''
           })
       },
     },

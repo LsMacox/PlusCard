@@ -47,6 +47,9 @@
         width: 185px;
         overflow: hidden;
         white-space: nowrap;
+        a {
+          color: $primary-base;
+        }
       }
 
       .app--conversation--list--card--bottom--line.blueAuthor {

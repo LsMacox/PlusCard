@@ -8,7 +8,21 @@
   }
 
   .v-input__append-inner {
-    margin-top: 11px !important;
+    width: 35px !important;
+    padding: 0 !important;
+    margin: 10px 0 0 0 !important;
+  }
+
+  .v-input__icon--clear {
+    color: $neutral-500;
+  }
+
+  .v-input__append-inner:last-child {
+    width: 0 !important;
+  }
+
+  fieldset {
+    border: 1px solid $neutral-400!important;
   }
 
   input {

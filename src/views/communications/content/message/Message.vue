@@ -1,7 +1,11 @@
 <template>
   <div
     class="message-line"
-    :class="{select: showActions || (isChoiceMessage && isChoice), choice: isChoiceMessage}"
+    :class="{
+      select: showActions || (isChoiceMessage && isChoice),
+      choice: isChoiceMessage,
+      connectNexMessage: item.connectNexMessage,
+    }"
     @click="choiceMessage"
   >
     <div
@@ -15,7 +19,10 @@
       <div
         :ref="'messageAction' + item.id"
         class="message-actions"
-        :class="[showActions ? 'show' : 'hide', actionPlacement, {'message-my': myMessage}]"
+        :class="[
+          showActions ? 'show' : 'hide',
+          actionPlacement, {'message-my': myMessage},
+        ]"
       >
         <ul class="action-list">
           <li class="action-item">
@@ -31,7 +38,10 @@
               <p class="body-s-medium neutral-500--text">Ответить</p>
             </a>
           </li>
-          <li class="action-item">
+          <li
+            v-if="item.attachments.length || item.message"
+            class="action-item"
+          >
             <a
               href="#"
               @click="openForwardMessage"
@@ -106,16 +116,13 @@
       </div>
 
       <img
+        v-if="!item.connectNexMessage"
         class="message-author-avatar"
         :src="getAuthorAvatar(item, payload)"
         @error="e => e.target.src = img404"
       >
 
       <div
-        :style="
-          myMessage
-            ? 'width: calc(100% - 15px); margin-right: 15px; '
-            : 'width: calc(100% - 50px);'"
         @contextmenu.prevent="showActions = true"
       >
         <div
@@ -123,10 +130,32 @@
             'message-box': true,
             'message-my': myMessage,
           }"
+          :style="item.connectNexMessage ? 'margin-left: 81px;' : ''"
         >
+          <!-- блок тема -->
+          <div
+            v-if="item.topic_name"
+            class="message-topic"
+          >
+            <p class="body-x-semibold primary--text">
+              #{{ item.topic_name }}
+            </p>
+          </div>
+
+          <!-- блок с именени автора -->
           <div class="message-box-author-name">
             <p class="body-s-semibold neutral-900--text mb-0">
               {{ getAuthorName(item, payload) }}
+            </p>
+          </div>
+
+          <!-- блок с текстом о пересланном сообщении -->
+          <div
+            v-if="item.parent_id && authorName === 'Вы'"
+            class="message-box-forward-text"
+          >
+            <p class="body-s-medium neutral-500--text mb-0">
+              Пересланное сообщение
             </p>
           </div>
 
@@ -155,9 +184,10 @@
               <div
                 class="quote-text"
               >
-                <p class="body-s-regular neutral-700--text mb-0">
-                  {{ formatMessage(item.parent_message.message) }}
-                </p>
+                <p
+                  class="body-s-regular neutral-700--text mb-0"
+                  v-html="formatMessage(item.parent_message.message)"
+                />
               </div>
             </div>
           </div>
@@ -184,22 +214,15 @@
               v-if="item.message"
               class="message-box-text"
             >
-              <p class="body-s-regular neutral-900--text mb-0">
-                {{ formatMessage(item.message) }}
-              </p>
+              <p
+                class="body-s-regular neutral-900--text mb-0"
+                v-html="formatMessage(item.message)"
+              />
             </div>
           </div>
 
-          <!-- блок тема -->
-          <div
-            v-if="item.topic_name"
-            class="dialog-topic"
-          >
-            Тема: {{ item.topic_name }}
-          </div>
-
           <!-- блок получатель -->
-          <div
+          <!-- <div
             v-if="item.recipients"
             class="message-box-recipients"
           >
@@ -220,7 +243,7 @@
                 </template>
               </v-tooltip>
             </div>
-          </div>
+          </div> -->
 
           <!-- кнопка редактирования -->
           <div
@@ -386,13 +409,53 @@
           this.myMessage &&
           (
             currentDate.diff(msgDate, 'minutes') <= 3 ||
-            this.conversation.last_message.id === this.item.id
+            (
+              this.conversation.last_message &&
+              this.conversation.last_message.id === this.item.id
+            )
           )
         ) return true
         return false
       },
       isChoice () {
         return this.choiceMessageIds.findIndex(id => id === this.item.id) !== -1
+      },
+      authorName () {
+        if (this.conversation && this.conversation.last_message) {
+          const item = this.conversation.last_message
+
+          let author = {}
+          let isEmployee = false
+
+          if (item.sender_id === this.chatUser.id) isEmployee = true
+
+          if (isEmployee) {
+            if (this.realChatName) {
+              author = this.getAuthor(item, this.payload)
+              if (author.id) {
+                if (author.id === this.profile.id) return 'Вы'
+                else return `${author.name} (${this.conversationProgram.name})`
+              } else if (item.real_sender_id === this.chatUser.id) {
+                // реальный отправитель чат-бот
+                return this.chatUser.name
+              }
+            } else {
+              author = this.getAuthor(item, this.payload)
+              if (author.id) {
+                if (author.id === this.profile.id) return 'Вы'
+                else return `${this.conversationProgram.name} (${author.name})`
+              } else if (item.real_sender_id === this.chatUser.id) {
+                // реальный отправитель чат-бот
+                return this.chatUser.name
+              }
+            }
+          } else {
+            author = this.getAuthor(item, this.payload)
+            if (author.id) return `${author.name}`
+          }
+        }
+
+        return ''
       },
     },
     watch: {
@@ -408,16 +471,22 @@
         const actionEl = this.$refs['messageAction' + this.item.id]
         const actionHeight = this.nodeOffsetWH(actionEl, false)
         const MsgOffsetTop = document.getElementById('message-' + this.item.id).parentNode.offsetTop
-
         if (((MsgOffsetTop - actionHeight) + 60) > headerHeight + 60) {
           this.actionPlacement = 'top'
+          actionEl.style.top = (-actionHeight - 13) + 'px'
         } else {
           this.actionPlacement = 'bottom'
+          actionEl.style.bottom = (-actionHeight - 13) + 'px'
         }
       },
       isCloseAction (v) {
         if (v) {
           this.hideActions()
+        }
+      },
+      isChoiceMessage (v) {
+        if (v) {
+          this.choiceMessageIds.splice(0, this.choiceMessageIds.length)
         }
       },
     },

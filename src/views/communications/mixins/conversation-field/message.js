@@ -79,6 +79,33 @@ export default {
       }
       this.feedScrollTop = h
     },
+    connectingMessages (messages) {
+      const msgKeys = Object.keys(messages)
+      let passed = 0
+      for (const id in messages) {
+        const msgIdx = msgKeys.indexOf(id)
+        for (let i = msgIdx; i < (msgIdx + 2); i++) {
+          if (msgKeys[i]) {
+            const message = messages[msgKeys[i]]
+            if (
+              msgKeys[i + 1] &&
+              message.sender_id === messages[msgKeys[i + 1]].sender_id &&
+              message.real_sender_id === messages[msgKeys[i + 1]].real_sender_id &&
+              passed < 2
+            ) {
+              passed++
+              message.connectNexMessage = true
+            } else {
+              passed = 0
+              message.connectNexMessage = false
+            }
+          } else {
+            break
+          }
+        }
+      }
+      return messages
+    },
     init () {
       var observe
       if (window.attachEvent) {

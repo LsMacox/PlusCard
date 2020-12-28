@@ -14,7 +14,7 @@
         <div class="app--conversation--list--card--content">
           <div
             class="app--conversation--list--card--top--line"
-            :style="!authorName.length && isGroup ? 'margin-top: 29px' : ''"
+            :style="(!authorName.length && isGroup) || (!lastMessage && !isGroup) ? 'margin-top: 29px' : ''"
           >
             <div class="app--conversation--list--card-name">
               {{ (conversation.display_name ? conversation.display_name : name) }}
@@ -34,7 +34,8 @@
             class="app--conversation--list--card--bottom--line"
             :class="[authorName == 'Вы' ? 'blueAuthor' : '']"
           >
-            {{ (authorName.length ? authorName + ': ' : '') + lastMessage }}
+            {{ (authorName.length ? authorName + ': ' : '') }}
+            <span v-html="lastMessage" />
           </div>
         </div>
 
@@ -64,7 +65,7 @@
 
 <script>
   // components
-  import AppTyping from './typing/TypingConversationList'
+  import AppTyping from './components/chat/Typing'
 
   // mixins
   import MixinTemplate from '../mixins/conversation-list-view/template.js'

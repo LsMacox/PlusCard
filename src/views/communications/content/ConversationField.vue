@@ -46,11 +46,14 @@
       >
         <!-- прелоадер старых сообщений  -->
         <div
-          v-for="item in messages"
+          v-for="(item, idx) in messages"
           :key="item.id"
           class="app--conversation--message-box"
         >
-          <div :id="`message-${item.id}`">
+          <div
+            :id="`message-${item.id}`"
+            :style="Object.keys(messages).indexOf(idx) === 0 ? 'margin-top: 24px;' : ''"
+          >
             <message
               :item="item"
               :conversation-id="currentConversationId"
@@ -83,7 +86,6 @@
         :is-topic-message.sync="isTopicMessage"
         :is-choice-message.sync="isChoiceMessage"
         :choice-message-ids.sync="choiceMessageIds"
-        :selected-topic.sync="selectedTopic"
         :reply-message-id="replyMessageId"
         :edit-message-id="editMessageId"
         @send-message="toBottomFeed()"
@@ -153,7 +155,6 @@
         // topic
         isTopicPanel: false,
         isTopicMessage: false,
-        selectedTopic: {},
         // choice
         isChoiceMessage: false,
         choiceMessageIds: [],

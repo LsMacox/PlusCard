@@ -2,81 +2,50 @@
 @import "@/styles/_typography.sass";
 
 .attachment-video {
-  .preview-dialog {
-    .preview-dialog__card {
-      background-color: rgba(0, 0, 0, 0.8);
+  .video-thumb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      border-radius: 6px;
+      max-width: 188px;
+      max-height: 338px;
+    }
+    .icon-play {
+      color: #ffffff;
+      cursor: pointer;
+      position: absolute;
+      color: #ffffff;
+    }
+  }
+}
 
-      .preview-dialog__container {
+.dialog-attachment-video {
+  .video-player {
+    .vjs-big-play-button {
+      height: 19px;
+      width: 15px;
+      top: 50%;
+      left: 50%;
+      border: none;
+      background: none;
+      outline: none;
 
-        // height: 100%;
-        .image-row {
-          min-height: 80vh;
+      .vjs-icon-placeholder {
+        &:before {
+          content: "";
+          background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAATCAYAAABPwleqAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAC+SURBVHgBpVQBEYMwDEzvJmASmIM5GBLmABxMQudgc4AEJCBhEjYHk5B97zIIXIEE/i6XQPOXT9uUCGDmI20FyF9YByvICx7j7uH+yRHWSPw2qxBCJXEtZJsKTZbvYqKiNJPV/1KpaLKtzJHVelQqKhdZtTJScSAjQggfuFO6D/C1t/IZ9pLctr+VS+SUBHuqni/TBMtuPzg3A5lzXq42R4a/qmqR1yZOJbYSd2mDyAIekEbzRh7wznne9JL8APPIYC1NZWK3AAAAAElFTkSuQmCC');
+          background-repeat: no-repeat;
+          border: none !important;
+          box-shadow: none !important;
         }
       }
     }
-  }
 
-  .video-thumb {
-    position: relative;
-    width: 160px;
-    height: 120px;
-    border-radius: 10px;
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: cover !important;
-    text-align: center;
-    cursor: pointer;
-  }
-
-  .video-thumb-mask {
-    display: inline-block;
-    /*position: absolute;
-        top: 50%;*/
-    transform: translateY(-50%);
-    width: 60px;
-    height: 60px;
-    margin-top: calc(50% - 20px);
-    background-position: center !important;
-    background-repeat: no-repeat !important;
-    background-size: cover !important;
-  }
-
-  .video-modal {
-    position: relative;
-    display: flex;
-    background-color: #ffffff;
-  }
-
-  // .video-player {}
-
-  .download {
-    display: block;
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
-    background-color: #181818;
-    z-index: 2;
-  }
-
-  .download-icon {
-    color: #ffffff;
-    font-size: 40px;
-  }
-
-  .attachment--preview--toolbar {
-    position: absolute;
-    top: 10px;
-    right: 40px;
-
-    & i {
-      cursor: pointer;
-      color: #fff;
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
+    .video-js,
+    .vjs-tech,
+    .vjs-control-bar {
+      border-radius: 6px;
     }
   }
 }

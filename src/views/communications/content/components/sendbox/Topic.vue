@@ -20,49 +20,63 @@
         class="topic-list"
       >
         <template v-if="topics.length">
-          <li
-            v-for="(topic, idx) in topics"
-            :key="idx + '-' + topic.id"
-            :ref="'topicItem-' + idx"
-            class="topic-item"
-            :class="selectedTopic && selectedTopic.id === topic.id ? 'active' : ''"
-            @click="choiceTopic(topic)"
+          <v-slide-group
+            center-active
+            show-arrows
+            @change="choiceTopic"
           >
-            <p class="body-s-semibold">
-              {{ topic.name }}
-            </p>
-          </li>
+            <v-slide-item
+              v-for="topic in topics"
+              :key="topic.id"
+              v-slot="{ toggle }"
+            >
+              <v-btn
+                class="item-btn"
+                :input-value="selectedTopic ? selectedTopic.id === topic.id : false"
+                exact-active-class="primary-100 primary--text"
+                active-class="primary neutral-100--text"
+                depressed
+                outlined
+                @click="toggle"
+              >
+                <p class="body-s-semibold">
+                  {{ topic.name }}
+                </p>
+              </v-btn>
+            </v-slide-item>
+            <template v-slot:prev>
+              <iconify-icon
+                :class="['icon', 'icon-prev']"
+                icon="feather-chevron-left"
+                width="15"
+              />
+            </template>
+            <template v-slot:next>
+              <iconify-icon
+                :class="['icon', 'icon-next']"
+                icon="feather-chevron-right"
+                width="15"
+              />
+            </template>
+          </v-slide-group>
         </template>
         <template v-else>
-          <li
-            class="topic-item"
+          <v-btn
+            class="item-btn"
+            outlined
           >
             <p class="body-s-semibold">
               Темы не найдены!
             </p>
-          </li>
+          </v-btn>
         </template>
       </ul>
-      <div class="topic-controls">
-        <iconify-icon
-          :class="['icon', 'icon-prev', isPrev ? 'active' : '']"
-          icon="feather-chevron-left"
-          width="21"
-          @click="prev"
-        />
-        <iconify-icon
-          :class="['icon', 'icon-next', isNext ? 'active' : '']"
-          icon="feather-chevron-right"
-          width="21"
-          @click="next"
-        />
-      </div>
     </div>
     <div class="topic-choices">
       <ul class="choice__list">
         <li class="choice__item">
           <p class="body-xs-semibold">
-            {{ Object.keys(selectedTopic).length > 0 ? '#' + selectedTopic.name : '' }}
+            {{ selectedTopic ? '#' + selectedTopic.name : '' }}
           </p>
         </li>
       </ul>
@@ -85,103 +99,40 @@
         type: [Number, String],
         default: '',
       },
-      selectedTopic: {
-        type: Object,
-        default: () => {
-          return {}
-        },
-      },
       isTopicPanel: Boolean,
       isTopicMessage: Boolean,
     },
     data () {
       return {
-        listStep: 0,
-        hideCount: 0,
       }
     },
     computed: {
-      testTopics () {
-        const testArr = []
-        const topics = this.$store.getters['chat/topic/topics']
-        if (topics.length) {
-          for (let i = 0; i < 15; i++) {
-            const topic = Object.assign({}, topics[0])
-            topic.id = Math.round(Math.random() * 7000 + i)
-            testArr.push(topic)
-          }
-        }
-        return testArr
-      },
       topics () {
         return this.$store.getters['chat/topic/topics']
       },
-      isPrev: {
-        cache: false,
-        get () {
-          if (this.listStep <= 0) return false
-          return true
-        },
+      selectedTopic () {
+        if (this.selectedTopicId) {
+          return this.topics.find(t => t.id === this.selectedTopicId) || undefined
+        }
+        return undefined
       },
-      isNext: {
-        cache: false,
-        get () {
-          if (this.listStep >= this.hideCount) return false
-          return true
-        },
+      selectedTopicId () {
+        return this.$store.getters['chat/topic/selectedTopicId']
       },
     },
     watch: {
-      topics: {
-        deep: true,
-        handler () {
-          this.hideAppearItem()
-        },
-      },
     },
     async created () {
       await this.$store.dispatch('chat/topic/list', this.conversationId)
     },
-    mounted () {
-      this.listStep = 0
-      this.hideAppearItem()
-    },
+    mounted () {},
     methods: {
-      hideAppearItem () {
-        if (this.$refs?.topicList) {
-          this.hideCount = 0
-          const listWidth = this.$refs.topicList.clientWidth
-          console.log('listWidth', listWidth)
-          for (let i = 0; i < this.topics.length; i++) {
-            const item = this.$refs['topicItem-' + String(this.topics.length - 1 - i)][0]
-            const itemOffsetLeft = this.getFromHideNodeAttribute(item, 'offsetLeft')
-            console.log('itemOffsetLeft', itemOffsetLeft)
-            if (itemOffsetLeft > listWidth) {
-              this.hideCount++
-              item.classList.add('hide')
-            }
-          }
-          console.log('hideCount', this.hideCount)
+      choiceTopic (idx) {
+        if (typeof idx === 'undefined') {
+          this.$store.commit('chat/topic/selectedTopicId', null)
+          return
         }
-      },
-      prev () {
-        if (this.listStep <= 0) return
-        this.listStep--
-        this.$refs['topicItem-' + this.listStep][0].classList.remove('hide')
-        const tailItem = this.$refs?.['topicItem-' + String(this.topics.length - 1 - this.listStep)]
-        tailItem[0].classList.add('hide')
-      },
-      next () {
-        if (this.listStep >= this.hideCount) return
-        this.listStep++
-        for (let i = 0; i < this.listStep; i++) {
-          this.$refs['topicItem-' + i][0].classList.add('hide')
-          const tailItem = this.$refs?.['topicItem-' + String(this.topics.length - 1 - i)]
-          tailItem[0].classList.remove('hide')
-        }
-      },
-      choiceTopic (topic) {
-        this.$emit('update:selectedTopic', Object.assign({}, topic))
+        this.$store.commit('chat/topic/selectedTopicId', this.topics[idx].id)
       },
       openTopicPanel () {
         this.$emit('update:isTopicPanel', true)

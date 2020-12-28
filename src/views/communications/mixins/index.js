@@ -19,7 +19,7 @@ export default {
 
       if (currentDate.diff(messageDate, 'years') === 0) {
         if (currentDate.diff(messageDate, 'days') === 0) {
-          return messageDate.format('h:m')
+          return messageDate.format('H:mm')
         } else {
           return messageDayAndMounth
         }
@@ -117,7 +117,7 @@ export default {
     },
     formatMessage (message) {
       if (message) {
-        // let str = JSON.parse(message)
+        message = message.replace(/<<*\s*(\w+)\s*>*>/gm, '$1')
         let str = message
         let pos = 0
         while (true) {
@@ -134,7 +134,7 @@ export default {
             matchString[0] +
             '">' +
             matchString[0] +
-            '"</a> '
+            '</a> '
           str = str.replace(matchString[0], link)
         }
         return str
@@ -158,7 +158,7 @@ export default {
           if (message.attachments[0].type === 'media/video') return 'видео'
           if (message.attachments[0].type === 'media/file') return 'файл'
         }
-        return this.formatMessage(message.message)
+        return message.message
       }
       return ''
     },

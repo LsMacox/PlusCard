@@ -29,23 +29,31 @@
       >
         <ul class="clients__list">
           <li
-            v-for="client in clientsFiltered"
-            :key="client.id"
+            v-for="clientAndGroup in clientsAndGroupsFiltered"
+            :key="clientAndGroup.id"
             class="client__item"
-            @click.prevent="forwardMessage(client)"
+            @click.prevent="forwardMessage(clientAndGroup)"
           >
             <div class="right-block">
               <div class="item-img">
                 <img
                   class="avatar"
-                  :src="avatars[client.id]"
+                  :src="!isGroup(clientAndGroup) ? avatars[clientAndGroup.id] : getGroupImgData(clientAndGroup)"
                   @error="e => e.target.src = img404"
                 >
-                <div class="online" />
+                <div
+                  v-if="!isGroup(clientAndGroup)"
+                  class="online"
+                />
               </div>
               <div class="item-name">
                 <p class="body-m-medium neutral-900--text">
-                  {{ client.name ? client.name : '-' }} {{ client.lastname ? client.lastname : '' }}
+                  <template v-if="!isGroup(clientAndGroup)">
+                    {{ clientAndGroup.name ? clientAndGroup.name : '-' }} {{ clientAndGroup.lastname ? clientAndGroup.lastname : '' }}
+                  </template>
+                  <template v-else>
+                    {{ clientAndGroup.display_name ? clientAndGroup.display_name : clientAndGroup.name }}
+                  </template>
                 </p>
               </div>
             </div>
@@ -101,39 +109,59 @@
     computed: {
       ...mapGetters('company/program', ['programId']),
       messages () {
-        console.log('this convId', this.conversationId)
         return this.$store.getters['chat/message/messages'][
           this.conversationId
         ] || {}
       },
       clients () {
-        console.log('clients:', this.$store.getters['chat/member/clients'])
         return this.$store.getters['chat/member/clients']
       },
-      clientsSearcher () {
+      clientsAndGroupsSearcher () {
         return new FuzzySearch(
-          this.clients,
-          ['name', 'lastname'],
+          this.clientsAndGroups,
+          ['name', 'lastname', 'display_name'],
           {
             caseSensitive: false,
           },
         )
       },
-      clientsFiltered () {
-        let clients = this.clients
+      clientsAndGroupsFiltered () {
+        let clientsAndGroups = this.clientsAndGroups
         const search = String(this.search).replace(/\s+/g, ' ').replace(/^\s/g, '')
 
         if (search && search.length) {
-          clients = this.clientsSearcher.search(search.toLowerCase())
+          clientsAndGroups = this.clientsAndGroupsSearcher.search(search.toLowerCase())
         }
-
-        return clients
+        return clientsAndGroups
+      },
+      clientsAndGroups () {
+        return this.clients.concat(this.conversationGroups)
       },
       selectedTopicId () {
         return this.$store.getters['chat/topic/selectedTopicId']
       },
+      conversationGroups () {
+        return this.conversations.filter(c => {
+          return c.activeMembers.length > 2
+        })
+      },
       conversations () {
-        return this.$store.getters['chat/conversation/conversations']
+        if (this.currentConversationType === 'business') {
+          return this.conversations_business
+        } else if (this.currentConversationType === 'merchant') {
+          return this.conversations_merchant
+        } else {
+          return []
+        }
+      },
+      currentConversationType () {
+        return this.$store.getters['chat/conversation/currentConversationType']
+      },
+      conversations_business () {
+        return this.$store.getters['chat/conversation/conversations_business']
+      },
+      conversations_merchant () {
+        return this.$store.getters['chat/conversation/conversations_merchant']
       },
       recipients () {
         return this.$store.getters['chat/message/recipients']
@@ -167,26 +195,30 @@
       }
     },
     methods: {
-      async forwardMessage (client) {
+      conversationChat (id) {
+        // обнуляем непрочитанные
+        this.$store.commit('chat/conversation/clearUnreadCount', id)
+        // переходим на чат
+        const path = `/communications/chat/${this.currentConversationType}/${id}`
+        this.toRoute(path)
+      },
+      async forwardMessage (clientAndGroup) {
         if (this.sending) return
 
-        let conversationId = this.conversations.filter(c => c.activeMembers.length === 2)
-        conversationId = conversationId.filter(c => {
-          return c.activeMembers.findIndex(a => a.id === client.id) !== -1
-        })[0].id
+        let conversationId
+
+        if (this.isGroup(clientAndGroup)) {
+          conversationId = clientAndGroup.id
+        } else {
+          conversationId = this.conversations.filter(c => c.activeMembers.length === 2)
+          conversationId = conversationId.filter(c => {
+            return c.activeMembers.findIndex(a => a.id === clientAndGroup.id) !== -1
+          })[0].id
+        }
 
         try {
           this.sending = true
           const message = new FormData()
-          console.log({
-            uid: this.$uuid(),
-            current_conversation_id: this.conversationId,
-            send_conversation_id: conversationId,
-            message_id: this.messageId,
-            message: this.messages[this.messageId],
-            clients: this.clients,
-            conversations: this.conversations,
-          })
 
           message.set('uid', this.$uuid())
           message.set('conversation_id', conversationId)
@@ -223,7 +255,11 @@
         } finally {
           this.sending = false
           this.innerActiveSidePanel = false
+          this.conversationChat(conversationId)
         }
+      },
+      isGroup (item) {
+        return Object.keys(item).includes('activeMembers') && (item.activeMembers.length > 2)
       },
     },
   }

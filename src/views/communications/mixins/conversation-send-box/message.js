@@ -4,12 +4,12 @@ export default {
       this.message = ''
       // files
       this.attachedFile = {}
-      this.requestFileData = {}
       // reply
       this.internalIsReplyMessage = false
       // edit
       this.internalIsEditMessage = false
       // topics
+      this.internalIsTopicMessage = false
       this.$store.commit('chat/topic/selectedTopicId', null)
       // recipients
       this.$store.commit('chat/message/recipients', [])
@@ -94,7 +94,7 @@ export default {
         this.isAttachedFile ||
         (
           this.message &&
-          this.message.replace(/\s+/, ' ').replace(/\s/, '').length
+          this.formatMessage(this.message).replace(/\s+/, ' ').replace(/\s/, '').length
         )
       ) {
         return true
