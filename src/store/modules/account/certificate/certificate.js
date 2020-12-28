@@ -141,6 +141,7 @@ const actions = {
             `Вы уверены, что хотите удалить заказ сертификата № "${userCert.order.num}" в корзину?`,
             'Удаление заказа сертификата в корзину',
             {
+              maxWidth: 520,
               confirmButtonText: 'Удалить',
               cancelButtonText: 'Отмена',
               type: 'warning',
