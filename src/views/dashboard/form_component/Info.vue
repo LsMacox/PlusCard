@@ -58,9 +58,28 @@
         <BaseMasterFieldBlock
           title="Карта клиента"
         >
-          <span
+          <div
             slot="description"
-          >Вот так будет выглядеть ваша карта в приложении. Измените цвет карты кликнув на ней и загрузите логотип, кликнув по иконке.</span>
+          >
+            <div>Вот так будет выглядеть ваша карта в приложении.</div>
+            <div class="info-card-text">
+              <span>1. Измените цвет карты, кликнув на иконку</span>
+              <iconify-icon
+                class="info-card-text-icon"
+                icon="ion-color-fill-outline"
+                height="21"
+              />
+              <span>в шаблоне справа</span>
+            </div>
+            <div class="info-card-text">
+              <span>2. Загрузите логотип, кликнув на иконку</span>
+              <iconify-icon
+                class="info-card-text-icon"
+                icon="feather-download"
+                height="21"
+              />
+            </div>
+          </div>
         </BaseMasterFieldBlock>
       </v-col>
       <v-col style="padding-top: 75px;">
