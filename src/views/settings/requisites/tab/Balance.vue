@@ -6,7 +6,9 @@
           {{ merchant.name }}
         </h2>
         <div class="block-cash-btn">
-          <span class="cash color-green-text font-weight-bold title-h2">{{ balance + ' ₽' }}</span>
+          <span class="cash color-green-text font-weight-bold title-h2">{{
+            balance + " ₽"
+          }}</span>
           <v-btn
             color="primary"
             @click="onAddBalanceClick"
@@ -32,7 +34,8 @@
             Соглашение
           </div>
           <div class="desc-15-text font-weight-500 color-text-grey text-img">
-            Принято 5 окт, 2019  <img
+            Принято 5 окт, 2019
+            <img
               class="mlo-6"
               src="@/icons/svg/external-link.svg"
             >
@@ -43,7 +46,8 @@
             Договор
           </div>
           <div class="desc-15-text font-weight-500 color-text-grey text-img">
-            №2020-1-7 от 5 окт, 2019 <img
+            №2020-1-7 от 5 окт, 2019
+            <img
               class="mlo-6"
               src="@/icons/svg/download.svg"
             >
@@ -91,7 +95,9 @@
                 </p>
               </div>
               <div class="btn-text">
-                <span class="cash-tariff desc-15-text color-text-grey font-weight-500">{{ content.price }} ₽ / мес</span>
+                <span
+                  class="cash-tariff desc-15-text color-text-grey font-weight-500"
+                >{{ content.price }} ₽ / мес</span>
                 <v-btn
                   color="secondary"
                   :text="true"
@@ -108,14 +114,16 @@
                 </p>
               </div>
               <div class="btn-text">
-                <span class="cash-tariff desc-15-text color-text-grey font-weight-500">{{ content.nextPayment }}</span>
+                <span
+                  class="cash-tariff desc-15-text color-text-grey font-weight-500"
+                >{{ content.nextPayment }}</span>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <create-order-dialog
+    <create-balance-payment-dialog
       v-if="createDialog"
       v-model="createDialog"
       @close="onCreateDialogClose"
@@ -125,11 +133,13 @@
 
 <script>
   import { mapActions } from 'vuex'
+  import { MERCHANT_ORDER_METHOD } from '@/models/enums'
 
   export default {
     name: 'Balance',
     components: {
-      CreateOrderDialog: () => import('../dialogs/CreateOrderDialog.vue'),
+      CreateBalancePaymentDialog: () =>
+      import('../dialogs/CreateBalancePaymentDialog.vue'),
     },
     data () {
       return {
@@ -146,7 +156,7 @@
               },
             ],
           },
-          /*
+        /*
           {
             title: 'Подключенные механики',
             content: [
@@ -184,10 +194,15 @@
         this.createDialog = true
       },
       onCreateDialogClose (newOrder) {
-        if (newOrder) {
+        if (!newOrder) return
+        if (newOrder.method === MERCHANT_ORDER_METHOD.METHOD_ORDER_ORG) {
           this.downloadOrderClick(newOrder)
+          this.$router.replace({ name: 'SettingsRequisites', hash: '#orders' })
+        } else if (newOrder.method === MERCHANT_ORDER_METHOD.METHOD_SBERBANK) {
+          if (newOrder.sber_order) {
+            window.open(newOrder.sber_order.form_url, '_blank')
+          }
         }
-        this.$router.replace({ name: 'SettingsRequisites', hash: '#orders' })
       },
       async downloadOrderClick (order) {
         try {
@@ -204,102 +219,102 @@
 </script>
 
 <style scoped>
-  .block-cash-btn {
-    display: flex;
-    align-items: center;
-  }
-  .cash {
-    margin-right: 34px;
-  }
-  .title-cash {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    margin-bottom: 10px;
-  }
-  .custom-gradient-bg {
-    display: flex;
-    align-items: center;
-  }
-  .card-outline {
-    margin-right: 8px;
-  }
-  .info-wrap {
-    display: flex;
-    justify-content: space-between;
-  }
-  .info-block {
-    max-width: 320px;
-    width: 100%;
-  }
-  .container-cash-info {
-    margin-top: 68px;
-    margin-bottom: 40px;
-  }
-  .info-wrap:not(:last-of-type) {
-    margin-bottom: 12px;
-  }
-  .text-img {
-    display: flex;
-    align-items: center;
-    min-width: 192px;
-  }
-  .mlo-6 {
-    margin-left: 6px;
-  }
-  .mgo {
-    margin-bottom: 12px;
-  }
-  .mbo-20 {
-    margin-bottom: 20px;
-  }
-  .mbo-30 {
-    margin-bottom: 30px;
-  }
-  .block-info {
-    border: 1px solid #F2F2F7;
-    box-sizing: border-box;
-    box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1);
-    border-radius: 10px;
-    background: #FFFFFF;
-    width: 100%;
-    max-width: 676px;
-    padding: 20px 10px 20px 20px;
-    display: flex;
-  }
-  .block-info:not(:last-of-type) {
-    margin-bottom: 26px;
-  }
-  .img-block-info img {
-    width: 47px;
-    height: 47px;
-  }
-  .switch-block {
-    display: flex;
-    align-items: center;
-  }
-  .block-switch-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 22px;
-    margin-bottom: 14px;
-  }
-  .block-switch-tariff {
-    width: 100%;
-    margin-left: 6px;
-  }
-  .info-tariff {
-    display: flex;
-    align-items: center;
-    max-width: 300px;
-    width: 100%;
-    justify-content: space-between;
-  }
-  .btn-text {
-    width: 164px;
-    display: flex;
-    align-items: center;
-  }
+.block-cash-btn {
+  display: flex;
+  align-items: center;
+}
+.cash {
+  margin-right: 34px;
+}
+.title-cash {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.custom-gradient-bg {
+  display: flex;
+  align-items: center;
+}
+.card-outline {
+  margin-right: 8px;
+}
+.info-wrap {
+  display: flex;
+  justify-content: space-between;
+}
+.info-block {
+  max-width: 320px;
+  width: 100%;
+}
+.container-cash-info {
+  margin-top: 68px;
+  margin-bottom: 40px;
+}
+.info-wrap:not(:last-of-type) {
+  margin-bottom: 12px;
+}
+.text-img {
+  display: flex;
+  align-items: center;
+  min-width: 192px;
+}
+.mlo-6 {
+  margin-left: 6px;
+}
+.mgo {
+  margin-bottom: 12px;
+}
+.mbo-20 {
+  margin-bottom: 20px;
+}
+.mbo-30 {
+  margin-bottom: 30px;
+}
+.block-info {
+  border: 1px solid #f2f2f7;
+  box-sizing: border-box;
+  box-shadow: 0px 24px 20px -16px rgba(88, 93, 106, 0.1);
+  border-radius: 10px;
+  background: #ffffff;
+  width: 100%;
+  max-width: 676px;
+  padding: 20px 10px 20px 20px;
+  display: flex;
+}
+.block-info:not(:last-of-type) {
+  margin-bottom: 26px;
+}
+.img-block-info img {
+  width: 47px;
+  height: 47px;
+}
+.switch-block {
+  display: flex;
+  align-items: center;
+}
+.block-switch-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 22px;
+  margin-bottom: 14px;
+}
+.block-switch-tariff {
+  width: 100%;
+  margin-left: 6px;
+}
+.info-tariff {
+  display: flex;
+  align-items: center;
+  max-width: 300px;
+  width: 100%;
+  justify-content: space-between;
+}
+.btn-text {
+  width: 164px;
+  display: flex;
+  align-items: center;
+}
 </style>

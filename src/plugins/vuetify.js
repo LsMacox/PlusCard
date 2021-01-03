@@ -36,9 +36,10 @@ function LoadSvgIcons (iconList) {
       const name = `icons_${icon}`
       // console.log('LoadIconifyIcons',name)
       icons[name] = {
-        component: 'simple-svg',
+        component: 'inline-svg',
         props: {
           src: iconList[icon],
+          // customClassName: 'simple-svg v-icon--is-component theme--light',
         },
       }
   }
@@ -73,6 +74,7 @@ const options = {
         'warning-500': '#FFA338',
         'error-500': '#EA4C2A',
 
+        'primary-base': '#4776E6',
         'primary-100': '#EBF1FF',
         'primary-700': '#C7D7FF',
         'primary-600': '#E0E9FF',

@@ -77,45 +77,47 @@
           :key="i"
           class="col-2 v-progress-linear-wrapper"
         >
-          <div
-            v-for="(subTitle, i) in subTitles"
-            :key="i"
-            class="col-2 v-progress-linear-wrapper"
-          >
-            <div class="row">
-              <div class="col-1">
-                <v-progress-linear
-                  v-if="i > 0"
-                  :rounded="true"
-                  :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"
-                  :color="colors[i]"
-                  height="12"
-                  style="transform: rotate(-90deg)"
-                />
-                <v-progress-linear
-                  v-else-if="percentageDifferences[i] == 0"
-                  :rounded="true"
-                  :value="0"
-                  :color="colors[i]"
-                  height="12"
-                  style="transform: rotate(-90deg)"
-                />
-                <v-progress-linear
-                  v-else
-                  :rounded="true"
-                  :value="100"
-                  :color="colors[i]"
-                  height="12"
-                  style="transform: rotate(-90deg)"
-                />
-              </div>
-              <div class="body-s-semibold wc-neutral">
-                {{ subTitle }}
+          <div class="row">
+            <div class="col-1">
+              <v-progress-linear
+                v-if="i > 0"
+                :rounded="true"
+                :value="(percentageDifferences[i] / percentageDifferences[0]) * 100"
+                :color="colors[i]"
+                height="12"
+                style="transform: rotate(-90deg)"
+              />
+              <v-progress-linear
+                v-else-if="percentageDifferences[i] == 0"
+                :rounded="true"
+                :value="0"
+                :color="colors[i]"
+                height="12"
+                style="transform: rotate(-90deg)"
+              />
+              <v-progress-linear
+                v-else
+                :rounded="true"
+                :value="100"
+                :color="colors[i]"
+                height="12"
+                style="transform: rotate(-90deg)"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="v-progress-linear-info">
+                <div class="body-s-semibold">
+                  {{ percentageDifferences[i] }}
+                </div>
+                <div class="body-s-semibold wc-neutral">
+                  {{ subTitle }}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </template>
   </cert-widget-template>

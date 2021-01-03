@@ -4,12 +4,21 @@
     :fullscreen="fullscreen"
     :max-width="maxWidth"
     :scrollable="scrollable"
+    content-class="base-message-box elevation-0"
     @click:outside="handleClose"
   >
-    <v-card>
-      <v-toolbar>
-        <v-toolbar-title>{{ title }}</v-toolbar-title>
-        <v-spacer />
+    <v-card
+      class="base-message-box__card"
+      outlined
+    >
+      <v-toolbar
+        outlined
+        flat
+      >
+        <v-toolbar-title class="title-m-bold message-box-title">
+          {{ title }}
+        </v-toolbar-title>
+        <!-- <v-spacer /> -->
         <v-toolbar-items>
           <v-btn
             icon
@@ -20,7 +29,13 @@
         </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
-        <v-container v-if="message">
+        <v-container
+          v-if="message"
+          :class="{
+            'base-message-box__card-body': true,
+            'base-message-box__card-body--center': messageCenter
+          }"
+        >
           {{ message }}
         </v-container>
         <v-container v-else>
@@ -80,6 +95,10 @@
         type: String,
         default: '',
       },
+      messageCenter: {
+        type: Boolean,
+        default: false,
+      },
       showCancelButton: {
         type: Boolean,
         default: false,
@@ -108,7 +127,7 @@
       fullscreen: Boolean,
       maxWidth: {
         type: [String, Number],
-        default: 420,
+        default: 480,
       },
 
     },
@@ -229,4 +248,19 @@
   }
 </script>
 <style lang="scss" scoped>
+.base-message-box {
+  .base-message-box__card {
+    border-radius: 10px;
+    .message-box-title {
+      margin-left:auto;
+      margin-right: auto;
+    }
+    .base-message-box__card-body--center {
+      text-align: center;
+    }
+
+  }
+
+}
+
 </style>

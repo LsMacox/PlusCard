@@ -29,7 +29,7 @@ const merge = Object.assign
     showConfirmButton: true,
     showCancelButton: false,
 
-    confirmButtonText: '',
+    confirmButtonText: 'OK',
     cancelButtonText: '',
     confirmButtonClass: '',
     cancelButtonClass: '',

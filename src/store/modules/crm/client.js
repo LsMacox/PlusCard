@@ -16,6 +16,7 @@ const getDefaultState = () => {
         },
         total: 0,
         importResult: [],
+        // queryValue: null,
     }
 }
 
@@ -48,6 +49,13 @@ const mutations = {
             if (item.id === payload.id) items.splice(index, 1)
         })
     },
+    // SET_QUERY_VALUE: (state, payload) => {
+    //     if (payload.children && payload.children.length === 0) {
+    //         state.queryValue = null
+    //     } else {
+    //         state.queryValue = payload
+    //     }
+    // },
 }
 
 const actions = {
@@ -149,6 +157,7 @@ const getters = {
     list: state => state.list,
     total: state => state.total,
     importResult: state => state.importResult,
+    // queryValue: state => state.queryValue,
 }
 
 export default {
