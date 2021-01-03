@@ -1,9 +1,12 @@
 <template>
   <div class="app--chat__container">
-    <app-conversation-empty v-show="showEmpty" />
+    <app-conversation-empty
+      v-show="showEmpty"
+      :loading="loadingProgram"
+    />
     <app-conversation-list
-      :show-empty="showEmpty"
-      @toogleEmpty="toogleEmpty"
+      :show-empty.sync="showEmpty"
+      :loading-program.sync="loadingProgram"
     />
     <template v-if="!showEmpty">
       <app-conversation-field />
@@ -38,6 +41,7 @@
       return {
         dialogCreate: false,
         showEmpty: false,
+        loadingProgram: false,
       }
     },
     computed: {
@@ -86,9 +90,6 @@
       },
       toRoute (path) {
         if (this.$route.path !== path) this.$router.push(path)
-      },
-      toogleEmpty (v) {
-        this.showEmpty = v
       },
     },
   }

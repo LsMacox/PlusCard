@@ -163,15 +163,21 @@ export default {
     },
 
     async lastActivity ({ state }) {
-      const clientIds = state.conversations.map(c => c.creator_id)
-      const result = await ApiService.post(
-        '/api/profile/activity/last',
-        { users: clientIds }
-      )
-      
-      state.conversations.forEach((c, idx) => {
-        // c.creator_last_activity = result[idx].last_activity
-      })
+      const clientIds = Array.from(new Set(state.conversations.map(c => c.creator_id)))
+
+      if (clientIds.length) {
+        const result = await ApiService.post(
+          '/api/profile/activity/last',
+          { users: clientIds }
+        )
+
+        state.conversations.forEach((c, idx) => {
+          const resIdx = result.findIndex(r => r.id === c.creator_id)
+          if (resIdx !== -1) {
+            Vue.set(c, 'creator_last_activity', result[resIdx].last_activity)
+          }
+        })
+      }
     },
   },
   getters: {

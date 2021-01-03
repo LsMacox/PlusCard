@@ -95,6 +95,10 @@ export const ICONIFY_ICONS = {
     'ion-pause-outline': () => import('@iconify/icons-ion/pause-outline'),
     'ion-arrow-undo-outline': () => import('@iconify/icons-ion/arrow-undo-outline'),
     'add-circle-outline': () => import('@iconify/icons-ion/add-circle-outline'),
+    'ion-basketball-outline': () => import('@iconify/icons-ion/basketball-outline'),
+    'ion-car-outline': () => import('@iconify/icons-ion/car-outline'),
+    'ion-bulb-outline': () => import('@iconify/icons-ion/bulb-outline'),
+    'ion-flag-outline': () => import('@iconify/icons-ion/flag-outline'),
 
     // feather
     'feather-refresh-ccw': () => import('@iconify/icons-feather/refresh-ccw'),

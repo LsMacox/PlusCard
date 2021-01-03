@@ -24,12 +24,24 @@
               v-if="typing && typing.conversation_id == conversationId"
               :conversation-id="conversationId"
             />
-            <!-- <p
+            <p
               class="body-s-semibold"
-              :class="[isOnline(client.lastActivity) ? 'success--text' : 'error--text']"
+              :class="[
+                conversation.creator_last_activity
+                  ? isOnline(conversation.creator_last_activity)
+                    ? 'success--text'
+                    : 'neutral-600--text'
+                  : 'error--text'
+              ]"
             >
-              {{ isOnline(client.lastActivity) ? 'В сети' : 'Не в сети' }}
-            </p> -->
+              {{
+                conversation.creator_last_activity
+                  ? isOnline(conversation.creator_last_activity)
+                    ? 'В сети'
+                    : 'был(a) последний раз ' + getDate(conversation.creator_last_activity)
+                  : 'Не был в сети'
+              }}
+            </p>
           </div>
         </div>
       </div>

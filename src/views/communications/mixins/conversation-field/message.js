@@ -2,7 +2,7 @@ export default {
   methods: {
     toBottomFeed () {
       const conversationFieldWrapper = this.$refs?.conversationFieldWrapper
-      if (conversationFieldWrapper) conversationFieldWrapper.scrollTop = conversationFieldWrapper.offsetHeight
+      if (conversationFieldWrapper) conversationFieldWrapper.scrollTop = conversationFieldWrapper.scrollHeight
     },
     async updateMessages (messages) {
       this.toBottomFeed()

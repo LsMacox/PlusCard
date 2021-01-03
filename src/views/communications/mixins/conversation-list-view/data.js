@@ -24,6 +24,9 @@ export default {
     conversation () {
       return this.$store.getters['chat/data/conversation'](this.conversationId)
     },
+    conversations () {
+      return this.$store.getters['chat/conversation/conversations']
+    },
     members () {
       return this.$store.getters['chat/data/members'](this.conversationId)
     },

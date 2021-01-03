@@ -109,6 +109,16 @@
     position: relative;
     width: 48px;
     height: 48px;
+    .online {
+      position: absolute;
+      bottom: 1px;
+      right: 0px;
+      width: 12px;
+      height: 12px;
+      background: #00D15D;
+      border-radius: 50%;
+      border: 2px solid $neutral-100;
+    }
   }
 
   .list-avatar-img {

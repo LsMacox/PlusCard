@@ -229,6 +229,13 @@
     background-color: $primary-base;
 
     .app--conversation--list--card {
+      .app--conversationn--list--avatar--wrapper {
+        .list-avatar {
+          .online {
+            border-color: $primary-base;
+          }
+        }
+      }
       .app--conversation--list--card--content--wrapper {
         .app--conversation--list--card--content {
           .app--conversation--list--card--top--line {

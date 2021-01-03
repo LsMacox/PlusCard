@@ -201,6 +201,7 @@
     ],
     props: {
       showEmpty: Boolean,
+      loadingProgram: Boolean,
     },
     data () {
       return {
@@ -208,7 +209,7 @@
         chatMemberListAction: false,
         search: null,
         isArchive: false,
-        intervalClientsActivity: {},
+        intervalConversationsActivity: {},
       }
     },
     computed: {
@@ -238,7 +239,7 @@
         const search = String(this.search).replace(/\s+/g, ' ').replace(/^\s/g, '')
 
         if (!groupedConversation.length) {
-          this.$emit('toogleEmpty', true)
+          this.$emit('update:showEmpty', true)
           return []
         }
 
@@ -246,7 +247,7 @@
           groupedConversation = this.conversationSearcher.search(search.toLowerCase())
         }
 
-        this.$emit('toogleEmpty', false)
+        this.$emit('update:showEmpty', false)
         return groupedConversation
       },
       archiveConversation () {
@@ -292,7 +293,9 @@
           // this.$store.commit('chat/conversation/currentConversationType', 'business')
           // this.toRoute('/communications/chat/business')
           // обновление списка чатов
+          this.$emit('update:loadingProgram', true)
           await this.conversationInit(v.id)
+          this.$emit('update:loadingProgram', false)
         }
       },
       currentConversationType (v) {
@@ -301,11 +304,14 @@
     },
     async mounted () {
       this.search = ''
+      this.$emit('update:loadingProgram', true)
       if (this.program) await this.conversationInit(this.program.id)
-      // this.setIntervalConversationsActivity()
+      await this.$store.dispatch('chat/conversation/lastActivity')
+      this.$emit('update:loadingProgram', false)
+      this.setIntervalConversationsActivity()
     },
     beforeDestroy () {
-      // clearInterval(this.intervalClientsActivity)
+      clearInterval(this.intervalConversationsActivity)
     },
     methods: {
       conversationChat (id) {
@@ -315,12 +321,10 @@
         const path = `/communications/chat/${this.currentConversationType}/${id}`
         this.toRoute(path)
       },
-      setIntervalConversationsActivity () {
-        this.intervalClientsActivity = setInterval(async () => {
-          console.log('interval clientActivity')
+      async setIntervalConversationsActivity () {
+        this.intervalConversationsActivity = setInterval(async () => {
           await this.$store.dispatch('chat/conversation/lastActivity')
-        }, 1000)
-        console.log('conversations:', this.conversations)
+        }, 100000)
       },
       conversationsSorted (arr) {
         let sorted = arr

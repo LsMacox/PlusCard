@@ -16,6 +16,7 @@ export default {
     forwardMessageId: NaN,
     choiceMessageIds: [],
     editMessageTextOld: '',
+    emojiHistory: [],
   },
   mutations: {
     clearAllModes (state) {
@@ -84,6 +85,9 @@ export default {
     choiceMessageIds (state, payload) {
       state.choiceMessageIds = payload
     },
+    emojiHistory (state, payload) {
+      state.emojiHistory = payload
+    },
     addInChoiceMessageIds (state, payload) {
       state.choiceMessageIds.push(payload)
     },
@@ -97,7 +101,7 @@ export default {
       state.attachFiles.splice(idx, 1)
     },
     editMessageTextOld (state, payload) {
-        state.editMessageTextOld = payload
+      state.editMessageTextOld = payload
     },
   },
   actions: {
@@ -200,6 +204,9 @@ export default {
     },
     editMessageTextOld (state) {
       return state.editMessageTextOld
+    },
+    emojiHistory (state) {
+      return state.emojiHistory
     },
   },
 }

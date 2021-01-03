@@ -28,7 +28,8 @@
           isEdit ? 'edit' :
           isTopic ? 'topic' :
           (messageText && messageText.length) ? 'writes' :
-          isAttachedFile ? 'file' : ''
+          isAttachedFile ? 'file' : '',
+          {emoji: isEmoji}
         ]"
       >
         <div
@@ -127,11 +128,15 @@
                   @click="toogleTopic"
                 />
                 <!-- Smile Icon -->
-                <iconify-icon
-                  class="icon icon-smile"
-                  icon="feather-smile"
-                  width="21"
-                />
+                <div class="emoji-block">
+                  <iconify-icon
+                    class="icon icon-smile"
+                    icon="feather-smile"
+                    width="21"
+                    @click="toogleEmoji"
+                  />
+                  <app-emoji v-if="isEmoji" />
+                </div>
                 <!-- Microphone Icon -->
                 <iconify-icon
                   v-if="(!messageText || !messageText.length) && !isAttachedFile"
@@ -162,6 +167,7 @@
   // components
   import AppEdit from './components/sendbox/Edit'
   import AppReply from './components/sendbox/Reply'
+  import AppEmoji from './components/sendbox/Emoji'
   import AppTopic from './components/sendbox/Topic'
   import AppChoice from './components/sendbox/Choice'
   import AppRecordStop from './components/sendbox/RecordStop'
@@ -179,6 +185,7 @@
     components: {
       AppEdit,
       AppReply,
+      AppEmoji,
       AppTopic,
       AppChoice,
       AppRecordStop,
@@ -241,6 +248,9 @@
           this.$store.commit('chat/sendbox/clearAllModesBoolExceptCurrent', ['isReply'])
         }
       },
+      messageText (v) {
+        this.message = v
+      },
       async isEdit (v) {
         if (v) {
           this.$store.commit('chat/sendbox/clearAllModesBoolExceptCurrent', 'isEdit')
@@ -284,6 +294,9 @@
     methods: {
       toogleTopic () {
         this.$store.commit('chat/sendbox/isTopic', !this.isTopic)
+      },
+      toogleEmoji () {
+        this.$store.commit('chat/sendbox/isEmoji', !this.isEmoji)
       },
       setTemplateMessage (messageText) {
         this.$store.commit(

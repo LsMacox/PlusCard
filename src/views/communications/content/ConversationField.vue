@@ -171,15 +171,32 @@
         }
       },
     },
+    updated () {
+      this.wrapperOverflowX()
+    },
     async mounted () {
       if (this.currentConversationId) {
         await this.fetchData(this.currentConversationId)
         await this.$nextTick()
+        this.wrapperOverflowX()
         this.toBottomFeed()
       }
       if (this.issetMessages) {
         this.updateMessages()
       }
+    },
+    methods: {
+      wrapperOverflowX () {
+        if (this.$refs?.conversationFieldWrapper) {
+          if (
+            this.$refs.conversationField.clientHeight > this.$refs.conversationFieldWrapper.clientHeight
+          ) {
+            this.$refs.conversationFieldWrapper.style.overflowX = 'visible'
+          } else {
+            this.$refs.conversationFieldWrapper.style.overflowX = 'hidden'
+          }
+        }
+      },
     },
   }
 </script>

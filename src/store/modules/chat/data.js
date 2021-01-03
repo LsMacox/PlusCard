@@ -18,7 +18,6 @@ export default {
       const conversation = rootGetters[
           'chat/conversation/conversations'
       ].filter((item) => item.id === convId)
-
       if (!isEmptyObject(conversation)) {
         return conversation[0]
       }

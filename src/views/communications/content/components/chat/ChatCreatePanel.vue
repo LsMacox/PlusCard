@@ -42,7 +42,10 @@
                   :src="avatars[client.id]"
                   @error="e => e.target.src = img404"
                 >
-                <div class="online" />
+                <div
+                  v-if="isOnline(getConversation(client.id))"
+                  class="online"
+                />
               </div>
               <div class="item-name">
                 <p class="body-m-medium neutral-900--text">
@@ -174,6 +177,9 @@
       currentConversationType () {
         return this.$store.getters['chat/conversation/currentConversationType']
       },
+      conversations () {
+        return this.$store.getters['chat/conversation/conversations']
+      },
     },
     watch: {
       innerActiveSidePanel (v) {
@@ -203,6 +209,9 @@
       },
       isChooseClient (client) {
         return this.choosenClients.findIndex(c => c.id === client.id) !== -1
+      },
+      getConversation (clientId) {
+        return this.conversations.find(c => c.creator_id === clientId)
       },
       toogleChooseClient (client) {
         const choosenClientIdx = this.choosenClients.findIndex(c => c.id === client.id)

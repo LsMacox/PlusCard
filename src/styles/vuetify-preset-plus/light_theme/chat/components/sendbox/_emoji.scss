@@ -1,0 +1,107 @@
+@import "@/styles/vuetify-preset-plus/light_theme/_variables.sass";
+@import "@/styles/_typography.sass";
+
+.app--component-emoji {
+  background: $neutral-100;
+  position: absolute;
+  width: 324px;
+  right: -12px;
+  bottom: 36px;
+  border-radius: 10px;
+  box-shadow: 0px 5px 20px rgba(88, 93, 106, 0.1);
+  z-index: 3;
+  &:before {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: $neutral-100;
+    bottom: -6px;
+    transform: rotate(45deg);
+    right: 16px;
+  }
+  .emoji-box {
+    .emoji__header {
+      padding: 16px 16px 0 16px;
+    }
+    .emoji__content {
+      padding-right: 8px;
+      padding-left: 16px;
+      .content__title {
+        margin-top: 12px;
+        p {
+          margin-bottom: 0;
+        }
+      }
+      .content__grids {
+        .emoji-grid {
+          display: grid;
+          grid-template-columns: repeat(8, 1fr);
+          grid-row-gap: 6px;
+          .column {
+            margin-right: 4px;
+          }
+        }
+        .content__grid {
+          margin-top: 8px;
+          margin-bottom: 8px;
+          max-height: 190px;
+          overflow-y: auto;
+          padding-right: 8px;
+          p {
+            margin-bottom: 0;
+            margin-left: 5px;
+          }
+          .col {
+            margin-top: 6px;
+          }
+          .emoji {
+            width: 26px;
+            height: 26px;
+            cursor: pointer;
+          }
+
+          &::-webkit-scrollbar {
+            width: 4px;
+            background: $neutral-250;
+            border-radius: 2px;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            background: $neutral-400;
+            border-radius: 2px;
+            width: 4px;
+          }
+        }
+      }
+    }
+    .emoji__footer {
+      border-top: 1px solid $neutral-250;
+      .footer__list {
+        display: flex;
+        padding: 0;
+        list-style: none;
+        padding: 12px 20px;
+        align-items: center;
+        .footer__item {
+          display: inline-flex;
+          margin-right: 12px;
+          cursor: pointer;
+          &.active {
+            color: $primary-base;
+          }
+          display: inline-flex;
+          color: $neutral-500;
+          .logo {
+            background-color: $neutral-500;
+            width: 21px;
+            height: 21px;
+            &.active {
+              background-color: $primary-base;
+            }
+          }
+        }
+      }
+    }
+  }
+}

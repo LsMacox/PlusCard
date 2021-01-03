@@ -191,7 +191,7 @@
               >
                 <p
                   class="body-s-regular neutral-700--text mb-0"
-                  v-html="formatMessage(item.parent_message.message)"
+                  v-html="_prepareMessageText(item.parent_message.message)"
                 />
               </div>
             </div>
@@ -221,7 +221,7 @@
             >
               <p
                 class="body-s-regular neutral-900--text mb-0"
-                v-html="formatMessage(item.message)"
+                v-html="_prepareMessageText(item.message)"
               />
             </div>
           </div>
@@ -386,13 +386,9 @@
         }
       },
       isMessageSendNow () {
-        const msgTime = new Date(this.item.created_at).getTime()
-        const currentDate = this.$moment()
-        const msgDate = this.$moment(msgTime).local()
         if (
           this.myMessage &&
           (
-            currentDate.diff(msgDate, 'minutes') <= 3 ||
             (
               this.conversation.last_message &&
               this.conversation.last_message.id === this.item.id
@@ -423,7 +419,7 @@
               !msgKeys[currMsgIdx - 1] ||
               (
                 msgKeys[currMsgIdx - 1] &&
-                msgKeys[currMsgIdx - 1].connectNexMessage === false
+                this.messages[msgKeys[currMsgIdx - 1]].connectNexMessage === false
               )
             )
           )
@@ -513,6 +509,9 @@
           .then(() => {
             this.hideActions()
           })
+      },
+      _prepareMessageText (text) {
+        return this.formatMessage(text)
       },
     },
   }

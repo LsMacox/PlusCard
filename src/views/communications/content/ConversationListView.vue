@@ -8,6 +8,10 @@
             class="list-avatar-img"
             @error="e => e.target.src = img404"
           >
+          <div
+            v-if="conversation.creator_last_activity && isOnline(conversation.creator_last_activity)"
+            class="online"
+          />
         </div>
       </div>
       <div class="app--conversation--list--card--content--wrapper">
